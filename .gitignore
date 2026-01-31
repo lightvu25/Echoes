@@ -3,8 +3,8 @@
 
 acli.exe
 
-.vs/
-.vscode/
+.vs
+.vscode
 
 /Library/
 /Temp/
