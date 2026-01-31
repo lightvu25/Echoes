@@ -4,6 +4,7 @@
 acli.exe
 
 .vs/
+.vscode/
 
 /Library/
 /Temp/
