@@ -1,0 +1,11 @@
+.git
+.vsconfig
+
+acli.exe
+
+/Library/
+/Temp/
+/Obj/
+/Build/
+/Builds/
+/Logs/
