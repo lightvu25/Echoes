@@ -4,11 +4,18 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // Added events for various actions (Idle, Clind, Grab, Getup)
+
+    public event EventHandler OnIdle;
     public event EventHandler OnJump;
     public event EventHandler OnLand;
     public event EventHandler OnWalk;
     public event EventHandler OnDash;
     public event EventHandler OnStopWalk;
+    public event EventHandler OnCling;
+    public event EventHandler OnGrab;
+    public event EventHandler OnGetup;
+
     public PlayerData Data;
 
     public Rigidbody2D rb { get; private set; }
@@ -66,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         SetGravityScale(Data.gravityScale);
-        isFacingRight = true;
+        isFacingRight = transform.localScale.x > 0;
 
         PlayerInteract.Instance.OnDead += PlayerInteract_OnDead;
     }

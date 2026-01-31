@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
 public class PlayerInteract : MonoBehaviour
@@ -45,7 +45,9 @@ public class PlayerInteract : MonoBehaviour
 
     private float coinPickups = 0f;
     private float time;
-    private float timeMax = 5f;
+
+    // Thời gian sống sót
+    private float timeMax = 50f;
     private State state;
 
     private void Awake()

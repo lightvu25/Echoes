@@ -2,7 +2,7 @@
 
 // Tạo một ScriptableObject để lưu trữ dữ liệu của người chơi
 [CreateAssetMenu(menuName = "Player Data")]
-public class PlayerData : MonoBehaviour
+public class PlayerData : ScriptableObject
 {
     [Header("Gravity")]
     [HideInInspector] public float gravityStrength;
