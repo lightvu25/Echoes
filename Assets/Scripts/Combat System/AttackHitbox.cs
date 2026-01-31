@@ -175,7 +175,7 @@ public class AttackHitbox : MonoBehaviour
         };
 
         // Apply crit if we have stats
-        if (combatStats != null && Random.value < combatStats.critChance)
+        if (combatStats != null && UnityEngine.Random.value < combatStats.critChance)
         {
             damageInfo.isCritical = true;
             damageInfo.multiplicativeStack *= combatStats.critMultiplier;
