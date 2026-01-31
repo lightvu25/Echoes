@@ -11,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     public event EventHandler OnStopWalk;
     public PlayerData Data;
 
+    [Header("Input")]
+    [SerializeField] private InputConfig inputConfig;
+
     public Rigidbody2D rb { get; private set; }
 
     // Variables to track player state
@@ -81,25 +84,27 @@ public class PlayerMovement : MonoBehaviour
         LastPressedJumpTime -= Time.deltaTime;
         LastPressedDashTime -= Time.deltaTime;
 
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
-        _moveInput.y = Input.GetAxisRaw("Vertical");
+        _moveInput.x = inputConfig != null ? inputConfig.GetHorizontalInput() : Input.GetAxisRaw("Horizontal");
+        _moveInput.y = inputConfig != null ? inputConfig.GetVerticalInput() : Input.GetAxisRaw("Vertical");
 
         if (isDead) return;
 
         if (_moveInput.x != 0)
             CheckDirectionToFace(_moveInput.x > 0);
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Jump input (uses InputConfig -> GameInput)
+        if (inputConfig != null ? inputConfig.GetJumpDown() : Input.GetKeyDown(KeyCode.Space))
         {
             OnJumpInput();
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (inputConfig != null ? inputConfig.GetJumpUp() : Input.GetKeyUp(KeyCode.Space))
         {
             OnJumpUpInput();
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        // Dash input (uses InputConfig -> GameInput)
+        if (inputConfig != null ? inputConfig.GetDashDown() : Input.GetKeyDown(KeyCode.LeftShift))
         {
             OnDashInput();
         }
