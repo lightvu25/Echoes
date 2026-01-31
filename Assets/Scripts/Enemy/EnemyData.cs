@@ -3,60 +3,62 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Enemy Data")]
 public class EnemyData : ScriptableObject
 {
-    [Header("Wander")]
-    public float wanderMaxSpeed;
-    public float wanderAcceleration;
-    [HideInInspector] public float wanderAccelAmount;
-    public float wanderDecceleration;
-    [HideInInspector] public float wanderDeccelAmount;
-    public float wanderRadius = 3f;
-    public float wanderWaitTimeMin = 1f;
-    public float wanderWaitTimeMax = 3f;
+    [Header("Patrol")]
+    public float patrolMaxSpeed;
+    public float patrolAcceleration;
+    [HideInInspector] public float patrolAccelAmount;
+    public float patrolDecceleration;
+    [HideInInspector] public float patrolDeccelAmount;
+    public float patrolRadius = 3f;
+    public float patrolWaitTimeMin = 1f;
+    public float patrolWaitTimeMax = 3f;
+
+    // Check distance patrol
+    public float groundCheckDistance = 1f;
+    public float wallCheckDistance = 0.5f;
 
     [Space(20)]
 
     [Header("Chase")]
-    public float runMaxSpeed;
-    public float runAcceleration;
-    [HideInInspector] public float runAccelAmount;
-    public float runDecceleration;
-    [HideInInspector] public float runDeccelAmount;
+    public float chaseMaxSpeed;
+    public float chaseAcceleration;
+    [HideInInspector] public float chaseAccelAmount;
+    public float chaseDecceleration;
+    [HideInInspector] public float chaseDeccelAmount;
 
-    [Space(5)]
-    [Range(0f, 1)] public float accelInAir;
-    [Range(0f, 1)] public float deccelInAir;
-    [Space(5)]
     public bool doConserveMomentum = true;
 
     [Space(20)]
 
     [Header("Attack")]
     public int attackBase;
-    public int attackRange;
-    public int attackSpeed;
+    public float attackRange;
+    public float attackSpeed;
     public float attackCooldown;
 
     [Space(20)]
 
-    [Header("Senses")]
-    public float visionRange;
-    public float fovAngle;
-    public float perceptionRange;
-    public LayerMask obstacleLayer;
-    public LayerMask playerLayer;
+    [Header("Line of Sight")]
+    public float visionRange = 8f;
+    [Range(0, 360)] public float fovAngle = 90f;
+    public float closeDetectionRange = 1.5f;
+    public LayerMask groundLayer;
+    public LayerMask wallLayer;
+    public LayerMask targetLayer;
+    public float noticeDuration = 0.5f;
 
     private void OnValidate()
     {
-        wanderAccelAmount = (50 * wanderAcceleration) / runMaxSpeed;
-        wanderDeccelAmount = (50 * wanderDecceleration) / runMaxSpeed;
+        patrolAccelAmount = (50 * patrolAcceleration) / patrolMaxSpeed;
+        patrolDeccelAmount = (50 * patrolDecceleration) / patrolMaxSpeed;
 
-        wanderAcceleration = Mathf.Clamp(wanderAcceleration, 0.01f, runMaxSpeed);
-        wanderDecceleration = Mathf.Clamp(wanderDecceleration, 0.01f, runMaxSpeed);
+        patrolAcceleration = Mathf.Clamp(patrolAcceleration, 0.01f, patrolMaxSpeed);
+        patrolDecceleration = Mathf.Clamp(patrolDecceleration, 0.01f, patrolMaxSpeed);
 
-        runAccelAmount = (50 * runAcceleration) / runMaxSpeed;
-        runDeccelAmount = (50 * runDecceleration) / runMaxSpeed;
+        chaseAccelAmount = (50 * chaseAcceleration) / chaseMaxSpeed;
+        chaseDeccelAmount = (50 * chaseDecceleration) / chaseMaxSpeed;
 
-        runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
-        runDecceleration = Mathf.Clamp(runDecceleration, 0.01f, runMaxSpeed);
+        chaseAcceleration = Mathf.Clamp(chaseAcceleration, 0.01f, chaseMaxSpeed);
+        chaseDecceleration = Mathf.Clamp(chaseDecceleration, 0.01f, chaseMaxSpeed);
     }
 }

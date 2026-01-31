@@ -3,9 +3,13 @@
 
 acli.exe
 
+.vs
+.vscode
+
 /Library/
 /Temp/
 /Obj/
 /Build/
 /Builds/
 /Logs/
+/UserSettings/

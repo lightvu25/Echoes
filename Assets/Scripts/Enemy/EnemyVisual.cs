@@ -7,6 +7,9 @@ public class EnemyVisual : MonoBehaviour
     private EnemyMovement enemyMovement;
     private EnemyInteract enemyInteract;
 
+    [SerializeField] private GameObject noticeIconPrefab;
+    [SerializeField] private Transform iconSpawnPoint;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -16,10 +19,11 @@ public class EnemyVisual : MonoBehaviour
 
     private void Start()
     {
-        // Đăng ký sự kiện
-        enemyMovement.OnStartMoving += EnemyMovement_OnStartMoving;
-        enemyMovement.OnStopMoving += EnemyMovement_OnStopMoving;
+        enemyMovement.OnPatrol += (s, e) => animator.SetBool("IsWalking", true);
+        enemyMovement.OnIdle += (s, e) => animator.SetBool("IsWalking", false);
+
         enemyInteract.OnAttack += EnemyInteract_OnAttack;
+        enemyInteract.OnNotice += EnemyInteract_OnNotice;
     }
 
     private void OnDestroy()
@@ -27,8 +31,8 @@ public class EnemyVisual : MonoBehaviour
         // Hủy đăng ký để tránh lỗi memory leak
         if (enemyMovement != null)
         {
-            enemyMovement.OnStartMoving -= EnemyMovement_OnStartMoving;
-            enemyMovement.OnStopMoving -= EnemyMovement_OnStopMoving;
+            enemyMovement.OnPatrol -= EnemyMovement_OnPatrol;
+            enemyMovement.OnIdle -= EnemyMovement_OnIdle;
         }
         if (enemyInteract != null)
         {
@@ -36,18 +40,24 @@ public class EnemyVisual : MonoBehaviour
         }
     }
 
-    private void EnemyMovement_OnStartMoving(object sender, EventArgs e)
+    private void EnemyMovement_OnPatrol(object sender, EventArgs e)
     {
-        animator.SetBool("IsRunning", true);
+        //animator.SetBool("IsRunning", true);
     }
 
-    private void EnemyMovement_OnStopMoving(object sender, EventArgs e)
+    private void EnemyMovement_OnIdle(object sender, EventArgs e)
     {
-        animator.SetBool("IsRunning", false);
+        //animator.SetBool("IsRunning", false);
     }
 
     private void EnemyInteract_OnAttack(object sender, EventArgs e)
     {
-        animator.SetTrigger("Attack");
+        //animator.SetTrigger("Attack");
+    }
+
+    private void EnemyInteract_OnNotice(object sender, EventArgs e)
+    {
+        //animator.SetTrigger("Notice");
+        //Instantiate(noticeIconPrefab, iconSpawnPoint.position, Quaternion.identity, transform);
     }
 }

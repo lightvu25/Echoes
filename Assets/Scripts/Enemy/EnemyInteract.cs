@@ -1,177 +1,316 @@
 using System;
 using UnityEngine;
+using System.Collections;
 
 public class EnemyInteract : MonoBehaviour
 {
     public static EnemyInteract Instance { get; private set; }
 
     public event EventHandler OnAttack;
+    public event EventHandler OnNotice;
+    public event EventHandler<OnStateArgs> OnStateChanged;
 
-    [SerializeField] private EnemyData data;
-    
+    public class OnStateArgs : EventArgs { public State state; }
+
+    public enum State
+    {
+        Idle,
+        Patrol,
+        Notice,
+        Chase,
+        Attack
+    }
+
     private EnemyMovement enemyMovement;
-    private Transform player;
+    [SerializeField] private EnemyData data;
+    [SerializeField] private Transform eyes;
+
+    private State currentState;
+    private Transform targetPlayer;
+
+    private float stateTimer;
     private float lastAttackTime;
-
-    private Vector2 wanderTarget;
-    private float wanderWaitTimer;
-    private bool isWaiting;
-    private Vector2 startPosition;
-
-    // Gizmos
-    private Vector2 debugSteeringDirection;
-    private bool debugCanSeePlayer;
+    private Vector2 startPos;
+    private Vector2 patrolTarget;
+    private bool isPlayerVisible;
 
     private void Awake()
     {
         Instance = this;
+
         enemyMovement = GetComponent<EnemyMovement>();
-        enemyMovement.Data = data; 
+        startPos = transform.position;
+        enemyMovement.Data = data;
     }
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        startPosition = transform.position;
-        PickNewWanderTarget();
+        targetPlayer = GameObject.FindGameObjectWithTag("Player")?.transform;
+        PickNewPatrolTarget();
+        ChangeState(State.Patrol);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        if (player == null || enemyMovement.isKnockedBack) return;
+        if (targetPlayer == null) return;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
-        debugCanSeePlayer = CheckLineOfSight(distanceToPlayer);
+        isPlayerVisible = CheckLineOfSight();
 
-        if (debugCanSeePlayer)
+        switch (currentState)
         {
-            isWaiting = false;
-            if (distanceToPlayer <= data.attackRange)
+            case State.Idle:
+                HandleIdle();
+                break;
+            case State.Patrol:
+                HandlePatrol();
+                break;
+            case State.Notice:
+                HandleNotice();
+                break;
+            case State.Chase:
+                HandleChase();
+                break;
+            case State.Attack:
+                HandleAttack();
+                break;
+        }
+
+    }
+
+    private void ChangeState(State newState)
+    {
+        currentState = newState;
+        stateTimer = 0f;
+        OnStateChanged?.Invoke(this, new OnStateArgs { state = newState });
+    }
+
+    // --- HÀM XỬ LÝ VISION ---
+
+    private bool CheckLineOfSight()
+    {
+        // Tính khoảng cách
+        float distToPlayer = Vector2.Distance(transform.position, targetPlayer.position);
+
+        // A. Cảm nhận gần (Nghe thấy tiếng bước chân/hơi thở)
+        if (distToPlayer <= data.closeDetectionRange)
+        {
+            return true;
+        }
+
+        // B. Tầm nhìn xa (Mắt)
+        if (distToPlayer <= data.visionRange)
+        {
+            Vector2 dirToPlayer = (targetPlayer.position - transform.position).normalized;
+            Vector2 facingDir = enemyMovement.isFacingRight ? Vector2.right : Vector2.left;
+            float angle = Vector2.Angle(facingDir, dirToPlayer);
+
+            // 1. Kiểm tra xem Player có nằm trong góc nhìn không
+            if (angle < data.fovAngle / 2f)
             {
-                PerformAttack();
+                // 2. Tạo Mask: Bao gồm Đất, Tường VÀ CẢ PLAYER
+                // (Để tia Raycast không xuyên qua Player)
+                LayerMask allLayersToCheck = data.groundLayer | data.wallLayer | data.targetLayer;
+
+                Vector2 origin = eyes != null ? (Vector2)eyes.position : (Vector2)transform.position;
+
+                // MẸO: Bắn tia vào giữa người Player (Center) thay vì vào chân (Position)
+                // để tránh tia bắn xuống đất bị vướng địa hình.
+                // Nếu targetPlayer có Collider, hãy dùng bounds.center. Nếu không, cộng thêm vector Y.
+                Collider2D playerCollider = targetPlayer.GetComponent<Collider2D>();
+                Vector2 targetPoint = playerCollider != null ? (Vector2)playerCollider.bounds.center : (Vector2)targetPlayer.position + Vector2.up * 0.5f;
+
+                Vector2 accurateDir = (targetPoint - origin).normalized;
+                float accurateDist = Vector2.Distance(origin, targetPoint);
+
+                // Bắn Raycast
+                RaycastHit2D hit = Physics2D.Raycast(origin, accurateDir, accurateDist, allLayersToCheck);
+
+                // 3. Xử lý kết quả Raycast
+                if (hit.collider != null)
+                {
+                    // Kiểm tra xem vật bắn trúng có thuộc Layer của Player không?
+                    // (Toán tử bitwise để check layer mask)
+                    if (((1 << hit.collider.gameObject.layer) & data.targetLayer) != 0)
+                    {
+                        return true; // Bắn trúng Player -> Thấy!
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // --- XỬ LÝ STATE ---
+
+    private void HandleIdle()
+    {
+        enemyMovement.Stop();
+        stateTimer += Time.deltaTime;
+
+        if (isPlayerVisible)
+        {
+            ChangeState(State.Notice);
+            return;
+        }
+
+        if (stateTimer >= UnityEngine.Random.Range(data.patrolWaitTimeMin, data.patrolWaitTimeMax))
+        {
+            if (!enemyMovement.isGroundedAhead || enemyMovement.isWallAhead)
+            {
+                enemyMovement.CheckDirectionToFace(!enemyMovement.isFacingRight);
+            }
+
+            PickNewPatrolTarget();
+            ChangeState(State.Patrol);
+        }
+    }
+
+    private void HandlePatrol()
+    {
+        if (isPlayerVisible)
+        {
+            ChangeState(State.Notice);
+            return;
+        }
+
+        if (!enemyMovement.isGroundedAhead || enemyMovement.isWallAhead)
+        {
+            enemyMovement.Stop();
+            ChangeState(State.Idle);
+            return;
+        }
+
+        float distToTarget = Mathf.Abs(transform.position.x - patrolTarget.x);
+        if (distToTarget < 0.5f)
+        {
+            ChangeState(State.Idle);
+            return;
+        }
+
+        float direction = Mathf.Sign(patrolTarget.x - transform.position.x);
+        Vector2 moveDir = new Vector2(direction, 0);
+
+        enemyMovement.Move(moveDir, data.patrolMaxSpeed, data.patrolAccelAmount, data.patrolDeccelAmount);
+    }
+
+    private void HandleNotice()
+    {
+        enemyMovement.Stop();
+
+        enemyMovement.CheckDirectionToFace(targetPlayer.position.x > transform.position.x);
+
+        if (stateTimer == 0f)
+        {
+            OnNotice?.Invoke(this, EventArgs.Empty);
+        }
+
+        stateTimer += Time.deltaTime;
+
+        if (stateTimer >= data.noticeDuration)
+        {
+            float dist = Vector2.Distance(transform.position, targetPlayer.position);
+            if (dist <= data.attackRange)
+            {
+                ChangeState(State.Attack);
             }
             else
             {
-                PerformChase();
+                ChangeState(State.Chase);
             }
         }
+    }
+
+    private void HandleChase()
+    {
+        float dis = Vector2.Distance(transform.position, targetPlayer.position);
+
+        if (!isPlayerVisible)
+        {
+            ChangeState(State.Idle);
+            return;
+        }
+
+        if (dis <= data.attackRange)
+        {
+            ChangeState(State.Attack);
+            return;
+        }
+
+        if (!enemyMovement.isGroundedAhead || enemyMovement.isWallAhead)
+        {
+            ChangeState(State.Idle);
+            return;
+        } 
         else
         {
-            PerformWander();
+            float direction = Mathf.Sign(targetPlayer.position.x - transform.position.x);
+            float moveSpeed = data.chaseMaxSpeed;
+
+            enemyMovement.Move(new Vector2(direction, 0), moveSpeed, data.chaseAccelAmount, data.chaseDeccelAmount);
         }
     }
 
-    private void PerformChase()
+    private void HandleAttack()
     {
-        Vector2 directionToPlayer = (player.position - transform.position).normalized;
-        
-        Vector2 steering = GetObstacleAvoidance(directionToPlayer);
-        debugSteeringDirection = steering;
+        enemyMovement.Stop();
+        enemyMovement.CheckDirectionToFace(targetPlayer.position.x > transform.position.x);
 
-        enemyMovement.Move(steering, data.runMaxSpeed, data.runAccelAmount, data.runDeccelAmount);
-    }
-
-    private void PerformWander()
-    {
-        if (isWaiting)
+        float dist = Vector2.Distance(transform.position, targetPlayer.position);
+        if (dist > data.attackRange + 0.5f) // Thêm chút buffer để đỡ bị flick
         {
-            enemyMovement.Move(Vector2.zero, 0, 0, 0);
-            wanderWaitTimer -= Time.fixedDeltaTime;
-
-            if (wanderWaitTimer == 0)
-            {
-                isWaiting = false;
-                PickNewWanderTarget();
-            }
+            ChangeState(State.Chase);
+            return;
         }
-        else
-        {
-            // Tính hướng đi tới điểm đích
-            Vector2 directionToTarget = (wanderTarget - (Vector2)transform.position).normalized;
-            Vector2 moveDir = new Vector2(Mathf.Sign(wanderTarget.x - transform.position.x), 0);
 
-            // Kiểm tra xem đã đến nơi chưa (Sai số 0.5f)
-            if (Mathf.Abs(transform.position.x - wanderTarget.x) < 0.5f)
-            {
-                isWaiting = true;
-                wanderWaitTimer = UnityEngine.Random.Range(data.wanderWaitTimeMin, data.wanderWaitTimeMax);
-            }
-            else
-            {
-                // Dùng ObstacleAvoidance để tránh đâm đầu vào tường khi đi tuần
-                Vector2 steering = GetObstacleAvoidance(moveDir);
-                enemyMovement.Move(steering, data.wanderMaxSpeed, data.wanderAccelAmount, data.wanderDeccelAmount);
-            }
-        }
-    }
-
-    private void PickNewWanderTarget()
-    {
-        float randomX = startPosition.x + UnityEngine.Random.Range(-data.wanderRadius, data.wanderRadius);
-        wanderTarget = new Vector2(randomX, transform.position.y);
-    }
-
-    private void PerformAttack()
-    {
-        enemyMovement.Move(Vector2.zero, 0, 0, 0);
-
-        if (Time.time > lastAttackTime + data.attackCooldown)
+        if (Time.time >= lastAttackTime + data.attackCooldown)
         {
             OnAttack?.Invoke(this, EventArgs.Empty);
             lastAttackTime = Time.time;
         }
     }
 
-    private Vector2 GetObstacleAvoidance(Vector2 desiredDirection)
+    private void PickNewPatrolTarget()
     {
-        Vector2[] rayDirections = { 
-            desiredDirection, 
-            Quaternion.Euler(0, 0, 45) * desiredDirection, 
-            Quaternion.Euler(0, 0, -45) * desiredDirection 
-        };
-
-        Vector2 finalDirection = desiredDirection;
-
-        foreach (var dir in rayDirections)
-        {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, 1.5f, data.obstacleLayer);
-            if (hit.collider != null)
-            {
-                Vector2 avoidForce = (Vector2)transform.position - hit.point;
-                finalDirection += avoidForce.normalized * 2f;
-            }
-        }
-        return finalDirection.normalized;
+        float randomX = UnityEngine.Random.Range(-data.patrolRadius, data.patrolRadius);
+        Vector2 potentialTarget = new Vector2(startPos.x + randomX, startPos.y);
+        patrolTarget = potentialTarget;
     }
-
-    private bool CheckLineOfSight(float dist)
+    
+    private void OnDrawGizmosSelected()
     {
-        if (dist <= data.perceptionRange)
-             return !Physics2D.Raycast(transform.position, (player.position - transform.position).normalized, dist, data.obstacleLayer);
-
-        if (dist <= data.visionRange)
-        {
-            Vector2 dirToPlayer = (player.position - transform.position).normalized;
-            Vector2 facingDir = enemyMovement.isFacingRight ? Vector2.right : Vector2.left;
-
-            float angle = Vector2.Angle(facingDir, dirToPlayer);
-            if (angle < data.fovAngle / 2f)
-            {
-                RaycastHit2D hit = Physics2D.Raycast(transform.position, dirToPlayer, dist, data.obstacleLayer);
-                return hit.collider == null;
-            }
-        }
-        return false;
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (data == null) return;
+        // Tầm nhìn xa
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, data.visionRange);
+
+        // Tầm nhìn gần
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, data.closeDetectionRange);
+
+        // Tầm đánh
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, data.attackRange);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawRay(transform.position, debugSteeringDirection * 2);
+
+        // Vùng đi tuần
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(Application.isPlaying ? (Vector3)startPos : transform.position, data.patrolRadius);
+    
+        // Hình nón FOV
+        Vector3 eyePor = eyes != null ? eyes.position : transform.position;
+        Vector3 viewAngleA = DirFromAngle(-data.fovAngle / 2, false);
+        Vector3 viewAngleB = DirFromAngle(data.fovAngle / 2, false);
+
+        Gizmos.color = Color.orange;
+        Gizmos.DrawLine(eyePor, eyePor + viewAngleA * data.visionRange);
+        Gizmos.DrawLine(eyePor, eyePor + viewAngleB * data.visionRange);
+    }
+
+    private Vector3 DirFromAngle(float angleInDegrees, bool angleIsGlobal)
+    {
+        if (!angleIsGlobal)
+        {
+            angleInDegrees += enemyMovement.isFacingRight ? 0f : 180f;
+        }
+        return new Vector3(Mathf.Cos(angleInDegrees * Mathf.Deg2Rad), Mathf.Sin(angleInDegrees * Mathf.Deg2Rad));
     }
 }

@@ -1,0 +1,1209 @@
+fileFormatVersion: 2
+guid: da2442085efa0c54ea8b48c7fedfad7f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4761265735121949625
+    second: tooth walker sprite-Sheet_0
+  - first:
+      213: 693834750884780659
+    second: tooth walker sprite-Sheet_1
+  - first:
+      213: -5504097897449283753
+    second: tooth walker sprite-Sheet_2
+  - first:
+      213: 6216406014579331949
+    second: tooth walker sprite-Sheet_3
+  - first:
+      213: -4414185822409100093
+    second: tooth walker sprite-Sheet_4
+  - first:
+      213: 2331954282414087992
+    second: tooth walker sprite-Sheet_5
+  - first:
+      213: -2952500864280035372
+    second: tooth walker sprite-Sheet_6
+  - first:
+      213: -5530439348810607683
+    second: tooth walker sprite-Sheet_7
+  - first:
+      213: -7085871435035408519
+    second: tooth walker sprite-Sheet_8
+  - first:
+      213: 608785250197183045
+    second: tooth walker sprite-Sheet_9
+  - first:
+      213: 2664132397249503948
+    second: tooth walker sprite-Sheet_10
+  - first:
+      213: -4083304598427478065
+    second: tooth walker sprite-Sheet_11
+  - first:
+      213: 5068951378710981209
+    second: tooth walker sprite-Sheet_12
+  - first:
+      213: 6247628177746665802
+    second: tooth walker sprite-Sheet_13
+  - first:
+      213: 378108147432993944
+    second: tooth walker sprite-Sheet_14
+  - first:
+      213: 6802941105159908100
+    second: tooth walker sprite-Sheet_15
+  - first:
+      213: 2272756377514292793
+    second: tooth walker sprite-Sheet_16
+  - first:
+      213: -8135394986023410254
+    second: tooth walker sprite-Sheet_17
+  - first:
+      213: 5457043062027624001
+    second: tooth walker sprite-Sheet_18
+  - first:
+      213: -6035827198496337756
+    second: tooth walker sprite-Sheet_19
+  - first:
+      213: -3399528229862148074
+    second: tooth walker sprite-Sheet_20
+  - first:
+      213: 5562323661801644306
+    second: tooth walker sprite-Sheet_21
+  - first:
+      213: -8301584028075321337
+    second: tooth walker sprite-Sheet_22
+  - first:
+      213: 3810158035132189990
+    second: tooth walker sprite-Sheet_23
+  - first:
+      213: 9145750660100572377
+    second: tooth walker sprite-Sheet_24
+  - first:
+      213: 1347519800307295561
+    second: tooth walker sprite-Sheet_25
+  - first:
+      213: 8820552000502060177
+    second: tooth walker sprite-Sheet_26
+  - first:
+      213: 9025928896348765890
+    second: tooth walker sprite-Sheet_27
+  - first:
+      213: 7706508967416635285
+    second: tooth walker sprite-Sheet_28
+  - first:
+      213: -6060150316790417556
+    second: tooth walker sprite-Sheet_29
+  - first:
+      213: -4091503007739144299
+    second: tooth walker sprite-Sheet_30
+  - first:
+      213: 6348113449478965893
+    second: tooth walker sprite-Sheet_31
+  - first:
+      213: -6611345144720083769
+    second: tooth walker sprite-Sheet_32
+  - first:
+      213: -623198983557915377
+    second: tooth walker sprite-Sheet_33
+  - first:
+      213: -6818390990570620195
+    second: tooth walker sprite-Sheet_34
+  - first:
+      213: 982036345639569642
+    second: tooth walker sprite-Sheet_35
+  - first:
+      213: 4411967287448677525
+    second: tooth walker sprite-Sheet_36
+  - first:
+      213: 306456209693454162
+    second: tooth walker sprite-Sheet_37
+  - first:
+      213: -8524341796843091133
+    second: tooth walker sprite-Sheet_38
+  - first:
+      213: -7284506601311657868
+    second: tooth walker sprite-Sheet_39
+  - first:
+      213: -693262579124209745
+    second: tooth walker sprite-Sheet_40
+  - first:
+      213: -7914005673590309827
+    second: tooth walker sprite-Sheet_41
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 260
+        width: 38
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b3de27b5f9631240800000000000000
+      internalID: 4761265735121949625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 260
+        width: 40
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37a1f43a70ff0a900800000000000000
+      internalID: 693834750884780659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 260
+        width: 40
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75f9f8dcf148d93b0800000000000000
+      internalID: -5504097897449283753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 260
+        width: 38
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d635a96955c154650800000000000000
+      internalID: 6216406014579331949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 260
+        width: 39
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c47db2c169adb2c0800000000000000
+      internalID: -4414185822409100093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 260
+        width: 38
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83f1ebb8014cc5020800000000000000
+      internalID: 2331954282414087992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 196
+        width: 40
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4dffd816b1c9607d0800000000000000
+      internalID: -2952500864280035372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 196
+        width: 40
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db31d4ab6beef33b0800000000000000
+      internalID: -5530439348810607683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 196
+        width: 40
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97780aee87de9ad90800000000000000
+      internalID: -7085871435035408519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 196
+        width: 40
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54a1086a5f6d27800800000000000000
+      internalID: 608785250197183045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 196
+        width: 37
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc2aaa4dc46e8f420800000000000000
+      internalID: 2664132397249503948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 196
+        width: 34
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc7d20d1a103557c0800000000000000
+      internalID: -4083304598427478065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 132
+        width: 40
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95a6bc72c68885640800000000000000
+      internalID: 5068951378710981209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 132
+        width: 18
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a41af4fe9b804b650800000000000000
+      internalID: 6247628177746665802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 159
+        width: 8
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 894bc665b5f4f3500800000000000000
+      internalID: 378108147432993944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 146
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40ba5f044e6e86e50800000000000000
+      internalID: 6802941105159908100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 168
+        width: 17
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9363ebe32e37a8f10800000000000000
+      internalID: 2272756377514292793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 166
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b5a4960d55491f80800000000000000
+      internalID: -8135394986023410254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 132
+        width: 42
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14e9a2490cf4bbb40800000000000000
+      internalID: 5457043062027624001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 132
+        width: 11
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a01cf3642f6c3ca0800000000000000
+      internalID: -6035827198496337756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 132
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 618772f161372d0d0800000000000000
+      internalID: -3399528229862148074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 132
+        width: 19
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 211ef6366e7513d40800000000000000
+      internalID: 5562323661801644306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 156
+        width: 13
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70893856f49dacc80800000000000000
+      internalID: -8301584028075321337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 133
+        width: 8
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62d872ebb8660e430800000000000000
+      internalID: 3810158035132189990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 145
+        width: 12
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d4c693e4cb3cee70800000000000000
+      internalID: 9145750660100572377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 145
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9452f117e1a53b210800000000000000
+      internalID: 1347519800307295561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 147
+        width: 33
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19459c8af45e86a70800000000000000
+      internalID: 8820552000502060177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_27
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 134
+        width: 17
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ce3dc2828a824d70800000000000000
+      internalID: 9025928896348765890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_28
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 135
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59f1b35331503fa60800000000000000
+      internalID: 7706508967416635285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_29
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 132
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c677c3a156506eba0800000000000000
+      internalID: -6060150316790417556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_30
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 132
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 597144231bf0837c0800000000000000
+      internalID: -4091503007739144299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_31
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 132
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58ac21e6c87091850800000000000000
+      internalID: 6348113449478965893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_32
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 68
+        width: 25
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c4b4798e98cf34a0800000000000000
+      internalID: -6611345144720083769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_33
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 93
+        width: 13
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0d55a883d3f957f0800000000000000
+      internalID: -623198983557915377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_34
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 68
+        width: 25
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dda705bf4853061a0800000000000000
+      internalID: -6818390990570620195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_35
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 68
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae88e527ad4e0ad00800000000000000
+      internalID: 982036345639569642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_36
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 68
+        width: 64
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59ca5015fd47a3d30800000000000000
+      internalID: 4411967287448677525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_37
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 68
+        width: 40
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25fadfd8c40c04400800000000000000
+      internalID: 306456209693454162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_38
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 68
+        width: 45
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34b0727bc4473b980800000000000000
+      internalID: -8524341796843091133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_39
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 68
+        width: 52
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 470a4d057db38ea90800000000000000
+      internalID: -7284506601311657868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_40
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 4
+        width: 58
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa7fa3b7b590166f0800000000000000
+      internalID: -693262579124209745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tooth walker sprite-Sheet_41
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 4
+        width: 54
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3c393325cdcb2290800000000000000
+      internalID: -7914005673590309827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      tooth walker sprite-Sheet_0: 4761265735121949625
+      tooth walker sprite-Sheet_1: 693834750884780659
+      tooth walker sprite-Sheet_10: 2664132397249503948
+      tooth walker sprite-Sheet_11: -4083304598427478065
+      tooth walker sprite-Sheet_12: 5068951378710981209
+      tooth walker sprite-Sheet_13: 6247628177746665802
+      tooth walker sprite-Sheet_14: 378108147432993944
+      tooth walker sprite-Sheet_15: 6802941105159908100
+      tooth walker sprite-Sheet_16: 2272756377514292793
+      tooth walker sprite-Sheet_17: -8135394986023410254
+      tooth walker sprite-Sheet_18: 5457043062027624001
+      tooth walker sprite-Sheet_19: -6035827198496337756
+      tooth walker sprite-Sheet_2: -5504097897449283753
+      tooth walker sprite-Sheet_20: -3399528229862148074
+      tooth walker sprite-Sheet_21: 5562323661801644306
+      tooth walker sprite-Sheet_22: -8301584028075321337
+      tooth walker sprite-Sheet_23: 3810158035132189990
+      tooth walker sprite-Sheet_24: 9145750660100572377
+      tooth walker sprite-Sheet_25: 1347519800307295561
+      tooth walker sprite-Sheet_26: 8820552000502060177
+      tooth walker sprite-Sheet_27: 9025928896348765890
+      tooth walker sprite-Sheet_28: 7706508967416635285
+      tooth walker sprite-Sheet_29: -6060150316790417556
+      tooth walker sprite-Sheet_3: 6216406014579331949
+      tooth walker sprite-Sheet_30: -4091503007739144299
+      tooth walker sprite-Sheet_31: 6348113449478965893
+      tooth walker sprite-Sheet_32: -6611345144720083769
+      tooth walker sprite-Sheet_33: -623198983557915377
+      tooth walker sprite-Sheet_34: -6818390990570620195
+      tooth walker sprite-Sheet_35: 982036345639569642
+      tooth walker sprite-Sheet_36: 4411967287448677525
+      tooth walker sprite-Sheet_37: 306456209693454162
+      tooth walker sprite-Sheet_38: -8524341796843091133
+      tooth walker sprite-Sheet_39: -7284506601311657868
+      tooth walker sprite-Sheet_4: -4414185822409100093
+      tooth walker sprite-Sheet_40: -693262579124209745
+      tooth walker sprite-Sheet_41: -7914005673590309827
+      tooth walker sprite-Sheet_5: 2331954282414087992
+      tooth walker sprite-Sheet_6: -2952500864280035372
+      tooth walker sprite-Sheet_7: -5530439348810607683
+      tooth walker sprite-Sheet_8: -7085871435035408519
+      tooth walker sprite-Sheet_9: 608785250197183045
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

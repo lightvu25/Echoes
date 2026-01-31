@@ -18,12 +18,17 @@ public class EnemyAudio : MonoBehaviour
     private void Start()
     {
         enemyInteract.OnAttack += EnemyInteract_OnAttack;
-        // Có thể thêm event OnStep nếu muốn
+        enemyMovement.OnPatrol += EnemyMovement_OnPatrol;
     }
 
     private void EnemyInteract_OnAttack(object sender, EventArgs e)
     {
-        if (attackAudioSource != null)
             attackAudioSource.Play();
+    }
+
+    private void EnemyMovement_OnPatrol(object sender, EventArgs e)
+    {
+        if (!stepAudioSource.isPlaying)
+            stepAudioSource.Play();
     }
 }
