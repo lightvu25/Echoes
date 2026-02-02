@@ -17,7 +17,7 @@ MonoBehaviour:
   patrolAccelAmount: 50
   patrolDecceleration: 3
   patrolDeccelAmount: 50
-  patrolRadius: 10
+  patrolRadius: 14
   patrolWaitTimeMin: 1
   patrolWaitTimeMax: 3
   groundCheckDistance: 1

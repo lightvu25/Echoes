@@ -309,8 +309,17 @@ public class EnemyInteract : MonoBehaviour
     {
         if (!angleIsGlobal)
         {
-            angleInDegrees += enemyMovement.isFacingRight ? 0f : 180f;
+            if (enemyMovement != null)
+            {
+                angleInDegrees += enemyMovement.isFacingRight ? 0f : 180f;
+            }
         }
         return new Vector3(Mathf.Cos(angleInDegrees * Mathf.Deg2Rad), Mathf.Sin(angleInDegrees * Mathf.Deg2Rad));
+    }
+
+    public bool IsPlayerOutsideVision()
+    {
+        float distance = Vector2.Distance(transform.position, targetPlayer.position);
+        return distance > data.visionRange;
     }
 }
