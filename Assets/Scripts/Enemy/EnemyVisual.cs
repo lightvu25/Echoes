@@ -7,8 +7,14 @@ public class EnemyVisual : MonoBehaviour
     private EnemyMovement enemyMovement;
     private EnemyInteract enemyInteract;
 
+    private GameObject currentIcon;
+
     [SerializeField] private GameObject noticeIconPrefab;
     [SerializeField] private Transform iconSpawnPoint;
+    [SerializeField] private float noticeCooldown = 0.5f;
+
+    private bool hasShownNotice = false;
+    private float lastNoticeTime = -10f;
 
     private void Awake()
     {
@@ -26,17 +32,27 @@ public class EnemyVisual : MonoBehaviour
         enemyInteract.OnNotice += EnemyInteract_OnNotice;
     }
 
+    private void Update()
+    {
+        if (hasShownNotice)
+        {
+            if (enemyInteract.IsPlayerOutsideVision())
+            {
+                hasShownNotice = false;
+            }
+        }
+    }
+
     private void OnDestroy()
     {
-        // Hủy đăng ký để tránh lỗi memory leak
         if (enemyMovement != null)
         {
             enemyMovement.OnPatrol -= EnemyMovement_OnPatrol;
-            enemyMovement.OnIdle -= EnemyMovement_OnIdle;
         }
         if (enemyInteract != null)
         {
             enemyInteract.OnAttack -= EnemyInteract_OnAttack;
+            enemyInteract.OnNotice -= EnemyInteract_OnNotice;
         }
     }
 
@@ -57,7 +73,22 @@ public class EnemyVisual : MonoBehaviour
 
     private void EnemyInteract_OnNotice(object sender, EventArgs e)
     {
-        //animator.SetTrigger("Notice");
-        //Instantiate(noticeIconPrefab, iconSpawnPoint.position, Quaternion.identity, transform);
+        if (!hasShownNotice && Time.time >= lastNoticeTime + noticeCooldown)
+        {
+            currentIcon = Instantiate(noticeIconPrefab, iconSpawnPoint.position, Quaternion.identity, transform);
+            
+            Destroy(currentIcon, 1f);
+
+            hasShownNotice = true;
+            lastNoticeTime = Time.time;
+        }
+    }
+
+    public void Die()
+    {
+        if (currentIcon != null)
+        {
+            Destroy(currentIcon);
+        }
     }
 }
