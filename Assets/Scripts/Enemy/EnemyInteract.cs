@@ -108,14 +108,10 @@ public class EnemyInteract : MonoBehaviour
             if (angle < data.fovAngle / 2f)
             {
                 // 2. Tạo Mask: Bao gồm Đất, Tường VÀ CẢ PLAYER
-                // (Để tia Raycast không xuyên qua Player)
                 LayerMask allLayersToCheck = data.groundLayer | data.wallLayer | data.targetLayer;
 
                 Vector2 origin = eyes != null ? (Vector2)eyes.position : (Vector2)transform.position;
 
-                // MẸO: Bắn tia vào giữa người Player (Center) thay vì vào chân (Position)
-                // để tránh tia bắn xuống đất bị vướng địa hình.
-                // Nếu targetPlayer có Collider, hãy dùng bounds.center. Nếu không, cộng thêm vector Y.
                 Collider2D playerCollider = targetPlayer.GetComponent<Collider2D>();
                 Vector2 targetPoint = playerCollider != null ? (Vector2)playerCollider.bounds.center : (Vector2)targetPlayer.position + Vector2.up * 0.5f;
 
@@ -128,11 +124,9 @@ public class EnemyInteract : MonoBehaviour
                 // 3. Xử lý kết quả Raycast
                 if (hit.collider != null)
                 {
-                    // Kiểm tra xem vật bắn trúng có thuộc Layer của Player không?
-                    // (Toán tử bitwise để check layer mask)
                     if (((1 << hit.collider.gameObject.layer) & data.targetLayer) != 0)
                     {
-                        return true; // Bắn trúng Player -> Thấy!
+                        return true;
                     }
                 }
             }
@@ -309,16 +303,21 @@ public class EnemyInteract : MonoBehaviour
     {
         if (!angleIsGlobal)
         {
+            bool isFacingRight = transform.localScale.x > 0;
             if (enemyMovement != null)
             {
-                angleInDegrees += enemyMovement.isFacingRight ? 0f : 180f;
+                isFacingRight = enemyMovement.isFacingRight;
             }
+
+            angleInDegrees += isFacingRight ? 0f : 180f;
         }
         return new Vector3(Mathf.Cos(angleInDegrees * Mathf.Deg2Rad), Mathf.Sin(angleInDegrees * Mathf.Deg2Rad));
     }
 
     public bool IsPlayerOutsideVision()
     {
+        if (targetPlayer == null) return true;
+
         float distance = Vector2.Distance(transform.position, targetPlayer.position);
         return distance > data.visionRange;
     }
