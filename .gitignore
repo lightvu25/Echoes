@@ -6,6 +6,9 @@ acli.exe
 .vs
 .vscode
 
+*.csproj
+*.sln
+
 /Library/
 /Temp/
 /Obj/
