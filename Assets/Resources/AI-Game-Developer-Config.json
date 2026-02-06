@@ -404,5 +404,5 @@
   ],
   "host": "http://localhost:50068",
   "timeoutMs": 10000,
-  "keepConnected": false
+  "keepConnected": true
 }

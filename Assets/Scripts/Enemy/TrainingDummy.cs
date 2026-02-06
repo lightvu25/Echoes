@@ -7,6 +7,9 @@ public class TrainingDummy : MonoBehaviour
     [SerializeField] private float regenDelay = 3f;
     [SerializeField] private int regenRate = 10000;
 
+    [Header("UI")]
+    [SerializeField] private Transform pfDamagePopup;
+
     private HealthSystem healthSystem;
     private float lastDamageTime;
 
@@ -43,6 +46,17 @@ public class TrainingDummy : MonoBehaviour
     {
         // Reset the out-of-combat timer whenever we take damage
         lastDamageTime = Time.time;
+
+        // Spawn Damage Popup
+        if (pfDamagePopup != null)
+        {
+            Transform damagePopupTransform = Instantiate(pfDamagePopup, transform.position + Vector3.up * 1f, Quaternion.identity);
+            DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+            if (damagePopup != null)
+            {
+                damagePopup.Setup(e.damageAmount);
+            }
+        }
     }
 
     private void Update()

@@ -56,7 +56,40 @@ public class GameInput : MonoBehaviour
 
     public bool IsDashActionPressed()
     {
-        return inputActions.Player.PlayerDash.IsPressed();
+        return inputActions.Player.PlayerDash.WasPressedThisFrame();
+    }
+
+    public bool IsAttackActionPressed()
+    {
+        return inputActions.Player.Attack.WasPressedThisFrame();
+    }
+
+    public bool IsSkillActionPressed()
+    {
+        return inputActions.Player.Skill.WasPressedThisFrame();
+    }
+
+    public bool IsSpecialActionPressed()
+    {
+        return inputActions.Player.Special.WasPressedThisFrame();
+    }
+
+    public bool IsJumpActionHeld()
+    {
+        return inputActions.Player.PlayerJump.IsPressed();
+    }
+    public bool IsJumpActionReleased()
+    {
+        return inputActions.Player.PlayerJump.WasReleasedThisFrame();
+    }
+
+    public bool IsAttackActionHeld()
+    {
+        return inputActions.Player.Attack.IsPressed();
+    }
+    public bool IsAttackActionReleased()
+    {
+        return inputActions.Player.Attack.WasReleasedThisFrame();
     }
 
     public bool IsPauseActionPressed()

@@ -99,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
         if (_moveInput.x != 0)
             CheckDirectionToFace(_moveInput.x > 0);
 
-        // Jump input (uses InputConfig -> GameInput)
+        // Jump input
         if (inputConfig != null ? inputConfig.GetJumpDown() : Input.GetKeyDown(KeyCode.Space))
         {
             OnJumpInput();
@@ -110,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
             OnJumpUpInput();
         }
 
-        // Dash input (uses InputConfig -> GameInput)
+        // Dash input
         if (inputConfig != null ? inputConfig.GetDashDown() : Input.GetKeyDown(KeyCode.LeftShift))
         {
             OnDashInput();
