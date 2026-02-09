@@ -119,11 +119,24 @@ public class AttackHitbox : MonoBehaviour
         // Find all targets in hitbox
         Collider2D[] hits = Physics2D.OverlapBoxAll(center, hitboxSize, 0f, targetLayers);
 
+        // DEBUG: Log hitbox check
+        Debug.Log($"[AttackHitbox] CheckHits at {center}, size {hitboxSize}, found {hits.Length} colliders on layers {targetLayers.value}");
+
         foreach (var hit in hits)
         {
+            Debug.Log($"[AttackHitbox] Hit collider: {hit.gameObject.name}, layer: {LayerMask.LayerToName(hit.gameObject.layer)}");
+
             IDamageable target = hit.GetComponent<IDamageable>();
-            if (target == null) continue;
-            if (target.IsDead) continue;
+            if (target == null)
+            {
+                Debug.Log($"[AttackHitbox] {hit.gameObject.name} has no IDamageable!");
+                continue;
+            }
+            if (target.IsDead)
+            {
+                Debug.Log($"[AttackHitbox] {hit.gameObject.name} is dead, skipping");
+                continue;
+            }
 
             // Multi-hit logic
             if (multiHitInterval > 0f)
@@ -145,6 +158,7 @@ public class AttackHitbox : MonoBehaviour
             }
 
             // Apply damage
+            Debug.Log($"[AttackHitbox] Applying damage to {hit.gameObject.name}");
             ApplyDamage(target);
         }
     }
