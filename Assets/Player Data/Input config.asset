@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a86cf952fe554546a316bb7081b130e, type: 3}
   m_Name: Input config
   m_EditorClassIdentifier: Assembly-CSharp::InputConfig
-  activeScheme: 1
+  activeScheme: 0
   wasd_Attack: 106
   wasd_Skill: 117
   wasd_Special: 107

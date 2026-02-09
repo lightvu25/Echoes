@@ -117,12 +117,21 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Collision Checks
-        if (!isDashing && !isJumping)
+        if (!isDashing)
         {
             // Ground Check
             if (Physics2D.OverlapBox(_groundCheck.position, _groundCheckSize, 0f, _groundLayer))
             {
-                LastOnGroundTime = Data.coyoteTime; // Reset coyote time when grounded
+                // Ensure we are not moving up significantly to avoid false landings immediately after jump
+                if (rb.linearVelocity.y < 0.01f)
+                {
+                    LastOnGroundTime = Data.coyoteTime; // Reset coyote time when grounded
+                    
+                    // Force reset jump states if we are grounded (safeguard against stuck states)
+                    isJumping = false;
+                    isWallJumping = false;
+                    _isJumpFalling = false;
+                }
             }
             
             if (((Physics2D.OverlapBox(_fromWallCheckPoint.position, _wallCheckSize, 0f, _groundLayer) && isFacingRight) ||

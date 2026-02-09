@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TrainingDummy : MonoBehaviour
+public class TrainingDummy : MonoBehaviour, IDamageable
 {
     [Header("Settings")]
     [SerializeField] private int maxHealth = 100000;
@@ -51,7 +51,8 @@ public class TrainingDummy : MonoBehaviour
         if (pfDamagePopup != null)
         {
             Transform damagePopupTransform = Instantiate(pfDamagePopup, transform.position + Vector3.up * 1f, Quaternion.identity);
-            DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+            // Use GetComponentInChildren since DamagePopup may be on a child object
+            DamagePopup damagePopup = damagePopupTransform.GetComponentInChildren<DamagePopup>();
             if (damagePopup != null)
             {
                 damagePopup.Setup(e.damageAmount);
@@ -71,6 +72,18 @@ public class TrainingDummy : MonoBehaviour
             {
                 healthSystem.Heal(regenRate);
             }
+        }
+    }
+    // IDamageable Implementation
+    public bool IsDead => healthSystem != null && healthSystem.IsDead;
+    public Transform Transform => transform;
+    public float Defense => healthSystem != null ? healthSystem.Defense : 0f;
+
+    public void TakeDamage(DamageInfo damageInfo)
+    {
+        if (healthSystem != null)
+        {
+            healthSystem.TakeDamage(damageInfo);
         }
     }
 }

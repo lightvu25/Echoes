@@ -11,6 +11,15 @@ public class DamagePopup : MonoBehaviour
     private void Awake()
     {
         textMesh = GetComponent<TextMeshPro>();
+        // Fallback: check children if not on this object
+        if (textMesh == null)
+        {
+            textMesh = GetComponentInChildren<TextMeshPro>();
+        }
+        if (textMesh == null)
+        {
+            Debug.LogError($"[DamagePopup] No TextMeshPro found on {gameObject.name} or its children!");
+        }
     }
 
     public void Setup(int damageAmount)
