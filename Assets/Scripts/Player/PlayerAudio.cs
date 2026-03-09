@@ -19,10 +19,10 @@ public class PlayerAudio : MonoBehaviour
     {
         playerMovement.OnJump += Player_Jump;
         playerMovement.OnLand += Player_Land;
-        playerMovement.OnWalk += Player_Walk;
+        playerMovement.OnRun += Player_Walk;
         playerMovement.OnDash += Player_Dash;
 
-        playerMovement.OnStopWalk += Player_StopWalk;
+        playerMovement.OnStopRun += Player_StopWalk;
 
         SoundManager.Instance.OnSoundVolumeChanged += SoundManager_OnSoundVolumeChanged;
 
