@@ -9,9 +9,9 @@ public class PlayerMovement : MonoBehaviour
     public event EventHandler OnIdle;
     public event EventHandler OnJump;
     public event EventHandler OnLand;
-    public event EventHandler OnWalk;
+    public event EventHandler OnRun;
     public event EventHandler OnDash;
-    public event EventHandler OnStopWalk;
+    public event EventHandler OnStopRun;
     public event EventHandler OnCling;
     public event EventHandler OnGrab;
     public event EventHandler OnGetup;
@@ -279,12 +279,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (isCurrentlyGrounded && isMoving && !_wasMoving)
         {
-            OnWalk?.Invoke(this, EventArgs.Empty);
+            OnRun?.Invoke(this, EventArgs.Empty);
         }
 
         if (isCurrentlyGrounded && !isMoving && _wasMoving)
         {
-            OnStopWalk?.Invoke(this, EventArgs.Empty);
+            OnStopRun?.Invoke(this, EventArgs.Empty);
         }
 
         _wasMoving = isMoving;

@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class EnemyVisual : MonoBehaviour
 {
-    private Animator animator;
     private EnemyMovement enemyMovement;
     private EnemyInteract enemyInteract;
 
     [SerializeField] private GameObject noticeIconPrefab;
     [SerializeField] private Transform iconSpawnPoint;
     [SerializeField] private float noticeCooldown;
+    [SerializeField] private Animator animator;
 
     private GameObject currentIcon;
     private bool hasShownNotice = false;
@@ -17,15 +17,14 @@ public class EnemyVisual : MonoBehaviour
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
         enemyMovement = GetComponent<EnemyMovement>();
         enemyInteract = GetComponent<EnemyInteract>();
     }
 
     private void Start()
     {
-        enemyMovement.OnPatrol += (s, e) => animator.SetBool("IsWalking", true);
-        enemyMovement.OnIdle += (s, e) => animator.SetBool("IsWalking", false);
+        enemyMovement.OnPatrol += EnemyMovement_OnPatrol;
+        enemyMovement.OnIdle += EnemyMovement_OnIdle;
 
         enemyInteract.OnAttack += EnemyInteract_OnAttack;
         enemyInteract.OnNotice += EnemyInteract_OnNotice;
@@ -57,17 +56,21 @@ public class EnemyVisual : MonoBehaviour
 
     private void EnemyMovement_OnPatrol(object sender, EventArgs e)
     {
-        //animator.SetBool("IsRunning", true);
+        animator.SetBool("isRunning", false);
+        animator.SetBool("isPatroling", true);
     }
 
     private void EnemyMovement_OnIdle(object sender, EventArgs e)
     {
-        //animator.SetBool("IsRunning", false);
+        animator.SetBool("isRunning", false);
+        animator.SetBool("isPatroling", false);
     }
 
     private void EnemyInteract_OnAttack(object sender, EventArgs e)
     {
-        //animator.SetTrigger("Attack");
+        animator.SetTrigger("isAttacking");
+        animator.SetBool("isPatroling", false);
+        animator.SetBool("isRunning", false);
     }
 
     private void EnemyInteract_OnNotice(object sender, EventArgs e)
