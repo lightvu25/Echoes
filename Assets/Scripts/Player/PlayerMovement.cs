@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     public event EventHandler OnGetup;
 
     public PlayerData Data;
+    private PlayerCombat playerCombat;
+    private HealthSystem healthSystem;
 
     [Header("Input")]
     [SerializeField] private InputConfig inputConfig;
@@ -71,6 +73,8 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerCombat = GetComponent<PlayerCombat>();
+        healthSystem = GetComponent<HealthSystem>();
     }
 
     private void Start()
@@ -346,6 +350,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Run(float lerpAmount)
     {
+        if (playerCombat.IsKnockedBack) return;
+
         // Tính toán vận tốc mục tiêu dựa trên đầu vào di chuyển và tốc độ tối đa
         float targetSpeed = _moveInput.x * Data.runMaxSpeed;
 
@@ -440,9 +446,6 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator StartDash(Vector2 dir)
     {
-        // Về tổng quan, dash method này dựa trên Celeste
-        // dash sẽ có 2 giai đoạn: dashAttack và dashEnd
-
         LastOnGroundTime = 0;
         LastPressedDashTime = 0;
 
@@ -453,11 +456,13 @@ public class PlayerMovement : MonoBehaviour
 
         SetGravityScale(0);
 
+        // Enable i-frames during active dash phase
+        if (healthSystem != null)
+            healthSystem.SetInvincible(true);
+
         while (Time.time - startTime <= Data.dashAttackTime)
         {
             rb.linearVelocity = dir.normalized * Data.dashSpeed;
-            // Dừng vòng lặp cho đến khung hình tiếp theo
-            // Đây là cách để tạo hiệu ứng dash liên tục trong một khoảng thời gian
             yield return null;
         }
 
@@ -465,7 +470,10 @@ public class PlayerMovement : MonoBehaviour
 
         _isDashAttacking = false;
 
-        // Bắt đầu giai đoạn dashEnd, nơi người chơi có thể kiểm soát hướng di chuyển nhưng vẫn giới hạn gia tốc
+        // Disable i-frames — player is vulnerable during recovery
+        if (healthSystem != null)
+            healthSystem.SetInvincible(false);
+
         SetGravityScale(Data.gravityScale);
         rb.linearVelocity = dir.normalized * Data.dashEndSpeed;
 
@@ -474,7 +482,6 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
 
-        // Kết thúc dash
         isDashing = false;
     }
 

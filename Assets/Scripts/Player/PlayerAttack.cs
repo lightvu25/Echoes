@@ -264,4 +264,39 @@ public class PlayerAttack : MonoBehaviour
     /// Get current combo step (0-indexed).
     /// </summary>
     public int CurrentComboStep => currentComboStep;
+
+    public void EnableAttackHitbox()
+    {
+        attackHitbox.gameObject.SetActive(true);
+    }
+
+    public void DisableAttackHitbox()
+    {
+        attackHitbox.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Cancel the current attack. Called when player is knocked back.
+    /// Stops all attack coroutines, resets state, and deactivates hitbox.
+    /// </summary>
+    public void CancelAttack()
+    {
+        if (!isAttacking) return;
+
+        StopAllCoroutines();
+        isAttacking = false;
+        comboQueued = false;
+        currentComboStep = 0;
+
+        // Deactivate hitbox
+        if (attackHitbox != null)
+            attackHitbox.Deactivate();
+
+        // Fire end event
+        OnAttackEnded?.Invoke(this, new AttackEventArgs
+        {
+            attackType = currentAttackType,
+            comboStep = currentComboStep
+        });
+    }
 }

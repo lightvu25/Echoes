@@ -466,6 +466,10 @@ GameObject:
   - component: {fileID: 3339120191955998625}
   - component: {fileID: 30084099364794236}
   - component: {fileID: 2434607277094997996}
+  - component: {fileID: 4269877125141051423}
+  - component: {fileID: 6462573591220733983}
+  - component: {fileID: 6221358223936003347}
+  - component: {fileID: 4414510295826904377}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -597,6 +601,76 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimeRewind
   recordTime: 5
+--- !u!114 &4269877125141051423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8247203597836570067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcdd33a2a6cc40e49889ecd7efc51987, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthSystem
+  maxHP: 100
+  currentHP: 100
+  defense: 0
+  iFrameDuration: 0.5
+  hasIFrames: 1
+--- !u!114 &6462573591220733983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8247203597836570067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cfaa1dc47ff42e4e9e662c20793af96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackHitbox
+  hitboxSize: {x: 1, y: 1.3}
+  hitboxOffset: {x: 0.5, y: 0}
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  startupTime: 0.05
+  activeTime: 0.15
+  multiHitInterval: 0
+  baseDamage: 10
+  procCoefficient: 1
+  knockbackForce: 5
+  hitFreezeTime: 0.05
+--- !u!114 &6221358223936003347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8247203597836570067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4b96d5e2b4b3c3418ac6ccdc76571ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
+  data: {fileID: 11400000, guid: f7aea8ea9d4101641a67826dcab109f1, type: 2}
+  knockbackDuration: 0.2
+--- !u!114 &4414510295826904377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8247203597836570067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91b06e52c2fcfd045bf9e6f60beac5e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
+  data: {fileID: 11400000, guid: f7aea8ea9d4101641a67826dcab109f1, type: 2}
+  startupDelay: 0.2
+  activeTime: 0.1
 --- !u!1 &9102165767309968662
 GameObject:
   m_ObjectHideFlags: 0
@@ -681,7 +755,7 @@ SpriteRenderer:
   m_MaskInteraction: 0
   m_Sprite: {fileID: 1619746199584205844, guid: edbb95910c2409d4bb10823830fc6f34, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.25, y: 0.39}

@@ -3,6 +3,12 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Enemy Data")]
 public class EnemyData : ScriptableObject
 {
+    [Header("Health")]
+    public int maxHP = 100;
+    public float defense = 0f;
+
+    [Space(20)]
+
     [Header("Patrol")]
     public float patrolMaxSpeed;
     public float patrolAcceleration;
@@ -35,6 +41,12 @@ public class EnemyData : ScriptableObject
     public float attackRange;
     public float attackSpeed;
     public float attackCooldown;
+
+    [Header("Attack Hitbox")]
+    public Vector2 attackHitboxSize = new Vector2(1.5f, 1.5f);
+    public Vector2 attackHitboxOffset = new Vector2(0.75f, 0f);
+    public float knockbackForce = 3f;
+    public LayerMask attackTargetLayers;
 
     [Space(20)]
 
