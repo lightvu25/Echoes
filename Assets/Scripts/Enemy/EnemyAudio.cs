@@ -31,4 +31,16 @@ public class EnemyAudio : MonoBehaviour
         if (!stepAudioSource.isPlaying)
             stepAudioSource.Play();
     }
+
+    private void OnDestroy()
+    {
+        if (enemyInteract != null)
+        {
+            enemyInteract.OnAttack -= EnemyInteract_OnAttack;
+        }
+        if (enemyMovement != null)
+        {
+            enemyMovement.OnPatrol -= EnemyMovement_OnPatrol;
+        }
+    }
 }

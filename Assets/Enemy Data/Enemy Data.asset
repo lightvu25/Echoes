@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937470260c5f20049a9c20727a4ad0eb, type: 3}
   m_Name: Enemy Data
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  maxHP: 100
+  defense: 0
   patrolMaxSpeed: 3
   patrolAcceleration: 3
   patrolAccelAmount: 50
@@ -32,6 +34,12 @@ MonoBehaviour:
   attackRange: 1
   attackSpeed: 1
   attackCooldown: 1.5
+  attackHitboxSize: {x: 1.5, y: 1.5}
+  attackHitboxOffset: {x: 0.75, y: 0}
+  knockbackForce: 3
+  attackTargetLayers:
+    serializedVersion: 2
+    m_Bits: 384
   visionRange: 5
   fovAngle: 120
   closeDetectionRange: 1.2

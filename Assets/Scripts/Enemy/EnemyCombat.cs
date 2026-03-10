@@ -2,13 +2,15 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// Main player combat controller.
-/// Handles damage receiving, health, and integrates with combat systems.
+/// Main enemy combat controller.
+/// Handles damage receiving, health, knockback, and death.
+/// Mirrors PlayerCombat architecture.
 /// </summary>
 [RequireComponent(typeof(HealthSystem))]
-public class PlayerCombat : MonoBehaviour, IDamageable
+public class EnemyCombat : MonoBehaviour, IDamageable
 {
     public event EventHandler<DamageReceivedArgs> OnDamageReceived;
+    public event EventHandler OnEnemyDied;
 
     public class DamageReceivedArgs : EventArgs
     {
@@ -17,16 +19,15 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     }
 
     [Header("References")]
-    [SerializeField] private CombatStats combatStats;
-    [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private EnemyData data;
 
     [Header("Knockback")]
     [SerializeField] private float knockbackDuration = 0.2f;
 
     private HealthSystem healthSystem;
-    private PlayerAttack playerAttack;
+    private EnemyMovement enemyMovement;
     private Rigidbody2D rb;
-    public bool isKnockedBack = false;
+    private bool isKnockedBack = false;
 
     // IDamageable implementation
     public bool IsDead => healthSystem != null && healthSystem.IsDead;
@@ -36,20 +37,19 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
-        playerAttack = GetComponent<PlayerAttack>();
+        enemyMovement = GetComponent<EnemyMovement>();
         rb = GetComponent<Rigidbody2D>();
     }
 
     private void Start()
     {
-        // Initialize from combat stats
-        if (combatStats != null && healthSystem != null)
+        // Initialize from enemy data
+        if (data != null && healthSystem != null)
         {
-            healthSystem.SetMaxHP(combatStats.maxHP, true);
-            healthSystem.SetDefense(combatStats.defense);
+            healthSystem.SetMaxHP(data.maxHP, true);
+            healthSystem.SetDefense(data.defense);
         }
 
-        // Subscribe to health events
         if (healthSystem != null)
         {
             healthSystem.OnDeath += HealthSystem_OnDeath;
@@ -70,8 +70,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     public void TakeDamage(DamageInfo damageInfo)
     {
         if (healthSystem == null || healthSystem.IsDead) return;
-
-        // Skip damage during dash i-frames or regular i-frames
         if (healthSystem.IsInvincible) return;
 
         // Apply damage through health system
@@ -82,10 +80,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         {
             ApplyKnockback(damageInfo.knockbackDirection, damageInfo.knockbackForce);
         }
-
-        // Camera shake on player hit (no hit-stop for enemy attacks)
-        if (CameraShaker.Instance != null)
-            CameraShaker.Instance.BasicShake(3f, 0.3f);
 
         // Fire event
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, Defense);
@@ -100,10 +94,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     {
         if (isKnockedBack) return;
 
-        // Cancel any active attack — knockback interrupts player actions
-        if (playerAttack != null)
-            playerAttack.CancelAttack();
-
         StartCoroutine(KnockbackRoutine(direction, force));
     }
 
@@ -111,7 +101,10 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     {
         isKnockedBack = true;
 
-        // Apply knockback force
+        // Sync with EnemyMovement
+        if (enemyMovement != null)
+            enemyMovement.SetKnockedBack(true);
+
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
@@ -121,15 +114,14 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(knockbackDuration);
 
         isKnockedBack = false;
+
+        if (enemyMovement != null)
+            enemyMovement.SetKnockedBack(false);
     }
 
     private void HealthSystem_OnDeath(object sender, EventArgs e)
     {
-        // Trigger player death through PlayerInteract
-        if (PlayerInteract.Instance != null)
-        {
-            PlayerInteract.Instance.Dead();
-        }
+        OnEnemyDied?.Invoke(this, EventArgs.Empty);
     }
 
     /// <summary>

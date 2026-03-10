@@ -5,6 +5,7 @@ public class EnemyVisual : MonoBehaviour
 {
     private EnemyMovement enemyMovement;
     private EnemyInteract enemyInteract;
+    private EnemyCombat enemyCombat;
 
     [SerializeField] private GameObject noticeIconPrefab;
     [SerializeField] private Transform iconSpawnPoint;
@@ -19,6 +20,7 @@ public class EnemyVisual : MonoBehaviour
     {
         enemyMovement = GetComponent<EnemyMovement>();
         enemyInteract = GetComponent<EnemyInteract>();
+        enemyCombat = GetComponent<EnemyCombat>();
     }
 
     private void Start()
@@ -28,6 +30,11 @@ public class EnemyVisual : MonoBehaviour
 
         enemyInteract.OnAttack += EnemyInteract_OnAttack;
         enemyInteract.OnNotice += EnemyInteract_OnNotice;
+
+        if (enemyCombat != null)
+        {
+            enemyCombat.OnEnemyDied += EnemyCombat_OnEnemyDied;
+        }
     }
 
     private void Update()
@@ -46,11 +53,16 @@ public class EnemyVisual : MonoBehaviour
         if (enemyMovement != null)
         {
             enemyMovement.OnPatrol -= EnemyMovement_OnPatrol;
+            enemyMovement.OnIdle -= EnemyMovement_OnIdle;
         }
         if (enemyInteract != null)
         {
             enemyInteract.OnAttack -= EnemyInteract_OnAttack;
             enemyInteract.OnNotice -= EnemyInteract_OnNotice;
+        }
+        if (enemyCombat != null)
+        {
+            enemyCombat.OnEnemyDied -= EnemyCombat_OnEnemyDied;
         }
     }
 
@@ -83,6 +95,11 @@ public class EnemyVisual : MonoBehaviour
             hasShownNotice = true;
             lastNoticeTime = Time.time;
         }
+    }
+
+    private void EnemyCombat_OnEnemyDied(object sender, EventArgs e)
+    {
+        Die();
     }
 
     public void Die()

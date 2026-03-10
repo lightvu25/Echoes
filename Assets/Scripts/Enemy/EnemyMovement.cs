@@ -104,6 +104,14 @@ public class EnemyMovement : MonoBehaviour
         transform.localScale = scale;
     }
 
+    /// <summary>
+    /// Set knockback state. Called by EnemyCombat.
+    /// </summary>
+    public void SetKnockedBack(bool value)
+    {
+        isKnockedBack = value;
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
