@@ -274,12 +274,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_0
       rect:
         serializedVersion: 2
-        x: 8
-        y: 334
-        width: 48
-        height: 36
+        x: 0
+        y: 320
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -296,12 +296,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_1
       rect:
         serializedVersion: 2
-        x: 73
-        y: 335
-        width: 47
-        height: 39
+        x: 64
+        y: 320
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -318,12 +318,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_2
       rect:
         serializedVersion: 2
-        x: 115
-        y: 335
-        width: 11
-        height: 8
+        x: 128
+        y: 320
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -340,12 +340,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_3
       rect:
         serializedVersion: 2
-        x: 134
-        y: 337
-        width: 48
-        height: 42
+        x: 192
+        y: 320
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -362,12 +362,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_4
       rect:
         serializedVersion: 2
-        x: 170
-        y: 336
-        width: 6
-        height: 6
+        x: 256
+        y: 320
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -384,12 +384,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_5
       rect:
         serializedVersion: 2
-        x: 184
-        y: 337
-        width: 6
-        height: 10
+        x: 320
+        y: 320
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -406,12 +406,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_6
       rect:
         serializedVersion: 2
-        x: 195
-        y: 339
-        width: 48
-        height: 42
+        x: 0
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -428,12 +428,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_7
       rect:
         serializedVersion: 2
-        x: 259
-        y: 334
-        width: 49
-        height: 44
+        x: 64
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -450,12 +450,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_8
       rect:
         serializedVersion: 2
-        x: 323
-        y: 334
-        width: 48
-        height: 41
+        x: 128
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -472,12 +472,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_9
       rect:
         serializedVersion: 2
-        x: 6
-        y: 270
-        width: 54
-        height: 26
+        x: 192
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -494,12 +494,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_10
       rect:
         serializedVersion: 2
-        x: 70
-        y: 270
-        width: 54
-        height: 27
+        x: 256
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -516,12 +516,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_11
       rect:
         serializedVersion: 2
-        x: 134
-        y: 270
-        width: 54
-        height: 32
+        x: 320
+        y: 256
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -538,12 +538,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_12
       rect:
         serializedVersion: 2
-        x: 198
-        y: 270
-        width: 54
-        height: 30
+        x: 0
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -560,12 +560,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_13
       rect:
         serializedVersion: 2
-        x: 262
-        y: 270
-        width: 54
-        height: 29
+        x: 64
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -582,12 +582,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_14
       rect:
         serializedVersion: 2
-        x: 326
-        y: 270
-        width: 54
-        height: 30
+        x: 128
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -604,12 +604,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_15
       rect:
         serializedVersion: 2
-        x: 9
-        y: 207
-        width: 47
-        height: 39
+        x: 192
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -626,12 +626,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_16
       rect:
         serializedVersion: 2
-        x: 51
-        y: 207
-        width: 11
-        height: 8
+        x: 256
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -648,12 +648,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_17
       rect:
         serializedVersion: 2
-        x: 78
-        y: 207
-        width: 42
-        height: 42
+        x: 320
+        y: 192
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -670,12 +670,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_18
       rect:
         serializedVersion: 2
-        x: 115
-        y: 207
-        width: 11
-        height: 8
+        x: 0
+        y: 128
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -692,12 +692,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_19
       rect:
         serializedVersion: 2
-        x: 142
-        y: 207
-        width: 42
-        height: 42
+        x: 64
+        y: 128
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -714,12 +714,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_20
       rect:
         serializedVersion: 2
-        x: 179
-        y: 207
-        width: 11
-        height: 8
+        x: 128
+        y: 128
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -736,12 +736,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_21
       rect:
         serializedVersion: 2
-        x: 206
-        y: 207
-        width: 42
-        height: 40
+        x: 192
+        y: 128
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -758,12 +758,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_22
       rect:
         serializedVersion: 2
-        x: 243
-        y: 207
-        width: 11
-        height: 8
+        x: 256
+        y: 128
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -780,12 +780,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_23
       rect:
         serializedVersion: 2
-        x: 269
-        y: 207
-        width: 44
-        height: 38
+        x: 320
+        y: 128
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -802,12 +802,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_24
       rect:
         serializedVersion: 2
-        x: 311
-        y: 207
-        width: 7
-        height: 8
+        x: 0
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -824,12 +824,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_25
       rect:
         serializedVersion: 2
-        x: 331
-        y: 208
-        width: 49
-        height: 30
+        x: 64
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -846,12 +846,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_26
       rect:
         serializedVersion: 2
-        x: 12
-        y: 80
-        width: 44
-        height: 43
+        x: 128
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -868,12 +868,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_27
       rect:
         serializedVersion: 2
-        x: 14
-        y: 143
-        width: 46
-        height: 28
+        x: 192
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -890,12 +890,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_28
       rect:
         serializedVersion: 2
-        x: 77
-        y: 142
-        width: 47
-        height: 22
+        x: 256
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -912,12 +912,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_29
       rect:
         serializedVersion: 2
-        x: 78
-        y: 80
-        width: 49
-        height: 42
+        x: 320
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -934,12 +934,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_30
       rect:
         serializedVersion: 2
-        x: 139
-        y: 96
-        width: 19
-        height: 29
+        x: 0
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -956,12 +956,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_31
       rect:
         serializedVersion: 2
-        x: 141
-        y: 142
-        width: 48
-        height: 13
+        x: 64
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -978,12 +978,12 @@ TextureImporter:
       name: Trash Monster-Sprite V2_32
       rect:
         serializedVersion: 2
-        x: 160
-        y: 85
-        width: 32
-        height: 39
+        x: 128
+        y: 0
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -996,561 +996,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_33
-      rect:
-        serializedVersion: 2
-        x: 199
-        y: 96
-        width: 23
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 521f087b28575b210800000000000000
-      internalID: 1348112867752210725
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_34
-      rect:
-        serializedVersion: 2
-        x: 202
-        y: 142
-        width: 15
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 40a2c10701120ccf0800000000000000
-      internalID: -234150826139178492
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_35
-      rect:
-        serializedVersion: 2
-        x: 216
-        y: 142
-        width: 16
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 509fb11d1fd2bbe30800000000000000
-      internalID: 4520257167615064325
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_36
-      rect:
-        serializedVersion: 2
-        x: 224
-        y: 93
-        width: 23
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b028885bd8a6a5800800000000000000
-      internalID: 601910657075937803
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_37
-      rect:
-        serializedVersion: 2
-        x: 231
-        y: 143
-        width: 10
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d578cc970ddd09420800000000000000
-      internalID: 2634849669478123357
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_38
-      rect:
-        serializedVersion: 2
-        x: 238
-        y: 142
-        width: 7
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 656df8f37c561a900800000000000000
-      internalID: 693947724031055446
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_39
-      rect:
-        serializedVersion: 2
-        x: 243
-        y: 141
-        width: 10
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 911cad342bd9b6e00800000000000000
-      internalID: 1039097528007180569
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_40
-      rect:
-        serializedVersion: 2
-        x: 259
-        y: 78
-        width: 52
-        height: 45
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2478e82d5ca0d4410800000000000000
-      internalID: 1462837298722670402
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_41
-      rect:
-        serializedVersion: 2
-        x: 266
-        y: 142
-        width: 15
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 54d405e10203dede0800000000000000
-      internalID: -1302331802734539451
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_42
-      rect:
-        serializedVersion: 2
-        x: 280
-        y: 142
-        width: 16
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 12eebf42151d95490800000000000000
-      internalID: -7756938736725922271
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_43
-      rect:
-        serializedVersion: 2
-        x: 295
-        y: 143
-        width: 11
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f17ab0be76a5eef30800000000000000
-      internalID: 4606718871218136863
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_44
-      rect:
-        serializedVersion: 2
-        x: 304
-        y: 141
-        width: 13
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 36076845f31f330a0800000000000000
-      internalID: -6902908549525507997
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_45
-      rect:
-        serializedVersion: 2
-        x: 329
-        y: 119
-        width: 47
-        height: 67
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 69c2662f4d30cf230800000000000000
-      internalID: 3673815609162214550
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_46
-      rect:
-        serializedVersion: 2
-        x: 371
-        y: 121
-        width: 11
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d0fd2198639a110f0800000000000000
-      internalID: -1147950378309722355
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_47
-      rect:
-        serializedVersion: 2
-        x: 133
-        y: 96
-        width: 16
-        height: 21
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 248031d9986b97650800000000000000
-      internalID: 6231212261605836866
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_48
-      rect:
-        serializedVersion: 2
-        x: 134
-        y: 80
-        width: 29
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2113beb46817c37e0800000000000000
-      internalID: -1784426530732297966
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_49
-      rect:
-        serializedVersion: 2
-        x: 166
-        y: 83
-        width: 17
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 063c0ca12d66ce960800000000000000
-      internalID: 7632588521064153952
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_50
-      rect:
-        serializedVersion: 2
-        x: 197
-        y: 96
-        width: 16
-        height: 21
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 04fca6119a9b67920800000000000000
-      internalID: 2987779538599726912
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_51
-      rect:
-        serializedVersion: 2
-        x: 198
-        y: 80
-        width: 29
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 30e1ccc4cc936f220800000000000000
-      internalID: 2519264591184928259
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_52
-      rect:
-        serializedVersion: 2
-        x: 230
-        y: 83
-        width: 17
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 71766678aa1b37850800000000000000
-      internalID: 6373633243633575703
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_53
-      rect:
-        serializedVersion: 2
-        x: 50
-        y: 80
-        width: 12
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b71b08d9c5ee997a0800000000000000
-      internalID: -6369798116391997061
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_54
-      rect:
-        serializedVersion: 2
-        x: 323
-        y: 72
-        width: 60
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 83a9c67535e6a1250800000000000000
-      internalID: 5916162364732643896
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_55
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 14
-        width: 49
-        height: 48
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b928501ab996a39d0800000000000000
-      internalID: -2793804501687631205
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_56
-      rect:
-        serializedVersion: 2
-        x: 79
-        y: 14
-        width: 48
-        height: 44
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a1d83dca28cd8f9e0800000000000000
-      internalID: -1587276414844695270
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Trash Monster-Sprite V2_57
-      rect:
-        serializedVersion: 2
-        x: 144
-        y: 14
-        width: 48
-        height: 42
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 307e1d3990751e600800000000000000
-      internalID: 495773132633794307
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: b5a746ca509765a47bdeb5cd8b84bffd
     internalID: 0
     vertices: []
     indices: 
@@ -1558,7 +1008,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Trash Monster-Sprite V2_0: 5742072001356106478
       Trash Monster-Sprite V2_1: -3005822450826255596
@@ -1587,33 +1039,8 @@ TextureImporter:
       Trash Monster-Sprite V2_30: 2179630208813925617
       Trash Monster-Sprite V2_31: -7975691277994203976
       Trash Monster-Sprite V2_32: 7459400388986864786
-      Trash Monster-Sprite V2_33: 1348112867752210725
-      Trash Monster-Sprite V2_34: -234150826139178492
-      Trash Monster-Sprite V2_35: 4520257167615064325
-      Trash Monster-Sprite V2_36: 601910657075937803
-      Trash Monster-Sprite V2_37: 2634849669478123357
-      Trash Monster-Sprite V2_38: 693947724031055446
-      Trash Monster-Sprite V2_39: 1039097528007180569
       Trash Monster-Sprite V2_4: -6005938156702286707
-      Trash Monster-Sprite V2_40: 1462837298722670402
-      Trash Monster-Sprite V2_41: -1302331802734539451
-      Trash Monster-Sprite V2_42: -7756938736725922271
-      Trash Monster-Sprite V2_43: 4606718871218136863
-      Trash Monster-Sprite V2_44: -6902908549525507997
-      Trash Monster-Sprite V2_45: 3673815609162214550
-      Trash Monster-Sprite V2_46: -1147950378309722355
-      Trash Monster-Sprite V2_47: 6231212261605836866
-      Trash Monster-Sprite V2_48: -1784426530732297966
-      Trash Monster-Sprite V2_49: 7632588521064153952
       Trash Monster-Sprite V2_5: -1932780468206783855
-      Trash Monster-Sprite V2_50: 2987779538599726912
-      Trash Monster-Sprite V2_51: 2519264591184928259
-      Trash Monster-Sprite V2_52: 6373633243633575703
-      Trash Monster-Sprite V2_53: -6369798116391997061
-      Trash Monster-Sprite V2_54: 5916162364732643896
-      Trash Monster-Sprite V2_55: -2793804501687631205
-      Trash Monster-Sprite V2_56: -1587276414844695270
-      Trash Monster-Sprite V2_57: 495773132633794307
       Trash Monster-Sprite V2_6: 7027739379772901269
       Trash Monster-Sprite V2_7: -8976689733345691258
       Trash Monster-Sprite V2_8: 8218901123263041731

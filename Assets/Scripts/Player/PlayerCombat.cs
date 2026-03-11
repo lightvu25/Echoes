@@ -1,10 +1,7 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// Main player combat controller.
-/// Handles damage receiving, health, and integrates with combat systems.
-/// </summary>
 [RequireComponent(typeof(HealthSystem))]
 public class PlayerCombat : MonoBehaviour, IDamageable
 {
@@ -26,9 +23,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private HealthSystem healthSystem;
     private PlayerAttack playerAttack;
     private Rigidbody2D rb;
+    private Coroutine _knockbackCoroutine;
     public bool isKnockedBack = false;
 
-    // IDamageable implementation
     public bool IsDead => healthSystem != null && healthSystem.IsDead;
     public Transform Transform => transform;
     public float Defense => healthSystem != null ? healthSystem.Defense : 0f;
@@ -98,25 +95,27 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private void ApplyKnockback(Vector2 direction, float force)
     {
-        if (isKnockedBack) return;
+        // If already knocked back, stop the previous coroutine before starting a new one
+        // so overlapping hits don't leave isKnockedBack permanently true.
+        if (_knockbackCoroutine != null)
+        {
+            StopCoroutine(_knockbackCoroutine);
+            isKnockedBack = false;
+        }
 
         // Cancel any active attack — knockback interrupts player actions
         if (playerAttack != null)
             playerAttack.CancelAttack();
 
-        StartCoroutine(KnockbackRoutine(direction, force));
+        _knockbackCoroutine = StartCoroutine(KnockbackRoutine(direction, force));
     }
 
-    private System.Collections.IEnumerator KnockbackRoutine(Vector2 direction, float force)
+    private IEnumerator KnockbackRoutine(Vector2 direction, float force)
     {
         isKnockedBack = true;
 
-        // Apply knockback force
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector2.zero;
-            rb.AddForce(direction * force, ForceMode2D.Impulse);
-        }
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(direction * force, ForceMode2D.Impulse);
 
         yield return new WaitForSeconds(knockbackDuration);
 
@@ -125,6 +124,13 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private void HealthSystem_OnDeath(object sender, EventArgs e)
     {
+        isKnockedBack = false;
+        if (_knockbackCoroutine != null)
+        {
+            StopCoroutine(_knockbackCoroutine);
+            _knockbackCoroutine = null;
+        }
+
         // Trigger player death through PlayerInteract
         if (PlayerInteract.Instance != null)
         {

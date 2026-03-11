@@ -1,6 +1,7 @@
 .git
 .vsconfig
 .gemini
+.agents
 
 acli.exe
 
