@@ -15,11 +15,9 @@ public class EnemyMovement : MonoBehaviour
     public bool isKnockedBack { get; private set; }
 
     [Header("Detection Checks")]
-    // Check Đất
     [SerializeField] private Transform _groundCheck;
     [SerializeField] private Vector2 _groundCheckSize = new Vector2(0.5f, 0.5f);
 
-    // Check Tường (CHỈ CẦN 1 CÁI)
     [Space(10)]
     [SerializeField] private Transform _wallCheck;
     [SerializeField] private Vector2 _wallCheckSize = new Vector2(0.2f, 1f);
@@ -34,21 +32,21 @@ public class EnemyMovement : MonoBehaviour
         isFacingRight = transform.localScale.x > 0;
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        PerformEnvironmentalChecks();
+        TickManager.onTick += OnTick;
     }
 
-    private void PerformEnvironmentalChecks()
+    private void OnDisable()
+    {
+        TickManager.onTick -= OnTick;
+    }
+
+    // Ground & wall checks run 5x/sec — result cached between ticks
+    private void OnTick()
     {
         if (Data == null) return;
-
-        // 1. Check Đất
         isGroundedAhead = Physics2D.OverlapBox(_groundCheck.position, _groundCheckSize, 0f, Data.groundLayer);
-
-        // 2. Check Tường
-        // Vì Transform _wallCheck là con của Enemy, khi Enemy lật (Scale X -1), 
-        // _wallCheck cũng tự động lật sang phía bên kia. Ta luôn check đúng hướng mặt.
         isWallAhead = Physics2D.OverlapBox(_wallCheck.position, _wallCheckSize, 0f, Data.wallLayer);
     }
 
@@ -56,32 +54,24 @@ public class EnemyMovement : MonoBehaviour
     {
         if (isKnockedBack) return;
 
-        if (direction.x != 0)
-        {
-            CheckDirectionToFace(direction.x > 0);
-        }
+        if (direction.x != 0) CheckDirectionToFace(direction.x > 0);
 
-        // Logic di chuyển
-        float targetSpeed = direction.x * currentMaxSpeed;
-        targetSpeed = Mathf.Lerp(rb.linearVelocity.x, targetSpeed, 10f * Time.deltaTime); // Dùng deltaTime ở Update hoặc fixedDeltaTime nếu logic khác
+        float targetSpeed = Mathf.Lerp(rb.linearVelocity.x, direction.x * currentMaxSpeed, 10f * Time.deltaTime);
 
         float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? accelAmount : deccelAmount;
 
-        if (Data.doConserveMomentum && Mathf.Abs(rb.linearVelocity.x) > Mathf.Abs(targetSpeed) &&
-            Mathf.Sign(rb.linearVelocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f)
+        if (Data.doConserveMomentum &&
+            Mathf.Abs(rb.linearVelocity.x) > Mathf.Abs(targetSpeed) &&
+            Mathf.Sign(rb.linearVelocity.x) == Mathf.Sign(targetSpeed) &&
+            Mathf.Abs(targetSpeed) > 0.01f)
         {
             accelRate = 0;
         }
 
-        float speedDif = targetSpeed - rb.linearVelocity.x;
-        float movement = speedDif * accelRate;
+        rb.AddForce((targetSpeed - rb.linearVelocity.x) * accelRate * Vector2.right, ForceMode2D.Force);
 
-        rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
-
-        if (Mathf.Abs(direction.x) > 0.1f)
-            OnPatrol?.Invoke(this, EventArgs.Empty);
-        else
-            OnIdle?.Invoke(this, EventArgs.Empty);
+        if (Mathf.Abs(direction.x) > 0.1f) OnPatrol?.Invoke(this, EventArgs.Empty);
+        else OnIdle?.Invoke(this, EventArgs.Empty);
     }
 
     public void Stop()
@@ -92,8 +82,7 @@ public class EnemyMovement : MonoBehaviour
 
     public void CheckDirectionToFace(bool isMovingRight)
     {
-        if (isMovingRight != isFacingRight)
-            Turn();
+        if (isMovingRight != isFacingRight) Turn();
     }
 
     private void Turn()
@@ -104,22 +93,13 @@ public class EnemyMovement : MonoBehaviour
         transform.localScale = scale;
     }
 
-    /// <summary>
-    /// Set knockback state. Called by EnemyCombat.
-    /// </summary>
-    public void SetKnockedBack(bool value)
-    {
-        isKnockedBack = value;
-    }
+    public void SetKnockedBack(bool value) => isKnockedBack = value;
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        if (_groundCheck != null)
-            Gizmos.DrawWireCube(_groundCheck.position, _groundCheckSize);
-
+        if (_groundCheck != null) Gizmos.DrawWireCube(_groundCheck.position, _groundCheckSize);
         Gizmos.color = Color.blue;
-        if (_wallCheck != null)
-            Gizmos.DrawWireCube(_wallCheck.position, _wallCheckSize);
+        if (_wallCheck != null) Gizmos.DrawWireCube(_wallCheck.position, _wallCheckSize);
     }
 }

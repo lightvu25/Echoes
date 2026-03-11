@@ -1,6 +1,6 @@
 using System;
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class EnemyInteract : MonoBehaviour
 {
@@ -12,14 +12,7 @@ public class EnemyInteract : MonoBehaviour
 
     public class OnStateArgs : EventArgs { public State state; }
 
-    public enum State
-    {
-        Idle,
-        Patrol,
-        Notice,
-        Chase,
-        Attack
-    }
+    public enum State { Idle, Patrol, Notice, Chase, Attack }
 
     private EnemyMovement enemyMovement;
     [SerializeField] private EnemyData data;
@@ -34,10 +27,11 @@ public class EnemyInteract : MonoBehaviour
     private Vector2 patrolTarget;
     private bool isPlayerVisible;
 
+    public bool isAttacking { get; private set; }
+
     private void Awake()
     {
         Instance = this;
-
         enemyMovement = GetComponent<EnemyMovement>();
         startPos = transform.position;
         enemyMovement.Data = data;
@@ -50,31 +44,55 @@ public class EnemyInteract : MonoBehaviour
         ChangeState(State.Patrol);
     }
 
+    private void OnEnable()
+    {
+        TickManager.onTick += OnTick;
+    }
+
+    private void OnDisable()
+    {
+        TickManager.onTick -= OnTick;
+    }
+
     private void Update()
     {
         if (targetPlayer == null) return;
+
+        // Lock all AI+movement during attack swing
+        if (isAttacking)
+        {
+            enemyMovement.Stop();
+            return;
+        }
+
+        // Accumulate timer every frame for precision (evaluated in OnTick)
+        stateTimer += Time.deltaTime;
+
+        // Drive movement/physics every frame based on current state
+        switch (currentState)
+        {
+            case State.Patrol:  DrivePatrolMovement(); break;
+            case State.Chase:   DriveChasement();      break;
+            case State.Attack:  enemyMovement.Stop(); enemyMovement.CheckDirectionToFace(targetPlayer.position.x > transform.position.x); break;
+            default:            enemyMovement.Stop(); break;
+        }
+    }
+
+    // Called 5 times/sec — all expensive AI decisions live here
+    private void OnTick()
+    {
+        if (targetPlayer == null || isAttacking) return;
 
         isPlayerVisible = CheckLineOfSight();
 
         switch (currentState)
         {
-            case State.Idle:
-                HandleIdle();
-                break;
-            case State.Patrol:
-                HandlePatrol();
-                break;
-            case State.Notice:
-                HandleNotice();
-                break;
-            case State.Chase:
-                HandleChase();
-                break;
-            case State.Attack:
-                HandleAttack();
-                break;
+            case State.Idle:    TickIdle();    break;
+            case State.Patrol:  TickPatrol();  break;
+            case State.Notice:  TickNotice();  break;
+            case State.Chase:   TickChase();   break;
+            case State.Attack:  TickAttack();  break;
         }
-
     }
 
     private void ChangeState(State newState)
@@ -84,241 +102,171 @@ public class EnemyInteract : MonoBehaviour
         OnStateChanged?.Invoke(this, new OnStateArgs { state = newState });
     }
 
-    // --- HÀM XỬ LÝ VISION ---
+    // --- VISION (runs on tick) ---
 
     private bool CheckLineOfSight()
     {
-        // Tính khoảng cách
         float distToPlayer = Vector2.Distance(transform.position, targetPlayer.position);
 
-        // A. Cảm nhận gần (Nghe thấy tiếng bước chân/hơi thở)
-        if (distToPlayer <= data.closeDetectionRange)
-        {
-            return true;
-        }
+        if (distToPlayer <= data.closeDetectionRange) return true;
 
-        // B. Tầm nhìn xa (Mắt)
         if (distToPlayer <= data.visionRange)
         {
             Vector2 dirToPlayer = (targetPlayer.position - transform.position).normalized;
             Vector2 facingDir = enemyMovement.isFacingRight ? Vector2.right : Vector2.left;
             float angle = Vector2.Angle(facingDir, dirToPlayer);
 
-            // 1. Kiểm tra xem Player có nằm trong góc nhìn không
             if (angle < data.fovAngle / 2f)
             {
-                // 2. Tạo Mask: Bao gồm Đất, Tường VÀ CẢ PLAYER
-                LayerMask allLayersToCheck = data.groundLayer | data.wallLayer | data.targetLayer;
-
+                LayerMask allLayers = data.groundLayer | data.wallLayer | data.targetLayer;
                 Vector2 origin = eyes != null ? (Vector2)eyes.position : (Vector2)transform.position;
 
-                Collider2D playerCollider = targetPlayer.GetComponent<Collider2D>();
-                Vector2 targetPoint = playerCollider != null ? (Vector2)playerCollider.bounds.center : (Vector2)targetPlayer.position + Vector2.up * 0.5f;
+                Collider2D playerCol = targetPlayer.GetComponent<Collider2D>();
+                Vector2 targetPoint = playerCol != null ? (Vector2)playerCol.bounds.center : (Vector2)targetPlayer.position + Vector2.up * 0.5f;
 
-                Vector2 accurateDir = (targetPoint - origin).normalized;
-                float accurateDist = Vector2.Distance(origin, targetPoint);
+                Vector2 dir = (targetPoint - origin).normalized;
+                float dist = Vector2.Distance(origin, targetPoint);
 
-                // Bắn Raycast
-                RaycastHit2D hit = Physics2D.Raycast(origin, accurateDir, accurateDist, allLayersToCheck);
-
-                // 3. Xử lý kết quả Raycast
-                if (hit.collider != null)
-                {
-                    if (((1 << hit.collider.gameObject.layer) & data.targetLayer) != 0)
-                    {
-                        return true;
-                    }
-                }
+                RaycastHit2D hit = Physics2D.Raycast(origin, dir, dist, allLayers);
+                if (hit.collider != null && ((1 << hit.collider.gameObject.layer) & data.targetLayer) != 0)
+                    return true;
             }
         }
 
         return false;
     }
 
-    // --- XỬ LÝ STATE ---
+    // --- TICK STATE DECISIONS ---
 
-    private void HandleIdle()
+    private void TickIdle()
     {
-        enemyMovement.Stop();
-        stateTimer += Time.deltaTime;
-
-        if (isPlayerVisible)
-        {
-            ChangeState(State.Notice);
-            return;
-        }
+        if (isPlayerVisible) { ChangeState(State.Notice); return; }
 
         if (stateTimer >= UnityEngine.Random.Range(data.patrolWaitTimeMin, data.patrolWaitTimeMax))
         {
             if (!enemyMovement.isGroundedAhead || enemyMovement.isWallAhead)
-            {
                 enemyMovement.CheckDirectionToFace(!enemyMovement.isFacingRight);
-            }
 
             PickNewPatrolTarget();
             ChangeState(State.Patrol);
         }
     }
 
-    private void HandlePatrol()
+    private void TickPatrol()
     {
-        if (isPlayerVisible)
-        {
-            ChangeState(State.Notice);
-            return;
-        }
+        if (isPlayerVisible) { ChangeState(State.Notice); return; }
 
         if (!enemyMovement.isGroundedAhead || enemyMovement.isWallAhead)
         {
-            enemyMovement.Stop();
             ChangeState(State.Idle);
             return;
         }
 
-        float distToTarget = Mathf.Abs(transform.position.x - patrolTarget.x);
-        if (distToTarget < 0.5f)
-        {
+        if (Mathf.Abs(transform.position.x - patrolTarget.x) < 0.5f)
             ChangeState(State.Idle);
-            return;
-        }
-
-        float direction = Mathf.Sign(patrolTarget.x - transform.position.x);
-        Vector2 moveDir = new Vector2(direction, 0);
-
-        enemyMovement.Move(moveDir, data.patrolMaxSpeed, data.patrolAccelAmount, data.patrolDeccelAmount);
     }
 
-    private void HandleNotice()
+    private void TickNotice()
     {
-        enemyMovement.Stop();
-
         enemyMovement.CheckDirectionToFace(targetPlayer.position.x > transform.position.x);
 
-        if (stateTimer == 0f)
-        {
-            OnNotice?.Invoke(this, EventArgs.Empty);
-        }
-
-        stateTimer += Time.deltaTime;
+        if (stateTimer == 0f) OnNotice?.Invoke(this, EventArgs.Empty);
 
         if (stateTimer >= data.noticeDuration)
         {
             float dist = Vector2.Distance(transform.position, targetPlayer.position);
-            if (dist <= data.attackRange)
-            {
-                ChangeState(State.Attack);
-            }
-            else
-            {
-                ChangeState(State.Chase);
-            }
+            ChangeState(dist <= data.attackRange ? State.Attack : State.Chase);
         }
     }
 
-    private void HandleChase()
+    private void TickChase()
     {
-        float dis = Vector2.Distance(transform.position, targetPlayer.position);
-
-        if (!isPlayerVisible)
-        {
-            ChangeState(State.Idle);
-            return;
-        }
-
-        if (dis <= data.attackRange)
-        {
-            ChangeState(State.Attack);
-            return;
-        }
-
-        if (!enemyMovement.isGroundedAhead || enemyMovement.isWallAhead)
-        {
-            ChangeState(State.Idle);
-            return;
-        } 
-        else
-        {
-            float direction = Mathf.Sign(targetPlayer.position.x - transform.position.x);
-            float moveSpeed = data.chaseMaxSpeed;
-
-            enemyMovement.Move(new Vector2(direction, 0), moveSpeed, data.chaseAccelAmount, data.chaseDeccelAmount);
-        }
-    }
-
-    private void HandleAttack()
-    {
-        enemyMovement.Stop();
-        enemyMovement.CheckDirectionToFace(targetPlayer.position.x > transform.position.x);
+        if (!isPlayerVisible) { ChangeState(State.Idle); return; }
 
         float dist = Vector2.Distance(transform.position, targetPlayer.position);
-        if (dist > data.attackRange + 0.5f) // Thêm chút buffer để đỡ bị flick
-        {
-            ChangeState(State.Chase);
-            return;
-        }
+        if (dist <= data.attackRange) { ChangeState(State.Attack); return; }
+
+        if (!enemyMovement.isGroundedAhead || enemyMovement.isWallAhead)
+            ChangeState(State.Idle);
+    }
+
+    private void TickAttack()
+    {
+        float dist = Vector2.Distance(transform.position, targetPlayer.position);
+        if (dist > data.attackRange + 0.5f) { ChangeState(State.Chase); return; }
 
         if (Time.time >= lastAttackTime + data.attackCooldown)
         {
-            OnAttack?.Invoke(this, EventArgs.Empty);
+            isAttacking = true;
             lastAttackTime = Time.time;
+            OnAttack?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    // --- MOVEMENT DRIVERS (called from Update, frame-accurate) ---
+
+    private void DrivePatrolMovement()
+    {
+        if (!enemyMovement.isGroundedAhead || enemyMovement.isWallAhead) return;
+
+        float direction = Mathf.Sign(patrolTarget.x - transform.position.x);
+        enemyMovement.Move(new Vector2(direction, 0), data.patrolMaxSpeed, data.patrolAccelAmount, data.patrolDeccelAmount);
+    }
+
+    private void DriveChasement()
+    {
+        if (!enemyMovement.isGroundedAhead || enemyMovement.isWallAhead) return;
+
+        float direction = Mathf.Sign(targetPlayer.position.x - transform.position.x);
+        enemyMovement.Move(new Vector2(direction, 0), data.chaseMaxSpeed, data.chaseAccelAmount, data.chaseDeccelAmount);
+    }
+
+    // --- ATTACK UNLOCK ---
+
+    public void FinishAttack() => isAttacking = false;
+
+    private IEnumerator AttackTimeoutFallback(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        FinishAttack();
     }
 
     private void PickNewPatrolTarget()
     {
         float randomX = UnityEngine.Random.Range(-data.patrolRadius, data.patrolRadius);
-        Vector2 potentialTarget = new Vector2(startPos.x + randomX, startPos.y);
-        patrolTarget = potentialTarget;
+        patrolTarget = new Vector2(startPos.x + randomX, startPos.y);
     }
-    
+
+    public bool IsPlayerOutsideVision()
+    {
+        if (targetPlayer == null) return true;
+        return Vector2.Distance(transform.position, targetPlayer.position) > data.visionRange;
+    }
+
     private void OnDrawGizmosSelected()
     {
-        // Tầm nhìn xa
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, data.visionRange);
-
-        // Tầm nhìn gần
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, data.closeDetectionRange);
-
-        // Tầm đánh
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, data.attackRange);
-
-        // Vùng đi tuần
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(Application.isPlaying ? (Vector3)startPos : transform.position, data.patrolRadius);
-    
-        // Hình nón FOV
-        Vector3 eyePor = eyes != null ? eyes.position : transform.position;
-        Vector3 viewAngleA = DirFromAngle(-data.fovAngle / 2, false);
-        Vector3 viewAngleB = DirFromAngle(data.fovAngle / 2, false);
 
-        Gizmos.color = Color.orange;
-        Gizmos.DrawLine(eyePor, eyePor + viewAngleA * data.visionRange);
-        Gizmos.DrawLine(eyePor, eyePor + viewAngleB * data.visionRange);
+        Vector3 eyePos = eyes != null ? eyes.position : transform.position;
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawLine(eyePos, eyePos + DirFromAngle(-data.fovAngle / 2, false) * data.visionRange);
+        Gizmos.DrawLine(eyePos, eyePos + DirFromAngle(data.fovAngle / 2, false) * data.visionRange);
     }
 
     private Vector3 DirFromAngle(float angleInDegrees, bool angleIsGlobal)
     {
         if (!angleIsGlobal)
         {
-            bool isFacingRight = transform.localScale.x > 0;
-            if (enemyMovement != null)
-            {
-                isFacingRight = enemyMovement.isFacingRight;
-            }
-
-            angleInDegrees += isFacingRight ? 0f : 180f;
+            bool facing = enemyMovement != null ? enemyMovement.isFacingRight : transform.localScale.x > 0;
+            angleInDegrees += facing ? 0f : 180f;
         }
         return new Vector3(Mathf.Cos(angleInDegrees * Mathf.Deg2Rad), Mathf.Sin(angleInDegrees * Mathf.Deg2Rad));
-    }
-
-    public bool IsPlayerOutsideVision()
-    {
-        if (targetPlayer == null) return true;
-
-        float distance = Vector2.Distance(transform.position, targetPlayer.position);
-        return distance > data.visionRange;
     }
 }

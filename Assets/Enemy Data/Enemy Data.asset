@@ -30,13 +30,13 @@ MonoBehaviour:
   chaseDecceleration: 7
   chaseDeccelAmount: 50
   doConserveMomentum: 1
-  attackBase: 1
-  attackRange: 1
+  attackBase: 10
+  attackRange: 1.3
   attackSpeed: 1
   attackCooldown: 1.5
   attackHitboxSize: {x: 1.5, y: 1.5}
   attackHitboxOffset: {x: 0.75, y: 0}
-  knockbackForce: 3
+  knockbackForce: 5
   attackTargetLayers:
     serializedVersion: 2
     m_Bits: 384

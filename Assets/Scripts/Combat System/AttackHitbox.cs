@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Timer-based attack hitbox that can hit multiple targets.
-/// Multi-hit per swing is allowed as per design.
+/// Timer-based attack hitbox. Multi-hit per swing allowed by design.
 /// </summary>
 public class AttackHitbox : MonoBehaviour
 {
@@ -24,9 +23,7 @@ public class AttackHitbox : MonoBehaviour
     [SerializeField] private LayerMask targetLayers;
 
     [Header("Timing")]
-    [Tooltip("Delay before hitbox becomes active")]
     [SerializeField] private float startupTime = 0.05f;
-    [Tooltip("Duration hitbox stays active")]
     [SerializeField] private float activeTime = 0.15f;
     [Tooltip("Interval between multi-hits (0 = single hit per target)")]
     [SerializeField] private float multiHitInterval = 0f;
@@ -37,31 +34,24 @@ public class AttackHitbox : MonoBehaviour
     [SerializeField] private float knockbackForce = 5f;
     [SerializeField] private float hitFreezeTime = 0.05f;
 
-    // State
+    [SerializeField] private CombatStats combatStats;
+
     private bool isActive = false;
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
     private Dictionary<IDamageable, float> multiHitTimers = new Dictionary<IDamageable, float>();
     private GameObject owner;
-    private CombatStats combatStats;
 
     private void Awake()
     {
         owner = transform.root.gameObject;
-        combatStats = owner.GetComponent<CombatStats>();
     }
 
-    /// <summary>
-    /// Activate the hitbox with timer-based activation.
-    /// </summary>
     public void Activate()
     {
         if (isActive) return;
         StartCoroutine(HitboxRoutine());
     }
 
-    /// <summary>
-    /// Activate with custom damage info.
-    /// </summary>
     public void Activate(int damage, float procCoef = 1f)
     {
         baseDamage = damage;
@@ -69,9 +59,6 @@ public class AttackHitbox : MonoBehaviour
         Activate();
     }
 
-    /// <summary>
-    /// Force deactivate the hitbox.
-    /// </summary>
     public void Deactivate()
     {
         isActive = false;
@@ -82,13 +69,8 @@ public class AttackHitbox : MonoBehaviour
 
     private IEnumerator HitboxRoutine()
     {
-        // Startup delay
-        if (startupTime > 0f)
-        {
-            yield return new WaitForSeconds(startupTime);
-        }
+        if (startupTime > 0f) yield return new WaitForSeconds(startupTime);
 
-        // Active phase
         isActive = true;
         hitTargets.Clear();
         multiHitTimers.Clear();
@@ -101,7 +83,6 @@ public class AttackHitbox : MonoBehaviour
             yield return null;
         }
 
-        // End
         isActive = false;
         hitTargets.Clear();
         multiHitTimers.Clear();
@@ -111,68 +92,37 @@ public class AttackHitbox : MonoBehaviour
     {
         if (!isActive) return;
 
-        // Calculate hitbox position based on facing direction
         Vector2 direction = owner.transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
-        Vector2 offset = new Vector2(hitboxOffset.x * direction.x, hitboxOffset.y);
-        Vector2 center = (Vector2)transform.position + offset;
+        Vector2 center = (Vector2)transform.position + new Vector2(hitboxOffset.x * direction.x, hitboxOffset.y);
 
-        // Find all targets in hitbox
         Collider2D[] hits = Physics2D.OverlapBoxAll(center, hitboxSize, 0f, targetLayers);
-
-        // DEBUG: Log hitbox check
-        Debug.Log($"[AttackHitbox] CheckHits at {center}, size {hitboxSize}, found {hits.Length} colliders on layers {targetLayers.value}");
 
         foreach (var hit in hits)
         {
-            Debug.Log($"[AttackHitbox] Hit collider: {hit.gameObject.name}, layer: {LayerMask.LayerToName(hit.gameObject.layer)}");
+            IDamageable target = hit.GetComponentInParent<IDamageable>();
+            if (target == null || target.IsDead) continue;
 
-            IDamageable target = hit.GetComponent<IDamageable>();
-            if (target == null)
-            {
-                Debug.Log($"[AttackHitbox] {hit.gameObject.name} has no IDamageable!");
-                continue;
-            }
-            if (target.IsDead)
-            {
-                Debug.Log($"[AttackHitbox] {hit.gameObject.name} is dead, skipping");
-                continue;
-            }
-
-            // Multi-hit logic
             if (multiHitInterval > 0f)
             {
-                // Allow multi-hits with interval
-                if (multiHitTimers.TryGetValue(target, out float lastHitTime))
-                {
-                    if (Time.time - lastHitTime < multiHitInterval)
-                        continue;
-                }
+                if (multiHitTimers.TryGetValue(target, out float lastHit) && Time.time - lastHit < multiHitInterval) continue;
                 multiHitTimers[target] = Time.time;
             }
             else
             {
-                // Single hit per activation (but still allows hitting multiple targets)
-                if (hitTargets.Contains(target))
-                    continue;
+                if (hitTargets.Contains(target)) continue;
                 hitTargets.Add(target);
             }
 
-            // Apply damage
-            Debug.Log($"[AttackHitbox] Applying damage to {hit.gameObject.name}");
             ApplyDamage(target);
         }
     }
 
     private void ApplyDamage(IDamageable target)
     {
-        // Calculate knockback direction
         Vector2 knockbackDir = (target.Transform.position - transform.position).normalized;
         if (knockbackDir == Vector2.zero)
-        {
             knockbackDir = owner.transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
-        }
 
-        // Create damage info
         DamageInfo damageInfo = new DamageInfo
         {
             baseDamage = baseDamage,
@@ -188,34 +138,22 @@ public class AttackHitbox : MonoBehaviour
             isCritical = false
         };
 
-        // Apply crit if we have stats
         if (combatStats != null && UnityEngine.Random.value < combatStats.critChance)
         {
             damageInfo.isCritical = true;
             damageInfo.multiplicativeStack *= combatStats.critMultiplier;
         }
 
-        // Calculate final damage for event
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, target.Defense);
-
-        // Apply damage
         target.TakeDamage(damageInfo);
 
-        // Fire event for item procs
-        OnHitTarget?.Invoke(this, new HitEventArgs
-        {
-            target = target,
-            damageInfo = damageInfo,
-            finalDamage = finalDamage
-        });
+        OnHitTarget?.Invoke(this, new HitEventArgs { target = target, damageInfo = damageInfo, finalDamage = finalDamage });
     }
 
     private void OnDrawGizmosSelected()
     {
         Vector2 direction = transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
-        Vector2 offset = new Vector2(hitboxOffset.x * direction.x, hitboxOffset.y);
-        Vector2 center = (Vector2)transform.position + offset;
-
+        Vector2 center = (Vector2)transform.position + new Vector2(hitboxOffset.x * direction.x, hitboxOffset.y);
         Gizmos.color = isActive ? Color.red : Color.yellow;
         Gizmos.DrawWireCube(center, hitboxSize);
     }

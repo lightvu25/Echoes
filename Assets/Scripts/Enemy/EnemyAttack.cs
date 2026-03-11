@@ -33,9 +33,6 @@ public class EnemyAttack : MonoBehaviour
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
     private EnemyInteract enemyInteract;
 
-    /// <summary>
-    /// Friendly fire damage multiplier (50% reduction).
-    /// </summary>
     private const float FRIENDLY_FIRE_MULTIPLIER = 0.5f;
 
     private void Awake()
@@ -76,19 +73,12 @@ public class EnemyAttack : MonoBehaviour
         TriggerHitbox();
     }
 
-    /// <summary>
-    /// Activate the attack hitbox. Wire this to an Animation Event
-    /// on the exact attack frame for frame-perfect timing.
-    /// </summary>
     public void TriggerHitbox()
     {
         if (isActive) return;
         StartCoroutine(HitboxRoutine());
     }
 
-    /// <summary>
-    /// Force cancel the hitbox.
-    /// </summary>
     public void CancelHitbox()
     {
         isActive = false;
@@ -127,10 +117,10 @@ public class EnemyAttack : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            // Skip self — attacker cannot hurt itself
-            if (hit.gameObject == gameObject) continue;
+            // Skip self
+            if (hit.transform.root.gameObject == this.transform.root.gameObject) continue;
 
-            IDamageable target = hit.GetComponent<IDamageable>();
+            IDamageable target = hit.GetComponentInParent<IDamageable>();
             if (target == null || target.IsDead) continue;
 
             // Single hit per target per activation
