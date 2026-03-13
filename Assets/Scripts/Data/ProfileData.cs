@@ -4,6 +4,7 @@ using System;
 public class ProfileData
 {
     public int totalGold;
+    public int memoryFragments;
     public List<string> unlockedWeaponIDs = new List<string>();
     public int deaths;
     public int kills;
@@ -12,6 +13,7 @@ public class ProfileData
     public ProfileData()
     {
         totalGold = 0;
+        memoryFragments = 0;
         unlockedWeaponIDs.Add("Sword_Basic");
     }
 }

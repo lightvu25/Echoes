@@ -59,6 +59,22 @@ public class EnemyData : ScriptableObject
     public LayerMask targetLayer;
     public float noticeDuration = 0.5f;
 
+    [Space(20)]
+
+    [Header("Loot Drops")]
+    public int expRewardMin = 10;
+    public int expRewardMax = 20;
+
+    [Space(10)]
+    [Range(0f, 100f)] public float goldDropChance = 50f;
+    public int goldAmountMin = 1;
+    public int goldAmountMax = 5;
+
+    [Space(10)]
+    [Range(0f, 100f)] public float memoryFragmentDropChance = 10f;
+    public int memoryFragmentAmountMin = 1;
+    public int memoryFragmentAmountMax = 2;
+
     private void OnValidate()
     {
         patrolAccelAmount = (50 * patrolAcceleration) / patrolMaxSpeed;

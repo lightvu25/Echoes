@@ -60,13 +60,13 @@ public class PlayerInteract : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (time <= 0f && state != State.GameOver)
-        {
-            OnDead?.Invoke(this, EventArgs.Empty);
-
-            SetState(State.GameOver);
-            return;
-        }
+        // OLD SURVIVAL DEATH LOGIC
+        // if (time <= 0f && state != State.GameOver)
+        // {
+        //     OnDead?.Invoke(this, EventArgs.Empty);
+        //     SetState(State.GameOver);
+        //     return;
+        // }
 
         switch (state)
         {
@@ -83,7 +83,8 @@ public class PlayerInteract : MonoBehaviour
             case State.Normal:
                 if (!IsRewinding)
                 {
-                    ConsumeTime();
+                    // OLD TIME CONSUMPTION LOGIC
+                    // ConsumeTime();
                 }
                 break;
             case State.GameOver:
@@ -93,17 +94,17 @@ public class PlayerInteract : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider2D)
     {
-        if (collider2D.gameObject.TryGetComponent(out CoinPickup coinPickup))
-        {
-            float coinPickupAmount = 10f;
-            coinPickups += coinPickupAmount;
+        // if (collider2D.gameObject.TryGetComponent(out CoinPickup coinPickup))
+        // {
+        //     float coinPickupAmount = 10f;
+        //     coinPickups += coinPickupAmount;
 
-        OnCoinPickup?.Invoke(this, new OnCoinPickupEventArgs
-        {
-            coinPickup = coinPickup
-        });
-            coinPickup.DestroySelf();
-        }
+        // OnCoinPickup?.Invoke(this, new OnCoinPickupEventArgs
+        // {
+        //     coinPickup = coinPickup
+        // });
+        //     coinPickup.DestroySelf();
+        // }
 
         if (collider2D.gameObject.TryGetComponent(out Goal goal))
         {

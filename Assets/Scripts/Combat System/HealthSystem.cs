@@ -45,6 +45,9 @@ public class HealthSystem : MonoBehaviour
     private bool isDead = false;
 
     // ===== References =====
+    [Header("UI")]
+    [SerializeField] private GameObject damagePopupPrefab;
+
     private SpriteColorFlasher colorFlasher;
     private TimeFreezer timeFreezer;
 
@@ -88,6 +91,16 @@ public class HealthSystem : MonoBehaviour
 
         // Apply damage
         currentHP -= finalDamage;
+
+        // Damage Popup
+        if (damagePopupPrefab != null && finalDamage > 0)
+        {
+            GameObject popupObj = ObjectPoolManager.SpawnObject(damagePopupPrefab, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.UI);
+            if (popupObj.TryGetComponent(out DamagePopup damagePopup))
+            {
+                damagePopup.Setup(finalDamage);
+            }
+        }
 
         // Trigger i-frames
         if (hasIFrames)

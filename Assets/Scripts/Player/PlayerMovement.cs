@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using UnityEngine;
 using System.Collections;
 
@@ -456,9 +456,10 @@ public class PlayerMovement : MonoBehaviour
 
         SetGravityScale(0);
 
-        // Enable i-frames during active dash phase
+        // Enable i-frames and phase through enemies during active dash
         if (healthSystem != null)
             healthSystem.SetInvincible(true);
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), true);
 
         while (Time.time - startTime <= Data.dashAttackTime)
         {
@@ -483,6 +484,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         isDashing = false;
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), false);
     }
 
     // Tạm dừng game trong một khoảng thời gian ngắn
