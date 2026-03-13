@@ -1,0 +1,137 @@
+using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
+
+public class ObjectPoolManager : MonoBehaviour
+{
+    public enum PoolType
+    {
+        ParticleSystem,
+        GameObject,
+        Loot,
+        Enemy,
+        UI,
+        None
+    }
+
+    public static List<PooledObjectInfo> ObjectPools = new List<PooledObjectInfo>();
+    
+    // Parent folder for cleaner hierarchy
+    private GameObject objectPoolEmptyHolder;
+
+    private static GameObject particlesEmpty;
+    private static GameObject gameObjectsEmpty;
+    private static GameObject lootEmpty;
+    private static GameObject enemiesEmpty;
+    private static GameObject uiEmpty;
+
+    public static ObjectPoolManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            SetupEmpties();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void SetupEmpties()
+    {
+        objectPoolEmptyHolder = new GameObject("Pooled Objects");
+
+        particlesEmpty = new GameObject("Particles");
+        particlesEmpty.transform.SetParent(objectPoolEmptyHolder.transform);
+
+        gameObjectsEmpty = new GameObject("GameObjects");
+        gameObjectsEmpty.transform.SetParent(objectPoolEmptyHolder.transform);
+
+        lootEmpty = new GameObject("Loot");
+        lootEmpty.transform.SetParent(objectPoolEmptyHolder.transform);
+
+        enemiesEmpty = new GameObject("Enemies");
+        enemiesEmpty.transform.SetParent(objectPoolEmptyHolder.transform);
+
+        uiEmpty = new GameObject("UI");
+        uiEmpty.transform.SetParent(objectPoolEmptyHolder.transform);
+    }
+
+    public static GameObject SpawnObject(GameObject objectToSpawn, Vector3 spawnPosition, Quaternion spawnRotation, PoolType poolType = PoolType.None)
+    {
+        PooledObjectInfo pool = ObjectPools.Find(x => x.lookupString == objectToSpawn.name);
+        
+        if (pool == null)
+        {
+            pool = new PooledObjectInfo() { lookupString = objectToSpawn.name };
+            ObjectPools.Add(pool);
+        }
+
+        GameObject objectToUse = pool.pooledObjects.FirstOrDefault(x => !x.activeSelf);
+        
+        if (objectToUse == null)
+        {
+            objectToUse = Instantiate(objectToSpawn);
+            objectToUse.name = objectToSpawn.name; // Keep name clean for ReturnObjectToPool lookup
+            pool.pooledObjects.Add(objectToUse);
+            
+            // Set Parent based on type
+            if (Instance != null)
+            {
+                Transform parent = GetParentTransform(poolType);
+                if (parent != null)
+                {
+                    objectToUse.transform.SetParent(parent);
+                }
+            }
+        }
+
+        objectToUse.transform.position = spawnPosition;
+        objectToUse.transform.rotation = spawnRotation;
+        objectToUse.SetActive(true);
+        return objectToUse;
+    }
+
+    public static void ReturnObjectToPool(GameObject objectToReturn)
+    {
+        // If instantiated with suffix '(Clone)' we need to trim it. But since we reset name on Instantiate, we can just use the name
+        // However, let's be safe and support both.
+        string lookupName = objectToReturn.name.EndsWith("(Clone)") ? 
+                            objectToReturn.name.Substring(0, objectToReturn.name.Length - 7) : 
+                            objectToReturn.name;
+
+        PooledObjectInfo pool = ObjectPools.Find(x => x.lookupString == lookupName);
+
+        if (pool == null)
+        {
+            Debug.LogWarning("Trying to release an object that is not pooled: " + lookupName);
+            Destroy(objectToReturn);
+        }
+        else
+        {
+            objectToReturn.SetActive(false);
+        }
+    }
+
+    private static Transform GetParentTransform(PoolType poolType)
+    {
+        switch (poolType)
+        {
+            case PoolType.ParticleSystem: return particlesEmpty.transform;
+            case PoolType.GameObject: return gameObjectsEmpty.transform;
+            case PoolType.Loot: return lootEmpty.transform;
+            case PoolType.Enemy: return enemiesEmpty.transform;
+            case PoolType.UI: return uiEmpty.transform;
+            default: return null;
+        }
+    }
+}
+
+public class PooledObjectInfo
+{
+    public string lookupString;
+    public List<GameObject> pooledObjects = new List<GameObject>();
+}

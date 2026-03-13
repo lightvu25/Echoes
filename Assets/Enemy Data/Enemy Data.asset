@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937470260c5f20049a9c20727a4ad0eb, type: 3}
   m_Name: Enemy Data
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  maxHP: 100
+  maxHP: 50
   defense: 0
   patrolMaxSpeed: 3
   patrolAcceleration: 3
@@ -53,3 +53,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   noticeDuration: 0.5
+  expRewardMin: 10
+  expRewardMax: 20
+  goldDropChance: 100
+  goldAmountMin: 1
+  goldAmountMax: 5
+  memoryFragmentDropChance: 10
+  memoryFragmentAmountMin: 1
+  memoryFragmentAmountMax: 2

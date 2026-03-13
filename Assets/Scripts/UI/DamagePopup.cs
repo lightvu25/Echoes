@@ -61,7 +61,7 @@ public class DamagePopup : MonoBehaviour
 
             if (textColor.a < 0)
             {
-                Destroy(gameObject);
+                ObjectPoolManager.ReturnObjectToPool(gameObject);
             }
         }
     }
