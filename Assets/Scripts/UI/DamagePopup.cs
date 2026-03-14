@@ -3,6 +3,9 @@ using TMPro;
 
 public class DamagePopup : MonoBehaviour
 {
+    [SerializeField] private string sortingLayerName = "UI";
+    [SerializeField] private int sortingOrder = 10;
+
     private TextMeshPro textMesh;
     private float disappearTimer;
     private Color textColor;
@@ -11,55 +14,55 @@ public class DamagePopup : MonoBehaviour
     private void Awake()
     {
         textMesh = GetComponent<TextMeshPro>();
-        // Fallback: check children if not on this object
         if (textMesh == null)
-        {
             textMesh = GetComponentInChildren<TextMeshPro>();
-        }
+
         if (textMesh == null)
         {
             Debug.LogError($"[DamagePopup] No TextMeshPro found on {gameObject.name} or its children!");
+            return;
         }
+
+        textMesh.sortingLayerID = SortingLayer.NameToID(sortingLayerName);
+        textMesh.sortingOrder   = sortingOrder;
     }
 
     public void Setup(int damageAmount)
     {
+        if (textMesh == null) return;
+        transform.localScale = Vector3.one;
+
         textMesh.SetText(damageAmount.ToString());
-        textColor = textMesh.color;
+        textColor   = textMesh.color;
+        textColor.a = 1f;
+        textMesh.color = textColor;
+
         disappearTimer = 1f;
-        
-        // Randomize movement slightly
-        moveVector = new Vector3(Random.Range(-1f, 1f), 3f, 0f) * 5f;
+        moveVector     = new Vector3(Random.Range(-1f, 1f), 3f, 0f) * 5f;
     }
 
     private void Update()
     {
-        float moveYSpeed = 3f;
         transform.position += moveVector * Time.deltaTime;
         moveVector -= moveVector * 8f * Time.deltaTime;
 
         if (disappearTimer > 0.5f)
         {
-            // First half of lifetime: scale up
-            float increaseScaleAmount = 1f;
-            transform.localScale += Vector3.one * increaseScaleAmount * Time.deltaTime;
+            transform.localScale += Vector3.one * 1f * Time.deltaTime;
         }
         else
         {
-            // Second half: scale down
-            float decreaseScaleAmount = 1f;
-            transform.localScale -= Vector3.one * decreaseScaleAmount * Time.deltaTime;
+            transform.localScale -= Vector3.one * 1f * Time.deltaTime;
         }
 
         disappearTimer -= Time.deltaTime;
+
         if (disappearTimer < 0)
         {
-            // Start fading out
-            float disappearSpeed = 3f;
-            textColor.a -= disappearSpeed * Time.deltaTime;
+            textColor.a -= 3f * Time.deltaTime;
             textMesh.color = textColor;
 
-            if (textColor.a < 0)
+            if (textColor.a <= 0f)
             {
                 ObjectPoolManager.ReturnObjectToPool(gameObject);
             }

@@ -2,12 +2,16 @@ using UnityEngine;
 
 public class GameFeelManager : MonoBehaviour
 {
-    public static GameFeelManager Instance;
+    public static GameFeelManager Instance { get; private set; }
 
-    [Header("Settings")]
+    [Header("Camera Shake Intensities")]
     public float lightShakeIntensity = 1f;
     public float heavyShakeIntensity = 3f;
+
+    [Header("Hit-Stop")]
     public float hitStopDuration = 0.1f;
+
+    [Header("Damage Flash")]
     public float flashDuration = 0.1f;
     public Color flashColor = Color.white;
 
@@ -20,39 +24,30 @@ public class GameFeelManager : MonoBehaviour
     // Call this whenever the player hits an enemy
     public void ProcessAttack(GameObject target, int damage, bool isCrit)
     {
-        // 1. Handle Visuals on the Enemy (Flash)
-        // We look for the flash script LOCALLY on the enemy we just hit
-        if (target.TryGetComponent(out SpriteColorFlasher flash))
+        // 1. Visual flash on the enemy.
+        SpriteColorFlasher flash = target.GetComponentInParent<SpriteColorFlasher>();
+        if (flash != null)
         {
-            SpriteRenderer targetRenderer = target.GetComponent<SpriteRenderer>();
-            flash.FlashColor(targetRenderer, flashDuration, flashColor);
+            SpriteRenderer sr = target.GetComponentInParent<SpriteRenderer>();
+            if (sr != null)
+                flash.FlashColor(sr, flashDuration, flashColor);
         }
 
-        // 2. Handle Global Effects based on Impact
+        // 2. Global effects based on hit weight.
         if (isCrit || damage > 50)
         {
-            // HEAVY IMPACT
-            if (CameraShaker.Instance != null)
-                CameraShaker.Instance.BasicShake(heavyShakeIntensity, 0.2f);
-
-            if (TimeManager.Instance != null)
-                TimeManager.Instance.DoHitStop(hitStopDuration);
+            CinemachineCameraShake2D.Instance?.ShakeCamera(heavyShakeIntensity);
+            TimeManager.Instance?.DoHitStop(hitStopDuration);
         }
         else
         {
-            // LIGHT IMPACT
-            if (CameraShaker.Instance != null)
-                CameraShaker.Instance.BasicShake(lightShakeIntensity, 0.1f);
+            CinemachineCameraShake2D.Instance?.ShakeCamera(lightShakeIntensity);
         }
     }
 
-    // Call this when the PLAYER takes damage
     public void ProcessPlayerHit()
     {
-        if (CameraShaker.Instance != null)
-            CameraShaker.Instance.BasicShake(heavyShakeIntensity, 0.3f);
-
-        if (TimeManager.Instance != null)
-            TimeManager.Instance.DoHitStop(0.15f);
+        CinemachineCameraShake2D.Instance?.ShakeCamera(heavyShakeIntensity);
+        TimeManager.Instance?.DoHitStop(0.15f);
     }
 }

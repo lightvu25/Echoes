@@ -524,6 +524,7 @@ GameObject:
   - component: {fileID: 6221358223936003347}
   - component: {fileID: 4414510295826904377}
   - component: {fileID: 4682125094532609086}
+  - component: {fileID: 1173901703432325293}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Enemy
@@ -722,6 +723,18 @@ MonoBehaviour:
   sidewaysForceMod: 1
   minBurstObjects: 3
   maxBurstObjects: 8
+--- !u!114 &1173901703432325293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8247203597836570067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a876e82144ac8bc4485890a3060dafe8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteColorFlasher
 --- !u!1 &9102165767309968662
 GameObject:
   m_ObjectHideFlags: 0
@@ -734,6 +747,7 @@ GameObject:
   - component: {fileID: 4510934248767904007}
   - component: {fileID: 6348436241568702192}
   - component: {fileID: 5655115222896439950}
+  - component: {fileID: 7551581531230662336}
   m_Layer: 8
   m_Name: EnemySprites
   m_TagString: Untagged
@@ -849,3 +863,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f64287b63a3205740b0b03b5a554c9c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+--- !u!114 &7551581531230662336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9102165767309968662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a876e82144ac8bc4485890a3060dafe8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteColorFlasher

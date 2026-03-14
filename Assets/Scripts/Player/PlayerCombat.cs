@@ -61,30 +61,20 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         }
     }
 
-    /// <summary>
-    /// IDamageable implementation - receive damage.
-    /// </summary>
     public void TakeDamage(DamageInfo damageInfo)
     {
         if (healthSystem == null || healthSystem.IsDead) return;
-
-        // Skip damage during dash i-frames or regular i-frames
         if (healthSystem.IsInvincible) return;
 
-        // Apply damage through health system
         healthSystem.TakeDamage(damageInfo);
 
-        // Apply knockback
         if (damageInfo.knockbackForce > 0f && rb != null)
         {
             ApplyKnockback(damageInfo.knockbackDirection, damageInfo.knockbackForce);
         }
 
-        // Camera shake on player hit (no hit-stop for enemy attacks)
-        if (CameraShaker.Instance != null)
-            CameraShaker.Instance.BasicShake(3f, 0.3f);
+        GameFeelManager.Instance?.ProcessPlayerHit();
 
-        // Fire event
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, Defense);
         OnDamageReceived?.Invoke(this, new DamageReceivedArgs
         {
@@ -95,15 +85,12 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private void ApplyKnockback(Vector2 direction, float force)
     {
-        // If already knocked back, stop the previous coroutine before starting a new one
-        // so overlapping hits don't leave isKnockedBack permanently true.
         if (_knockbackCoroutine != null)
         {
             StopCoroutine(_knockbackCoroutine);
             isKnockedBack = false;
         }
 
-        // Cancel any active attack — knockback interrupts player actions
         if (playerAttack != null)
             playerAttack.CancelAttack();
 
@@ -131,30 +118,15 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             _knockbackCoroutine = null;
         }
 
-        // Trigger player death through PlayerInteract
         if (PlayerInteract.Instance != null)
         {
             PlayerInteract.Instance.Dead();
         }
     }
 
-    /// <summary>
-    /// Get current HP.
-    /// </summary>
     public int CurrentHP => healthSystem != null ? healthSystem.CurrentHP : 0;
-
-    /// <summary>
-    /// Get max HP.
-    /// </summary>
     public int MaxHP => healthSystem != null ? healthSystem.MaxHP : 0;
 
-    /// <summary>
-    /// Get HP percentage (0-1).
-    /// </summary>
     public float HPPercent => healthSystem != null ? healthSystem.HPPercent : 0f;
-
-    /// <summary>
-    /// Check if currently knocked back.
-    /// </summary>
     public bool IsKnockedBack => isKnockedBack;
 }

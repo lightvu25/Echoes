@@ -1,11 +1,6 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// Main enemy combat controller.
-/// Handles damage receiving, health, knockback, and death.
-/// Mirrors PlayerCombat architecture.
-/// </summary>
 [RequireComponent(typeof(HealthSystem))]
 public class EnemyCombat : MonoBehaviour, IDamageable
 {
@@ -29,7 +24,6 @@ public class EnemyCombat : MonoBehaviour, IDamageable
     private Rigidbody2D rb;
     private bool isKnockedBack = false;
 
-    // IDamageable implementation
     public bool IsDead => healthSystem != null && healthSystem.IsDead;
     public Transform Transform => transform;
     public float Defense => healthSystem != null ? healthSystem.Defense : 0f;
@@ -64,9 +58,6 @@ public class EnemyCombat : MonoBehaviour, IDamageable
         }
     }
 
-    /// <summary>
-    /// IDamageable implementation - receive damage.
-    /// </summary>
     public void TakeDamage(DamageInfo damageInfo)
     {
         if (healthSystem == null || healthSystem.IsDead) return;
@@ -81,7 +72,6 @@ public class EnemyCombat : MonoBehaviour, IDamageable
             ApplyKnockback(damageInfo.knockbackDirection, damageInfo.knockbackForce);
         }
 
-        // Fire event
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, Defense);
         OnDamageReceived?.Invoke(this, new DamageReceivedArgs
         {
@@ -101,7 +91,6 @@ public class EnemyCombat : MonoBehaviour, IDamageable
     {
         isKnockedBack = true;
 
-        // Sync with EnemyMovement
         if (enemyMovement != null)
             enemyMovement.SetKnockedBack(true);
 
@@ -124,23 +113,8 @@ public class EnemyCombat : MonoBehaviour, IDamageable
         OnEnemyDied?.Invoke(this, EventArgs.Empty);
     }
 
-    /// <summary>
-    /// Get current HP.
-    /// </summary>
     public int CurrentHP => healthSystem != null ? healthSystem.CurrentHP : 0;
-
-    /// <summary>
-    /// Get max HP.
-    /// </summary>
     public int MaxHP => healthSystem != null ? healthSystem.MaxHP : 0;
-
-    /// <summary>
-    /// Get HP percentage (0-1).
-    /// </summary>
     public float HPPercent => healthSystem != null ? healthSystem.HPPercent : 0f;
-
-    /// <summary>
-    /// Check if currently knocked back.
-    /// </summary>
     public bool IsKnockedBack => isKnockedBack;
 }

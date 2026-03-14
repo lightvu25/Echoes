@@ -147,6 +147,8 @@ public class AttackHitbox : MonoBehaviour
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, target.Defense);
         target.TakeDamage(damageInfo);
 
+        GameFeelManager.Instance?.ProcessAttack(target.Transform.gameObject, finalDamage, damageInfo.isCritical);
+
         OnHitTarget?.Invoke(this, new HitEventArgs { target = target, damageInfo = damageInfo, finalDamage = finalDamage });
     }
 

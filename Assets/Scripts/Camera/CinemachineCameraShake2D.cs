@@ -41,7 +41,7 @@ public class CinemachineCameraShake2D : MonoBehaviour
         ShakeCamera(pickupShakeForce);
     }
 
-    private void ShakeCamera(float force)
+    public void ShakeCamera(float force)
     {
         impulseSource.GenerateImpulse(force);
     }
