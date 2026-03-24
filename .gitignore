@@ -1,23 +1,23 @@
 .git
 .vsconfig
 .gemini
-.agents
-.antigravity
-.antigravityignore
+# .agents
+# .antigravity
+# .antigravityignore
 .github
 .vs
 .vscode
-artifacts
+# artifacts
 
 acli.exe
 
-.clinerules
-.cursorrules
+# .clinerules
+# .cursorrules
 .env
-.windsurfrules
-AGENTS.md
-CLAUDE.md
-CONTEXT.md
+# .windsurfrules
+# AGENTS.md
+# CLAUDE.md
+# CONTEXT.md
 
 *.csproj
 *.sln
