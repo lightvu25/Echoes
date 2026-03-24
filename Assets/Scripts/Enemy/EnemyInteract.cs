@@ -40,8 +40,46 @@ public class EnemyInteract : MonoBehaviour
     private void Start()
     {
         targetPlayer = GameObject.FindGameObjectWithTag("Player")?.transform;
+        if (targetPlayer != null)
+        {
+            var pHealth = targetPlayer.GetComponentInParent<HealthSystem>();
+            if (pHealth == null) pHealth = targetPlayer.GetComponentInChildren<HealthSystem>();
+            
+            if (pHealth != null)
+            {
+                pHealth.OnDeath += HandlePlayerDeath;
+            }
+        }
+
         PickNewPatrolTarget();
         ChangeState(State.Patrol);
+    }
+
+    private void OnDestroy()
+    {
+        if (targetPlayer != null)
+        {
+            var pHealth = targetPlayer.GetComponentInParent<HealthSystem>();
+            if (pHealth == null) pHealth = targetPlayer.GetComponentInChildren<HealthSystem>();
+
+            if (pHealth != null)
+            {
+                pHealth.OnDeath -= HandlePlayerDeath;
+            }
+        }
+    }
+
+    private void HandlePlayerDeath(object sender, EventArgs e)
+    {
+        targetPlayer = null;
+        isAttacking = false;
+        
+        StopAllCoroutines();
+        if (enemyMovement != null) enemyMovement.Stop();
+        
+        GetComponent<EnemyAttack>()?.CancelHitbox();
+
+        ChangeState(State.Idle);
     }
 
     private void OnEnable()

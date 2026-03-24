@@ -118,6 +118,11 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             _knockbackCoroutine = null;
         }
 
+        if (GameSession.Instance != null)
+        {
+            GameSession.Instance.HandlePlayerDeath();
+        }
+
         if (PlayerInteract.Instance != null)
         {
             PlayerInteract.Instance.Dead();

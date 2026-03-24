@@ -7,6 +7,7 @@ public class HealthSystem : MonoBehaviour
     public event EventHandler<DamageEventArgs> OnDamaged;
     public event EventHandler<HealEventArgs> OnHealed;
     public event EventHandler OnDeath;
+    public event Action<int> OnSlotsChanged;
 
     public class DamageEventArgs : EventArgs
     {
@@ -27,6 +28,7 @@ public class HealthSystem : MonoBehaviour
     [Header("Health")]
     [SerializeField] private int maxHP = 100;
     [SerializeField] private int currentHP;
+    [SerializeField] private int maxSlots = 3;
 
     [Header("Defense")]
     [SerializeField] private float defense = 0f;
@@ -50,6 +52,16 @@ public class HealthSystem : MonoBehaviour
     // ===== Properties =====
     public int CurrentHP => currentHP;
     public int MaxHP => maxHP;
+    public int MaxSlots => maxSlots;
+    public int UnlockedSlots 
+    {
+        get 
+        {
+            if (maxSlots <= 0 || maxHP <= 0) return 0;
+            float hpPerSlot = (float)maxHP / maxSlots;
+            return Mathf.CeilToInt(currentHP / hpPerSlot);
+        }
+    }
     public float Defense => defense;
     public bool IsDead => isDead;
     public bool IsInvincible => isInvincible;
@@ -81,7 +93,13 @@ public class HealthSystem : MonoBehaviour
 
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, defense);
 
+        int previousSlots = UnlockedSlots;
         currentHP -= finalDamage;
+
+        if (UnlockedSlots != previousSlots)
+        {
+            OnSlotsChanged?.Invoke(UnlockedSlots);
+        }
 
         if (damagePopupPrefab != null && finalDamage > 0)
         {
@@ -138,8 +156,14 @@ public class HealthSystem : MonoBehaviour
         if (isDead) return;
 
         int previousHP = currentHP;
+        int previousSlots = UnlockedSlots;
         currentHP = Mathf.Min(currentHP + amount, maxHP);
         int actualHeal = currentHP - previousHP;
+
+        if (UnlockedSlots != previousSlots)
+        {
+            OnSlotsChanged?.Invoke(UnlockedSlots);
+        }
 
         if (actualHeal > 0)
         {
@@ -154,6 +178,7 @@ public class HealthSystem : MonoBehaviour
 
     public void SetMaxHP(int newMaxHP, bool healToFull = false)
     {
+        int previousSlots = UnlockedSlots;
         maxHP = newMaxHP;
         if (healToFull)
         {
@@ -162,6 +187,11 @@ public class HealthSystem : MonoBehaviour
         else
         {
             currentHP = Mathf.Min(currentHP, maxHP);
+        }
+
+        if (UnlockedSlots != previousSlots)
+        {
+            OnSlotsChanged?.Invoke(UnlockedSlots);
         }
     }
 

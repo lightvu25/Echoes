@@ -2,11 +2,22 @@
 .vsconfig
 .gemini
 .agents
+.antigravity
+.antigravityignore
+.github
+.vs
+.vscode
+artifacts
 
 acli.exe
 
-.vs
-.vscode
+.clinerules
+.cursorrules
+.env
+.windsurfrules
+AGENTS.md
+CLAUDE.md
+CONTEXT.md
 
 *.csproj
 *.sln
@@ -18,3 +29,4 @@ acli.exe
 /Builds/
 /Logs/
 /UserSettings/
+/Assets/_Recovery/
