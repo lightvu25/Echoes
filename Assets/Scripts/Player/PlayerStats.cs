@@ -19,7 +19,7 @@ public class PlayerStats : MonoBehaviour
     public int CurrentLevel => GameSession.Instance.currentRun.currentLevel;
     public int CurrentExp => GameSession.Instance.currentRun.currentExp;
     public int CurrentGold => GameSession.Instance.currentRun.runGold;
-    public int MemoryFragments => GameSession.Instance.currentProfile.memoryFragments;
+    public int MemoryFragments => GameSession.Instance.currentRun.runMemoryFragments;
 
     private void Awake()
     {
@@ -51,9 +51,40 @@ public class PlayerStats : MonoBehaviour
     {
         if (amount <= 0) return;
 
-        GameSession.Instance.currentProfile.memoryFragments += amount;
+        GameSession.Instance.currentRun.runMemoryFragments += amount;
         OnMemoryFragmentsChanged?.Invoke(MemoryFragments);
-        SaveManager.saveProfile(GameSession.Instance.currentProfile);
+        GameSession.Instance.SaveCurrentRun();
+    }
+
+    public bool SpendGold(int amount)
+    {
+        if (amount <= 0 || CurrentGold < amount) return false;
+
+        GameSession.Instance.currentRun.runGold -= amount;
+        OnGoldChanged?.Invoke(CurrentGold);
+        GameSession.Instance.SaveCurrentRun();
+        return true;
+    }
+
+    public bool SpendMemoryFragments(int amount)
+    {
+        if (amount <= 0 || MemoryFragments < amount) return false;
+
+        GameSession.Instance.currentRun.runMemoryFragments -= amount;
+        OnMemoryFragmentsChanged?.Invoke(MemoryFragments);
+        GameSession.Instance.SaveCurrentRun();
+        return true;
+    }
+
+    public void ResetRunCurrencies()
+    {
+        GameSession.Instance.currentRun.runGold = 0;
+        GameSession.Instance.currentRun.runMemoryFragments = 0;
+        
+        OnGoldChanged?.Invoke(0);
+        OnMemoryFragmentsChanged?.Invoke(0);
+        
+        GameSession.Instance.SaveCurrentRun();
     }
 
     public void AddExp(int amount)

@@ -4,8 +4,6 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Added events for various actions (Idle, Clind, Grab, Getup)
-
     public event EventHandler OnIdle;
     public event EventHandler OnJump;
     public event EventHandler OnLand;

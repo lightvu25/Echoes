@@ -70,15 +70,22 @@ public class ObjectPoolManager : MonoBehaviour
             ObjectPools.Add(pool);
         }
 
-        GameObject objectToUse = pool.pooledObjects.FirstOrDefault(x => !x.activeSelf);
+        for (int i = pool.pooledObjects.Count - 1; i >= 0; i--)
+        {
+            if (pool.pooledObjects[i] == null)
+            {
+                pool.pooledObjects.RemoveAt(i);
+            }
+        }
+
+        GameObject objectToUse = pool.pooledObjects.FirstOrDefault(x => x != null && !x.activeSelf);
         
         if (objectToUse == null)
         {
             objectToUse = Instantiate(objectToSpawn);
-            objectToUse.name = objectToSpawn.name; // Keep name clean for ReturnObjectToPool lookup
+            objectToUse.name = objectToSpawn.name;
             pool.pooledObjects.Add(objectToUse);
             
-            // Set Parent based on type
             if (Instance != null)
             {
                 Transform parent = GetParentTransform(poolType);
@@ -97,8 +104,6 @@ public class ObjectPoolManager : MonoBehaviour
 
     public static void ReturnObjectToPool(GameObject objectToReturn)
     {
-        // If instantiated with suffix '(Clone)' we need to trim it. But since we reset name on Instantiate, we can just use the name
-        // However, let's be safe and support both.
         string lookupName = objectToReturn.name.EndsWith("(Clone)") ? 
                             objectToReturn.name.Substring(0, objectToReturn.name.Length - 7) : 
                             objectToReturn.name;

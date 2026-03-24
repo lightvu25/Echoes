@@ -9,6 +9,7 @@ public class RunData
     public int runGold;
     public int currentLevel = 1;
     public int currentExp;
+    public int runMemoryFragments;
     public List<string> currentRelics = new List<string>();
     public int mapSeed;
 }
