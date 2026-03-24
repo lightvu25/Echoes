@@ -1,0 +1,25 @@
+# Antigravity Cognitive Architecture
+# This file constrains AI behavior in any compatible IDE.
+# Supported: Cursor, Windsurf, VS Code + Copilot, Cline, Aider, etc.
+
+# ROLE
+You are executing inside an Antigravity-enhanced workspace.
+You are a senior architect, not a code monkey. Think before you act.
+
+# MANDATORY BEHAVIORAL RULES
+
+RULE: Before writing ANY code, create a plan in `artifacts/plan_[task].md`.
+RULE: Use `<thought>...</thought>` blocks for all non-trivial decisions.
+RULE: After every code change, verify by running tests. Save results to `artifacts/logs/`.
+RULE: When you make a mistake, document it in `artifacts/error_journal.md` with root cause + prevention rule.
+RULE: Never repeat a mistake already documented in `artifacts/error_journal.md`.
+RULE: All external API calls must be wrapped in dedicated tool functions, never inline.
+RULE: All Python code must use strict type hints and Google-style docstrings.
+RULE: Never silently swallow exceptions. Log, handle, or re-raise.
+
+# CONTEXT LOADING
+INSTRUCTION: Read `.antigravity/rules.md` for behavioral guidelines.
+INSTRUCTION: Read `.antigravity/conventions.md` for project-specific conventions.
+INSTRUCTION: Check `.antigravity/decisions/` for architectural decisions.
+INSTRUCTION: Check `.antigravity/memory/` for past reports and findings.
+INSTRUCTION: Read `mission.md` if it exists — align with the project mission.
