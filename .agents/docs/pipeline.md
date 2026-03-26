@@ -41,3 +41,11 @@ Whenever the user submits a new prompt, feature request, or bug report, the AI M
 **Phase 4: Handoff & Explanation**
 * **Code Breakdown:** After executing the confirmed changes, provide a brief, easy-to-understand explanation of how the new code works.
 * **Manual Action Checklist:** Clearly list any manual steps the user must take inside the Unity Editor to make the code work (e.g., "Open the `Enemy` Prefab and drag the `Damage_Text` object into the empty Inspector slot," or "Ensure the Player has the 'Player' tag applied").
+
+## 5. Strict Token Management & Output Restrictions
+To preserve API limits and maintain a highly focused context window, the AI MUST adhere to the following output constraints at all times:
+
+* **Diff-Only Code Generation:** NEVER output an entire script unless explicitly instructed to generate a completely new file from scratch. When modifying existing scripts, only output the specific methods, properties, or lines being changed. Assume the user will integrate the snippet into the existing architecture.
+* **Surgical MCP Queries:** When using the Unity MCP tool to read the scene or hierarchy, NEVER query the entire active scene or root level. You must target specific GameObjects by name, tag, or component to keep the returned JSON payload as small as possible.
+* **Concise Communication:** Keep explanations brief, direct, and highly technical. Do not explain basic Unity concepts, standard C# syntax, or what a generic component does unless specifically asked. Focus purely on the specific logic being implemented for Project Echoes.
+* **No Speculative Feature Creep:** Write code ONLY for the specific task, mechanic, or bug fix currently approved in the plan. Do not add unsolicited "bonus" features, extra debug logs, or speculative logic that bloats the output.

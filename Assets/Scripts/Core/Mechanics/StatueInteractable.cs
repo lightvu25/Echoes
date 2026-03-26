@@ -1,64 +1,43 @@
-using System;
 using UnityEngine;
 
-public class StatueInteractable : MonoBehaviour
+/// <summary>
+/// A Statue placed in the game world. When the player interacts with it,
+/// the Statue opens the StatueUIManager panel for banking, withdrawing, or
+/// purchasing permanent upgrades.
+/// Inherits from InteractableObject for trigger detection and input handling.
+/// </summary>
+public class StatueInteractable : InteractableObject
 {
-    public event Action<int, int> OnStatueOpened;
+    [Header("Statue Settings")]
+    [Tooltip("If true, time is slowed when the statue menu is open.")]
+    [SerializeField] private bool slowTimeOnOpen = true;
+    [SerializeField] private float slowTimeScale = 0.1f;
 
-    public void Interact()
+    protected override void OnInteract()
     {
-        if (PlayerStats.Instance != null && GameSession.Instance != null)
+        if (StatueUIManager.Instance == null)
         {
-            int runMems = PlayerStats.Instance.MemoryFragments;
-            int bankedMems = GameSession.Instance.currentProfile.bankedMems;
-            OnStatueOpened?.Invoke(runMems, bankedMems);
+            Debug.LogWarning("[StatueInteractable] StatueUIManager.Instance is null. " +
+                             "Ensure a StatueUIManager exists in the scene.");
+            return;
         }
-    }
 
-    public void BankMems(int amount)
-    {
-        if (PlayerStats.Instance != null && GameSession.Instance != null && amount > 0)
+        // Optionally slow time to give a "menu opened" feel
+        if (slowTimeOnOpen)
         {
-            if (PlayerStats.Instance.MemoryFragments >= amount)
-            {
-                PlayerStats.Instance.SpendMemoryFragments(amount);
-                GameSession.Instance.currentProfile.bankedMems += amount;
-                SaveManager.saveProfile(GameSession.Instance.currentProfile);
-            }
+            Time.timeScale = slowTimeScale;
         }
+
+        SetPromptVisible(false);
+        StatueUIManager.Instance.OpenUI();
     }
 
-    public void WithdrawMems(int amount)
+    protected override void OnPlayerExit(Collider2D player)
     {
-        if (PlayerStats.Instance != null && GameSession.Instance != null && amount > 0)
+        // If the player somehow walks out while the menu is open, close it cleanly
+        if (StatueUIManager.Instance != null && StatueUIManager.Instance.IsOpen)
         {
-            if (GameSession.Instance.currentProfile.bankedMems >= amount)
-            {
-                GameSession.Instance.currentProfile.bankedMems -= amount;
-                SaveManager.saveProfile(GameSession.Instance.currentProfile);
-
-                PlayerStats.Instance.AddMemoryFragments(amount);
-            }
+            StatueUIManager.Instance.CloseUI();
         }
-    }
-
-    public void BuyPermanentMaxHP(int hpAmount, int cost)
-    {
-        if (GameSession.Instance != null && GameSession.Instance.currentProfile.bankedMems >= cost)
-        {
-            GameSession.Instance.currentProfile.bankedMems -= cost;
-            GameSession.Instance.currentProfile.bonusStartingMaxHP += hpAmount;
-            SaveManager.saveProfile(GameSession.Instance.currentProfile);
-        }
-    }
-
-    public int GetBankedMems()
-    {
-        return GameSession.Instance != null ? GameSession.Instance.currentProfile.bankedMems : 0;
-    }
-
-    public int GetBonusStartingMaxHP()
-    {
-        return GameSession.Instance != null ? GameSession.Instance.currentProfile.bonusStartingMaxHP : 0;
     }
 }

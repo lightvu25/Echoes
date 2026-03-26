@@ -8,6 +8,8 @@ public class HealthSystem : MonoBehaviour
     public event EventHandler<HealEventArgs> OnHealed;
     public event EventHandler OnDeath;
     public event Action<int> OnSlotsChanged;
+    /// <summary>Fires when unlocked slots DECREASE, passing the new lower slot count.</summary>
+    public event Action<int> OnUnlockedSlotsDecreased;
 
     public class DamageEventArgs : EventArgs
     {
@@ -96,9 +98,14 @@ public class HealthSystem : MonoBehaviour
         int previousSlots = UnlockedSlots;
         currentHP -= finalDamage;
 
-        if (UnlockedSlots != previousSlots)
+        int newSlots = UnlockedSlots;
+        if (newSlots != previousSlots)
         {
-            OnSlotsChanged?.Invoke(UnlockedSlots);
+            OnSlotsChanged?.Invoke(newSlots);
+            if (newSlots < previousSlots)
+            {
+                OnUnlockedSlotsDecreased?.Invoke(newSlots);
+            }
         }
 
         if (damagePopupPrefab != null && finalDamage > 0)
@@ -160,9 +167,14 @@ public class HealthSystem : MonoBehaviour
         currentHP = Mathf.Min(currentHP + amount, maxHP);
         int actualHeal = currentHP - previousHP;
 
-        if (UnlockedSlots != previousSlots)
+        int newSlots = UnlockedSlots;
+        if (newSlots != previousSlots)
         {
-            OnSlotsChanged?.Invoke(UnlockedSlots);
+            OnSlotsChanged?.Invoke(newSlots);
+            if (newSlots < previousSlots)
+            {
+                OnUnlockedSlotsDecreased?.Invoke(newSlots);
+            }
         }
 
         if (actualHeal > 0)
@@ -189,9 +201,14 @@ public class HealthSystem : MonoBehaviour
             currentHP = Mathf.Min(currentHP, maxHP);
         }
 
-        if (UnlockedSlots != previousSlots)
+        int newSlots = UnlockedSlots;
+        if (newSlots != previousSlots)
         {
-            OnSlotsChanged?.Invoke(UnlockedSlots);
+            OnSlotsChanged?.Invoke(newSlots);
+            if (newSlots < previousSlots)
+            {
+                OnUnlockedSlotsDecreased?.Invoke(newSlots);
+            }
         }
     }
 

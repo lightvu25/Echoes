@@ -45,8 +45,6 @@ public class PlayerInteract : MonoBehaviour
 
     private float coinPickups = 0f;
     private float time;
-    
-    private StatueInteractable currentStatue;
 
     // Thời gian sống sót
     private float timeMax = 50f;
@@ -96,13 +94,6 @@ public class PlayerInteract : MonoBehaviour
 
     private void Update()
     {
-        if (state == State.Normal && !IsRewinding)
-        {
-            if (currentStatue != null && GameInput.Instance != null && GameInput.Instance.IsUpActionPressed())
-            {
-                currentStatue.Interact();
-            }
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collider2D)
@@ -131,11 +122,6 @@ public class PlayerInteract : MonoBehaviour
             return;
         }
 
-        if (collider2D.gameObject.TryGetComponent(out StatueInteractable statue))
-        {
-            currentStatue = statue;
-        }
-
         if (collider2D.gameObject.TryGetComponent(out TimePickup timePickup))
         {
             float timeAmount = 2f;
@@ -154,13 +140,6 @@ public class PlayerInteract : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collider2D)
     {
-        if (collider2D.gameObject.TryGetComponent(out StatueInteractable statue))
-        {
-            if (currentStatue == statue)
-            {
-                currentStatue = null;
-            }
-        }
     }
 
     private void SetState(State state)

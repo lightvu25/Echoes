@@ -38,8 +38,7 @@ public class MemoryInventorySystem : MonoBehaviour
     {
         if (healthSystem != null)
         {
-            // Hook into the HealthSystem event for taking damage
-            healthSystem.OnDamaged += HandleDamage;
+            healthSystem.OnUnlockedSlotsDecreased += HandleSlotsDecreased;
         }
     }
 
@@ -47,13 +46,18 @@ public class MemoryInventorySystem : MonoBehaviour
     {
         if (healthSystem != null)
         {
-            healthSystem.OnDamaged -= HandleDamage;
+            healthSystem.OnUnlockedSlotsDecreased -= HandleSlotsDecreased;
         }
     }
 
-    private void HandleDamage(object sender, HealthSystem.DamageEventArgs e)
+    /// <summary>
+    /// Called by HealthSystem.OnUnlockedSlotsDecreased when the player loses a slot.
+    /// Drops excess items until the inventory fits within the new capacity.
+    /// </summary>
+    /// <param name="newUnlockedSlots">The new number of unlocked slots.</param>
+    private void HandleSlotsDecreased(int newUnlockedSlots)
     {
-        while (activeSlots.Count > healthSystem.UnlockedSlots && activeSlots.Count > coreSlotCount)
+        while (activeSlots.Count > newUnlockedSlots && activeSlots.Count > coreSlotCount)
         {
             DropOutermostItem();
         }
