@@ -1,0 +1,1573 @@
+fileFormatVersion: 2
+guid: f6a92f609cf98fc488fed66e072ee7b7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2935264381971117652
+    second: BIG IMPACT SMOKE_0
+  - first:
+      213: 485425764201869924
+    second: BIG IMPACT SMOKE_1
+  - first:
+      213: -2421694379890477754
+    second: BIG IMPACT SMOKE_2
+  - first:
+      213: 7313109207526090645
+    second: BIG IMPACT SMOKE_3
+  - first:
+      213: -2037949337612042996
+    second: BIG IMPACT SMOKE_4
+  - first:
+      213: 3629201977311688061
+    second: BIG IMPACT SMOKE_5
+  - first:
+      213: 4626463898432073221
+    second: BIG IMPACT SMOKE_6
+  - first:
+      213: 4088679016667899442
+    second: BIG IMPACT SMOKE_7
+  - first:
+      213: -638401064080362314
+    second: BIG IMPACT SMOKE_8
+  - first:
+      213: -1031632108066178413
+    second: BIG IMPACT SMOKE_9
+  - first:
+      213: 4606425462752506482
+    second: BIG IMPACT SMOKE_10
+  - first:
+      213: -5111645830360481743
+    second: BIG IMPACT SMOKE_11
+  - first:
+      213: -1053088188802995217
+    second: BIG IMPACT SMOKE_12
+  - first:
+      213: -8465280508292714985
+    second: BIG IMPACT SMOKE_13
+  - first:
+      213: 1402971743539607572
+    second: BIG IMPACT SMOKE_14
+  - first:
+      213: -624036283254715508
+    second: BIG IMPACT SMOKE_15
+  - first:
+      213: -9061014348725262969
+    second: BIG IMPACT SMOKE_16
+  - first:
+      213: -2809171190954271718
+    second: BIG IMPACT SMOKE_17
+  - first:
+      213: 8271415398531742577
+    second: BIG IMPACT SMOKE_18
+  - first:
+      213: 7244572673230389467
+    second: BIG IMPACT SMOKE_19
+  - first:
+      213: -7473246675760457917
+    second: BIG IMPACT SMOKE_20
+  - first:
+      213: -8950534921465044414
+    second: BIG IMPACT SMOKE_21
+  - first:
+      213: -3058665028929563959
+    second: BIG IMPACT SMOKE_22
+  - first:
+      213: -264592225445508392
+    second: BIG IMPACT SMOKE_23
+  - first:
+      213: -761259671441465521
+    second: BIG IMPACT SMOKE_24
+  - first:
+      213: 6587381446250626408
+    second: BIG IMPACT SMOKE_25
+  - first:
+      213: -2605537869158769910
+    second: BIG IMPACT SMOKE_26
+  - first:
+      213: -3066502343720076074
+    second: BIG IMPACT SMOKE_27
+  - first:
+      213: -8208212192117824581
+    second: BIG IMPACT SMOKE_28
+  - first:
+      213: -857170312087226562
+    second: BIG IMPACT SMOKE_29
+  - first:
+      213: -5868986373926426943
+    second: BIG IMPACT SMOKE_30
+  - first:
+      213: 6990667467857781182
+    second: BIG IMPACT SMOKE_31
+  - first:
+      213: 3062236768166894557
+    second: BIG IMPACT SMOKE_32
+  - first:
+      213: -8781562248033188437
+    second: BIG IMPACT SMOKE_33
+  - first:
+      213: -4164917404716405772
+    second: BIG IMPACT SMOKE_34
+  - first:
+      213: 1808947608332273738
+    second: BIG IMPACT SMOKE_35
+  - first:
+      213: -8927676961037133391
+    second: BIG IMPACT SMOKE_36
+  - first:
+      213: -8701138930591002570
+    second: BIG IMPACT SMOKE_37
+  - first:
+      213: -6106769654934067458
+    second: BIG IMPACT SMOKE_38
+  - first:
+      213: -3241056342003080139
+    second: BIG IMPACT SMOKE_39
+  - first:
+      213: -5189749393402037538
+    second: BIG IMPACT SMOKE_40
+  - first:
+      213: -9218363499414874917
+    second: BIG IMPACT SMOKE_41
+  - first:
+      213: -2451331002059107857
+    second: BIG IMPACT SMOKE_42
+  - first:
+      213: -805167771421029650
+    second: BIG IMPACT SMOKE_43
+  - first:
+      213: 670377405358489146
+    second: BIG IMPACT SMOKE_44
+  - first:
+      213: 9192844296273724397
+    second: BIG IMPACT SMOKE_45
+  - first:
+      213: 5374118305251704684
+    second: BIG IMPACT SMOKE_46
+  - first:
+      213: 4302613506197738319
+    second: BIG IMPACT SMOKE_47
+  - first:
+      213: 5181685029016414405
+    second: BIG IMPACT SMOKE_48
+  - first:
+      213: -6035386149158797649
+    second: BIG IMPACT SMOKE_49
+  - first:
+      213: 6624635291346722276
+    second: BIG IMPACT SMOKE_50
+  - first:
+      213: 6700787263554658456
+    second: BIG IMPACT SMOKE_51
+  - first:
+      213: -5858223971565358248
+    second: BIG IMPACT SMOKE_52
+  - first:
+      213: -4318614392692747823
+    second: BIG IMPACT SMOKE_53
+  - first:
+      213: 6818242002618604224
+    second: BIG IMPACT SMOKE_54
+  - first:
+      213: -2977788924447615645
+    second: BIG IMPACT SMOKE_55
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_0
+      rect:
+        serializedVersion: 2
+        x: 1173
+        y: 5
+        width: 57
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca941c6a898d347d0800000000000000
+      internalID: -2935264381971117652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_1
+      rect:
+        serializedVersion: 2
+        x: 1365
+        y: 23
+        width: 34
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 462331029249cb600800000000000000
+      internalID: 485425764201869924
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_2
+      rect:
+        serializedVersion: 2
+        x: 1546
+        y: 34
+        width: 29
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 645711ccac9646ed0800000000000000
+      internalID: -2421694379890477754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_3
+      rect:
+        serializedVersion: 2
+        x: 1622
+        y: 36
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5972b36e3126d7560800000000000000
+      internalID: 7313109207526090645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_4
+      rect:
+        serializedVersion: 2
+        x: 1724
+        y: 40
+        width: 25
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0d346dffdfb7b3e0800000000000000
+      internalID: -2037949337612042996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_5
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 41
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d75fec358f38d5230800000000000000
+      internalID: 3629201977311688061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_6
+      rect:
+        serializedVersion: 2
+        x: 1880
+        y: 45
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50e66305760843040800000000000000
+      internalID: 4626463898432073221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_7
+      rect:
+        serializedVersion: 2
+        x: 1904
+        y: 47
+        width: 20
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 236651527e7edb830800000000000000
+      internalID: 4088679016667899442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_8
+      rect:
+        serializedVersion: 2
+        x: 1957
+        y: 41
+        width: 29
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b432475d91f327f0800000000000000
+      internalID: -638401064080362314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_9
+      rect:
+        serializedVersion: 2
+        x: 2058
+        y: 48
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39af3d34018eea1f0800000000000000
+      internalID: -1031632108066178413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_10
+      rect:
+        serializedVersion: 2
+        x: 2088
+        y: 52
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2727daf6d8f4def30800000000000000
+      internalID: 4606425462752506482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_11
+      rect:
+        serializedVersion: 2
+        x: 679
+        y: 34
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 130c1cf2339cf09b0800000000000000
+      internalID: -5111645830360481743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_12
+      rect:
+        serializedVersion: 2
+        x: 802
+        y: 1
+        width: 77
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: febec3d2fdda261f0800000000000000
+      internalID: -1053088188802995217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_13
+      rect:
+        serializedVersion: 2
+        x: 891
+        y: 0
+        width: 65
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71eac2b8a38458a80800000000000000
+      internalID: -8465280508292714985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_14
+      rect:
+        serializedVersion: 2
+        x: 987
+        y: 0
+        width: 62
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 418b6931e5b587310800000000000000
+      internalID: 1402971743539607572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_15
+      rect:
+        serializedVersion: 2
+        x: 1063
+        y: 4
+        width: 66
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8bc5a18e4af657f0800000000000000
+      internalID: -624036283254715508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_16
+      rect:
+        serializedVersion: 2
+        x: 1235
+        y: 5
+        width: 39
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7856387057fc04280800000000000000
+      internalID: -9061014348725262969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_17
+      rect:
+        serializedVersion: 2
+        x: 1272
+        y: 16
+        width: 37
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1cd8e97fa1d309d0800000000000000
+      internalID: -2809171190954271718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_18
+      rect:
+        serializedVersion: 2
+        x: 1346
+        y: 29
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17b3e2b2b78f9c270800000000000000
+      internalID: 8271415398531742577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_19
+      rect:
+        serializedVersion: 2
+        x: 1409
+        y: 8
+        width: 35
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd046618674e98460800000000000000
+      internalID: 7244572673230389467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_20
+      rect:
+        serializedVersion: 2
+        x: 1446
+        y: 24
+        width: 43
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 347dd6c4eb1b94890800000000000000
+      internalID: -7473246675760457917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_21
+      rect:
+        serializedVersion: 2
+        x: 1522
+        y: 36
+        width: 16
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 242e85039ef49c380800000000000000
+      internalID: -8950534921465044414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_22
+      rect:
+        serializedVersion: 2
+        x: 1602
+        y: 31
+        width: 19
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c25eb79c507d85d0800000000000000
+      internalID: -3058665028929563959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_23
+      rect:
+        serializedVersion: 2
+        x: 1631
+        y: 9
+        width: 35
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8da8df7d5caf35cf0800000000000000
+      internalID: -264592225445508392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_24
+      rect:
+        serializedVersion: 2
+        x: 1703
+        y: 40
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4f96e5bc567f65f0800000000000000
+      internalID: -761259671441465521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_25
+      rect:
+        serializedVersion: 2
+        x: 1781
+        y: 38
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86d74cf16841b6b50800000000000000
+      internalID: 6587381446250626408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_26
+      rect:
+        serializedVersion: 2
+        x: 1806
+        y: 11
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0b96fbdc1547dbd0800000000000000
+      internalID: -2605537869158769910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_27
+      rect:
+        serializedVersion: 2
+        x: 2005
+        y: 40
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6dc79ab8d589175d0800000000000000
+      internalID: -3066502343720076074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_28
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 0
+        width: 154
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb369cf0082961e80800000000000000
+      internalID: -8208212192117824581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_29
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 22
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e37b7048428ba14f0800000000000000
+      internalID: -857170312087226562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_30
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 19
+        width: 20
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c6e186fcfb2d8ea0800000000000000
+      internalID: -5868986373926426943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_31
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 22
+        width: 15
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb1ea8c1607d30160800000000000000
+      internalID: 6990667467857781182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_32
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 25
+        width: 19
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddb5ab0cd104f7a20800000000000000
+      internalID: 3062236768166894557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_33
+      rect:
+        serializedVersion: 2
+        x: 380
+        y: 0
+        width: 148
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba5400189af912680800000000000000
+      internalID: -8781562248033188437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_34
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 29
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fb6905efad3336c0800000000000000
+      internalID: -4164917404716405772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_35
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 25
+        width: 23
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4800fbf34caa1910800000000000000
+      internalID: 1808947608332273738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_36
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 0
+        width: 65
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b951f3da158a1480800000000000000
+      internalID: -8927676961037133391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_37
+      rect:
+        serializedVersion: 2
+        x: 623
+        y: 0
+        width: 82
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6301dc44e385f3780800000000000000
+      internalID: -8701138930591002570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_38
+      rect:
+        serializedVersion: 2
+        x: 713
+        y: 0
+        width: 79
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef625889a55604ba0800000000000000
+      internalID: -6106769654934067458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_39
+      rect:
+        serializedVersion: 2
+        x: 1384
+        y: 6
+        width: 22
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53421e5cd647503d0800000000000000
+      internalID: -3241056342003080139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_40
+      rect:
+        serializedVersion: 2
+        x: 1565
+        y: 12
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edaf8f45c6e4af7b0800000000000000
+      internalID: -5189749393402037538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_41
+      rect:
+        serializedVersion: 2
+        x: 1583
+        y: 16
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd413fefc3bc11080800000000000000
+      internalID: -9218363499414874917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_42
+      rect:
+        serializedVersion: 2
+        x: 1741
+        y: 15
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe15d5bf07f1bfdd0800000000000000
+      internalID: -2451331002059107857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_43
+      rect:
+        serializedVersion: 2
+        x: 1762
+        y: 24
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eea4bd78d2873d4f0800000000000000
+      internalID: -805167771421029650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_44
+      rect:
+        serializedVersion: 2
+        x: 1918
+        y: 21
+        width: 29
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3e37d7c2b8ad4900800000000000000
+      internalID: 670377405358489146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_45
+      rect:
+        serializedVersion: 2
+        x: 2099
+        y: 27
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de30fd28e2b839f70800000000000000
+      internalID: 9192844296273724397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_46
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 2
+        width: 93
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6fb3751024b49a40800000000000000
+      internalID: 5374118305251704684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_47
+      rect:
+        serializedVersion: 2
+        x: 1354
+        y: 12
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f43d6ba0034f5bb30800000000000000
+      internalID: 4302613506197738319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_48
+      rect:
+        serializedVersion: 2
+        x: 1368
+        y: 10
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c8ab74841b09e740800000000000000
+      internalID: 5181685029016414405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_49
+      rect:
+        serializedVersion: 2
+        x: 1531
+        y: 15
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: faeb31136400e3ca0800000000000000
+      internalID: -6035386149158797649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_50
+      rect:
+        serializedVersion: 2
+        x: 1545
+        y: 12
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4eddc3bd2be6feb50800000000000000
+      internalID: 6624635291346722276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_51
+      rect:
+        serializedVersion: 2
+        x: 1707
+        y: 17
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89023af838afdfc50800000000000000
+      internalID: 6700787263554658456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_52
+      rect:
+        serializedVersion: 2
+        x: 1721
+        y: 14
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8533b28065863bea0800000000000000
+      internalID: -5858223971565358248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_53
+      rect:
+        serializedVersion: 2
+        x: 1110
+        y: 2
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d1d8a147133114c0800000000000000
+      internalID: -4318614392692747823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_54
+      rect:
+        serializedVersion: 2
+        x: 1281
+        y: 4
+        width: 16
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cadabe0af24f9e50800000000000000
+      internalID: 6818242002618604224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BIG IMPACT SMOKE_55
+      rect:
+        serializedVersion: 2
+        x: 1456
+        y: 7
+        width: 17
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 365153e00c4cca6d0800000000000000
+      internalID: -2977788924447615645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BIG IMPACT SMOKE_0: -2935264381971117652
+      BIG IMPACT SMOKE_1: 485425764201869924
+      BIG IMPACT SMOKE_10: 4606425462752506482
+      BIG IMPACT SMOKE_11: -5111645830360481743
+      BIG IMPACT SMOKE_12: -1053088188802995217
+      BIG IMPACT SMOKE_13: -8465280508292714985
+      BIG IMPACT SMOKE_14: 1402971743539607572
+      BIG IMPACT SMOKE_15: -624036283254715508
+      BIG IMPACT SMOKE_16: -9061014348725262969
+      BIG IMPACT SMOKE_17: -2809171190954271718
+      BIG IMPACT SMOKE_18: 8271415398531742577
+      BIG IMPACT SMOKE_19: 7244572673230389467
+      BIG IMPACT SMOKE_2: -2421694379890477754
+      BIG IMPACT SMOKE_20: -7473246675760457917
+      BIG IMPACT SMOKE_21: -8950534921465044414
+      BIG IMPACT SMOKE_22: -3058665028929563959
+      BIG IMPACT SMOKE_23: -264592225445508392
+      BIG IMPACT SMOKE_24: -761259671441465521
+      BIG IMPACT SMOKE_25: 6587381446250626408
+      BIG IMPACT SMOKE_26: -2605537869158769910
+      BIG IMPACT SMOKE_27: -3066502343720076074
+      BIG IMPACT SMOKE_28: -8208212192117824581
+      BIG IMPACT SMOKE_29: -857170312087226562
+      BIG IMPACT SMOKE_3: 7313109207526090645
+      BIG IMPACT SMOKE_30: -5868986373926426943
+      BIG IMPACT SMOKE_31: 6990667467857781182
+      BIG IMPACT SMOKE_32: 3062236768166894557
+      BIG IMPACT SMOKE_33: -8781562248033188437
+      BIG IMPACT SMOKE_34: -4164917404716405772
+      BIG IMPACT SMOKE_35: 1808947608332273738
+      BIG IMPACT SMOKE_36: -8927676961037133391
+      BIG IMPACT SMOKE_37: -8701138930591002570
+      BIG IMPACT SMOKE_38: -6106769654934067458
+      BIG IMPACT SMOKE_39: -3241056342003080139
+      BIG IMPACT SMOKE_4: -2037949337612042996
+      BIG IMPACT SMOKE_40: -5189749393402037538
+      BIG IMPACT SMOKE_41: -9218363499414874917
+      BIG IMPACT SMOKE_42: -2451331002059107857
+      BIG IMPACT SMOKE_43: -805167771421029650
+      BIG IMPACT SMOKE_44: 670377405358489146
+      BIG IMPACT SMOKE_45: 9192844296273724397
+      BIG IMPACT SMOKE_46: 5374118305251704684
+      BIG IMPACT SMOKE_47: 4302613506197738319
+      BIG IMPACT SMOKE_48: 5181685029016414405
+      BIG IMPACT SMOKE_49: -6035386149158797649
+      BIG IMPACT SMOKE_5: 3629201977311688061
+      BIG IMPACT SMOKE_50: 6624635291346722276
+      BIG IMPACT SMOKE_51: 6700787263554658456
+      BIG IMPACT SMOKE_52: -5858223971565358248
+      BIG IMPACT SMOKE_53: -4318614392692747823
+      BIG IMPACT SMOKE_54: 6818242002618604224
+      BIG IMPACT SMOKE_55: -2977788924447615645
+      BIG IMPACT SMOKE_6: 4626463898432073221
+      BIG IMPACT SMOKE_7: 4088679016667899442
+      BIG IMPACT SMOKE_8: -638401064080362314
+      BIG IMPACT SMOKE_9: -1031632108066178413
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,507 @@
+fileFormatVersion: 2
+guid: 47a000773d7bacc4da8608916a622310
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1804307658955519708
+    second: Vampire_skill2_frame8_0
+  - first:
+      213: 9009357651580605018
+    second: Vampire_skill2_frame8_1
+  - first:
+      213: -1325270650970762454
+    second: Vampire_skill2_frame8_2
+  - first:
+      213: -1114409463594156125
+    second: Vampire_skill2_frame8_3
+  - first:
+      213: 5603509878732080810
+    second: Vampire_skill2_frame8_4
+  - first:
+      213: -8077863688016434858
+    second: Vampire_skill2_frame8_5
+  - first:
+      213: 7789150859444362229
+    second: Vampire_skill2_frame8_6
+  - first:
+      213: 3500485359864940362
+    second: Vampire_skill2_frame8_7
+  - first:
+      213: -280006875975345543
+    second: Vampire_skill2_frame8_8
+  - first:
+      213: 7007368264968003821
+    second: Vampire_skill2_frame8_9
+  - first:
+      213: 8768690952663448763
+    second: Vampire_skill2_frame8_10
+  - first:
+      213: -1523384045658062222
+    second: Vampire_skill2_frame8_11
+  - first:
+      213: 9071191066244715423
+    second: Vampire_skill2_frame8_12
+  - first:
+      213: -7078791886176105332
+    second: Vampire_skill2_frame8_13
+  - first:
+      213: 4633643095388923859
+    second: Vampire_skill2_frame8_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_0
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 43
+        width: 96
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 429807a6ebfc5f6e0800000000000000
+      internalID: -1804307658955519708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_1
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 85
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a52d8ecec0ba70d70800000000000000
+      internalID: 9009357651580605018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_2
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 81
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2313a15d51bb9de0800000000000000
+      internalID: -1325270650970762454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_3
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 88
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3aff22c4f72d880f0800000000000000
+      internalID: -1114409463594156125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_4
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 85
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa6c739cb8aa3cd40800000000000000
+      internalID: 5603509878732080810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_5
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 62
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 659e0cb26c9a5ef80800000000000000
+      internalID: -8077863688016434858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_6
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 69
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fb1c1f107f981c60800000000000000
+      internalID: 7789150859444362229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_7
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 72
+        width: 10
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a47843073e8349030800000000000000
+      internalID: 3500485359864940362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_8
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 40
+        width: 53
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97a92d6da373d1cf0800000000000000
+      internalID: -280006875975345543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_9
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 57
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de063c37f4c2f3160800000000000000
+      internalID: 7007368264968003821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_10
+      rect:
+        serializedVersion: 2
+        x: 117
+        y: 57
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbcbfa286f5a0b970800000000000000
+      internalID: 8768690952663448763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_11
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 60
+        width: 11
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 272cd0e184adbdae0800000000000000
+      internalID: -1523384045658062222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_12
+      rect:
+        serializedVersion: 2
+        x: 117
+        y: 48
+        width: 17
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f939639a63853ed70800000000000000
+      internalID: 9071191066244715423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_13
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 32
+        width: 46
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8c4e89d84413cd90800000000000000
+      internalID: -7078791886176105332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Vampire_skill2_frame8_14
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 30
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d7299c58d10e4040800000000000000
+      internalID: 4633643095388923859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Vampire_skill2_frame8_0: -1804307658955519708
+      Vampire_skill2_frame8_1: 9009357651580605018
+      Vampire_skill2_frame8_10: 8768690952663448763
+      Vampire_skill2_frame8_11: -1523384045658062222
+      Vampire_skill2_frame8_12: 9071191066244715423
+      Vampire_skill2_frame8_13: -7078791886176105332
+      Vampire_skill2_frame8_14: 4633643095388923859
+      Vampire_skill2_frame8_2: -1325270650970762454
+      Vampire_skill2_frame8_3: -1114409463594156125
+      Vampire_skill2_frame8_4: 5603509878732080810
+      Vampire_skill2_frame8_5: -8077863688016434858
+      Vampire_skill2_frame8_6: 7789150859444362229
+      Vampire_skill2_frame8_7: 3500485359864940362
+      Vampire_skill2_frame8_8: -280006875975345543
+      Vampire_skill2_frame8_9: 7007368264968003821
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

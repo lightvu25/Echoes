@@ -1,0 +1,403 @@
+fileFormatVersion: 2
+guid: 0ac13320695b24d42b868d254d55b334
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4968944578017915175
+    second: Smoke&Dust_skill4_frame6_0
+  - first:
+      213: 695933564995575750
+    second: Smoke&Dust_skill4_frame6_1
+  - first:
+      213: 6883800044791879538
+    second: Smoke&Dust_skill4_frame6_2
+  - first:
+      213: -2110768871630424644
+    second: Smoke&Dust_skill4_frame6_3
+  - first:
+      213: 1629149732923140485
+    second: Smoke&Dust_skill4_frame6_4
+  - first:
+      213: -7071240825493397647
+    second: Smoke&Dust_skill4_frame6_5
+  - first:
+      213: -5484481458125014638
+    second: Smoke&Dust_skill4_frame6_6
+  - first:
+      213: 9205852829482505204
+    second: Smoke&Dust_skill4_frame6_7
+  - first:
+      213: 3505511580987632901
+    second: Smoke&Dust_skill4_frame6_8
+  - first:
+      213: -7670367525784513328
+    second: Smoke&Dust_skill4_frame6_9
+  - first:
+      213: 5401067361770659838
+    second: Smoke&Dust_skill4_frame6_10
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_0
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 111
+        width: 10
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9de83ae9b33ca0bb0800000000000000
+      internalID: -4968944578017915175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_1
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 90
+        width: 28
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cf15d0e3e378a900800000000000000
+      internalID: 695933564995575750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_2
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 100
+        width: 10
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27753a63bab288f50800000000000000
+      internalID: 6883800044791879538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_3
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 78
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb5348305ea05b2e0800000000000000
+      internalID: -2110768871630424644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_4
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 67
+        width: 19
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5896eccec07eb9610800000000000000
+      internalID: 1629149732923140485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_5
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 50
+        width: 10
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17fd93b2fe7eddd90800000000000000
+      internalID: -7071240825493397647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_6
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 66
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 299fd3ffb2533e3b0800000000000000
+      internalID: -5484481458125014638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_7
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 43
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f354dbaf52c1cf70800000000000000
+      internalID: 9205852829482505204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_8
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 33
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50d29ccb53416a030800000000000000
+      internalID: 3505511580987632901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_9
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 27
+        width: 10
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d41ce8ef516d8590800000000000000
+      internalID: -7670367525784513328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Smoke&Dust_skill4_frame6_10
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 0
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: effdb42462274fa40800000000000000
+      internalID: 5401067361770659838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Smoke&Dust_skill4_frame6_0: -4968944578017915175
+      Smoke&Dust_skill4_frame6_1: 695933564995575750
+      Smoke&Dust_skill4_frame6_10: 5401067361770659838
+      Smoke&Dust_skill4_frame6_2: 6883800044791879538
+      Smoke&Dust_skill4_frame6_3: -2110768871630424644
+      Smoke&Dust_skill4_frame6_4: 1629149732923140485
+      Smoke&Dust_skill4_frame6_5: -7071240825493397647
+      Smoke&Dust_skill4_frame6_6: -5484481458125014638
+      Smoke&Dust_skill4_frame6_7: 9205852829482505204
+      Smoke&Dust_skill4_frame6_8: 3505511580987632901
+      Smoke&Dust_skill4_frame6_9: -7670367525784513328
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

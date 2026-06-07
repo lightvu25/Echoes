@@ -11,7 +11,7 @@ public class HealthSystem : MonoBehaviour
     public event EventHandler<DamageEventArgs> OnDamaged;
     public event EventHandler<HealEventArgs> OnHealed;
     public event EventHandler OnDeath;
-
+        
     public class DamageEventArgs : EventArgs
     {
         public int damageAmount;

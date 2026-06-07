@@ -1,5 +1,15 @@
 {
   "dependencies": {
+    "com.ivanmurzak.unity.mcp": {
+      "version": "file:com.ivanmurzak.unity.mcp",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.test-framework": "1.1.33",
+        "com.unity.modules.uielements": "1.0.0",
+        "extensions.unity.playerprefsex": "2.1.5"
+      }
+    },
     "com.unity.2d.animation": {
       "version": "13.0.2",
       "depth": 1,

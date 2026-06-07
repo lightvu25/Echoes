@@ -1,6 +1,13 @@
 ﻿<Solution>
+  <Project Path="com.IvanMurzak.Unity.MCP.Editor.Tests.csproj" />
+  <Project Path="com.IvanMurzak.Unity.MCP.Editor.csproj" />
   <Project Path="AstarPathfindingProject.csproj" />
+  <Project Path="com.IvanMurzak.Unity.MCP.Runtime.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="PackageToolsEditor.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="com.IvanMurzak.Unity.MCP.DependencyResolver.csproj" />
   <Project Path="AstarPathfindingProjectEditor.csproj" />
+  <Project Path="com.IvanMurzak.Unity.MCP.TestFiles.csproj" />
+  <Project Path="com.IvanMurzak.Unity.MCP.Tests.csproj" />
 </Solution>

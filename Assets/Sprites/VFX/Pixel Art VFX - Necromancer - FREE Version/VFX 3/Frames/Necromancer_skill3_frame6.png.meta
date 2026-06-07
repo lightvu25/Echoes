@@ -1,0 +1,585 @@
+fileFormatVersion: 2
+guid: 18ed1e2f552ca4e4791cef832eb34896
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 545345213350574623
+    second: Necromancer_skill3_frame6_0
+  - first:
+      213: -1982403234066038024
+    second: Necromancer_skill3_frame6_1
+  - first:
+      213: -2893526823594530127
+    second: Necromancer_skill3_frame6_2
+  - first:
+      213: 8833007998699990715
+    second: Necromancer_skill3_frame6_3
+  - first:
+      213: -2406315795965384015
+    second: Necromancer_skill3_frame6_4
+  - first:
+      213: -3219624936670478763
+    second: Necromancer_skill3_frame6_5
+  - first:
+      213: -8808710941828818602
+    second: Necromancer_skill3_frame6_6
+  - first:
+      213: 1126242245446394065
+    second: Necromancer_skill3_frame6_7
+  - first:
+      213: 6847827572446125726
+    second: Necromancer_skill3_frame6_8
+  - first:
+      213: -4558904328721243850
+    second: Necromancer_skill3_frame6_9
+  - first:
+      213: 5163775006799957662
+    second: Necromancer_skill3_frame6_10
+  - first:
+      213: -213072345441655923
+    second: Necromancer_skill3_frame6_11
+  - first:
+      213: 8581233475779339617
+    second: Necromancer_skill3_frame6_12
+  - first:
+      213: 4208366101273678827
+    second: Necromancer_skill3_frame6_13
+  - first:
+      213: 1537982744720626732
+    second: Necromancer_skill3_frame6_14
+  - first:
+      213: -744709653704254441
+    second: Necromancer_skill3_frame6_15
+  - first:
+      213: 2411175357926138226
+    second: Necromancer_skill3_frame6_16
+  - first:
+      213: -3748182050769995587
+    second: Necromancer_skill3_frame6_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_0
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 66
+        width: 48
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1a78b90594719700800000000000000
+      internalID: 545345213350574623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_1
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 79
+        width: 14
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f288e703c61d74e0800000000000000
+      internalID: -1982403234066038024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_2
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 80
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ba659b3fa028d7d0800000000000000
+      internalID: -2893526823594530127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_3
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 85
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbe62bcb9f5259a70800000000000000
+      internalID: 8833007998699990715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_4
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 67
+        width: 10
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ba6214688c0b9ed0800000000000000
+      internalID: -2406315795965384015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_5
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 64
+        width: 17
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55e34cbad289153d0800000000000000
+      internalID: -3219624936670478763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_6
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 55
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6595237a11c21c580800000000000000
+      internalID: -8808710941828818602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_7
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 75
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d0eedaea5731af00800000000000000
+      internalID: 1126242245446394065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_8
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 70
+        width: 16
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9ed6c255ee580f50800000000000000
+      internalID: 6847827572446125726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_9
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 24
+        width: 51
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6316499caa48bb0c0800000000000000
+      internalID: -4558904328721243850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_10
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 53
+        width: 10
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9e0a54820a69a740800000000000000
+      internalID: 5163775006799957662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_11
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 62
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d83ad7aa4d30b0df0800000000000000
+      internalID: -213072345441655923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_12
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 57
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 165a482816aa61770800000000000000
+      internalID: 8581233475779339617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_13
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 38
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be396371cae176a30800000000000000
+      internalID: 4208366101273678827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_14
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 48
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c24d0c16823085510800000000000000
+      internalID: 1537982744720626732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_15
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 41
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71c572ef3824aa5f0800000000000000
+      internalID: -744709653704254441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_16
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 20
+        width: 25
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 271ec5c8637367120800000000000000
+      internalID: 2411175357926138226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Necromancer_skill3_frame6_17
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 16
+        width: 16
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db8fb569848cbfbc0800000000000000
+      internalID: -3748182050769995587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Necromancer_skill3_frame6_0: 545345213350574623
+      Necromancer_skill3_frame6_1: -1982403234066038024
+      Necromancer_skill3_frame6_10: 5163775006799957662
+      Necromancer_skill3_frame6_11: -213072345441655923
+      Necromancer_skill3_frame6_12: 8581233475779339617
+      Necromancer_skill3_frame6_13: 4208366101273678827
+      Necromancer_skill3_frame6_14: 1537982744720626732
+      Necromancer_skill3_frame6_15: -744709653704254441
+      Necromancer_skill3_frame6_16: 2411175357926138226
+      Necromancer_skill3_frame6_17: -3748182050769995587
+      Necromancer_skill3_frame6_2: -2893526823594530127
+      Necromancer_skill3_frame6_3: 8833007998699990715
+      Necromancer_skill3_frame6_4: -2406315795965384015
+      Necromancer_skill3_frame6_5: -3219624936670478763
+      Necromancer_skill3_frame6_6: -8808710941828818602
+      Necromancer_skill3_frame6_7: 1126242245446394065
+      Necromancer_skill3_frame6_8: 6847827572446125726
+      Necromancer_skill3_frame6_9: -4558904328721243850
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
