@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 public class PlayerVisual : MonoBehaviour
@@ -7,6 +7,8 @@ public class PlayerVisual : MonoBehaviour
     [SerializeField] private ParticleSystem particleJumpPrefab;
     [SerializeField] private ParticleSystem particleLandPrefab;
     [SerializeField] private ParticleSystem particleDiePrefab;
+
+    [SerializeField] private Animator _animator;
 
     private PlayerMovement playerMovement;
     private PlayerInteract playerInteract;
@@ -19,10 +21,19 @@ public class PlayerVisual : MonoBehaviour
 
     private void Start()
     {
+        playerMovement.OnIdle += HandleIdle;
         playerMovement.OnJump += HandleJump;
         playerMovement.OnLand += HandleLand;
-        playerMovement.OnWalk += HandleWalk;
+        playerMovement.OnRun += HandleRun;
         playerInteract.OnDead += HandleDead;
+    }
+
+    private void HandleIdle(object sender, EventArgs e)
+    {
+        _animator.SetBool("IsRunning", false);
+        _animator.SetBool("IsJumping", false);
+        _animator.SetBool("IsFalling", false);
+        _animator.SetBool("IsDashing", false);
     }
 
     private void HandleJump(object sender, EventArgs e)
@@ -47,7 +58,7 @@ public class PlayerVisual : MonoBehaviour
             particleWalkingPrefab.Play();
     }
 
-    private void HandleWalk(object sender, EventArgs e)
+    private void HandleRun(object sender, EventArgs e)
     {
         if (particleWalkingPrefab != null)
             particleWalkingPrefab.Play();

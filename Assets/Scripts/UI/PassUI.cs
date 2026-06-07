@@ -14,7 +14,8 @@ public class PassUI : MonoBehaviour
     private void Start()
     {
         PlayerInteract.Instance.OnGoal += PlayerInteract_OnGoal;
-        PlayerInteract.Instance.OnDead += PlayerInteract_OnDead;
+        // Bypassing traditional game over UI in favor of seamless cinematic death reload
+        // PlayerInteract.Instance.OnDead += PlayerInteract_OnDead;
         Hide();
     }
 

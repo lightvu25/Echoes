@@ -1,17 +1,14 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// Manages HP, damage reception, i-frames, and death.
-/// Attach to any entity that can take damage.
-/// </summary>
 public class HealthSystem : MonoBehaviour
 {
     // ===== Events =====
     public event EventHandler<DamageEventArgs> OnDamaged;
     public event EventHandler<HealEventArgs> OnHealed;
     public event EventHandler OnDeath;
-        
+    public event Action<int> OnSlotsChanged;
+
     public class DamageEventArgs : EventArgs
     {
         public int damageAmount;
@@ -31,6 +28,7 @@ public class HealthSystem : MonoBehaviour
     [Header("Health")]
     [SerializeField] private int maxHP = 100;
     [SerializeField] private int currentHP;
+    [SerializeField] private int maxSlots = 3;
 
     [Header("Defense")]
     [SerializeField] private float defense = 0f;
@@ -45,12 +43,25 @@ public class HealthSystem : MonoBehaviour
     private bool isDead = false;
 
     // ===== References =====
+    [Header("UI")]
+    [SerializeField] private GameObject damagePopupPrefab;
+
     private SpriteColorFlasher colorFlasher;
     private TimeFreezer timeFreezer;
 
     // ===== Properties =====
     public int CurrentHP => currentHP;
     public int MaxHP => maxHP;
+    public int MaxSlots => maxSlots;
+    public int UnlockedSlots 
+    {
+        get 
+        {
+            if (maxSlots <= 0 || maxHP <= 0) return 0;
+            float hpPerSlot = (float)maxHP / maxSlots;
+            return Mathf.CeilToInt(currentHP / hpPerSlot);
+        }
+    }
     public float Defense => defense;
     public bool IsDead => isDead;
     public bool IsInvincible => isInvincible;
@@ -76,18 +87,29 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Apply damage using the two-stage pipeline.
-    /// </summary>
     public void TakeDamage(DamageInfo damageInfo)
     {
         if (isDead || isInvincible) return;
 
-        // Calculate final damage
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, defense);
 
-        // Apply damage
+        int previousSlots = UnlockedSlots;
         currentHP -= finalDamage;
+
+        if (UnlockedSlots != previousSlots)
+        {
+            OnSlotsChanged?.Invoke(UnlockedSlots);
+        }
+
+        if (damagePopupPrefab != null && finalDamage > 0)
+        {
+            GameObject popupObj = ObjectPoolManager.SpawnObject(damagePopupPrefab, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.UI);
+            DamagePopup damagePopup = popupObj.GetComponentInChildren<DamagePopup>();
+            if (damagePopup != null)
+            {
+                damagePopup.Setup(finalDamage);
+            }
+        }
 
         // Trigger i-frames
         if (hasIFrames)
@@ -129,16 +151,19 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Heal the entity.
-    /// </summary>
     public void Heal(int amount)
     {
         if (isDead) return;
 
         int previousHP = currentHP;
+        int previousSlots = UnlockedSlots;
         currentHP = Mathf.Min(currentHP + amount, maxHP);
         int actualHeal = currentHP - previousHP;
+
+        if (UnlockedSlots != previousSlots)
+        {
+            OnSlotsChanged?.Invoke(UnlockedSlots);
+        }
 
         if (actualHeal > 0)
         {
@@ -151,11 +176,9 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Set max HP (e.g., from CombatStats).
-    /// </summary>
     public void SetMaxHP(int newMaxHP, bool healToFull = false)
     {
+        int previousSlots = UnlockedSlots;
         maxHP = newMaxHP;
         if (healToFull)
         {
@@ -165,19 +188,18 @@ public class HealthSystem : MonoBehaviour
         {
             currentHP = Mathf.Min(currentHP, maxHP);
         }
+
+        if (UnlockedSlots != previousSlots)
+        {
+            OnSlotsChanged?.Invoke(UnlockedSlots);
+        }
     }
 
-    /// <summary>
-    /// Set defense stat.
-    /// </summary>
     public void SetDefense(float newDefense)
     {
         defense = Mathf.Max(0f, newDefense);
     }
 
-    /// <summary>
-    /// Force invincibility (e.g., during dash).
-    /// </summary>
     public void SetInvincible(bool invincible, float duration = 0f)
     {
         isInvincible = invincible;
@@ -194,9 +216,6 @@ public class HealthSystem : MonoBehaviour
         OnDeath?.Invoke(this, EventArgs.Empty);
     }
 
-    /// <summary>
-    /// Revive the entity with specified HP.
-    /// </summary>
     public void Revive(int hp = -1)
     {
         isDead = false;

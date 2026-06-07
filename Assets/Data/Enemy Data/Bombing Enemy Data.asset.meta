@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Data/Enemy Data/Bombing Enemy Data.asset.meta
 guid: 59916454c85be824fabe680aaec0d2c9
+========
+guid: 09cc21d7c60c8f64c96712ae22a1e872
+>>>>>>>> f54035e70c48de84c3651b1bbfad3eaaf9cd75c1:Assets/Resources/DOTweenSettings.asset.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000

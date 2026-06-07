@@ -2,7 +2,8 @@ using UnityEngine;
 
 /// <summary>
 /// ScriptableObject for configurable input mappings.
-/// Wraps GameInput (New Input System) and provides dual control scheme support.
+/// Deprecated Legacy Input calls. Now acts as a wrapper/bridge to GameInput (New Input System).
+/// Retains "ControlScheme" structure for Inspector configuration, but logic uses New Input System Bindings.
 /// </summary>
 [CreateAssetMenu(menuName = "Combat/Input Config")]
 public class InputConfig : ScriptableObject
@@ -16,127 +17,81 @@ public class InputConfig : ScriptableObject
     [Header("Active Scheme")]
     public ControlScheme activeScheme = ControlScheme.WASD_JUK;
 
-    // ===== Combat Keys (these are NEW, not in GameInput) =====
+    // ===== Combat Keys (Kept for Inspector configuration/UI display, but logic uses New Input System Bindings) =====
     [Header("Scheme 1: WASD + JUK (Combat)")]
     public KeyCode wasd_Attack = KeyCode.J;
     public KeyCode wasd_Skill = KeyCode.U;
     public KeyCode wasd_Special = KeyCode.K;
+    public KeyCode wasd_Dash = KeyCode.L;
+    public KeyCode wasd_Jump = KeyCode.W;
 
     [Header("Scheme 2: Arrow + ZXC (Combat)")]
     public KeyCode arrow_Attack = KeyCode.Z;
     public KeyCode arrow_Skill = KeyCode.X;
     public KeyCode arrow_Special = KeyCode.C;
+    public KeyCode arrow_Dash = KeyCode.LeftShift;
+    public KeyCode arrow_Jump = KeyCode.UpArrow;
 
-    // ===== Combat Input Properties =====
+    // ===== Combat Input Properties (Wrappers for UI/Display) =====
     public KeyCode AttackKey => activeScheme == ControlScheme.WASD_JUK ? wasd_Attack : arrow_Attack;
     public KeyCode SkillKey => activeScheme == ControlScheme.WASD_JUK ? wasd_Skill : arrow_Skill;
     public KeyCode SpecialKey => activeScheme == ControlScheme.WASD_JUK ? wasd_Special : arrow_Special;
+    public KeyCode DashKey => activeScheme == ControlScheme.WASD_JUK ? wasd_Dash : arrow_Dash;
+    public KeyCode JumpKey => activeScheme == ControlScheme.WASD_JUK ? wasd_Jump : arrow_Jump;
 
-    // ===== Combat Input Methods =====
-    public bool GetAttackDown() => Input.GetKeyDown(AttackKey);
-    public bool GetAttackHeld() => Input.GetKey(AttackKey);
-    public bool GetAttackUp() => Input.GetKeyUp(AttackKey);
-    public bool GetSkillDown() => Input.GetKeyDown(SkillKey);
-    public bool GetSpecialDown() => Input.GetKeyDown(SpecialKey);
-
-    // ===== Movement (Wraps GameInput) =====
+    // ===== Combat Input Methods (Redirect to GameInput) =====
+    public bool GetAttackDown() => GameInput.Instance != null && GameInput.Instance.IsAttackActionPressed();
+    public bool GetAttackHeld() => GameInput.Instance != null && GameInput.Instance.IsAttackActionHeld();
+    public bool GetAttackUp() => GameInput.Instance != null && GameInput.Instance.IsAttackActionReleased();
     
-    /// <summary>
-    /// Get horizontal movement input (-1 to 1).
-    /// Uses GameInput's New Input System.
-    /// </summary>
+    public bool GetSkillDown() => GameInput.Instance != null && GameInput.Instance.IsSkillActionPressed();
+    public bool GetSpecialDown() => GameInput.Instance != null && GameInput.Instance.IsSpecialActionPressed();
+
+    // ===== Movement (Redirect to GameInput) =====
+    
     public float GetHorizontalInput()
     {
-        if (GameInput.Instance == null) return Input.GetAxisRaw("Horizontal");
-
         float value = 0f;
-        if (GameInput.Instance.IsLeftActionPressed()) value -= 1f;
-        if (GameInput.Instance.IsRightActionPressed()) value += 1f;
-        return value;
+        if (GameInput.Instance != null)
+        {
+            if (GameInput.Instance.IsLeftActionPressed()) value -= 1f;
+            if (GameInput.Instance.IsRightActionPressed()) value += 1f;
+        }
+        return Mathf.Clamp(value, -1f, 1f);
     }
 
-    /// <summary>
-    /// Get vertical movement input (-1 to 1).
-    /// Uses GameInput's New Input System.
-    /// </summary>
     public float GetVerticalInput()
     {
-        if (GameInput.Instance == null) return Input.GetAxisRaw("Vertical");
-
         float value = 0f;
-        if (GameInput.Instance.IsDownActionPressed()) value -= 1f;
-        if (GameInput.Instance.IsUpActionPressed()) value += 1f;
-        return value;
+        if (GameInput.Instance != null)
+        {
+            if (GameInput.Instance.IsDownActionPressed()) value -= 1f;
+            if (GameInput.Instance.IsUpActionPressed()) value += 1f;
+        }
+        return Mathf.Clamp(value, -1f, 1f);
     }
 
-    /// <summary>
-    /// Get movement input as Vector2.
-    /// </summary>
     public Vector2 GetMovementInput()
     {
         return new Vector2(GetHorizontalInput(), GetVerticalInput());
     }
 
-    // ===== Jump (Wraps GameInput) =====
+    // ===== Jump (Redirect to GameInput) =====
     
-    /// <summary>
-    /// Check if jump was pressed this frame.
-    /// </summary>
-    public bool GetJumpDown()
-    {
-        if (GameInput.Instance == null) return Input.GetKeyDown(KeyCode.Space);
-        return GameInput.Instance.IsJumpActionPressed();
-    }
+    public bool GetJumpDown() => GameInput.Instance != null && GameInput.Instance.IsJumpActionPressed();
+    public bool GetJumpHeld() => GameInput.Instance != null && GameInput.Instance.IsJumpActionHeld();
+    public bool GetJumpUp() => GameInput.Instance != null && GameInput.Instance.IsJumpActionReleased();
 
-    /// <summary>
-    /// Check if jump is being held.
-    /// </summary>
-    public bool GetJumpHeld()
-    {
-        // GameInput doesn't have a held check, fallback to legacy
-        return Input.GetKey(KeyCode.Space);
-    }
-
-    /// <summary>
-    /// Check if jump was released.
-    /// </summary>
-    public bool GetJumpUp()
-    {
-        return Input.GetKeyUp(KeyCode.Space);
-    }
-
-    // ===== Dash (Wraps GameInput) =====
-    
-    /// <summary>
-    /// Check if dash was pressed this frame.
-    /// </summary>
-    public bool GetDashDown()
-    {
-        if (GameInput.Instance == null)
-        {
-            // Fallback based on scheme
-            KeyCode dashKey = activeScheme == ControlScheme.WASD_JUK ? KeyCode.L : KeyCode.LeftShift;
-            return Input.GetKeyDown(dashKey);
-        }
-        return GameInput.Instance.IsDashActionPressed();
-    }
+    // ===== Dash (Redirect to GameInput) =====
+    // Note: IsDashActionPressed uses WasPressedThisFrame logic now
+    public bool GetDashDown() => GameInput.Instance != null && GameInput.Instance.IsDashActionPressed();
 
     // ===== Pause/Menu =====
     
-    /// <summary>
-    /// Check if pause/menu was pressed.
-    /// </summary>
-    public bool GetPauseDown()
-    {
-        if (GameInput.Instance == null) return Input.GetKeyDown(KeyCode.Escape);
-        return GameInput.Instance.IsPauseActionPressed();
-    }
+    public bool GetPauseDown() => GameInput.Instance != null && GameInput.Instance.IsPauseActionPressed();
 
     // ===== Utility =====
     
-    /// <summary>
-    /// Switch between control schemes.
-    /// </summary>
     public void ToggleScheme()
     {
         activeScheme = activeScheme == ControlScheme.WASD_JUK 

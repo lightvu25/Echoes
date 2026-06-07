@@ -4,19 +4,19 @@ using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Added events for various actions (Idle, Clind, Grab, Getup)
-
     public event EventHandler OnIdle;
     public event EventHandler OnJump;
     public event EventHandler OnLand;
-    public event EventHandler OnWalk;
+    public event EventHandler OnRun;
     public event EventHandler OnDash;
-    public event EventHandler OnStopWalk;
+    public event EventHandler OnStopRun;
     public event EventHandler OnCling;
     public event EventHandler OnGrab;
     public event EventHandler OnGetup;
 
     public PlayerData Data;
+    private PlayerCombat playerCombat;
+    private HealthSystem healthSystem;
 
     [Header("Input")]
     [SerializeField] private InputConfig inputConfig;
@@ -71,6 +71,8 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerCombat = GetComponent<PlayerCombat>();
+        healthSystem = GetComponent<HealthSystem>();
     }
 
     private void Start()
@@ -99,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
         if (_moveInput.x != 0)
             CheckDirectionToFace(_moveInput.x > 0);
 
-        // Jump input (uses InputConfig -> GameInput)
+        // Jump input
         if (inputConfig != null ? inputConfig.GetJumpDown() : Input.GetKeyDown(KeyCode.Space))
         {
             OnJumpInput();
@@ -110,19 +112,28 @@ public class PlayerMovement : MonoBehaviour
             OnJumpUpInput();
         }
 
-        // Dash input (uses InputConfig -> GameInput)
+        // Dash input
         if (inputConfig != null ? inputConfig.GetDashDown() : Input.GetKeyDown(KeyCode.LeftShift))
         {
             OnDashInput();
         }
 
         // Collision Checks
-        if (!isDashing && !isJumping)
+        if (!isDashing)
         {
             // Ground Check
             if (Physics2D.OverlapBox(_groundCheck.position, _groundCheckSize, 0f, _groundLayer))
             {
-                LastOnGroundTime = Data.coyoteTime; // Reset coyote time when grounded
+                // Ensure we are not moving up significantly to avoid false landings immediately after jump
+                if (rb.linearVelocity.y < 0.01f)
+                {
+                    LastOnGroundTime = Data.coyoteTime; // Reset coyote time when grounded
+                    
+                    // Force reset jump states if we are grounded (safeguard against stuck states)
+                    isJumping = false;
+                    isWallJumping = false;
+                    _isJumpFalling = false;
+                }
             }
             
             if (((Physics2D.OverlapBox(_fromWallCheckPoint.position, _wallCheckSize, 0f, _groundLayer) && isFacingRight) ||
@@ -270,12 +281,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (isCurrentlyGrounded && isMoving && !_wasMoving)
         {
-            OnWalk?.Invoke(this, EventArgs.Empty);
+            OnRun?.Invoke(this, EventArgs.Empty);
         }
 
         if (isCurrentlyGrounded && !isMoving && _wasMoving)
         {
-            OnStopWalk?.Invoke(this, EventArgs.Empty);
+            OnStopRun?.Invoke(this, EventArgs.Empty);
         }
 
         _wasMoving = isMoving;
@@ -337,6 +348,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Run(float lerpAmount)
     {
+        if (playerCombat.IsKnockedBack) return;
+
         // Tính toán vận tốc mục tiêu dựa trên đầu vào di chuyển và tốc độ tối đa
         float targetSpeed = _moveInput.x * Data.runMaxSpeed;
 
@@ -431,9 +444,6 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator StartDash(Vector2 dir)
     {
-        // Về tổng quan, dash method này dựa trên Celeste
-        // dash sẽ có 2 giai đoạn: dashAttack và dashEnd
-
         LastOnGroundTime = 0;
         LastPressedDashTime = 0;
 
@@ -444,11 +454,14 @@ public class PlayerMovement : MonoBehaviour
 
         SetGravityScale(0);
 
+        // Enable i-frames and phase through enemies during active dash
+        if (healthSystem != null)
+            healthSystem.SetInvincible(true);
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), true);
+
         while (Time.time - startTime <= Data.dashAttackTime)
         {
             rb.linearVelocity = dir.normalized * Data.dashSpeed;
-            // Dừng vòng lặp cho đến khung hình tiếp theo
-            // Đây là cách để tạo hiệu ứng dash liên tục trong một khoảng thời gian
             yield return null;
         }
 
@@ -456,7 +469,10 @@ public class PlayerMovement : MonoBehaviour
 
         _isDashAttacking = false;
 
-        // Bắt đầu giai đoạn dashEnd, nơi người chơi có thể kiểm soát hướng di chuyển nhưng vẫn giới hạn gia tốc
+        // Disable i-frames — player is vulnerable during recovery
+        if (healthSystem != null)
+            healthSystem.SetInvincible(false);
+
         SetGravityScale(Data.gravityScale);
         rb.linearVelocity = dir.normalized * Data.dashEndSpeed;
 
@@ -465,8 +481,8 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
 
-        // Kết thúc dash
         isDashing = false;
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), false);
     }
 
     // Tạm dừng game trong một khoảng thời gian ngắn

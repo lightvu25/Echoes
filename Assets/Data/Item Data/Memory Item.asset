@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fbb818e47fdc34438356d7820d2c937, type: 3}
+  m_Name: Memory Item
+  m_EditorClassIdentifier: Assembly-CSharp::MemoryItemData
+  itemName: Torch
+  itemIcon: {fileID: -6063922112839845918, guid: 1ebb81af45f0a2d43885c830cb446a52, type: 3}
+  dropPrefab: {fileID: 0}
+  elementType: 1

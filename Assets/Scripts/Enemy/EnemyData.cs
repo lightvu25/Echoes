@@ -3,6 +3,12 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Enemy Data")]
 public class EnemyData : ScriptableObject
 {
+    [Header("Health")]
+    public int maxHP = 100;
+    public float defense = 0f;
+
+    [Space(20)]
+
     [Header("Patrol")]
     public float patrolMaxSpeed;
     public float patrolAcceleration;
@@ -36,6 +42,12 @@ public class EnemyData : ScriptableObject
     public float attackSpeed;
     public float attackCooldown;
 
+    [Header("Attack Hitbox")]
+    public Vector2 attackHitboxSize = new Vector2(1.5f, 1.5f);
+    public Vector2 attackHitboxOffset = new Vector2(0.75f, 0f);
+    public float knockbackForce = 3f;
+    public LayerMask attackTargetLayers;
+
     [Space(20)]
 
     [Header("Line of Sight")]
@@ -46,6 +58,22 @@ public class EnemyData : ScriptableObject
     public LayerMask wallLayer;
     public LayerMask targetLayer;
     public float noticeDuration = 0.5f;
+
+    [Space(20)]
+
+    [Header("Loot Drops")]
+    public int expRewardMin = 10;
+    public int expRewardMax = 20;
+
+    [Space(10)]
+    [Range(0f, 100f)] public float goldDropChance = 50f;
+    public int goldAmountMin = 1;
+    public int goldAmountMax = 5;
+
+    [Space(10)]
+    [Range(0f, 100f)] public float memoryFragmentDropChance = 10f;
+    public int memoryFragmentAmountMin = 1;
+    public int memoryFragmentAmountMax = 2;
 
     private void OnValidate()
     {

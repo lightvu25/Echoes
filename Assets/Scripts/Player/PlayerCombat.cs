@@ -1,10 +1,7 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// Main player combat controller.
-/// Handles damage receiving, health, and integrates with combat systems.
-/// </summary>
 [RequireComponent(typeof(HealthSystem))]
 public class PlayerCombat : MonoBehaviour, IDamageable
 {
@@ -24,10 +21,11 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     [SerializeField] private float knockbackDuration = 0.2f;
 
     private HealthSystem healthSystem;
+    private PlayerAttack playerAttack;
     private Rigidbody2D rb;
-    private bool isKnockedBack = false;
+    private Coroutine _knockbackCoroutine;
+    public bool isKnockedBack = false;
 
-    // IDamageable implementation
     public bool IsDead => healthSystem != null && healthSystem.IsDead;
     public Transform Transform => transform;
     public float Defense => healthSystem != null ? healthSystem.Defense : 0f;
@@ -35,6 +33,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
+        playerAttack = GetComponent<PlayerAttack>();
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -62,23 +61,20 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         }
     }
 
-    /// <summary>
-    /// IDamageable implementation - receive damage.
-    /// </summary>
     public void TakeDamage(DamageInfo damageInfo)
     {
         if (healthSystem == null || healthSystem.IsDead) return;
+        if (healthSystem.IsInvincible) return;
 
-        // Apply damage through health system
         healthSystem.TakeDamage(damageInfo);
 
-        // Apply knockback
         if (damageInfo.knockbackForce > 0f && rb != null)
         {
             ApplyKnockback(damageInfo.knockbackDirection, damageInfo.knockbackForce);
         }
 
-        // Fire event
+        GameFeelManager.Instance?.ProcessPlayerHit();
+
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, Defense);
         OnDamageReceived?.Invoke(this, new DamageReceivedArgs
         {
@@ -89,21 +85,24 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private void ApplyKnockback(Vector2 direction, float force)
     {
-        if (isKnockedBack) return;
+        if (_knockbackCoroutine != null)
+        {
+            StopCoroutine(_knockbackCoroutine);
+            isKnockedBack = false;
+        }
 
-        StartCoroutine(KnockbackRoutine(direction, force));
+        if (playerAttack != null)
+            playerAttack.CancelAttack();
+
+        _knockbackCoroutine = StartCoroutine(KnockbackRoutine(direction, force));
     }
 
-    private System.Collections.IEnumerator KnockbackRoutine(Vector2 direction, float force)
+    private IEnumerator KnockbackRoutine(Vector2 direction, float force)
     {
         isKnockedBack = true;
 
-        // Apply knockback force
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector2.zero;
-            rb.AddForce(direction * force, ForceMode2D.Impulse);
-        }
+        rb.linearVelocity = Vector2.zero;
+        rb.AddForce(direction * force, ForceMode2D.Impulse);
 
         yield return new WaitForSeconds(knockbackDuration);
 
@@ -112,30 +111,27 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private void HealthSystem_OnDeath(object sender, EventArgs e)
     {
-        // Trigger player death through PlayerInteract
+        isKnockedBack = false;
+        if (_knockbackCoroutine != null)
+        {
+            StopCoroutine(_knockbackCoroutine);
+            _knockbackCoroutine = null;
+        }
+
+        if (GameSession.Instance != null)
+        {
+            GameSession.Instance.HandlePlayerDeath();
+        }
+
         if (PlayerInteract.Instance != null)
         {
             PlayerInteract.Instance.Dead();
         }
     }
 
-    /// <summary>
-    /// Get current HP.
-    /// </summary>
     public int CurrentHP => healthSystem != null ? healthSystem.CurrentHP : 0;
-
-    /// <summary>
-    /// Get max HP.
-    /// </summary>
     public int MaxHP => healthSystem != null ? healthSystem.MaxHP : 0;
 
-    /// <summary>
-    /// Get HP percentage (0-1).
-    /// </summary>
     public float HPPercent => healthSystem != null ? healthSystem.HPPercent : 0f;
-
-    /// <summary>
-    /// Check if currently knocked back.
-    /// </summary>
     public bool IsKnockedBack => isKnockedBack;
 }
