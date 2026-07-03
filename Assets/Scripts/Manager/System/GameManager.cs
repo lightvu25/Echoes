@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private CinemachineCamera cinemachineCamera;
 
-    /// <summary>Assign the concrete generator (e.g. AbyssLevelGenerator) here in the Inspector.</summary>
     public BaseLevelGenerator currentGenerator;
 
     public event EventHandler OnGamePaused;
@@ -16,16 +15,20 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("[GameManager] Awake called. Setting Instance.");
         Instance = this;
     }
 
     private void Start()
     {
+        Debug.Log("[GameManager] Start called.");
+        if (PlayerInteract.Instance == null) Debug.LogError("[GameManager] PlayerInteract.Instance is NULL!");
+        
         PlayerInteract.Instance.OnCoinPickup  += Player_OnCoinPickup;
         PlayerInteract.Instance.OnGoal        += Player_OnGoal;
         PlayerInteract.Instance.OnStateChanged += Player_OnStateChanged;
 
-        GameInput.Instance.OnMenuButtonPressed += GameInput_OnMenuButtonPressed;
+
 
         if (currentGenerator == null)
         {
@@ -40,7 +43,9 @@ public class GameManager : MonoBehaviour
 
         Transform spawn = currentGenerator.GetPlayerSpawnPoint();
         if (spawn != null)
-            PlayerInteract.Instance.transform.position = spawn.position;
+        {
+            StartCoroutine(SpawnPlayerSafely(spawn.position));
+        }
 
         cinemachineCamera.Target.TrackingTarget = PlayerInteract.Instance.transform;
         CinemachineCameraZoom2D.Instance.SetNormalOrthographicSize();
@@ -61,9 +66,37 @@ public class GameManager : MonoBehaviour
 
         Transform spawn = currentGenerator.GetPlayerSpawnPoint();
         if (spawn != null)
-            PlayerInteract.Instance.transform.position = spawn.position;
+        {
+            StartCoroutine(SpawnPlayerSafely(spawn.position));
+        }
 
         GameSession.Instance.SaveCurrentRun();
+    }
+
+    private System.Collections.IEnumerator SpawnPlayerSafely(Vector3 targetPosition)
+    {
+        var rb = PlayerInteract.Instance.GetComponent<Rigidbody2D>();
+        if (rb != null) rb.simulated = false;
+
+        PlayerInteract.Instance.transform.position = targetPosition;
+
+        // Wait for TilemapMerger to finish merging all rooms
+        if (RuntimeTilemapMerger.Instance != null)
+        {
+            while (RuntimeTilemapMerger.Instance.IsMerging)
+            {
+                yield return null;
+            }
+        }
+
+        // Wait enough time to ensure composite colliders rebuild their geometry
+        yield return new WaitForSeconds(0.5f);
+
+        if (rb != null) 
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.simulated = true;
+        }
     }
 
     public int GetLevelNumber() => GameSession.Instance.currentRun.levelNumber;
@@ -116,8 +149,5 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void GameInput_OnMenuButtonPressed(object sender, EventArgs e)
-    {
-        PauseResumeGame();
-    }
+
 }

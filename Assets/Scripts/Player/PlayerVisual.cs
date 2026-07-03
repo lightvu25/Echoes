@@ -3,69 +3,115 @@ using UnityEngine;
 
 public class PlayerVisual : MonoBehaviour
 {
+    [Header("Particles")]
     [SerializeField] private ParticleSystem particleWalkingPrefab;
     [SerializeField] private ParticleSystem particleJumpPrefab;
     [SerializeField] private ParticleSystem particleLandPrefab;
     [SerializeField] private ParticleSystem particleDiePrefab;
 
+    [Header("Components")]
     [SerializeField] private Animator _animator;
 
     private PlayerMovement playerMovement;
     private PlayerInteract playerInteract;
 
+    private PlayerAttack playerAttack;
+
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
         playerInteract = GetComponent<PlayerInteract>();
+        playerAttack = GetComponent<PlayerAttack>();
     }
 
     private void Start()
     {
-        playerMovement.OnIdle += HandleIdle;
         playerMovement.OnJump += HandleJump;
         playerMovement.OnLand += HandleLand;
-        playerMovement.OnRun += HandleRun;
+        playerMovement.OnGrab += HandleLedgeGrab;
+        playerMovement.OnGetup += HandleLedgeClimb;
+        playerMovement.OnFall += HandleFall;
         playerInteract.OnDead += HandleDead;
+        playerAttack.OnAttackStarted += HandleAttack;
     }
 
-    private void HandleIdle(object sender, EventArgs e)
+    private void Update()
     {
-        _animator.SetBool("IsRunning", false);
-        _animator.SetBool("IsJumping", false);
-        _animator.SetBool("IsFalling", false);
-        _animator.SetBool("IsDashing", false);
+        if (playerMovement == null) return;
+        
+        _animator.SetBool("isGrounded", playerMovement.isGrounded);
+        _animator.SetBool("isRunning", playerMovement.isRunning);
+        _animator.SetFloat("VelocityY", playerMovement.rb.linearVelocity.y);
+        _animator.SetBool("isWallSliding", playerMovement.isSliding);
+        _animator.SetBool("isClimbing", playerMovement.isClimbing);
+
+        if (particleWalkingPrefab != null)
+        {
+            if (playerMovement.isGrounded && playerMovement.isRunning)
+            {
+                if (!particleWalkingPrefab.isPlaying) particleWalkingPrefab.Play();
+            }
+            else
+            {
+                if (particleWalkingPrefab.isPlaying) particleWalkingPrefab.Stop();
+            }
+        }
     }
+
 
     private void HandleJump(object sender, EventArgs e)
     {
-        if (particleJumpPrefab != null)
-        {
-            Instantiate(particleJumpPrefab, transform.position, Quaternion.identity);
-        }
-
-        if (particleWalkingPrefab != null)
-            particleWalkingPrefab.Stop();
+        _animator.Play("Jump");
+        
+        if (particleJumpPrefab != null) ObjectPoolManager.SpawnObject(particleJumpPrefab.gameObject, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.ParticleSystem);
     }
 
     private void HandleLand(object sender, EventArgs e)
     {
-        if (particleLandPrefab != null)
-        {
-            Instantiate(particleLandPrefab, transform.position, Quaternion.identity);
-        }
-
-        if (particleWalkingPrefab != null)
-            particleWalkingPrefab.Play();
+        _animator.Play("Fall");
+        
+        if (particleLandPrefab != null) ObjectPoolManager.SpawnObject(particleLandPrefab.gameObject, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.ParticleSystem);
     }
 
-    private void HandleRun(object sender, EventArgs e)
+    private void HandleFall(object sender, EventArgs e)
     {
-        if (particleWalkingPrefab != null)
-            particleWalkingPrefab.Play();
+        _animator.Play("Fall");
+    }
+
+    private void HandleLedgeGrab(object sender, EventArgs e)
+    {
+        _animator.Play("Ledge grab"); 
+    }
+
+    private void HandleLedgeClimb(object sender, EventArgs e)
+    {
+        _animator.Play("Ledge Climb");
+    }
+
+    private void HandleAttack(object sender, EventArgs e)
+    {
+        _animator.Play("Attack");
     }
 
     private void HandleDead(object sender, EventArgs e)
     {
-        // animator.SetTrigger("Die");
+        _animator.Play("Death");
+        if (particleDiePrefab != null) ObjectPoolManager.SpawnObject(particleDiePrefab.gameObject, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.ParticleSystem);
+    }
+
+    private void OnDestroy()
+    {
+        if (playerMovement != null)
+        {
+            playerMovement.OnJump -= HandleJump;
+            playerMovement.OnLand -= HandleLand;
+            playerMovement.OnGrab -= HandleLedgeGrab;
+            playerMovement.OnGetup -= HandleLedgeClimb;
+            playerMovement.OnFall -= HandleFall;
+        }
+        if (playerInteract != null)
+        {
+            playerInteract.OnDead -= HandleDead;
+        }
     }
 }

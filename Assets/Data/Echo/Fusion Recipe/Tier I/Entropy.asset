@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
+  m_Name: Entropy
+  m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
+  recipeID: REC_ENTROPY
+  elementA: {fileID: 11400000, guid: 06f1a3b3210f953438d718fa766d4d87, type: 2}
+  elementB: {fileID: 11400000, guid: 3ec18f11c8e531742b8da89ec45d2a5f, type: 2}
+  resultElement: {fileID: 11400000, guid: a24a14679e11dd54c97325295ae0ede7, type: 2}
+  recipeTier: 1
+  requiredConstellationNode: 

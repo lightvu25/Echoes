@@ -13,20 +13,15 @@ public class EnemyBrain : MonoBehaviour
 
     [SerializeField] private EnemyData data;
 
-    [Header("Evolution")]
-    public int levelIndex = 1;
-
-    private float _telegraphDuration;
-    private float _attackCooldown;
-    private float _visionRange;
-    private bool  _canBackstep;
-
     [SerializeField] private float backstepSpeed   = 6f;
     [SerializeField] private float backstepCooldown = 1.2f;
     private float _lastBackstepTime = -999f;
-    private int   _evolutionTier;
-    private int _chaseObstacleTicks = 0;
-    private const int CHASE_OBSTACLE_THRESHOLD = 3;
+    private bool  _canBackstep;
+
+    // Cached original base values from the cloned EnemyData (prevents multiplier compounding)
+    private float _baseTelegraphDuration;
+    private float _baseAttackCooldown;
+    private float _baseVisionRange;
 
     private EnemySensor sensor;
     private IEnemyMovement movement;
@@ -43,9 +38,17 @@ public class EnemyBrain : MonoBehaviour
 
     private void Awake()
     {
+        // Clone the ScriptableObject so we can safely overwrite stats at runtime
+        data = Instantiate(data);
+
         sensor = GetComponent<EnemySensor>();
         movement = GetComponent<IEnemyMovement>();
         attack = GetComponent<IEnemyAttack>();
+
+        // Cache original base values before any evolution modifiers are applied
+        _baseTelegraphDuration = data.telegraphDuration;
+        _baseAttackCooldown    = data.attackCooldown;
+        _baseVisionRange       = data.visionRange;
     }
 
     private void Start()
@@ -64,8 +67,6 @@ public class EnemyBrain : MonoBehaviour
 
         PickNewPatrolTarget();
         ChangeState(State.Patrol);
-
-        ApplyEvolutionModifiers();
     }
 
     private void OnDestroy()
@@ -81,23 +82,14 @@ public class EnemyBrain : MonoBehaviour
             attack.OnAttackFinished -= HandleAttackFinished;
     }
 
-    private void OnEnable()
-    {
-        TickManager.onTick += OnTick;
-    }
-
-    private void OnDisable()
-    {
-        TickManager.onTick -= OnTick;
-    }
+    private void OnEnable() { TickManager.onTick += OnTick; }
+    private void OnDisable() { TickManager.onTick -= OnTick; }
 
     private void HandlePlayerDeath(object sender, EventArgs e)
     {
         sensor.ClearTarget();
-
         if (attack != null) attack.CancelAttack();
         if (movement != null) movement.Stop();
-
         ChangeState(State.Idle);
     }
 
@@ -105,14 +97,32 @@ public class EnemyBrain : MonoBehaviour
     {
         if (currentState == State.Attack || currentState == State.Telegraph)
         {
-            float dist = sensor.DistanceToPlayer;
-            if (sensor.TargetPlayer == null || dist > data.attackRange + 0.5f)
+            if (sensor.TargetPlayer == null || !IsTargetInHitboxZone())
                 ChangeState(State.Chase);
+            else
+                ChangeState(State.Idle);
         }
     }
 
     private void Update()
     {
+        // Guard against dead player
+        if (PlayerStats.Instance != null)
+        {
+            var pHealth = PlayerStats.Instance.GetComponent<HealthSystem>();
+            if (pHealth != null && pHealth.IsDead)
+            {
+                if (currentState != State.Idle)
+                {
+                    ChangeState(State.Idle);
+                    if (attack != null) attack.CancelAttack();
+                    if (movement != null) movement.Stop();
+                    sensor.ClearTarget();
+                }
+                return;
+            }
+        }
+
         if (sensor.TargetPlayer == null && currentState != State.Idle && currentState != State.Patrol)
         {
             movement?.Stop();
@@ -129,19 +139,20 @@ public class EnemyBrain : MonoBehaviour
 
         switch (currentState)
         {
-            case State.Patrol:   DrivePatrol();    break;
-            case State.Chase:    DriveChase();     break;
+            case State.Patrol:
+                UpdatePatrol();
+                break;
+            case State.Chase:
+                UpdateChase();
+                break;
             case State.Telegraph:
             case State.Attack:
                 movement?.Stop();
-                if (sensor.TargetPlayer != null)
-                    movement?.FaceDirection(sensor.TargetPlayer.position.x > transform.position.x);
                 break;
             default:
                 movement?.Stop();
                 break;
         }
-
     }
 
     private void OnTick()
@@ -163,10 +174,7 @@ public class EnemyBrain : MonoBehaviour
     {
         currentState = newState;
         stateTimer = 0f;
-        _chaseObstacleTicks = 0;
-
         if (newState != State.Notice) hasNoticeFired = false;
-
         OnStateChanged?.Invoke(this, new OnStateArgs { state = newState });
     }
 
@@ -176,42 +184,50 @@ public class EnemyBrain : MonoBehaviour
         ChangeState(State.Chase);
     }
 
-    // --- Tick Decisions ---
-
     private void TickIdle()
     {
-        if (sensor.IsPlayerVisible && !movement.IsWallAhead)
+        if (sensor.IsPlayerVisible)
         {
+            if (movement != null && (!movement.IsGroundedAhead || movement.IsWallAhead))
+            {
+                // Cannot proceed. Face player but stay in idle.
+                if (sensor.TargetPlayer != null)
+                {
+                    bool faceRight = sensor.TargetPlayer.position.x > transform.position.x;
+                    if (movement.IsFacingRight != faceRight)
+                        movement.FaceDirection(faceRight);
+                }
+                return;
+            }
+
             ChangeState(State.Chase);
             return;
         }
 
-        if (sensor.IsPlayerVisible && movement.IsWallAhead)
+        if (Time.time >= lastAttackTime + Mathf.Max(0.1f, data.attackCooldown))
         {
-            return;
-        }
+            if (stateTimer >= UnityEngine.Random.Range(data.patrolWaitTimeMin, data.patrolWaitTimeMax))
+            {
+                if (movement != null && (!movement.IsGroundedAhead || movement.IsWallAhead))
+                    movement.FaceDirection(!movement.IsFacingRight);
 
-        if (stateTimer >= UnityEngine.Random.Range(data.patrolWaitTimeMin, data.patrolWaitTimeMax))
-        {
-            if (movement != null && (!movement.IsGroundedAhead || movement.IsWallAhead))
-                movement.FaceDirection(!movement.IsFacingRight);
+                PickNewPatrolTarget();
 
-            PickNewPatrolTarget();
-            ChangeState(State.Patrol);
+                if (movement != null)
+                {
+                    float dirToTarget = Mathf.Sign(patrolTarget.x - transform.position.x);
+                    float facingDir = movement.IsFacingRight ? 1f : -1f;
+                    if (dirToTarget != facingDir && dirToTarget != 0)
+                        patrolTarget = new Vector2(transform.position.x + facingDir * UnityEngine.Random.Range(1f, data.patrolRadius), transform.position.y);
+                }
+                ChangeState(State.Patrol);
+            }
         }
     }
 
     private void TickPatrol()
     {
         if (sensor.IsPlayerVisible) { ChangeState(State.Notice); return; }
-
-        if (movement != null && (!movement.IsGroundedAhead || movement.IsWallAhead))
-        {
-            movement.FaceDirection(!movement.IsFacingRight);
-            float dir = movement.IsFacingRight ? 1f : -1f;
-            patrolTarget = new Vector2(transform.position.x + dir * data.patrolRadius, transform.position.y);
-            return;
-        }
 
         if (Mathf.Abs(transform.position.x - patrolTarget.x) < 0.5f)
             ChangeState(State.Idle);
@@ -226,12 +242,30 @@ public class EnemyBrain : MonoBehaviour
         {
             hasNoticeFired = true;
             OnNotice?.Invoke(this, EventArgs.Empty);
+
+            // Shared vision: notify all enemies that the player has been spotted
+            EvolutionManager.Instance?.ReportPlayerSpotted(transform.position);
         }
 
         if (stateTimer >= data.noticeDuration)
         {
-            ChangeState(sensor.DistanceToPlayer <= data.attackRange ? State.Telegraph : State.Chase);
+            ChangeState(IsTargetInHitboxZone() ? State.Telegraph : State.Chase);
         }
+    }
+
+    private bool IsTargetInHitboxZone()
+    {
+        if (sensor == null || sensor.TargetPlayer == null) return false;
+
+        float dirX = sensor.TargetPlayer.position.x > transform.position.x ? 1f : -1f;
+        Vector2 offset = new Vector2(data.attackHitboxOffset.x * dirX, data.attackHitboxOffset.y);
+        Vector2 center = (Vector2)transform.position + offset;
+
+        Vector2 checkSize = data.attackHitboxSize;
+        checkSize.x *= 0.66f; // Chỉ lấy 66% chiều dài => Quái phải tiến sâu vào 1/3 vùng hitbox mới đánh
+
+        Collider2D hit = Physics2D.OverlapBox(center, checkSize, 0f, data.targetLayer);
+        return hit != null;
     }
 
     private void TickChase()
@@ -241,26 +275,11 @@ public class EnemyBrain : MonoBehaviour
             ChangeState(State.Idle);
             return;
         }
-
-        if (movement != null && movement.IsWallAhead)
-        {
-            ChangeState(State.Idle);
-            return;
-        }
-
-        if (sensor.DistanceToPlayer <= data.attackRange)
-        {
-            ChangeState(State.Telegraph);
-            return;
-        }
     }
 
     private void TickTelegraph()
     {
-        if (sensor.TargetPlayer != null)
-            movement?.FaceDirection(sensor.TargetPlayer.position.x > transform.position.x);
-
-        if (stateTimer >= _telegraphDuration)
+        if (stateTimer >= data.telegraphDuration)
         {
             ChangeState(State.Attack);
             lastAttackTime = Time.time;
@@ -279,30 +298,62 @@ public class EnemyBrain : MonoBehaviour
             movement.Rb.linearVelocity = new Vector2(-facingDir * backstepSpeed, movement.Rb.linearVelocity.y);
             _lastBackstepTime = Time.time;
         }
-
-        if (Time.time >= lastAttackTime + Mathf.Max(0.1f, _attackCooldown))
-            ChangeState(State.Telegraph);
     }
 
-    // --- Movement Drivers ---
+    private void UpdateChase()
+    {
+        if (movement != null && (!movement.IsGroundedAhead || movement.IsWallAhead))
+        {
+            movement.Stop();
+            ChangeState(State.Idle);
+            return;
+        }
+
+        if (IsTargetInHitboxZone())
+        {
+            movement?.Stop();
+            if (sensor.TargetPlayer != null)
+            {
+                movement?.FaceDirection(sensor.TargetPlayer.position.x > transform.position.x);
+            }
+            
+            ChangeState(State.Telegraph);
+        }
+        else
+        {
+            DriveChase();
+        }
+    }
+
+    private void UpdatePatrol()
+    {
+        if (movement != null && (!movement.IsGroundedAhead || movement.IsWallAhead))
+        {
+            movement.Stop();
+            ChangeState(State.Idle);
+        }
+        else
+        {
+            DrivePatrol();
+        }
+    }
 
     private void DrivePatrol()
     {
         if (movement == null) return;
 
-        if (!movement.IsGroundedAhead || movement.IsWallAhead) return;
-
         float direction = Mathf.Sign(patrolTarget.x - transform.position.x);
-        movement.Move(new Vector2(direction, 0), data.patrolMaxSpeed, data.patrolAccelAmount, data.patrolDeccelAmount);
+        float mult = BurdenManager.Instance != null ? BurdenManager.Instance.CurrentSpeedMultiplier : 1f;
+        movement.Move(new Vector2(direction, 0), data.patrolMaxSpeed * mult, data.patrolAccelAmount * mult, data.patrolDeccelAmount * mult);
     }
 
     private void DriveChase()
     {
         if (movement == null || sensor.TargetPlayer == null) return;
-        if (!movement.IsGroundedAhead || movement.IsWallAhead) return;
 
         float direction = Mathf.Sign(sensor.TargetPlayer.position.x - transform.position.x);
-        movement.Move(new Vector2(direction, 0), data.chaseMaxSpeed, data.chaseAccelAmount, data.chaseDeccelAmount);
+        float mult = BurdenManager.Instance != null ? BurdenManager.Instance.CurrentSpeedMultiplier : 1f;
+        movement.Move(new Vector2(direction, 0), data.chaseMaxSpeed * mult, data.chaseAccelAmount * mult, data.chaseDeccelAmount * mult);
     }
 
     private void PickNewPatrolTarget()
@@ -311,65 +362,17 @@ public class EnemyBrain : MonoBehaviour
         patrolTarget = new Vector2(startPos.x + randomX, startPos.y);
     }
 
-    private void ApplyEvolutionModifiers()
+    /// <summary>
+    /// Applies evolution tier multipliers by overwriting the runtime-cloned EnemyData.
+    /// Uses cached base values to prevent multiplier compounding on consecutive calls.
+    /// </summary>
+    public void ApplyEvolutionTier(EvolutionTierData tierData)
     {
-        // Seed defaults from the shared data asset.
-        _telegraphDuration = data.telegraphDuration;
-        _attackCooldown    = data.attackCooldown;
-        _visionRange       = data.visionRange;
-        _canBackstep       = false;
+        if (tierData == null) return;
 
-        if (GameDataManager.Instance != null)
-        {
-            int attempts = GameDataManager.Instance.GetLevelAttemptCount(levelIndex);
-            _evolutionTier = Mathf.Clamp(attempts / 3, 0, 3);
-        }
-
-        // --- Forgotten_Hourglass Relic ---
-        GameObject player = GameObject.FindWithTag("Player");
-        if (player != null && player.TryGetComponent<InventoryManager>(out var inv) && inv.HasRelic("Forgotten_Hourglass"))
-        {
-            _evolutionTier = 0;
-        }
-
-        switch (_evolutionTier)
-        {
-            case 1:
-                _telegraphDuration *= 0.6f;   // 40% faster windup
-                break;
-            case 2:
-                _telegraphDuration *= 0.6f;
-                _attackCooldown    *= 0.75f;  // 25% shorter cooldown
-                _canBackstep        = true;
-                break;
-            case 3:
-                _telegraphDuration *= 0.5f;   // 50% faster windup
-                _attackCooldown    *= 0.75f;
-                _canBackstep        = true;
-                _visionRange       *= 1.3f;   // 30% larger aggro radius
-                break;
-        }
-
-        // Push overrides to sibling components.
-        var melee = GetComponent<MeleeAttack>();
-        if (melee != null) melee.SetStartupDelay(_telegraphDuration * 0.5f);
-
-        if (_evolutionTier >= 3)
-        {
-            var s = GetComponent<EnemySensor>();
-            if (s != null) s.SetVisionRange(_visionRange);
-        }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (data == null) return;
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(Application.isPlaying ? (Vector3)startPos : transform.position, data.patrolRadius);
-        if (Application.isPlaying && _evolutionTier >= 3)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, _visionRange);
-        }
+        data.telegraphDuration = _baseTelegraphDuration * tierData.telegraphDurationMultiplier;
+        data.attackCooldown    = _baseAttackCooldown * tierData.attackCooldownMultiplier;
+        data.visionRange       = _baseVisionRange * tierData.visionRangeMultiplier;
+        _canBackstep           = tierData.canBackstep;
     }
 }

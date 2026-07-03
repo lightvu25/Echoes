@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-/// <summary>
-/// Attach to any enemy to give it a LootTable-driven item drop on death.
-/// Hooks into EnemyCombat.OnEnemyDied – no modifications to existing classes required.
-/// </summary>
 [RequireComponent(typeof(EnemyCombat))]
 public class EnemyDrop : MonoBehaviour
 {
@@ -16,10 +12,8 @@ public class EnemyDrop : MonoBehaviour
     [Header("Loot")]
     [SerializeField] private LootTable lootTable;
 
-    [Tooltip("1f = normal, 1.5f = elite, 2f = boss, etc.")]
     [SerializeField] private float dropChanceMultiplier = 1f;
 
-    [Tooltip("Minimum item tier allowed to drop (non-consumables).")]
     [Range(1, 3)] [SerializeField] private int minTierAllowed = 1;
 
     [Header("Physics Burst")]
@@ -46,6 +40,7 @@ public class EnemyDrop : MonoBehaviour
 
     private void HandleDeath(object sender, EventArgs e)
     {
+        EvolutionManager.Instance?.RegisterKill();
         GrantExp();
         DropLoot();
     }
@@ -68,7 +63,11 @@ public class EnemyDrop : MonoBehaviour
 
     public void DropLoot()
     {
-        if (lootTable == null) return;
+        if (lootTable == null)
+        {
+            Debug.LogWarning($"[EnemyDrop] No LootTable assigned on {gameObject.name}. Loot drop aborted.", this);
+            return;
+        }
 
         // --- Forgotten_Hourglass Relic ---
         GameObject player = GameObject.FindWithTag("Player");
@@ -77,7 +76,11 @@ public class EnemyDrop : MonoBehaviour
             return;
         }
 
-        List<DropResult> drops = lootTable.GetDrops(dropChanceMultiplier, minTierAllowed);
+        // --- Burden drop rate scaling ---
+        float burdenMultiplier = BurdenManager.Instance != null ? BurdenManager.Instance.CurrentDropRateMultiplier : 1f;
+        float finalDropMultiplier = dropChanceMultiplier * burdenMultiplier;
+
+        List<DropResult> drops = lootTable.GetDrops(finalDropMultiplier, minTierAllowed);
         Vector3 origin = transform.position + Vector3.up * 0.5f;
 
         float dirX = 1f;

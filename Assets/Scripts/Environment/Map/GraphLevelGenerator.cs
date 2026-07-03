@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System.Linq;
 
 public enum RoomNodeType
 {
@@ -14,316 +15,336 @@ public enum RoomNodeType
     DeadEnd
 }
 
+[System.Serializable]
+public class RoomTypeLimit
+{
+    public RoomNodeType roomType;
+    public int maxAllowed = 1;
+    [HideInInspector] public int currentCount = 0;
+}
+
+[System.Serializable]
+public class EventTypeLimit
+{
+    public RoomEventType eventType;
+    public int minRequired = 0;
+    public int maxAllowed = 1;
+    [HideInInspector] public int currentCount = 0;
+    [HideInInspector] public int remainingCandidates = 0;
+}
+
 public class GraphLevelGenerator : BaseLevelGenerator
 {
-    // ------------------------------------------------------------------ //
-    //  Designer-Authored Sequence                                         //
-    // ------------------------------------------------------------------ //
+    [Header("Level Blueprint")]
+    public LevelBlueprint levelBlueprint;
 
-    [Header("Main Path Sequence")]
-    [Tooltip("The ordered list of room types that defines the dungeon flow. " +
-             "The first entry MUST be Start, the last should be Goal.")]
-    [SerializeField] private List<RoomNodeType> mainPathSequence = new List<RoomNodeType>
+    private struct NodeTask
     {
-        RoomNodeType.Start,
-        RoomNodeType.Normal,
-        RoomNodeType.Normal,
-        RoomNodeType.Statue,
-        RoomNodeType.Normal,
-        RoomNodeType.Reward,
-        RoomNodeType.Goal
-    };
-
-    // Room Prefab Pools (one per node type)
+        public Room room;
+        public int nodeIndex;
+        public NodeBlueprint blueprint;
+    }
 
     [Header("Room Prefab Pools")]
-    [Tooltip("Prefabs for the starting room. Typically only one.")]
     [SerializeField] private List<GameObject> startRoomPrefabs = new List<GameObject>();
-
-    [Tooltip("Generic combat / traversal rooms.")]
     [SerializeField] private List<GameObject> normalRoomPrefabs = new List<GameObject>();
-
-    [Tooltip("Rooms containing a checkpoint statue.")]
     [SerializeField] private List<GameObject> statueRoomPrefabs = new List<GameObject>();
-
-    [Tooltip("Rooms that grant a temporary buff.")]
     [SerializeField] private List<GameObject> buffRoomPrefabs = new List<GameObject>();
-
-    [Tooltip("Rooms with treasure / reward chests.")]
     [SerializeField] private List<GameObject> rewardRoomPrefabs = new List<GameObject>();
-
-    [Tooltip("Rooms containing an elite / mini-boss encounter.")]
     [SerializeField] private List<GameObject> eliteRoomPrefabs = new List<GameObject>();
-
-    [Tooltip("The final room of the level (boss gate, exit portal, etc.).")]
     [SerializeField] private List<GameObject> goalRoomPrefabs = new List<GameObject>();
-
-    [Tooltip("Optional dead-end / side rooms for branching paths.")]
     [SerializeField] private List<GameObject> deadEndRoomPrefabs = new List<GameObject>();
 
-    // ------------------------------------------------------------------ //
-    //  Overlap Prevention                                                  //
-    // ------------------------------------------------------------------ //
+    [Header("Generation Limits")]
+    public List<RoomTypeLimit> roomTypeLimits = new List<RoomTypeLimit>();
+    public List<EventTypeLimit> eventTypeLimits = new List<EventTypeLimit>();
 
     [Header("Overlap Prevention")]
     [SerializeField] private float minimumRoomSpacing = 2f;
-    [SerializeField] private float shrinkFactor = 0.70f;
+    [SerializeField] private float shrinkFactor = 0.55f;
 
-    // ------------------------------------------------------------------ //
-    //  Runtime State                                                       //
-    // ------------------------------------------------------------------ //
-
+    // --- Runtime State ---
     private readonly List<Bounds> _placedBounds = new List<Bounds>();
     private readonly List<Room> _placedRoomComponents = new List<Room>();
-
+    private readonly Dictionary<int, List<int>> _activeGraph = new Dictionary<int, List<int>>();
+    private readonly Dictionary<GameObject, int> _prefabUsageCount = new Dictionary<GameObject, int>();
     private Transform _playerSpawnPoint;
 
     public override void GenerateMap(int levelNumber)
     {
-        // Clear previous generation.
         ClearGraphState();
+        if (levelBlueprint == null || levelBlueprint.nodes == null || levelBlueprint.nodes.Count == 0) return;
 
-        if (mainPathSequence == null || mainPathSequence.Count == 0)
+        BuildActiveGraph();
+
+        Room startRoom = SpawnStartRoom();
+        if (startRoom == null) return;
+
+        Queue<NodeTask> queue = new Queue<NodeTask>();
+        queue.Enqueue(new NodeTask { room = startRoom, nodeIndex = 0, blueprint = levelBlueprint.nodes[0] });
+
+        while (queue.Count > 0)
         {
-            Debug.LogError("[GraphLevelGenerator] mainPathSequence is empty. " +
-                           "Cannot generate a level without at least a Start node.");
-            return;
-        }
+            NodeTask currentTask = queue.Dequeue();
+            Room currentRoom = currentTask.room;
+            int currentIdx = currentTask.nodeIndex;
 
-        // -------------------------------------------------------------- //
-        //  Step 1: Spawn the Start room at the origin.                    //
-        // -------------------------------------------------------------- //
-        Room previousRoom = SpawnStartRoom();
-        if (previousRoom == null)
-        {
-            Debug.LogError("[GraphLevelGenerator] Failed to spawn the Start room. Aborting.");
-            return;
-        }
+            if (!_activeGraph.TryGetValue(currentIdx, out List<int> activeChildren)) continue;
 
-        // -------------------------------------------------------------- //
-        //  Step 2: Walk the sequence, snapping each room to the previous. //
-        // -------------------------------------------------------------- //
-        for (int i = 1; i < mainPathSequence.Count; i++)
-        {
-            RoomNodeType nodeType = mainPathSequence[i];
-            List<GameObject> pool = GetPoolForType(nodeType);
-
-            if (pool == null || pool.Count == 0)
+            activeChildren = activeChildren.OrderByDescending(idx => levelBlueprint.nodes[idx].forceDirection).ToList();
+            
+            foreach (int childIndex in activeChildren)
             {
-                Debug.LogWarning($"[GraphLevelGenerator] No prefabs in pool for " +
-                                 $"node type '{nodeType}' at sequence index {i}. Skipping.");
-                continue;
+                NodeBlueprint childBlueprint = levelBlueprint.nodes[childIndex];
+                
+                RoomNodeType effectiveRoomType = childBlueprint.roomType;
+                RoomTypeLimit rLimit = roomTypeLimits.Find(x => x.roomType == effectiveRoomType);
+                if (rLimit != null && rLimit.currentCount >= rLimit.maxAllowed)
+                {
+                    effectiveRoomType = RoomNodeType.Normal; 
+                }
+
+                RoomEventType effectiveEventType = RoomEventType.None;
+                
+                if (childBlueprint.eventType != RoomEventType.None)
+                {
+                    EventTypeLimit eLimit = eventTypeLimits.Find(x => x.eventType == childBlueprint.eventType);
+                    if (eLimit != null)
+                    {
+                        bool forceSpawn = false;
+                        if (eLimit.currentCount < eLimit.minRequired)
+                        {
+                            int needed = eLimit.minRequired - eLimit.currentCount;
+                            if (eLimit.remainingCandidates <= needed) forceSpawn = true;
+                        }
+
+                        bool randomSpawn = Random.value <= childBlueprint.eventChance;
+
+                        if ((forceSpawn || randomSpawn) && eLimit.currentCount < eLimit.maxAllowed)
+                        {
+                            effectiveEventType = childBlueprint.eventType; 
+                        }
+                        eLimit.remainingCandidates--; 
+                    }
+                }
+
+                List<GameObject> pool = GetPoolForEffectiveType(effectiveRoomType, effectiveEventType);
+                
+                // --- LOG QUAN TRỌNG 1: RỔ PREFAB TRỐNG ---
+                if (pool == null || pool.Count == 0) 
+                {
+                    Debug.Log($"[GraphLevelGenerator] MISSING PREFAB: Rổ chứa cho phòng '{effectiveRoomType}' (Event: {effectiveEventType}) đang trống! Nhánh bị cắt đứt tại Node '{childBlueprint.nodeName}'.");
+                    continue;
+                }
+
+                List<int> futureActiveChildren = _activeGraph.ContainsKey(childIndex) ? _activeGraph[childIndex] : new List<int>();
+
+                Room nextRoom = TrySnapRoom(currentRoom, pool, childBlueprint, futureActiveChildren, effectiveRoomType);                
+                
+                // --- LOG QUAN TRỌNG 2: SẬP NHÁNH ---
+                if (nextRoom == null) 
+                {
+                    Debug.Log($"[GraphLevelGenerator] BRANCH FAILED: Không thể đặt Node '{childBlueprint.nodeName}'. Tất cả các cửa đều bị đè map hoặc không khớp hướng!");
+                    continue;
+                }
+
+                if (rLimit != null) rLimit.currentCount++;
+                if (effectiveEventType != RoomEventType.None)
+                {
+                    EventTypeLimit eLimit = eventTypeLimits.Find(x => x.eventType == effectiveEventType);
+                    if (eLimit != null) eLimit.currentCount++;
+                }
+
+                queue.Enqueue(new NodeTask { room = nextRoom, nodeIndex = childIndex, blueprint = childBlueprint });
             }
-
-            Room nextRoom = TrySnapRoom(previousRoom, pool);
-
-            if (nextRoom == null)
-            {
-                Debug.LogWarning($"[GraphLevelGenerator] Could not place room of type " +
-                                 $"'{nodeType}' at sequence index {i}. " +
-                                 $"All exits exhausted or all prefabs overlap. Skipping.");
-                continue;
-            }
-
-            previousRoom = nextRoom;
         }
+        
         RuntimeTilemapMerger.Instance.MergeAllRooms(_spawnedRooms);
-
-        Debug.Log($"[GraphLevelGenerator] Generation complete. " +
-                  $"Placed {_spawnedRooms.Count}/{mainPathSequence.Count} rooms.");
-
+        Debug.Log($"[GraphLevelGenerator] Generation complete. Placed {_spawnedRooms.Count} rooms.");
         NotifyGenerationComplete();
     }
 
     public override Transform GetPlayerSpawnPoint()
     {
-        if (_playerSpawnPoint != null)
-            return _playerSpawnPoint;
-
-        // Fallback: create one at origin.
-        Debug.LogWarning("[GraphLevelGenerator] No PlayerSpawnPoint found. Using origin.");
+        if (_playerSpawnPoint != null) return _playerSpawnPoint;
         GameObject fallback = new GameObject("FallbackPlayerSpawn");
         fallback.transform.position = Vector3.zero;
         return fallback.transform;
     }
 
-    // ================================================================== //
-    //  START ROOM                                                         //
-    // ================================================================== //
-
     private Room SpawnStartRoom()
     {
-        List<GameObject> pool = GetPoolForType(RoomNodeType.Start);
-        if (pool == null || pool.Count == 0)
-        {
-            Debug.LogError("[GraphLevelGenerator] Start room pool is empty!");
-            return null;
-        }
-
+        List<GameObject> pool = GetPoolForEffectiveType(RoomNodeType.Start, RoomEventType.None);
+        if (pool == null || pool.Count == 0) return null;
         GameObject prefab = pool[Random.Range(0, pool.Count)];
         GameObject startObj = Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
         startObj.name = "Room_Start_0";
-
         Room room = startObj.GetComponent<Room>();
-        if (room == null)
-        {
-            Debug.LogError("[GraphLevelGenerator] Start room prefab is missing a Room component!");
-            Destroy(startObj);
-            return null;
-        }
-
-        // Cache the player spawn point.
+        if (room == null) return null;
         Transform spawnPt = startObj.transform.Find("PlayerSpawnPoint");
         _playerSpawnPoint = spawnPt != null ? spawnPt : startObj.transform;
-
-        // Register the room.
         RegisterRoom(startObj, room);
-
         return room;
     }
 
-    // ================================================================== //
-    //  EXIT-TO-ENTRANCE SNAPPING                                          //
-    // ================================================================== //
-
-    private Room TrySnapRoom(Room previousRoom, List<GameObject> pool)
+    private Room TrySnapRoom(Room previousRoom, List<GameObject> pool, NodeBlueprint candidateBlueprint, List<int> futureActiveChildren, RoomNodeType effectiveRoomType)
     {
-        List<RoomExit> availableExits = new List<RoomExit>(previousRoom.Exits);
+        bool forceDirection = candidateBlueprint.forceDirection;
+        ExitDirection requiredDirFromParent = candidateBlueprint.requiredDir;
+        int requiredChildrenCount = futureActiveChildren.Count;
+
+        List<ExitDirection> mandatoryFutureExits = new List<ExitDirection>();
+        foreach (int childIdx in futureActiveChildren)
+        {
+            NodeBlueprint futureChild = levelBlueprint.nodes[childIdx];
+            if (futureChild.forceDirection) mandatoryFutureExits.Add(futureChild.requiredDir);
+        }
+
+        List<RoomExit> availableExits = new List<RoomExit>();
+        foreach (var exit in previousRoom.Exits)
+        {
+            if (forceDirection) { if (exit.direction == requiredDirFromParent) availableExits.Add(exit); }
+            else { availableExits.Add(exit); }
+        }
+
         ShuffleList(availableExits);
+
+        if (requiredChildrenCount == 0 && effectiveRoomType != RoomNodeType.Start)
+        {
+            pool = GetPoolForEffectiveType(RoomNodeType.DeadEnd, RoomEventType.None);
+        }
 
         List<int> prefabIndices = new List<int>();
         for (int i = 0; i < pool.Count; i++) prefabIndices.Add(i);
 
         foreach (RoomExit exitA in availableExits)
         {
-            ExitDirection requiredDir = Room.GetOpposite(exitA.direction);
-
+            ExitDirection requiredEntranceDir = Room.GetOpposite(exitA.direction);
             ShuffleList(prefabIndices);
+            
+            prefabIndices = prefabIndices.OrderBy(idx => {
+                GameObject p = pool[idx];
+                return _prefabUsageCount.ContainsKey(p) ? _prefabUsageCount[p] : 0;
+            }).ToList();
 
             foreach (int idx in prefabIndices)
             {
                 GameObject prefab = pool[idx];
                 if (prefab == null) continue;
+                Room prefabRoom = prefab.GetComponent<Room>();
+                if (prefabRoom == null || prefabRoom.Exits.Count != requiredChildrenCount + 1) continue;
+                if (!prefabRoom.TryGetExitInDirection(requiredEntranceDir, out _)) continue;
 
+                bool hasAllMandatoryExits = true;
+                foreach (ExitDirection reqDir in mandatoryFutureExits)
+                {
+                    if (reqDir == requiredEntranceDir || !prefabRoom.TryGetExitInDirection(reqDir, out _))
+                    {
+                        hasAllMandatoryExits = false;
+                        break;
+                    }
+                }
+                if (!hasAllMandatoryExits) continue;
+                
                 GameObject candidate = Instantiate(prefab, Vector3.zero, Quaternion.identity, transform);
                 Room candidateRoom = candidate.GetComponent<Room>();
 
-                if (candidateRoom == null)
+                if (!candidateRoom.TryGetExitInDirection(requiredEntranceDir, out RoomExit entranceB))
                 {
-                    Debug.LogWarning($"[GraphLevelGenerator] Prefab '{prefab.name}' " +
-                                     "is missing a Room component. Skipping.");
-                    Destroy(candidate);
-                    continue;
+                    Destroy(candidate); continue;
                 }
-
-                if (!candidateRoom.TryGetExitInDirection(requiredDir, out RoomExit entranceB))
-                {
-                    Destroy(candidate);
-                    continue;
-                }
-
                 if (exitA.exitPoint == null || entranceB.exitPoint == null)
                 {
-                    Debug.LogWarning($"[GraphLevelGenerator] Exit point Transform is null " +
-                                     $"on '{previousRoom.name}' or '{candidate.name}'. Skipping.");
-                    Destroy(candidate);
-                    continue;
+                    Debug.Log($"[GraphLevelGenerator] LỖI TRANSFORM: Prefab {prefab.name} thiếu điểm neo ExitPoint!");
+                    Destroy(candidate); continue;
                 }
 
                 Vector3 offset = exitA.exitPoint.position - entranceB.exitPoint.position;
                 candidate.transform.position += offset;
 
-                Bounds candidateBounds = GetRoomBounds(candidateRoom);
-
-                if (DoesOverlapExistingRooms(candidateBounds))
+                // --- LOG QUAN TRỌNG 3: TRUY VẾT TÊN PHÒNG BỊ ĐÈ MAP ---
+                Room hitRoom = GetOverlappingRoom(GetRoomBounds(candidateRoom), previousRoom);
+                if (hitRoom != null)
                 {
-                    Destroy(candidate);
-                    continue;
+                    Debug.Log($"[GraphLevelGenerator] OVERLAP: Thử ráp Node '{candidateBlueprint.nodeName}' (Prefab: {prefab.name}) nhưng bị đâm xuyên vào phòng '{hitRoom.gameObject.name}'. Đang thử phòng khác...");
+                    Destroy(candidate); continue;
                 }
 
-                candidate.name = $"Room_{_spawnedRooms.Count}";
+                candidate.name = $"Room_{_spawnedRooms.Count}_{candidateBlueprint.nodeName}";
                 previousRoom.RemoveExit(exitA);
                 candidateRoom.RemoveExit(entranceB);
-
                 RegisterRoom(candidate, candidateRoom);
 
                 EnemySpawner[] spawners = candidate.GetComponentsInChildren<EnemySpawner>();
-                foreach (EnemySpawner spawner in spawners)
-                {
-                    spawner.Init();
-                }
+                foreach (EnemySpawner spawner in spawners) spawner.Init();
+
+                if (_prefabUsageCount.ContainsKey(prefab)) _prefabUsageCount[prefab]++;
+                else _prefabUsageCount[prefab] = 1;
 
                 return candidateRoom;
             }
         }
-
         return null;
     }
 
-    // ================================================================== //
-    //  OVERLAP DETECTION                                                  //
-    // ================================================================== //
-
-    private bool DoesOverlapExistingRooms(Bounds newBounds)
+    private Room GetOverlappingRoom(Bounds newBounds, Room parentRoom)
     {
-        Bounds shrunk = new Bounds(newBounds.center, newBounds.size * shrinkFactor);
-
-        foreach (Bounds existing in _placedBounds)
-            if (shrunk.Intersects(existing)) return true;
-
-        foreach (Room placed in _placedRoomComponents)
+        Bounds shrunkNew = new Bounds(newBounds.center, newBounds.size * shrinkFactor);
+        foreach (Room existingRoom in _placedRoomComponents)
         {
-            if (placed == null) continue;
-            if (Vector3.Distance(newBounds.center, placed.transform.position) < minimumRoomSpacing)
-                return true;
+            if (existingRoom == parentRoom) continue; 
+            Bounds existingBounds = GetRoomBounds(existingRoom);
+            Bounds shrunkExisting = new Bounds(existingBounds.center, existingBounds.size * shrinkFactor);
+            if (shrunkNew.Intersects(shrunkExisting)) return existingRoom;
         }
-
-        return false;
+        return null;
     }
 
-    // ================================================================== //
-    //  ROOM BOUNDS HELPER                                                 //
-    // ================================================================== //
     private Bounds GetRoomBounds(Room room)
     {
-        Collider2D col = room.GetComponent<Collider2D>();
-        if (col != null)
-            return col.bounds;
+        UnityEngine.Tilemaps.TilemapRenderer[] renderers = room.GetComponentsInChildren<UnityEngine.Tilemaps.TilemapRenderer>();
+        bool foundGround = false;
+        Bounds combined = new Bounds(room.transform.position, Vector3.zero);
 
-        Renderer[] renderers = room.GetComponentsInChildren<Renderer>();
-        if (renderers.Length > 0)
+        foreach (var r in renderers)
         {
-            Bounds combined = renderers[0].bounds;
-            for (int i = 1; i < renderers.Length; i++)
-                combined.Encapsulate(renderers[i].bounds);
-            return combined;
+            if (r.gameObject.name == "Ground")
+            {
+                r.GetComponent<UnityEngine.Tilemaps.Tilemap>().CompressBounds();
+                if (!foundGround) { combined = r.bounds; foundGround = true; }
+                else { combined.Encapsulate(r.bounds); }
+            }
         }
+        if (foundGround) return combined;
 
+        Collider2D col = room.GetComponent<Collider2D>();
+        if (col != null) return col.bounds;
         return new Bounds(room.transform.position, new Vector3(20f, 12f, 1f));
     }
 
-    // ================================================================== //
-    //  POOL LOOKUP                                                        //
-    // ================================================================== //
-    private List<GameObject> GetPoolForType(RoomNodeType nodeType)
+    private List<GameObject> GetPoolForEffectiveType(RoomNodeType roomType, RoomEventType eventType)
     {
-        return nodeType switch
+        switch (eventType)
+        {
+            case RoomEventType.Statue: return statueRoomPrefabs;
+            case RoomEventType.Reward: return rewardRoomPrefabs;
+            case RoomEventType.Elite: return eliteRoomPrefabs;
+        }
+
+        return roomType switch
         {
             RoomNodeType.Start   => startRoomPrefabs,
             RoomNodeType.Normal  => normalRoomPrefabs,
             RoomNodeType.Statue  => statueRoomPrefabs,
-            RoomNodeType.Buff    => buffRoomPrefabs,
             RoomNodeType.Reward  => rewardRoomPrefabs,
             RoomNodeType.Elite   => eliteRoomPrefabs,
-            RoomNodeType.Goal    => goalRoomPrefabs,
+            RoomNodeType.Buff    => buffRoomPrefabs,
             RoomNodeType.DeadEnd => deadEndRoomPrefabs,
+            RoomNodeType.Goal    => goalRoomPrefabs,
             _ => null
         };
     }
 
-    // ================================================================== //
-    //  HELPER UTILITIES                                                   //
-    // ================================================================== //
     private void RegisterRoom(GameObject roomObj, Room roomComponent)
     {
         _spawnedRooms.Add(roomObj);
@@ -336,7 +357,15 @@ public class GraphLevelGenerator : BaseLevelGenerator
         ClearSpawnedRooms();
         _placedBounds.Clear();
         _placedRoomComponents.Clear();
+        _prefabUsageCount.Clear();
         _playerSpawnPoint = null;
+
+        foreach (var r in roomTypeLimits) r.currentCount = 0;
+        foreach (var e in eventTypeLimits) 
+        {
+            e.currentCount = 0;
+            e.remainingCandidates = 0;
+        }
     }
 
     private void ShuffleList<T>(List<T> list)
@@ -348,18 +377,59 @@ public class GraphLevelGenerator : BaseLevelGenerator
         }
     }
 
-    // ================================================================== //
-    //  EDITOR GIZMOS                                                      //
-    // ================================================================== //
+    private void BuildActiveGraph()
+    {
+        _activeGraph.Clear();
+        Queue<int> queue = new Queue<int>();
+        queue.Enqueue(0);
+
+        if (levelBlueprint.nodes.Count > 0) CountEventCandidate(levelBlueprint.nodes[0]);
+
+        while (queue.Count > 0)
+        {
+            int currentIdx = queue.Dequeue();
+            NodeBlueprint currentBp = levelBlueprint.nodes[currentIdx];
+            List<int> activeChildren = new List<int>();
+
+            if (currentBp.childrenIndices != null)
+            {
+                foreach (int childIdx in currentBp.childrenIndices)
+                {
+                    if (childIdx < 0 || childIdx >= levelBlueprint.nodes.Count) continue;
+
+                    NodeBlueprint childBp = levelBlueprint.nodes[childIdx];
+                    
+                    if (Random.value <= childBp.spawnChance)
+                    {
+                        activeChildren.Add(childIdx);
+                        queue.Enqueue(childIdx);
+                        CountEventCandidate(childBp);
+                    }
+                    else
+                    {
+                        Debug.Log($"[GraphLevelGenerator] Pre-filter: Node '{childBp.nodeName}' was skipped due to spawn chance.");
+                    }
+                }
+            }
+            _activeGraph[currentIdx] = activeChildren;
+        }
+    }
+
+    private void CountEventCandidate(NodeBlueprint bp)
+    {
+        if (bp.eventType != RoomEventType.None)
+        {
+            var eLimit = eventTypeLimits.Find(x => x.eventType == bp.eventType);
+            if (eLimit != null) eLimit.remainingCandidates++;
+        }
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         if (_placedBounds == null || _placedBounds.Count == 0) return;
-
         Gizmos.color = new Color(0f, 1f, 0.5f, 0.25f);
-        foreach (Bounds b in _placedBounds)
-            Gizmos.DrawWireCube(b.center, b.size);
+        foreach (Bounds b in _placedBounds) Gizmos.DrawWireCube(b.center, b.size);
     }
 #endif
 }

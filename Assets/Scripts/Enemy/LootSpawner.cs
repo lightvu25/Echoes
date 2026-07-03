@@ -10,7 +10,7 @@ public class LootSpawner : MonoBehaviour
     
     [Header("Prefabs")]
     [SerializeField] private GameObject goldPrefab;
-    [SerializeField] private GameObject memoryFragmentPrefab;
+    [SerializeField] private GameObject astralShardPrefab;
 
     [Header("Spawn Settings")]
     [SerializeField] private float popForceMin = 5f;
@@ -68,13 +68,13 @@ public class LootSpawner : MonoBehaviour
 
     private void SpawnLoot()
     {
-        // --- Tính Memory Fragments ---
-        if (Random.Range(0f, 100f) <= enemyData.memoryFragmentDropChance)
+        // --- Astral Shards ---
+        if (Random.Range(0f, 100f) <= enemyData.astralShardDropChance)
         {
-            int fragmentAmount = Random.Range(enemyData.memoryFragmentAmountMin, enemyData.memoryFragmentAmountMax + 1);
-            if (fragmentAmount > 0 && memoryFragmentPrefab != null)
+            int shardAmount = Random.Range(enemyData.astralShardAmountMin, enemyData.astralShardAmountMax + 1);
+            if (shardAmount > 0 && astralShardPrefab != null)
             {
-                SpawnCollectible(memoryFragmentPrefab, fragmentAmount);
+                SpawnCollectible(astralShardPrefab, shardAmount);
             }
         }
 

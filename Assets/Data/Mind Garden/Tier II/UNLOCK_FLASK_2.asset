@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24ddb98f6482beb4888e83daea1cfca0, type: 3}
+  m_Name: UNLOCK_FLASK_2
+  m_EditorClassIdentifier: Assembly-CSharp::ConstellationData
+  _skillID: UNLOCK_FLASK_2
+  _skillName: Lumin Flask II
+  _tier: 2
+  _description: Increases your maximum Lumin Flask carrying capacity to 3. Healing
+    power slightly improved to 50% HP.
+  _icon: {fileID: -877901750588368882, guid: 5739f9eead112f942a43a5dcf9836e7a, type: 3}
+  _uiPosition: {x: 0, y: 0}
+  _memoryCost: 150
+  _prerequisites:
+  - {fileID: 11400000, guid: 5b3f26ba23e7bfc4c90c6f38149a1e6e, type: 2}

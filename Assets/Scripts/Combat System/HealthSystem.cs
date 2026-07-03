@@ -8,6 +8,8 @@ public class HealthSystem : MonoBehaviour
     public event EventHandler<HealEventArgs> OnHealed;
     public event EventHandler OnDeath;
     public event Action<int> OnSlotsChanged;
+    public event Action OnMaxHPGained;
+    public event Action<int> OnUnlockedSlotsDecreased;
 
     public class DamageEventArgs : EventArgs
     {
@@ -66,6 +68,8 @@ public class HealthSystem : MonoBehaviour
     public bool IsDead => isDead;
     public bool IsInvincible => isInvincible;
     public float HPPercent => maxHP > 0 ? (float)currentHP / maxHP : 0f;
+    public delegate void PreDamageHandler(ref int damageAmount, ref DamageInfo info);
+    public event PreDamageHandler OnBeforeTakeDamage;
 
     private void Awake()
     {
@@ -94,11 +98,18 @@ public class HealthSystem : MonoBehaviour
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, defense);
 
         int previousSlots = UnlockedSlots;
+
+        OnBeforeTakeDamage?.Invoke(ref finalDamage, ref damageInfo);
+
         currentHP -= finalDamage;
 
         if (UnlockedSlots != previousSlots)
         {
             OnSlotsChanged?.Invoke(UnlockedSlots);
+            if (UnlockedSlots < previousSlots) 
+            {
+                OnUnlockedSlotsDecreased?.Invoke(UnlockedSlots);
+            }
         }
 
         if (damagePopupPrefab != null && finalDamage > 0)
@@ -179,20 +190,16 @@ public class HealthSystem : MonoBehaviour
     public void SetMaxHP(int newMaxHP, bool healToFull = false)
     {
         int previousSlots = UnlockedSlots;
-        maxHP = newMaxHP;
-        if (healToFull)
-        {
-            currentHP = maxHP;
-        }
-        else
-        {
-            currentHP = Mathf.Min(currentHP, maxHP);
-        }
+        int previousMaxHP = maxHP; // Thêm dòng này
 
-        if (UnlockedSlots != previousSlots)
-        {
-            OnSlotsChanged?.Invoke(UnlockedSlots);
-        }
+        maxHP = newMaxHP;
+        if (healToFull) currentHP = maxHP;
+        else currentHP = Mathf.Min(currentHP, maxHP);
+
+        // Gọi event nếu Max HP tăng lên
+        if (maxHP > previousMaxHP) OnMaxHPGained?.Invoke();
+
+        if (UnlockedSlots != previousSlots) OnSlotsChanged?.Invoke(UnlockedSlots);
     }
 
     public void SetDefense(float newDefense)

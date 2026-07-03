@@ -1,0 +1,1 @@
+[PASS] BoxCollider2D is removed from root of Room 6.

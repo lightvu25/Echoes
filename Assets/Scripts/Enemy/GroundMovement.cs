@@ -11,9 +11,14 @@ public class GroundMovement : MonoBehaviour, IEnemyMovement
     [Header("Detection Checks")]
     [SerializeField] private Transform _groundCheck;
     [SerializeField] private Vector2 _groundCheckSize = new Vector2(0.5f, 0.5f);
+
     [Space(10)]
     [SerializeField] private Transform _wallCheck;
     [SerializeField] private Vector2 _wallCheckSize = new Vector2(0.2f, 1f);
+
+    [Space(10)]
+    [SerializeField] private Transform _ledgeCheck;
+    [SerializeField] private Vector2 _ledgeCheckSize = new Vector2(0.5f, 0.5f);
 
     public Rigidbody2D Rb { get; private set; }
     public bool IsFacingRight { get; private set; }
@@ -44,8 +49,22 @@ public class GroundMovement : MonoBehaviour, IEnemyMovement
     private void FixedUpdate()
     {
         if (data == null) return;
-        IsGroundedAhead = Physics2D.OverlapBox(_groundCheck.position, _groundCheckSize, 0f, data.groundLayer);
-        IsWallAhead = Physics2D.OverlapBox(_wallCheck.position, _wallCheckSize, 0f, data.wallLayer);
+        
+        // Wall Check
+        Vector2 dir = ((Vector2)_wallCheck.position - (Vector2)transform.position).normalized;
+        float dist = Vector2.Distance(transform.position, _wallCheck.position);
+        IsWallAhead = Physics2D.BoxCast(transform.position, _wallCheckSize, 0f, dir, dist, data.wallLayer);
+
+        // Ledge Check
+        if (_ledgeCheck != null)
+        {
+            Collider2D hit = Physics2D.OverlapBox(_ledgeCheck.position, _ledgeCheckSize, 0f, data.groundLayer);
+            IsGroundedAhead = hit != null; // Nếu hộp còn chạm đất -> True, hụt đất (vực) -> False
+        }
+        else
+        {
+            IsGroundedAhead = Physics2D.OverlapBox(_groundCheck.position, _groundCheckSize, 0f, data.groundLayer);
+        }
     }
 
     public void Move(Vector2 direction, float maxSpeed, float accelAmount, float deccelAmount)
@@ -95,7 +114,11 @@ public class GroundMovement : MonoBehaviour, IEnemyMovement
     {
         Gizmos.color = Color.green;
         if (_groundCheck != null) Gizmos.DrawWireCube(_groundCheck.position, _groundCheckSize);
+        
         Gizmos.color = Color.blue;
         if (_wallCheck != null) Gizmos.DrawWireCube(_wallCheck.position, _wallCheckSize);
+
+        Gizmos.color = Color.yellow;
+        if (_ledgeCheck != null) Gizmos.DrawWireCube(_ledgeCheck.position, _ledgeCheckSize);   
     }
 }

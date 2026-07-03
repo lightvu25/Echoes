@@ -11,7 +11,7 @@ using UnityEngine;
 ///
 /// This class intentionally contains NO animation or sprite logic; that belongs in MemorySlot.
 /// </summary>
-public class StatsUI : MonoBehaviour
+public class StatsUI : MonoBehaviour, IUIPanel
 {
     // -----------------------------------------------------------------------
     // Inspector Fields — Slots
@@ -21,7 +21,7 @@ public class StatsUI : MonoBehaviour
     [SerializeField] private MemorySlot coreSlot;
 
     [Header("Fragment Slots (Index 1 … N)")]
-    [Tooltip("fragmentSlots[i] maps to activeSlots[i + 1] in MemoryInventorySystem.")]
+    [Tooltip("fragmentSlots[i] maps to activeSlots[i + 1] in Inventory.")]
     [SerializeField] private MemorySlot[] fragmentSlots;
 
     // -----------------------------------------------------------------------
@@ -30,7 +30,7 @@ public class StatsUI : MonoBehaviour
 
     [Header("Currencies")]
     [SerializeField] private TextMeshProUGUI coinsTextMesh;
-    [SerializeField] private TextMeshProUGUI memsTextMesh;
+    [SerializeField] private TextMeshProUGUI astralShardsTextMesh;
 
     // -----------------------------------------------------------------------
     // State Tracking
@@ -42,6 +42,13 @@ public class StatsUI : MonoBehaviour
     private int previousActiveCount = 0;
 
     // -----------------------------------------------------------------------
+    // IUIPanel Implementation
+    // -----------------------------------------------------------------------
+
+    public void Show() { gameObject.SetActive(true); }
+    public void Hide() { gameObject.SetActive(false); }
+
+    // -----------------------------------------------------------------------
     // Lifecycle
     // -----------------------------------------------------------------------
 
@@ -50,11 +57,11 @@ public class StatsUI : MonoBehaviour
         // --- Currency events (PlayerStats) ---
         if (PlayerStats.Instance != null)
         {
-            PlayerStats.Instance.OnGoldChanged            += UpdateCoins;
-            PlayerStats.Instance.OnMemoryFragmentsChanged += UpdateMems;
+            PlayerStats.Instance.OnGoldChanged         += UpdateCoins;
+            PlayerStats.Instance.OnAstralShardsChanged += UpdateAstralShards;
 
             UpdateCoins(PlayerStats.Instance.CurrentGold);
-            UpdateMems(PlayerStats.Instance.MemoryFragments);
+            UpdateAstralShards(PlayerStats.Instance.CurrentAstralShards);
         }
 
         if (PlayerStats.Instance != null)
@@ -67,15 +74,15 @@ public class StatsUI : MonoBehaviour
             }
         }
 
-        if (MemoryInventorySystem.Instance != null)
+        if (PlayerInventoryCore.Instance != null)
         {
-            MemoryInventorySystem.Instance.OnInventoryChanged += UpdateHealthSlots;
+            PlayerInventoryCore.Instance.OnInventoryChanged += HandleInventoryChanged;
 
-            UpdateHealthSlots(MemoryInventorySystem.Instance.activeSlots);
+            HandleInventoryChanged();
         }
         else
         {
-            Debug.LogWarning("StatsUI: MemoryInventorySystem.Instance is null in Start(). " +
+            Debug.LogWarning("StatsUI: PlayerInventoryCore.Instance is null in Start(). " +
                              "Make sure the Player object is present and its Awake() runs first.");
         }
     }
@@ -84,8 +91,8 @@ public class StatsUI : MonoBehaviour
     {
         if (PlayerStats.Instance != null)
         {
-            PlayerStats.Instance.OnGoldChanged            -= UpdateCoins;
-            PlayerStats.Instance.OnMemoryFragmentsChanged -= UpdateMems;
+            PlayerStats.Instance.OnGoldChanged         -= UpdateCoins;
+            PlayerStats.Instance.OnAstralShardsChanged -= UpdateAstralShards;
         }
 
         if (PlayerStats.Instance != null)
@@ -97,21 +104,36 @@ public class StatsUI : MonoBehaviour
             }
         }
 
-        if (MemoryInventorySystem.Instance != null)
+        if (PlayerInventoryCore.Instance != null)
         {
-            MemoryInventorySystem.Instance.OnInventoryChanged -= UpdateHealthSlots;
+            PlayerInventoryCore.Instance.OnInventoryChanged -= HandleInventoryChanged;
         }
     }
     
-    private void UpdateHealthSlots(IReadOnlyList<MemoryItemData> activeSlots)
+    private void HandleInventoryChanged()
+    {
+        if (PlayerInventoryCore.Instance != null)
+        {
+            UpdateHealthSlots(PlayerInventoryCore.Instance.EquippedElements);
+        }
+    }
+    
+    private void UpdateHealthSlots(IReadOnlyList<ItemBaseData> activeSlots)
     {
         int currentCount = activeSlots.Count;
 
         // --- Core slot (activeSlots[0]) ---
         // Core never shatters; it is set silently whenever there is at least one item.
-        if (coreSlot != null && currentCount > 0)
+        if (coreSlot != null)
         {
-            coreSlot.SetCore(activeSlots[0].itemIcon);
+            if (currentCount > 0)
+            {
+                coreSlot.SetCore(activeSlots[0].itemIcon);
+            }
+            else
+            {
+                coreSlot.InstantlyClear();
+            }
         }
 
         if (fragmentSlots != null)
@@ -160,10 +182,10 @@ public class StatsUI : MonoBehaviour
             coinsTextMesh.text = amount.ToString();
     }
 
-    private void UpdateMems(int amount)
+    private void UpdateAstralShards(int amount)
     {
-        if (memsTextMesh != null)
-            memsTextMesh.text = amount.ToString();
+        if (astralShardsTextMesh != null)
+            astralShardsTextMesh.text = amount.ToString();
     }
 
     /* 

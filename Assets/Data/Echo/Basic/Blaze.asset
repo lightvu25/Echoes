@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28e265f52fd723447b669b35d2f58e35, type: 3}
+  m_Name: Blaze
+  m_EditorClassIdentifier: Assembly-CSharp::EchoData
+  itemID: ECHO_BLAZE
+  itemName: Blaze
+  itemIcon: {fileID: 5162622354964165141, guid: 7bd114aa96acd044992f59f023cde7c2, type: 3}
+  description: Attacks deal up to 10% additional damage based on the target's missing
+    health
+  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  echoType: 1
+  echoTier: 1
+  isFusionResult: 0
+  baseDamageMultiplier: 1.2
+  attacksPerSecond: 1
+  rangeCategory: 0
+  hasStatusEffect: 1
+  statusProcCoefficient: 0.25
+  uniqueModifierID: IGNITION
+  level: 1
+  currentStatusProc: 0

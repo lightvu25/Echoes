@@ -1,0 +1,4 @@
+Dead-end Room Left | Exits: Left
+Dead-end Room Right | Exits: Right
+Dead-end Room Up | Exits: Up
+Down Dead-end Room | Exits: Up

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24ddb98f6482beb4888e83daea1cfca0, type: 3}
+  m_Name: GOLD_RESERVE_2
+  m_EditorClassIdentifier: Assembly-CSharp::ConstellationData
+  _skillID: GOLD_RESERVE_2
+  _skillName: Memory Vault II
+  _tier: 2
+  _description: Retain up to 2,500 Gold after death.
+  _icon: {fileID: -3917485990720648845, guid: c76c480f9c176a74db5f47c82290ad78, type: 3}
+  _uiPosition: {x: 0, y: 0}
+  _memoryCost: 150
+  _prerequisites:
+  - {fileID: 11400000, guid: b4a1913be1460d2469a576d0353afa2f, type: 2}

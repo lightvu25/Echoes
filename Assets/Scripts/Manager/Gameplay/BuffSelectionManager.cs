@@ -69,9 +69,9 @@ public class BuffSelectionManager : MonoBehaviour
         {
             BuffData toBanish = currentOffer[index];
 
-            if (PlayerStats.Instance != null && PlayerStats.Instance.MemoryFragments >= toBanish.banishCost)
+            if (PlayerStats.Instance != null && PlayerStats.Instance.CurrentAstralShards >= toBanish.banishCost)
             {
-                PlayerStats.Instance.SpendMemoryFragments(toBanish.banishCost);
+                PlayerStats.Instance.SpendAstralShards(toBanish.banishCost);
 
                 if (!string.IsNullOrEmpty(toBanish.buffID) && !bannedBuffs.Contains(toBanish.buffID))
                 {
@@ -84,7 +84,7 @@ public class BuffSelectionManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("BuffSelectionManager: Not enough Memory Fragments to banish!");
+                Debug.LogWarning("BuffSelectionManager: Not enough Astral Shards to banish!");
             }
         }
     }

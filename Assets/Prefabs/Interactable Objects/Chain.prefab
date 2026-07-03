@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6558701693698441586}
   - component: {fileID: 6891787098474336056}
   - component: {fileID: 7087254028507667285}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Chain
   m_TagString: Climbable
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6063461897527955527}
-  m_BodyType: 2
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

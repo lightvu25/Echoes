@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28e265f52fd723447b669b35d2f58e35, type: 3}
+  m_Name: Afterburner
+  m_EditorClassIdentifier: Assembly-CSharp::EchoData
+  itemID: ECHO_AFTERBURNER
+  itemName: Afterburner
+  itemIcon: {fileID: 7225244483827635998, guid: ac45797a311f67e4cba1e34139805923, type: 3}
+  description: Dashes pierce enemies and leave a trail of fire that burns targets
+    over time
+  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  echoType: 8
+  echoTier: 1
+  isFusionResult: 1
+  baseDamageMultiplier: 1.3
+  attacksPerSecond: 0.8
+  rangeCategory: 0
+  hasStatusEffect: 1
+  statusProcCoefficient: 0.5
+  uniqueModifierID: FUS_AFTERBURNER
+  level: 1
+  currentStatusProc: 0

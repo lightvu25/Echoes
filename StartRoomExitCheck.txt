@@ -1,0 +1,4 @@
+StartRoom Center: (0.00, 0.50, 0.00)
+StartRoom Size: (38.00, 25.00, 0.00)
+Exit Direction: Right
+Exit Position: (19.00, -6.00, 0.00)

@@ -32,7 +32,7 @@ public static class DamageCalculator
         float modifiedDamage = baseDamage * linearMultiplier * info.multiplicativeStack;
 
         // Apply defense reduction (armor formula with diminishing returns)
-        float defenseReduction = CalculateDefenseReduction(targetDefense);
+        float defenseReduction = info.isTrueDamage ? 0f : CalculateDefenseReduction(targetDefense);
         float finalDamage = modifiedDamage * (1f - defenseReduction);
 
         // Ensure minimum damage

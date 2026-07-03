@@ -30,9 +30,6 @@ MonoBehaviour:
     m_Compliance:
       m_Status: 0
       m_Violations: []
-<<<<<<< HEAD
-  m_UserSelectedRegistryName: 
-=======
   - m_Id: scoped:project:package.openupm.com
     m_Name: package.openupm.com
     m_Url: https://package.openupm.com
@@ -49,16 +46,11 @@ MonoBehaviour:
     m_Compliance:
       m_Status: 0
       m_Violations: []
-  m_UserSelectedRegistryName: package.openupm.com
->>>>>>> f54035e70c48de84c3651b1bbfad3eaaf9cd75c1
+  m_UserSelectedRegistryName: 
   m_UserAddingNewScopedRegistry: 0
   m_RegistryInfoDraft:
     m_Modified: 0
     m_ErrorMessage: 
     m_UserModificationsInstanceId: -894
-<<<<<<< HEAD
     m_OriginalInstanceId: -898
-=======
-    m_OriginalInstanceId: -896
->>>>>>> f54035e70c48de84c3651b1bbfad3eaaf9cd75c1
   m_LoadAssets: 0

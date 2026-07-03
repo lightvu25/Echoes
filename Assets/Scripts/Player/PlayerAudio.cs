@@ -17,25 +17,36 @@ public class PlayerAudio : MonoBehaviour
 
     private void Start()
     {
-        playerMovement.OnJump += Player_Jump;
-        playerMovement.OnLand += Player_Land;
-        playerMovement.OnRun += Player_Walk;
-        playerMovement.OnDash += Player_Dash;
+        if (playerMovement != null)
+        {
+            playerMovement.OnJump += Player_Jump;
+            playerMovement.OnLand += Player_Land;
+            playerMovement.OnRun += Player_Walk;
+            playerMovement.OnDash += Player_Dash;
 
-        playerMovement.OnStopRun += Player_StopWalk;
+            playerMovement.OnStopRun += Player_StopWalk;
+        }
 
-        SoundManager.Instance.OnSoundVolumeChanged += SoundManager_OnSoundVolumeChanged;
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.OnSoundVolumeChanged += SoundManager_OnSoundVolumeChanged;
+        }
 
         UpdateAllVolumes();
     }
 
     private void UpdateAllVolumes()
     {
-        float volume = SoundManager.Instance.GetSoundVolumeNormalized();
-        walkAudioSource.volume = volume;
-        jumpAudioSource.volume = volume;
-        landAudioSource.volume = volume;
-        dashAudioSource.volume = volume;
+        float volume = 1f;
+        if (SoundManager.Instance != null)
+        {
+            volume = SoundManager.Instance.GetSoundVolumeNormalized();
+        }
+        
+        if (walkAudioSource != null) walkAudioSource.volume = volume;
+        if (jumpAudioSource != null) jumpAudioSource.volume = volume;
+        if (landAudioSource != null) landAudioSource.volume = volume;
+        if (dashAudioSource != null) dashAudioSource.volume = volume;
     }
 
     private void SoundManager_OnSoundVolumeChanged(object sender, System.EventArgs e)

@@ -111,15 +111,12 @@ public class ObjectPoolManager : MonoBehaviour
     {
         if (objectToReturn == null) return;
 
-        string lookupName = objectToReturn.name.EndsWith("(Clone)") ? 
-                            objectToReturn.name.Substring(0, objectToReturn.name.Length - 7) : 
-                            objectToReturn.name;
+        string lookupName = objectToReturn.name.Replace("(Clone)", "").Trim();
 
         PooledObjectInfo pool = ObjectPools.Find(x => x.lookupString == lookupName);
 
         if (pool == null)
         {
-            Debug.LogWarning("Trying to release an object that is not pooled: " + lookupName);
             Destroy(objectToReturn);
         }
         else

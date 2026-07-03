@@ -11,7 +11,7 @@ public class SkillNodeUI : MonoBehaviour,
     ISubmitHandler
 {
     [Header("Data")]
-    [SerializeField] private StatueSkillData _data;
+    [SerializeField] private ConstellationData _data;
 
     [Header("Node Visuals")]
     [SerializeField] private Image _iconImage;
@@ -29,6 +29,13 @@ public class SkillNodeUI : MonoBehaviour,
     [Min(0.1f)]
     [SerializeField] private float _holdDuration = 1.2f;
 
+    public RectTransform RectTransform { get; private set; }
+
+    [Header("State Colours")]
+    public Color colorLocked    = new Color(0.25f, 0.25f, 0.25f, 1f);
+    public Color colorAvailable = new Color(1f,    0.85f, 0.2f,  1f);
+    public Color colorUnlocked  = new Color(0.3f,  0.85f, 0.45f, 1f);
+
     private Button    _button;
     private NodeState _currentState = NodeState.Locked;
     private bool      _isHolding;
@@ -36,9 +43,9 @@ public class SkillNodeUI : MonoBehaviour,
 
     public enum NodeState { Locked, Available, Unlocked }
 
-    public event Action<StatueSkillData> OnUnlockRequested;
+    public event Action<ConstellationData> OnUnlockRequested;
 
-    public StatueSkillData Data => _data;
+    public ConstellationData Data => _data;
 
     public void Refresh(ProfileData profile)
     {
@@ -55,6 +62,7 @@ public class SkillNodeUI : MonoBehaviour,
     private void Awake()
     {
         _button = GetComponent<Button>();
+        RectTransform = GetComponent<RectTransform>();
 
         if (_holdProgressImage != null)
         {
@@ -71,7 +79,7 @@ public class SkillNodeUI : MonoBehaviour,
 
     public void OnSelect(BaseEventData eventData) => NotifyManager();
 
-    public void OnDeselect(BaseEventData eventData) => StatueUI.Instance?.ClearSkillInfo();
+    public void OnDeselect(BaseEventData eventData) => UIManager.Instance?.GetPanel<MindGardenUI>(UIPanelType.MindGarden)?.ClearSkillInfo();
 
     public void OnPointerDown(PointerEventData eventData)
     {
@@ -165,7 +173,10 @@ public class SkillNodeUI : MonoBehaviour,
 
     private void NotifyManager()
     {
-        if (_data != null)
-            StatueUI.Instance?.ShowSkillInfo(_data, _currentState);
+        if (EventSystem.current.currentSelectedGameObject == gameObject)
+        {
+            var ui = UIManager.Instance?.GetPanel<MindGardenUI>(UIPanelType.MindGarden);
+            ui?.ShowSkillInfo(_data, _currentState);
+        }
     }
 }

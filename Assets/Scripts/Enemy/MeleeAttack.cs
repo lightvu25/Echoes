@@ -9,7 +9,6 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
     public event EventHandler OnAttackFinished;
 
     [SerializeField] private EnemyData data;
-    [SerializeField] private float startupDelay = 0.2f;
     [SerializeField] private float activeTime = 0.1f;
 
     public bool IsAttacking { get; private set; }
@@ -23,7 +22,14 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
         if (IsAttacking) return;
         IsAttacking = true;
         OnAttackStarted?.Invoke(this, EventArgs.Empty);
-        StartCoroutine(AttackRoutine());
+        
+        StartCoroutine(SafetyTimeout());
+    }
+
+    private IEnumerator SafetyTimeout()
+    {
+        yield return new WaitForSeconds(3f);
+        if (IsAttacking) FinishAttack();
     }
 
     public void CancelAttack()
@@ -32,28 +38,6 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
         IsAttacking = false;
         StopAllCoroutines();
         hitTargets.Clear();
-    }
-
-    private IEnumerator AttackRoutine()
-    {
-        if (startupDelay > 0f)
-            yield return new WaitForSeconds(startupDelay);
-
-        isHitboxActive = true;
-        hitTargets.Clear();
-
-        float timer = 0f;
-        while (timer < activeTime)
-        {
-            CheckHits();
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        isHitboxActive = false;
-        hitTargets.Clear();
-
-        FinishAttack();
     }
 
     public void TriggerHitbox()
@@ -77,17 +61,14 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
 
         isHitboxActive = false;
         hitTargets.Clear();
-
-        FinishAttack();
     }
 
     public void FinishAttack()
     {
+        if (!IsAttacking) return;
         IsAttacking = false;
         OnAttackFinished?.Invoke(this, EventArgs.Empty);
     }
-
-    public void SetStartupDelay(float delay) => startupDelay = Mathf.Max(0f, delay);
 
     private void CheckHits()
     {
@@ -103,7 +84,6 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
         {
             IDamageable target = hit.GetComponentInParent<IDamageable>();
             if (target == null || target.IsDead) continue;
-
             if (target.Transform == this.transform) continue;
 
             if (hitTargets.Contains(target)) continue;

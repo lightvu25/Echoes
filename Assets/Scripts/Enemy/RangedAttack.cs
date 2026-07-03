@@ -39,17 +39,17 @@ public class RangedAttack : MonoBehaviour, IEnemyAttack
 
     private void FireProjectile()
     {
-        if (projectilePrefab == null || firePoint == null) return;
+        bool isFacingRight = transform.localScale.x >= 0;
+        Vector2 direction = isFacingRight ? Vector2.right : Vector2.left;
+        
+        Quaternion spawnRotation = isFacingRight ? Quaternion.identity : Quaternion.Euler(0, 0, 180f);
 
-        Vector2 direction = transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
-        GameObject proj = ObjectPoolManager.SpawnObject(projectilePrefab, firePoint.position, Quaternion.identity, ObjectPoolManager.PoolType.Projectile);
+        GameObject proj = ObjectPoolManager.SpawnObject(projectilePrefab, firePoint.position, spawnRotation, ObjectPoolManager.PoolType.Projectile);
 
         Projectile projectile = proj.GetComponent<Projectile>();
-        if (projectile != null)
-            projectile.SetOwner(gameObject);
+        projectile.SetOwner(gameObject);
 
         Rigidbody2D projRb = proj.GetComponent<Rigidbody2D>();
-        if (projRb != null)
-            projRb.linearVelocity = direction * projectileSpeed;
+        projRb.linearVelocity = direction * projectileSpeed;
     }
 }

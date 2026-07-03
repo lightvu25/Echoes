@@ -46,11 +46,15 @@ public class PlayerInteract : MonoBehaviour
     private float coinPickups = 0f;
     private float time;
     
-    private StatueInteractable currentStatue;
+    private IInteractable currentInteractable;
+    private IExtractable currentExtractable;
 
     // Thời gian sống sót
     private float timeMax = 50f;
     private State state;
+
+    private Coroutine extractionCoroutine;
+    private HealthSystem healthSystem;
 
     private void Awake()
     {
@@ -58,6 +62,60 @@ public class PlayerInteract : MonoBehaviour
 
         time = timeMax;
         state = State.WaitingToStart;
+    }
+
+    private void Start()
+    {
+        healthSystem = GetComponentInParent<HealthSystem>();
+        if (healthSystem == null) healthSystem = GetComponentInChildren<HealthSystem>();
+        
+        if (healthSystem != null)
+        {
+            healthSystem.OnDamaged += HandleDamagedDuringExtraction;
+        }
+
+        if (GameInput.Instance != null)
+        {
+            GameInput.Instance.OnInteractPressed += HandleInteract;
+            GameInput.Instance.OnExtractPressed += HandleExtract;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (healthSystem != null)
+        {
+            healthSystem.OnDamaged -= HandleDamagedDuringExtraction;
+        }
+
+        if (GameInput.Instance != null)
+        {
+            GameInput.Instance.OnInteractPressed -= HandleInteract;
+            GameInput.Instance.OnExtractPressed -= HandleExtract;
+        }
+    }
+
+    private void HandleDamagedDuringExtraction(object sender, HealthSystem.DamageEventArgs e)
+    {
+        if (extractionCoroutine != null)
+        {
+            StopCoroutine(extractionCoroutine);
+            extractionCoroutine = null;
+            Debug.Log("[PlayerInteract] Extraction interrupted by damage!");
+        }
+    }
+
+    private System.Collections.IEnumerator ExtractMemoryRoutine(IExtractable source)
+    {
+        Debug.Log("[PlayerInteract] Starting memory extraction...");
+        yield return new WaitForSeconds(0.5f);
+        
+        if (source != null && source.IsAvailable)
+        {
+            source.Extract();
+            Debug.Log("[PlayerInteract] Extraction complete!");
+        }
+        extractionCoroutine = null;
     }
 
     private void FixedUpdate()
@@ -94,13 +152,24 @@ public class PlayerInteract : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void HandleInteract()
     {
         if (state == State.Normal && !IsRewinding)
         {
-            if (currentStatue != null && GameInput.Instance != null && GameInput.Instance.IsUpActionPressed())
+            if (currentInteractable != null)
             {
-                currentStatue.Interact();
+                currentInteractable.Interact();
+            }
+        }
+    }
+
+    private void HandleExtract()
+    {
+        if (state == State.Normal && !IsRewinding)
+        {
+            if (currentExtractable != null && extractionCoroutine == null)
+            {
+                extractionCoroutine = StartCoroutine(ExtractMemoryRoutine(currentExtractable));
             }
         }
     }
@@ -131,9 +200,14 @@ public class PlayerInteract : MonoBehaviour
             return;
         }
 
-        if (collider2D.gameObject.TryGetComponent(out StatueInteractable statue))
+        if (collider2D.gameObject.TryGetComponent(out IInteractable interactable))
         {
-            currentStatue = statue;
+            currentInteractable = interactable;
+        }
+
+        if (collider2D.gameObject.TryGetComponent(out IExtractable extractable))
+        {
+            currentExtractable = extractable;
         }
 
         if (collider2D.gameObject.TryGetComponent(out TimePickup timePickup))
@@ -154,11 +228,24 @@ public class PlayerInteract : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collider2D)
     {
-        if (collider2D.gameObject.TryGetComponent(out StatueInteractable statue))
+        if (collider2D.gameObject.TryGetComponent(out IInteractable interactable))
         {
-            if (currentStatue == statue)
+            if (currentInteractable == interactable)
             {
-                currentStatue = null;
+                currentInteractable = null;
+            }
+        }
+
+        if (collider2D.gameObject.TryGetComponent(out IExtractable extractable))
+        {
+            if (currentExtractable == extractable)
+            {
+                currentExtractable = null;
+                if (extractionCoroutine != null)
+                {
+                    StopCoroutine(extractionCoroutine);
+                    extractionCoroutine = null;
+                }
             }
         }
     }

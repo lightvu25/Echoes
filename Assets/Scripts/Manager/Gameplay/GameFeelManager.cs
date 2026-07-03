@@ -1,6 +1,7 @@
 using Unity.Cinemachine;
 using UnityEngine;
 
+[RequireComponent(typeof(CinemachineImpulseSource))]
 public class GameFeelManager : MonoBehaviour
 {
     public static GameFeelManager Instance { get; private set; }
@@ -20,7 +21,13 @@ public class GameFeelManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        impulseSource = GetComponent<CinemachineImpulseSource>();            
+        impulseSource = GetComponent<CinemachineImpulseSource>();    
+        
+        if (impulseSource == null)
+        {
+            impulseSource = gameObject.AddComponent<CinemachineImpulseSource>();
+            Debug.LogWarning("GameFeelManager: CinemachineImpulseSource bị thiếu và đã được tự động thêm. Vui lòng gán Noise Profile cho nó trong Editor.");
+        }        
     }
 
     public void ProcessHit(GameObject attacker, GameObject victim, int damage, bool isCrit)
@@ -30,7 +37,6 @@ public class GameFeelManager : MonoBehaviour
 
         bool suppressShake = attackerIsEnemy && victimIsEnemy;
 
-        // --- Shake & hit-stop ---
         if (!suppressShake)
         {
             if (isCrit || damage > 50)
@@ -55,7 +61,5 @@ public class GameFeelManager : MonoBehaviour
     {
         if (impulseSource != null)
             impulseSource.GenerateImpulse(force);
-        else
-            Debug.LogWarning("GameFeelManager: CinemachineImpulseSource is not assigned.");
     }
 }

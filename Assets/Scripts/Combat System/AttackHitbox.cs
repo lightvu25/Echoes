@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Timer-based attack hitbox. Multi-hit per swing allowed by design.
-/// </summary>
 public class AttackHitbox : MonoBehaviour
 {
     public event EventHandler<HitEventArgs> OnHitTarget;
+
+    public delegate void DamageModifier(IDamageable target, ref DamageInfo damageInfo);
+    public event DamageModifier OnBeforeDamageApplied;
 
     public class HitEventArgs : EventArgs
     {
@@ -63,6 +63,13 @@ public class AttackHitbox : MonoBehaviour
     {
         isActive = false;
         StopAllCoroutines();
+        hitTargets.Clear();
+        multiHitTimers.Clear();
+    }
+
+    private void OnDisable()
+    {
+        isActive = false;
         hitTargets.Clear();
         multiHitTimers.Clear();
     }
@@ -138,13 +145,35 @@ public class AttackHitbox : MonoBehaviour
             isCritical = false
         };
 
+        // Populate elemental and level data if the attacker is the player
+        if (owner.CompareTag("Player"))
+        {
+            if (PlayerInventoryCore.Instance != null)
+                damageInfo.activeElement = PlayerInventoryCore.Instance.GetActiveElement();
+            
+            if (PlayerStats.Instance != null)
+                damageInfo.playerLevel = PlayerStats.Instance.CurrentLevel;
+        }
+
         if (combatStats != null && UnityEngine.Random.value < combatStats.critChance)
         {
             damageInfo.isCritical = true;
             damageInfo.multiplicativeStack *= combatStats.critMultiplier;
         }
 
+        OnBeforeDamageApplied?.Invoke(target, ref damageInfo);
+
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, target.Defense);
+        
+        // Debug Log for Testing
+        if (damageInfo.activeElement != null)
+        {
+            Debug.Log($"[Damage Test] Hit {target.Transform.name} | " +
+                      $"Base: {baseDamage} | " +
+                      $"Element: {damageInfo.activeElement.itemName} (Lvl {damageInfo.playerLevel}) | " +
+                      $"Final: {finalDamage}");
+        }
+
         target.TakeDamage(damageInfo);
 
         // Pass both attacker (owner) and victim so GameFeelManager can suppress

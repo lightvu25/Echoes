@@ -1,11 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-
-/// <summary>
-/// Handles player attack input and combo system.
-/// BlazBlue-style: Basic, Heavy, Dash, and Air attacks.
-/// </summary>
 public class PlayerAttack : MonoBehaviour
 {
     public event EventHandler<AttackEventArgs> OnAttackStarted;
@@ -55,6 +50,16 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float heavyProcCoef = 1.5f;
     [SerializeField] private float dashProcCoef = 0.7f;
     [SerializeField] private float airProcCoef = 0.8f;
+
+    public float temporaryDamageMultiplier = 1f;
+
+    [Header("Plunge Attack")]
+    [Tooltip("Radius of the AOE damage circle on landing.")]
+    [SerializeField] private float plungeRadius = 2.5f;
+    [Tooltip("Damage multiplier relative to baseAttack.")]
+    [SerializeField] private float plungeDamageMultiplier = 2.5f;
+    [Tooltip("Optional impact VFX spawned at player feet.")]
+    [SerializeField] private GameObject plungeImpactVFX;
 
     // State
     private bool isAttacking = false;
@@ -122,9 +127,11 @@ public class PlayerAttack : MonoBehaviour
 
     private void DetermineAndExecuteAttack()
     {
+        // Plunge is handled separately via ExecutePlungeAOE; skip normal logic.
+        if (playerMovement != null && playerMovement.isPlunging) return;
+
         AttackType type;
 
-        // Check conditions for attack type
         if (playerMovement != null && playerMovement.isDashing)
         {
             type = AttackType.Dash;
@@ -197,7 +204,14 @@ public class PlayerAttack : MonoBehaviour
 
         // Calculate damage
         int baseDamage = combatStats != null ? combatStats.baseAttack : 10;
-        int finalDamage = Mathf.RoundToInt(baseDamage * damageMultiplier);
+        
+        float elementDamageMult = 1f;
+        if (PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveElement != null)
+        {
+            elementDamageMult = PlayerInventoryCore.Instance.ActiveElement.baseDamageMultiplier;
+        }
+
+        int finalDamage = Mathf.RoundToInt(baseDamage * damageMultiplier * temporaryDamageMultiplier * elementDamageMult);
 
         // Activate hitbox
         if (attackHitbox != null)
@@ -265,6 +279,9 @@ public class PlayerAttack : MonoBehaviour
     /// </summary>
     public int CurrentComboStep => currentComboStep;
 
+    public AttackType CurrentAttackType => currentAttackType;
+    public AttackHitbox CurrentAttackHitbox => attackHitbox;
+
     public void EnableAttackHitbox()
     {
         attackHitbox.gameObject.SetActive(true);
@@ -275,10 +292,7 @@ public class PlayerAttack : MonoBehaviour
         attackHitbox.gameObject.SetActive(false);
     }
 
-    /// <summary>
-    /// Cancel the current attack. Called when player is knocked back.
-    /// Stops all attack coroutines, resets state, and deactivates hitbox.
-    /// </summary>
+    /// <summary>Cancel the current attack. Called when player is knocked back.</summary>
     public void CancelAttack()
     {
         if (!isAttacking) return;
@@ -288,15 +302,46 @@ public class PlayerAttack : MonoBehaviour
         comboQueued = false;
         currentComboStep = 0;
 
-        // Deactivate hitbox
         if (attackHitbox != null)
             attackHitbox.Deactivate();
 
-        // Fire end event
         OnAttackEnded?.Invoke(this, new AttackEventArgs
         {
             attackType = currentAttackType,
             comboStep = currentComboStep
         });
+    }
+
+    public void ExecutePlungeAOE()
+    {
+        int baseDamage  = combatStats != null ? combatStats.baseAttack : 10;
+        
+        float elementDamageMult = 1f;
+        if (PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveElement != null)
+        {
+            elementDamageMult = PlayerInventoryCore.Instance.ActiveElement.baseDamageMultiplier;
+        }
+
+        int finalDamage = Mathf.RoundToInt(baseDamage * plungeDamageMultiplier * elementDamageMult);
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(
+            transform.position, plungeRadius, LayerMask.GetMask("Enemy"));
+
+        foreach (Collider2D col in hits)
+        {
+            if (col.TryGetComponent<IDamageable>(out var damageable))
+            {
+                damageable.TakeDamage(new DamageInfo
+                {
+                    baseDamage       = finalDamage,
+                    attacker         = gameObject,
+                    knockbackForce   = 0f,
+                    knockbackDirection = Vector2.zero
+                });
+            }
+        }
+
+        if (plungeImpactVFX != null)
+            Instantiate(plungeImpactVFX, transform.position, Quaternion.identity);
     }
 }

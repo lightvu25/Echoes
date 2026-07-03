@@ -1,0 +1,30 @@
+Dead-end Room Left | Bounds: (15.00, 15.00, 0.00) | Exits: 1
+Dead-end Room Right | Bounds: (16.00, 15.00, 0.20) | Exits: 1
+Dead-end Room Up | Bounds: (16.00, 17.00, 0.20) | Exits: 1
+Down Dead-end Room | Bounds: (14.00, 24.00, 0.20) | Exits: 1
+Down Goal | Bounds: (24.00, 19.00, 0.20) | Exits: 1
+Left Goal | Bounds: (25.00, 13.00, 0.20) | Exits: 1
+Right Goal | Bounds: (18.00, 8.00, 0.20) | Exits: 1
+Up Goal | Bounds: (25.00, 20.00, 0.20) | Exits: 1
+Room 1 | Bounds: (29.00, 21.00, 0.00) | Exits: 3
+Room 2 | Bounds: (30.00, 16.00, 0.00) | Exits: 4
+Room 3 | Bounds: (19.00, 24.00, 0.00) | Exits: 2
+Room 4 | Bounds: (30.00, 14.00, 0.40) | Exits: 2
+Room 5 | Bounds: (30.00, 16.00, 0.40) | Exits: 2
+Room 6 | Bounds: (1.00, 1.00, 0.00) | Exits: 2
+Room 7 | Bounds: (29.00, 26.00, 0.40) | Exits: 2
+Room 8 | Bounds: (32.00, 18.00, 0.00) | Exits: 3
+Room 9 | Bounds: (23.00, 23.00, 0.00) | Exits: 4
+Room 10 | Bounds: (24.00, 15.00, 0.40) | Exits: 2
+Down Reward Room | Bounds: (19.00, 14.00, 0.20) | Exits: 1
+Left Reward Room | Bounds: (15.00, 18.00, 0.20) | Exits: 1
+Right Reward Room | Bounds: (21.00, 16.00, 0.20) | Exits: 1
+Up Reward Room | Bounds: (15.00, 16.00, 0.20) | Exits: 1
+FallbackErrorRoom | Bounds: (20.00, 13.00, 0.40) | Exits: 2
+StartRoom | Bounds: (38.00, 25.00, 0.00) | Exits: 1
+Room Statue 1 | Bounds: (24.00, 15.00, 0.20) | Exits: 2
+Room Statue 2 | Bounds: (22.00, 25.00, 0.20) | Exits: 2
+Room Statue 3 | Bounds: (20.00, 17.00, 0.20) | Exits: 2
+Room Statue 4 | Bounds: (20.00, 17.00, 0.20) | Exits: 2
+Room Statue 5 | Bounds: (23.00, 17.00, 0.20) | Exits: 2
+Room Statue 6 | Bounds: (25.00, 25.00, 0.20) | Exits: 2

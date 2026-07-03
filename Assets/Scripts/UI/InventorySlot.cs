@@ -3,16 +3,11 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections.Generic;
 
-/// <summary>
-/// Represents a single item slot in the inventory panel.
-/// Displays the equipped item icon, a locked padlock when the slot is not yet unlocked,
-/// and plays a glow pulse when in Slot Unlock Mode.
-/// </summary>
 public class InventorySlot : MonoBehaviour
 {
     [Header("Visuals")]
     [SerializeField] private Image itemIconImage;
-    [SerializeField] private GameObject lockedOverlay;  // padlock icon GameObject
+    [SerializeField] private GameObject lockedOverlay;
     [SerializeField] private Image glowImage;
 
     [Header("Identity")]
@@ -24,10 +19,6 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] private float glowPulseDuration = 0.5f;
 
     private Button button;
-
-    // ------------------------------------------------------------------ //
-    //  Unity lifecycle                                                     //
-    // ------------------------------------------------------------------ //
 
     private void Awake()
     {
@@ -47,15 +38,7 @@ public class InventorySlot : MonoBehaviour
         if (PlayerInventoryCore.Instance != null)
             PlayerInventoryCore.Instance.OnInventoryChanged -= Refresh;
     }
-
-    // ------------------------------------------------------------------ //
-    //  Public API                                                          //
-    // ------------------------------------------------------------------ //
-
-    /// <summary>
-    /// Activates the glow pulse on this slot (called during Slot Unlock Mode
-    /// when this slot is the next one available to unlock).
-    /// </summary>
+    
     public void SetGlowing(bool glow)
     {
         if (glowImage == null) return;

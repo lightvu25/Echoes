@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1192810985841636407}
   - component: {fileID: 4945352672868527949}
   - component: {fileID: 6250536976320528811}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Lantern
   m_TagString: MemorySource
   m_Icon: {fileID: 0}

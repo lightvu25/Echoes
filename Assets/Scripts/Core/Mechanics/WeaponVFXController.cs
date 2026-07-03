@@ -6,45 +6,50 @@ public class WeaponVFXController : MonoBehaviour
 {
     [Header("Visual Components")]
     [SerializeField] private TrailRenderer trailRenderer;
-    [Tooltip("Order should match the ElementType enum (0=None, 1=Fire, 2=Poison, 3=Lightning, 4=Ice, 5=Wind, 6=Earth)")]
+    [Tooltip("Order should match the EchoType enum (0=None, 1=Fire, 2=Poison, 3=Lightning, 4=Ice, 5=Wind, 6=Earth)")]
     [SerializeField] private ParticleSystem[] elementParticles;
 
     private void Start()
     {
-        if (MemoryInventorySystem.Instance != null)
+        if (PlayerInventoryCore.Instance != null)
         {
-            MemoryInventorySystem.Instance.OnInventoryChanged += HandleInventoryChanged;
+            PlayerInventoryCore.Instance.OnInventoryChanged += HandleInventoryChanged;
 
             // Trigger visual immediately to sync initial state
-            HandleInventoryChanged(MemoryInventorySystem.Instance.activeSlots);
+            HandleInventoryChanged();
         }
     }
 
     private void OnDestroy()
     {
-        if (MemoryInventorySystem.Instance != null)
+        if (PlayerInventoryCore.Instance != null)
         {
-            MemoryInventorySystem.Instance.OnInventoryChanged -= HandleInventoryChanged;
+            PlayerInventoryCore.Instance.OnInventoryChanged -= HandleInventoryChanged;
         }
     }
 
-    private void HandleInventoryChanged(IReadOnlyList<MemoryItemData> activeSlots)
+    private void HandleInventoryChanged()
     {
-        ElementType dominantElement = ElementType.None;
+        EchoType dominantElement = EchoType.None;
 
-        foreach (var slot in activeSlots)
+        var activeElement = PlayerInventoryCore.Instance.ActiveElement;
+        if (activeElement != null && activeElement.echoType != EchoType.None)
         {
-            if (slot != null && slot.elementType != ElementType.None)
+            dominantElement = activeElement.echoType;
+        }
+        else 
+        {
+            var allTypes = PlayerInventoryCore.Instance.GetAllActiveElementTypes();
+            if (allTypes.Count > 0)
             {
-                dominantElement = slot.elementType;
-                break;
+                dominantElement = allTypes[0];
             }
         }
 
         UpdateVFXForElement(dominantElement);
     }
 
-    private void UpdateVFXForElement(ElementType elementType)
+    private void UpdateVFXForElement(EchoType EchoType)
     {
         // Stop all active element particles
         if (elementParticles != null)
@@ -61,33 +66,37 @@ public class WeaponVFXController : MonoBehaviour
         // Color the trail based on the dominant element
         if (trailRenderer != null)
         {
-            switch (elementType)
+            switch (EchoType)
             {
-                case ElementType.Fire:
+                case EchoType.Blaze:
                     trailRenderer.startColor = Color.red;
                     trailRenderer.endColor = new Color(1f, 0f, 0f, 0f);
                     break;
-                case ElementType.Poison:
-                    trailRenderer.startColor = Color.green;
-                    trailRenderer.endColor = new Color(0f, 1f, 0f, 0f);
-                    break;
-                case ElementType.Lightning:
-                    trailRenderer.startColor = Color.yellow;
-                    trailRenderer.endColor = new Color(1f, 0.9f, 0f, 0f);
-                    break;
-                case ElementType.Ice:
+                case EchoType.Frostbite:
                     trailRenderer.startColor = Color.cyan;
                     trailRenderer.endColor = new Color(0f, 1f, 1f, 0f);
                     break;
-                case ElementType.Wind:
+                case EchoType.Arc:
+                    trailRenderer.startColor = Color.yellow;
+                    trailRenderer.endColor = new Color(1f, 0.9f, 0f, 0f);
+                    break;
+                case EchoType.Kinetic:
                     trailRenderer.startColor = Color.white;
                     trailRenderer.endColor = new Color(1f, 1f, 1f, 0f);
                     break;
-                case ElementType.Earth:
-                    trailRenderer.startColor = new Color(0.6f, 0.3f, 0f, 1f);
-                    trailRenderer.endColor = new Color(0.6f, 0.3f, 0f, 0f);
+                case EchoType.Anomaly:
+                    trailRenderer.startColor = Color.green;
+                    trailRenderer.endColor = new Color(0f, 1f, 0f, 0f);
                     break;
-                case ElementType.None:
+                case EchoType.Void:
+                    trailRenderer.startColor = new Color(0.5f, 0f, 0.5f, 1f); // Purple
+                    trailRenderer.endColor = new Color(0.5f, 0f, 0.5f, 0f);
+                    break;
+                case EchoType.Curse:
+                    trailRenderer.startColor = new Color(0.1f, 0.1f, 0.1f, 1f); // Dark
+                    trailRenderer.endColor = new Color(0.1f, 0.1f, 0.1f, 0f);
+                    break;
+                case EchoType.None:
                 default:
                     trailRenderer.startColor = Color.white;
                     trailRenderer.endColor = new Color(1f, 1f, 1f, 0f);
@@ -96,7 +105,7 @@ public class WeaponVFXController : MonoBehaviour
         }
 
         // Enable matching particle system (by enum index)
-        int elementIndex = (int)elementType;
+        int elementIndex = (int)EchoType;
         if (elementParticles != null && elementIndex >= 0 && elementIndex < elementParticles.Length)
         {
             var targetPS = elementParticles[elementIndex];

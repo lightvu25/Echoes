@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28e265f52fd723447b669b35d2f58e35, type: 3}
+  m_Name: Anomaly
+  m_EditorClassIdentifier: Assembly-CSharp::EchoData
+  itemID: ECHO_ANOMALY
+  itemName: Anomaly
+  itemIcon: {fileID: -1596752464106490052, guid: 044583d915cf4524baf811b35b9aee9a, type: 3}
+  description: Attacks have a 25% chance to bypass all armor and deal True Damage
+  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  echoType: 5
+  baseDamageMultiplier: 1
+  attacksPerSecond: 1.2
+  rangeCategory: 3
+  hasStatusEffect: 0
+  statusProcCoefficient: 0
+  uniqueModifierID: DISTORTION
+  level: 1
+  currentStatusProc: 0

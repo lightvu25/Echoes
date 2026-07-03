@@ -43,4 +43,28 @@ public static class SaveManager
     {
         File.Delete(runPath);
     }
+
+#if UNITY_EDITOR
+    [UnityEditor.MenuItem("Project Echoes/Reset Current Run Data")]
+    public static void ResetRunDataEditor()
+    {
+        if (File.Exists(runPath))
+        {
+            File.Delete(runPath);
+            Debug.Log("[SaveManager] Run data deleted successfully!");
+        }
+        else
+        {
+            Debug.Log("[SaveManager] No run data found to delete.");
+        }
+    }
+
+    [UnityEditor.MenuItem("Project Echoes/Reset ALL Save Data (Profile + Run)")]
+    public static void ResetAllSaveDataEditor()
+    {
+        if (File.Exists(runPath)) File.Delete(runPath);
+        if (File.Exists(profilePath)) File.Delete(profilePath);
+        Debug.Log("[SaveManager] All save data has been completely reset!");
+    }
+#endif
 }

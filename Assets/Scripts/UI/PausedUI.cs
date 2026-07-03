@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PausedUI : MonoBehaviour
+public class PausedUI : MonoBehaviour, IUIPanel
 {
     [SerializeField] private Button resumeButton;
     [SerializeField] private Button mainMenuButton;
@@ -14,19 +14,33 @@ public class PausedUI : MonoBehaviour
     private void Awake()
     {
         soundVolumeButton.onClick.AddListener(() => {
-            SoundManager.Instance.ChangeSoundVolume();
-            soundVolumeTextMesh.text = "SOUND" + SoundManager.Instance.GetSoundVolume();
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.ChangeSoundVolume();
+                if (soundVolumeTextMesh != null)
+                    soundVolumeTextMesh.text = "SOUND" + SoundManager.Instance.GetSoundVolume();
+            }
         });
         musicVolumeButton.onClick.AddListener(() => {
-            MusicManager.Instance.ChangeMusicVolume();
-            musicVolumeTextMesh.text = "MUSIC" + MusicManager.Instance.GetMusicVolume();
+            if (MusicManager.Instance != null)
+            {
+                MusicManager.Instance.ChangeMusicVolume();
+                if (musicVolumeTextMesh != null)
+                    musicVolumeTextMesh.text = "MUSIC" + MusicManager.Instance.GetMusicVolume();
+            }
         });
 
         Time.timeScale = 1f;
 
         resumeButton.onClick.AddListener(() =>
         {
-            GameManager.Instance.ResumeGame();
+            if (UIManager.Instance != null) UIManager.Instance.ClosePanelIfOpen(UIPanelType.Pause);
+            else Hide();
+            
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.ResumeGame();
+            }
         });
 
         mainMenuButton.onClick.AddListener(() =>
@@ -37,29 +51,104 @@ public class PausedUI : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.OnGamePaused += GameManager_OnGamePaused;
-        GameManager.Instance.OnGameResume += GameManager_OnGameResume;
+        if (GameInput.Instance != null)
+        {
+            GameInput.Instance.OnMenuButtonPressed += GameInput_OnMenuButtonPressed;
+            GameInput.Instance.OnCancelPressed += GameInput_OnCancelPressed;
+        }
 
-        soundVolumeTextMesh.text = "SOUND" + SoundManager.Instance.GetSoundVolume();
-        musicVolumeTextMesh.text = "MUSIC" + MusicManager.Instance.GetMusicVolume();
+        if (SoundManager.Instance != null && soundVolumeTextMesh != null)
+        {
+            soundVolumeTextMesh.text = "SOUND" + SoundManager.Instance.GetSoundVolume();
+        }
+
+        if (MusicManager.Instance != null && musicVolumeTextMesh != null)
+        {
+            musicVolumeTextMesh.text = "MUSIC" + MusicManager.Instance.GetMusicVolume();
+        }
+
         Hide();
     }
 
-    private void GameManager_OnGamePaused(object sender, System.EventArgs e)
+    private void OnDestroy()
     {
-        Show();
+        if (GameInput.Instance != null)
+        {
+            GameInput.Instance.OnMenuButtonPressed -= GameInput_OnMenuButtonPressed;
+            GameInput.Instance.OnCancelPressed -= GameInput_OnCancelPressed;
+        }
     }
 
-    private void GameManager_OnGameResume(object sender, System.EventArgs e)
+    private void GameInput_OnMenuButtonPressed(object sender, System.EventArgs e)
     {
-        Hide(); 
+        if (UIManager.Instance != null && UIManager.Instance.WasPanelClosedThisFrame) return;
+
+        if (gameObject.activeSelf)
+        {
+            if (UIManager.Instance != null) UIManager.Instance.ClosePanelIfOpen(UIPanelType.Pause);
+            else Hide();
+            
+            if (GameManager.Instance != null) GameManager.Instance.ResumeGame();
+        }
+        else
+        {
+            if (Time.timeScale > 0f)
+            {
+                if (UIManager.Instance != null)
+                {
+                    if (!UIManager.Instance.IsAnyPanelOpen)
+                    {
+                        UIManager.Instance.OpenPanel(UIPanelType.Pause);
+                        if (GameManager.Instance != null) GameManager.Instance.PauseGame();
+                    }
+                }
+                else
+                {
+                    Show();
+                    if (GameManager.Instance != null) GameManager.Instance.PauseGame();
+                }
+            }
+        }
     }
-    private void Show()
+
+    private void GameInput_OnCancelPressed()
+    {
+        if (UIManager.Instance != null && UIManager.Instance.WasPanelClosedThisFrame) return;
+
+        if (gameObject.activeSelf)
+        {
+            if (UIManager.Instance != null) UIManager.Instance.ClosePanelIfOpen(UIPanelType.Pause);
+            else Hide();
+            
+            if (GameManager.Instance != null) GameManager.Instance.ResumeGame();
+        }
+        else
+        {
+            if (Time.timeScale > 0f)
+            {
+                if (UIManager.Instance != null)
+                {
+                    if (!UIManager.Instance.IsAnyPanelOpen)
+                    {
+                        UIManager.Instance.OpenPanel(UIPanelType.Pause);
+                        if (GameManager.Instance != null) GameManager.Instance.PauseGame();
+                    }
+                }
+                else
+                {
+                    Show();
+                    if (GameManager.Instance != null) GameManager.Instance.PauseGame();
+                }
+            }
+        }
+    }
+    
+    public void Show()
     {
         gameObject.SetActive(true);
     }
 
-    private void Hide()
+    public void Hide()
     {
         gameObject.SetActive(false);
     }

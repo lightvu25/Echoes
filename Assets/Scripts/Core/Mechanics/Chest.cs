@@ -3,15 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-/// <summary>
-/// Interactable chest that spawns physical loot items via a LootTable.
-/// Tier restricts non-consumable drops; consumables always roll freely.
-/// </summary>
 public class Chest : MonoBehaviour, IInteractable, IFeedbackProvider
 {
-    // ------------------------------------------------------------------ //
-    //  Inspector                                                           //
-    // ------------------------------------------------------------------ //
 
     [Header("Persistence")]
     public string persistenceID;
@@ -32,9 +25,6 @@ public class Chest : MonoBehaviour, IInteractable, IFeedbackProvider
     [Header("Feedback")]
     [SerializeField] private Vector3 promptOffset = new Vector3(0f, 1.5f, 0f);
 
-    // ------------------------------------------------------------------ //
-    //  State                                                               //
-    // ------------------------------------------------------------------ //
 
     private bool isOpened;
 
@@ -101,7 +91,7 @@ public class Chest : MonoBehaviour, IInteractable, IFeedbackProvider
         {
             if (result.type == LootItemType.Currency)
             {
-                GameObject obj = Instantiate(result.prefab, origin, Quaternion.identity);
+                GameObject obj = ObjectPoolManager.SpawnObject(result.prefab, origin, Quaternion.identity, ObjectPoolManager.PoolType.Loot);
                 if (obj.TryGetComponent(out Collectible collectible))
                 {
                     float x = Random.Range(-1f, 1f);
@@ -117,7 +107,7 @@ public class Chest : MonoBehaviour, IInteractable, IFeedbackProvider
             {
                 for (int i = 0; i < result.totalAmount; i++)
                 {
-                    GameObject obj = Instantiate(result.prefab, origin, Quaternion.identity);
+                    GameObject obj = ObjectPoolManager.SpawnObject(result.prefab, origin, Quaternion.identity, ObjectPoolManager.PoolType.Loot);
                     ApplyBurst(obj);
                 }
             }

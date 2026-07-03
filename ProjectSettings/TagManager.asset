@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Enemy
+  - MemorySource
+  - Climbable
   layers:
   - Default
   - TransparentFX
@@ -16,14 +18,14 @@ TagManager:
   - Player
   - Enemy
   - Item
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Background
+  - MinimapIcon
+  - Minimap Background
+  - OneWayPlatform
+  - Foreground
+  - Interactable
+  - Particle
+  - Item
   - 
   - 
   - 
@@ -44,6 +46,21 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Particle
+    uniqueID: 2336975951
+    locked: 0
+  - name: Ground
+    uniqueID: 1102808999
+    locked: 0
+  - name: MinimapBackground
+    uniqueID: 1643036567
+    locked: 0
+  - name: OneWayPlatform
+    uniqueID: 3142896733
+    locked: 0
+  - name: MinimapIcon
+    uniqueID: 2913024167
     locked: 0
   - name: UI
     uniqueID: 195113763

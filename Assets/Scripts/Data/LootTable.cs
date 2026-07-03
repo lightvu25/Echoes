@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-/// <summary>Identifies the category of a loot item for tier-restriction logic.</summary>
 public enum LootItemType { Equipment, Relic, Consumable, Currency }
 
-/// <summary>The rolled result from a LootTable.</summary>
 public struct DropResult
 {
     public GameObject prefab;
@@ -14,7 +12,6 @@ public struct DropResult
     public LootItemType type;
 }
 
-/// <summary>A single entry in a LootTable.</summary>
 [Serializable]
 public class LootItem
 {
@@ -33,20 +30,10 @@ public class LootItem
     public LootItemType type;
 }
 
-/// <summary>
-/// ScriptableObject that defines the loot pool for a chest or enemy.
-/// Each item rolls its own chance independently.
-/// </summary>
 [CreateAssetMenu(fileName = "LootTable", menuName = "Echoes/Loot Table")]
 public class LootTable : ScriptableObject
 {
     public List<LootItem> lootItems = new();
-
-    /// <summary>
-    /// Evaluates each entry and returns the prefabs that passed their roll.
-    /// </summary>
-    /// <param name="chanceMultiplier">Scales every drop chance (1f = normal, 1.5f = elite).</param>
-    /// <param name="minTierAllowed">Non-consumable items below this tier are skipped.</param>
     public List<DropResult> GetDrops(float chanceMultiplier, int minTierAllowed)
     {
         var drops = new List<DropResult>();
@@ -55,7 +42,6 @@ public class LootTable : ScriptableObject
         {
             if (item.itemPrefab == null) continue;
 
-            // Tier gate: only consumables and currency bypass the minimum tier restriction.
             if (item.type != LootItemType.Consumable && item.type != LootItemType.Currency && item.itemTier < minTierAllowed) continue;
 
             float finalChance = item.dropChance * chanceMultiplier;

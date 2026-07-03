@@ -41,10 +41,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3510916669112544303}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57fe12c69c8f7b242aaf2005633e06d9, type: 3}
+  m_Script: {fileID: 11500000, guid: 012bf944e3dfcc7409b4212c8a1e1dd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  coinPickupAudioClip: {fileID: 8300000, guid: 3e5c859980c9a8e49a7fb36e70728b20, type: 3}
-  timePickupAudioClip: {fileID: 8300000, guid: 3e5c859980c9a8e49a7fb36e70728b20, type: 3}
-  failPickupAudioClip: {fileID: 8300000, guid: f7148206dc4cb414bb7ae940e011a912, type: 3}
-  successPickupAudioClip: {fileID: 8300000, guid: 5e811af3a891aae419753de3094e5aa3, type: 3}
+  coinPickupAudioClip: {fileID: 8300000, guid: f7148206dc4cb414bb7ae940e011a912, type: 3}
+  timePickupAudioClip: {fileID: 8300000, guid: f7148206dc4cb414bb7ae940e011a912, type: 3}
+  failAudioClip: {fileID: 8300000, guid: 5c47578cf0e06fe47a64c0fbfbad4545, type: 3}
+  successAudioClip: {fileID: 8300000, guid: 5e811af3a891aae419753de3094e5aa3, type: 3}

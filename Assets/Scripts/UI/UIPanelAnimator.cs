@@ -21,6 +21,11 @@ public class UIPanelAnimator : MonoBehaviour
     {
         _originalPosition = transform.localPosition;
         _originalScale = transform.localScale;
+        
+        if (_originalScale.sqrMagnitude < 0.01f)
+        {
+            _originalScale = Vector3.one;
+        }
     }
 
     public void Show()
@@ -34,7 +39,10 @@ public class UIPanelAnimator : MonoBehaviour
         transform.DOKill();
         CanvasGroup.DOKill();
 
-
+        if (_originalScale.sqrMagnitude < 0.01f)
+        {
+            _originalScale = Vector3.one;
+        }
         switch (animationType)
         {
             case UIAnimationType.FadeOnly:
@@ -72,13 +80,19 @@ public class UIPanelAnimator : MonoBehaviour
         {
             case UIAnimationType.FadeOnly:
                 CanvasGroup.DOFade(0f, animationDuration).SetUpdate(true)
-                    .OnComplete(() => gameObject.SetActive(false));
+                    .OnComplete(() => {
+                        gameObject.SetActive(false);
+                        CanvasGroup.alpha = 1f;
+                    });
                 break;
 
             case UIAnimationType.PopUp:
                 transform.DOScale(_originalScale * 0.5f, animationDuration).SetEase(Ease.InBack).SetUpdate(true);
                 CanvasGroup.DOFade(0f, animationDuration).SetUpdate(true)
-                    .OnComplete(() => gameObject.SetActive(false));
+                    .OnComplete(() => {
+                        gameObject.SetActive(false);
+                        transform.localScale = _originalScale;
+                    });
                 break;
 
             case UIAnimationType.SlideUp:
@@ -86,7 +100,10 @@ public class UIPanelAnimator : MonoBehaviour
                 targetPos.y -= 50f;
                 transform.DOLocalMove(targetPos, animationDuration).SetEase(Ease.InBack).SetUpdate(true);
                 CanvasGroup.DOFade(0f, animationDuration).SetUpdate(true)
-                    .OnComplete(() => gameObject.SetActive(false));
+                    .OnComplete(() => {
+                        gameObject.SetActive(false);
+                        transform.localPosition = _originalPosition;
+                    });
                 break;
         }
     }
@@ -97,6 +114,10 @@ public class UIPanelAnimator : MonoBehaviour
         transform.DOKill();
         CanvasGroup.DOKill();
         CanvasGroup.alpha = 0f;
+
+        transform.localScale = _originalScale;
+        transform.localPosition = _originalPosition;
+
         gameObject.SetActive(false);
     }
 }

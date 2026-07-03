@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58bd6ae18fb788d40ae6e15270d9155d, type: 3}
+  m_Name: Void_Resonance
+  m_EditorClassIdentifier: Assembly-CSharp::BlessingData
+  buffName: Void Resonance
+  description: Losing 1 slot HP will reduce 10% damage received for 3 seconds.
+  path: 0
+  specialEffectID: VOID_RESONANCE
+  flatBonusHP: 0
+  flatBonusSkill: 0
+  flatBonusResonance: 0
+  grantedVitality: 1
+  grantedSorcery: 2
+  grantedResonance: 2

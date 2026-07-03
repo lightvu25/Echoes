@@ -3,13 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Handles enemy attack hitbox using frame-perfect, code-based overlap checks.
-/// Supports both Animation Event triggers and auto-trigger from EnemyInteract.
-/// Detects both Player and Enemy layers for friendly fire.
-/// </summary>
-public class EnemyAttack : MonoBehaviour
+public class EnemyAttack : MonoBehaviour, IEnemyAttack
 {
+    public event EventHandler OnAttackStarted;
+    public event EventHandler OnAttackFinished;
     public event EventHandler<HitEventArgs> OnHitTarget;
 
     public class HitEventArgs : EventArgs
@@ -31,46 +28,29 @@ public class EnemyAttack : MonoBehaviour
     // State
     private bool isActive = false;
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
-    private EnemyInteract enemyInteract;
+
+    public bool IsAttacking { get; private set; }
 
     private const float FRIENDLY_FIRE_MULTIPLIER = 0.5f;
 
-    private void Awake()
+    public void ExecuteAttack()
     {
-        enemyInteract = GetComponent<EnemyInteract>();
+        if (IsAttacking) return;
+        IsAttacking = true;
+        OnAttackStarted?.Invoke(this, EventArgs.Empty);
     }
 
-    private void Start()
+    public void CancelAttack()
     {
-        // Auto-trigger: subscribe to EnemyInteract attack event
-        if (enemyInteract != null)
-        {
-            enemyInteract.OnAttack += EnemyInteract_OnAttack;
-        }
+        IsAttacking = false;
+        CancelHitbox();
     }
 
-    private void OnDestroy()
+    public void FinishAttackFromAnimation()
     {
-        if (enemyInteract != null)
-        {
-            enemyInteract.OnAttack -= EnemyInteract_OnAttack;
-        }
-    }
-
-    private void EnemyInteract_OnAttack(object sender, EventArgs e)
-    {
-        StartCoroutine(AutoAttackRoutine());
-    }
-
-    private IEnumerator AutoAttackRoutine()
-    {
-        // Startup delay (anticipation frames)
-        if (startupDelay > 0f)
-        {
-            yield return new WaitForSeconds(startupDelay);
-        }
-
-        TriggerHitbox();
+        if (!IsAttacking) return;
+        IsAttacking = false;
+        OnAttackFinished?.Invoke(this, EventArgs.Empty);
     }
 
     public void TriggerHitbox()
@@ -138,12 +118,15 @@ public class EnemyAttack : MonoBehaviour
         Vector2 knockbackDir = new Vector2(dirX >= 0 ? 1f : -1f, 0f);
 
         // Check if friendly fire (enemy hitting another enemy)
-        bool isFriendlyFire = targetGO.GetComponent<EnemyCombat>() != null;
+        bool isFriendlyFire = targetGO.GetComponent<EnemyBrain>() != null;
+
+        float damageMult = BurdenManager.Instance != null ? BurdenManager.Instance.CurrentDamageMultiplier : 1f;
+        int scaledDamage = Mathf.RoundToInt(data.attackBase * damageMult);
 
         // Build damage info
         DamageInfo damageInfo = new DamageInfo
         {
-            baseDamage = data.attackBase,
+            baseDamage = scaledDamage,
             flatBonus = 0,
             linearModifierSum = 0f,
             multiplicativeStack = isFriendlyFire ? FRIENDLY_FIRE_MULTIPLIER : 1f,

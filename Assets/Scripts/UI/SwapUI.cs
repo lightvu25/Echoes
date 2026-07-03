@@ -3,21 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-/// <summary>
-/// Inline swap overlay that appears above the player when they try to equip
-/// an item into a full inventory category.
-///
-/// Visual design: a small non-modal popup anchored to the player's screen position,
-/// animated with a DOTween pop-in (scale 0 → 1 + slight overshoot).
-///
-/// Decoupling note
-/// ---------------
-/// This class has ZERO game logic. It translates UI clicks into calls to
-/// <see cref="PlayerInventoryCore.SwapItem"/> and then dismisses itself.
-/// </summary>
-public class SwapUI : MonoBehaviour
+public class SwapUI : MonoBehaviour, IUIPanel
 {
-    public static SwapUI Instance { get; private set; }
 
     [Header("References")]
     [SerializeField] private RectTransform panelRoot;
@@ -42,8 +29,6 @@ public class SwapUI : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else { Destroy(gameObject); return; }
 
         panelRoot.localScale = Vector3.zero;
         gameObject.SetActive(false);
@@ -69,15 +54,18 @@ public class SwapUI : MonoBehaviour
         pendingIncoming = incoming;
         BuildSlots(PlayerInventoryCore.Instance.GetEquippedList(category));
         PositionNearPlayer();
-        PopIn();
+        
+        if (UIManager.Instance != null)
+            UIManager.Instance.OpenPanel(UIPanelType.Swap);
+        else
+            Show();
     }
 
     // ------------------------------------------------------------------ //
     //  Public API                                                          //
     // ------------------------------------------------------------------ //
 
-    /// <summary>Dismisses the swap overlay without making any changes.</summary>
-    public void Cancel() => PopOut();
+    public void Cancel() => Hide();
 
     // ------------------------------------------------------------------ //
     //  Private helpers                                                     //
@@ -117,7 +105,10 @@ public class SwapUI : MonoBehaviour
     {
         PlayerInventoryCore.Instance.SwapItem(equipped, pendingIncoming);
         pendingIncoming = null;
-        PopOut();
+        if (UIManager.Instance != null)
+            UIManager.Instance.ClosePanelIfOpen(UIPanelType.Swap);
+        else
+            Hide();
     }
 
     private void PositionNearPlayer()
@@ -132,7 +123,7 @@ public class SwapUI : MonoBehaviour
         panelRoot.position = screenPos + (Vector3)screenOffset;
     }
 
-    private void PopIn()
+    public void Show()
     {
         gameObject.SetActive(true);
         panelRoot.DOKill();
@@ -140,7 +131,7 @@ public class SwapUI : MonoBehaviour
         panelRoot.DOScale(1f, popInDuration).SetEase(Ease.OutBack).SetUpdate(true);
     }
 
-    private void PopOut()
+    public void Hide()
     {
         panelRoot.DOKill();
         panelRoot.DOScale(0f, popOutDuration)

@@ -1,0 +1,34 @@
+Dead-end Room Down | Exits: Down
+Dead-end Room Left | Exits: Left
+Dead-end Room Right | Exits: Right
+Dead-end Room Up | Exits: Up
+Down Goal | Exits: Up
+Left Goal | Exits: Left
+Right Goal | Exits: Right
+Up Goal | Exits: Down
+Room 1 | Exits: Left, Right, Down
+Room 2 | Exits: Up, Right, Down, Down
+Room 3 | Exits: Up, Down
+Room 4 | Exits: Left, Right
+Room 5 | Exits: Left, Right
+Room 6 | Exits: Left, Right
+Room 7 | Exits: Up, Left
+Room 8 | Exits: Left, Right, Down
+Room 9 | Exits: Up, Down, Left, Right
+Room 10 | Exits: Up, Down
+Room 11 | Exits: Up, Down, Left, Right
+Room 12 | Exits: Up, Down, Left, Right
+Room 13 | Exits: Left, Right
+Room 14 | Exits: Up, Down
+Down Reward Room | Exits: Down
+Left Reward Room | Exits: Left
+Right Reward Room | Exits: Right
+Up Reward Room | Exits: Up
+FallbackErrorRoom | Exits: Up, Down
+StartRoom | Exits: Right
+Room Statue 1 | Exits: Left, Right
+Room Statue 2 | Exits: Down, Up
+Room Statue 3 | Exits: Down, Right
+Room Statue 4 | Exits: Down, Left
+Room Statue 5 | Exits: Up, Left
+Room Statue 6 | Exits: Down, Up

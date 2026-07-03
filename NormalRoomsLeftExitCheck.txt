@@ -1,0 +1,8 @@
+Room 1 | Left Exit X: -14.00 | Left Edge: -15.00 | Diff: 1.00 | Bounds Center: -0.50, Size: 29.00
+Room 4 | Left Exit X: -15.00 | Left Edge: -15.00 | Diff: 0.00 | Bounds Center: 0.00, Size: 30.00
+Room 5 | Left Exit X: -15.00 | Left Edge: -15.00 | Diff: 0.00 | Bounds Center: 0.00, Size: 30.00
+Room 6 | Left Exit X: -17.00 | Left Edge: -17.00 | Diff: 0.00 | Bounds Center: 0.00, Size: 34.00
+Room 7 | Left Exit X: -14.00 | Left Edge: -14.00 | Diff: 0.00 | Bounds Center: 0.50, Size: 29.00
+Room 8 | Left Exit X: -16.00 | Left Edge: -16.00 | Diff: 0.00 | Bounds Center: 0.00, Size: 32.00
+Room 9 | Left Exit X: -12.00 | Left Edge: -12.00 | Diff: 0.00 | Bounds Center: -0.50, Size: 23.00
+Room 11 | Left Exit X: -12.00 | Left Edge: -16.00 | Diff: 4.00 | Bounds Center: -0.50, Size: 31.00

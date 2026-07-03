@@ -54,6 +54,8 @@ public class PlayerInventoryCore : MonoBehaviour
     [SerializeField] private float popForceMax      = 10f;
     [SerializeField] private float sidewaysForceMod = 1.5f;
 
+
+
     // ------------------------------------------------------------------ //
     //  Private state                                                       //
     // ------------------------------------------------------------------ //
@@ -77,9 +79,9 @@ public class PlayerInventoryCore : MonoBehaviour
     public IReadOnlyList<ItemBaseData> EquippedItems => equippedItems;
 
     /// <summary>Element at the active hotbar index, or null if the slot is empty.</summary>
-    public ElementData ActiveElement =>
+    public EchoData ActiveElement =>
         activeElementIndex < equippedElements.Count
-            ? equippedElements[activeElementIndex] as ElementData
+            ? equippedElements[activeElementIndex] as EchoData
             : null;
 
     // ------------------------------------------------------------------ //
@@ -88,9 +90,8 @@ public class PlayerInventoryCore : MonoBehaviour
 
     private static RunData Run => GameSession.Instance?.currentRun;
 
-    /// <summary>Number of unlocked Element slots (minimum 1, guarded against stale saves).</summary>
-    public int UnlockedElementSlots => Mathf.Clamp(
-        Run != null ? Run.unlockedElementSlots : 1, 1, RunData.MAX_SLOTS);
+    /// <summary>Number of unlocked Element slots (strictly 4).</summary>
+    public int UnlockedElementSlots => 4;
 
     /// <summary>Number of unlocked Relic slots.</summary>
     public int UnlockedRelicSlots => Mathf.Clamp(
@@ -164,14 +165,30 @@ public class PlayerInventoryCore : MonoBehaviour
         List<ItemBaseData> list  = GetList(item.Category);
         int                limit = GetUnlockedCount(item.Category);
 
+        if (item is EchoData echoData)
+        {
+            EchoData runtimeInstance = Instantiate(echoData);
+            runtimeInstance.InitRuntime();
+            item = runtimeInstance;
+        }
+
         if (list.Count < limit)
         {
             list.Add(item);
             OnInventoryChanged?.Invoke();
+            
+
         }
         else
         {
-            OnSwapRequired?.Invoke(item, item.Category);
+            if (item.Category == ItemCategory.Element)
+            {
+                SpawnDroppedItem(item);
+            }
+            else
+            {
+                OnSwapRequired?.Invoke(item, item.Category);
+            }
         }
     }
 
@@ -196,6 +213,19 @@ public class PlayerInventoryCore : MonoBehaviour
         list[index] = incoming;
         SpawnDroppedItem(equipped);
         OnInventoryChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Removes an item from the equipped list without dropping it (used for UI consumption like Fusion).
+    /// </summary>
+    public void RemoveEquippedItem(ItemBaseData item)
+    {
+        if (item == null) return;
+        List<ItemBaseData> list = GetList(item.Category);
+        if (list.Remove(item))
+        {
+            OnInventoryChanged?.Invoke();
+        }
     }
 
     // ------------------------------------------------------------------ //
@@ -244,27 +274,27 @@ public class PlayerInventoryCore : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the currently active ElementData based on the activeElementIndex.
+    /// Returns the currently active EchoData based on the activeElementIndex.
     /// Used by combat scripts (e.g. AttackHitbox) to determine damage types.
     /// </summary>
-    public ElementData GetActiveElement()
+    public EchoData GetActiveElement()
     {
         if (equippedElements == null || equippedElements.Count == 0) return null;
         if (activeElementIndex >= 0 && activeElementIndex < equippedElements.Count)
-            return equippedElements[activeElementIndex] as ElementData;
+            return equippedElements[activeElementIndex] as EchoData;
         return null;
     }
 
     /// <summary>
     /// Returns all active ElementTypes across equipped Elements (for combat use).
     /// </summary>
-    public List<ElementType> GetAllActiveElementTypes()
+    public List<EchoType> GetAllActiveElementTypes()
     {
-        var result = new List<ElementType>();
+        var result = new List<EchoType>();
         foreach (var item in equippedElements)
         {
-            if (item is ElementData ed && ed.elementType != ElementType.None)
-                result.Add(ed.elementType);
+            if (item is EchoData ed && ed.echoType != EchoType.None)
+                result.Add(ed.echoType);
         }
         return result;
     }
@@ -297,6 +327,8 @@ public class PlayerInventoryCore : MonoBehaviour
         TrimList(equippedItems,    UnlockedItemSlots);
         OnInventoryChanged?.Invoke();
     }
+
+
 
     // ------------------------------------------------------------------ //
     //  Private helpers                                                     //

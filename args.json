@@ -1,0 +1,4 @@
+{
+  "csharpCode": "var guids = UnityEditor.AssetDatabase.FindAssets(\"t:Prefab\", new[] { \"Assets/Prefabs/Rooms/Dead-end Rooms\" });\nvar report = new System.Text.StringBuilder();\n\nforeach(var guid in guids) {\n    var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);\n    var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.GameObject>(path);\n    if (prefab == null) continue;\n    \n    var instRoom = prefab.GetComponent<Room>();\n    if (instRoom == null) continue;\n    \n    var dirs = new System.Collections.Generic.List<string>();\n    if (instRoom.Exits != null) {\n        foreach (var e in instRoom.Exits) {\n            dirs.Add(e.direction.ToString());\n        }\n    }\n    \n    report.AppendLine($\"{prefab.name} | Exits: {string.Join(\", \", dirs)}\");\n}\nSystem.IO.File.WriteAllText(\"DeadEndRoomsExitsCheck.txt\", report.ToString());",
+  "isMethodBody": true
+}

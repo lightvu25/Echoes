@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5018241086518836655}
   - component: {fileID: 8293815765295726278}
   - component: {fileID: 2144301766575134154}
-  - component: {fileID: 4627753421710707128}
   m_Layer: 0
   m_Name: Fire
   m_TagString: Untagged
@@ -158,19 +157,3 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0.155}
   m_Size: {x: 0.3, y: 0.31}
   m_Direction: 0
---- !u!114 &4627753421710707128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5905760324930919848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de4d9d1123beae643a3a4583d97c2918, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InteractableMemoryItem
-  interactPrompt: {fileID: 0}
-  itemData: {fileID: 11400000, guid: 1dffd36d5167f4446a274b8bd41ddb6b, type: 2}
-  feedbackText: {fileID: 0}
-  feedbackDuration: 1.5

@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// ScriptableObject containing base combat stats.
-/// Used by players, enemies, and NPCs.
-/// </summary>
 [CreateAssetMenu(menuName = "Combat/Combat Stats")]
 public class CombatStats : ScriptableObject
 {
@@ -50,12 +46,12 @@ public class CombatStats : ScriptableObject
     /// <summary>
     /// Create a DamageInfo from these stats.
     /// </summary>
-    public DamageInfo CreateBaseDamageInfo(GameObject attacker, string source = "BasicAttack")
+    public DamageInfo CreateBaseDamageInfo(GameObject attacker, string source = "BasicAttack", RunData runData = null)
     {
         bool isCrit = Random.value < critChance;
         float multiplier = isCrit ? critMultiplier : 1f;
 
-        return new DamageInfo
+        DamageInfo info = new DamageInfo
         {
             baseDamage = baseAttack,
             flatBonus = 0,
@@ -69,5 +65,13 @@ public class CombatStats : ScriptableObject
             damageSource = source,
             isCritical = isCrit
         };
+
+        if (runData != null)
+        {
+            info.linearModifierSum += (runData.bonusSorcery * 0.05f);
+            info.procCoefficient   += (runData.bonusResonance * 0.05f);
+        }
+
+        return info;
     }
 }

@@ -80,7 +80,7 @@ public class SlotUnlockPanel : MonoBehaviour
     private void Choose(ItemCategory category)
     {
         gameObject.SetActive(false);
-        InventoryUI.Instance?.OnSlotChosen(category);
+        UIManager.Instance?.GetPanel<InventoryUI>(UIPanelType.Inventory)?.OnSlotChosen(category);
     }
 
     private void PlayGlowPulse()

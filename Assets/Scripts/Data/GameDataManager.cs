@@ -1,26 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Singleton facade over GameSession.currentProfile for runtime unlock queries,
-/// level-attempt tracking, and persistence. All persistence delegates to SaveManager.
-/// </summary>
 public class GameDataManager : MonoBehaviour
 {
     public static GameDataManager Instance { get; private set; }
 
-    // Skill IDs — match whatever the Statue assigns in ProfileData.unlockedSkillIDs.
-    private const string ID_DOUBLE_JUMP    = "Skill_DoubleJump";
+    // Skill IDs
+    private const string ID_TRIPLE_JUMP    = "Skill_TripleJump";
     private const string ID_PLUNGE_ATTACK  = "Skill_PlungeAttack";
 
-    public bool isDoubleJumpUnlocked   => Profile != null && Profile.HasSkill(ID_DOUBLE_JUMP);
+    public bool isTripleJumpUnlocked   => Profile != null && Profile.HasSkill(ID_TRIPLE_JUMP);
     public bool isPlungeAttackUnlocked => Profile != null && Profile.HasSkill(ID_PLUNGE_ATTACK);
 
     private static ProfileData Profile => GameSession.Instance?.currentProfile;
-
-    // ------------------------------------------------------------------ //
-    //  Persistence Keys                                                    //
-    // ------------------------------------------------------------------ //
 
     public HashSet<string> persistenceKeys = new HashSet<string>();
 
@@ -65,7 +57,6 @@ public class GameDataManager : MonoBehaviour
     //  Level Attempt Tracking                                              //
     // ------------------------------------------------------------------ //
 
-    /// <summary>Increments the attempt count for a level and flushes the profile to disk.</summary>
     public void IncrementLevelAttempt(int levelIndex)
     {
         if (Profile == null) return;
@@ -73,7 +64,6 @@ public class GameDataManager : MonoBehaviour
         SaveManager.saveProfile(Profile);
     }
 
-    /// <summary>Returns how many times the player has attempted the given level.</summary>
     public int GetLevelAttemptCount(int levelIndex) =>
         Profile != null ? Profile.GetLevelAttempts(levelIndex) : 0;
 
@@ -81,8 +71,8 @@ public class GameDataManager : MonoBehaviour
     //  Debug / Testing                                                     //
     // ------------------------------------------------------------------ //
 
-    [ContextMenu("Debug: Toggle Double Jump")]
-    public void Debug_ToggleDoubleJump() => DebugToggle(ID_DOUBLE_JUMP);
+    [ContextMenu("Debug: Toggle Triple Jump")] // [CẬP NHẬT] Đổi tên menu
+    public void Debug_ToggleTripleJump() => DebugToggle(ID_TRIPLE_JUMP);
 
     [ContextMenu("Debug: Toggle Plunge Attack")]
     public void Debug_TogglePlungeAttack() => DebugToggle(ID_PLUNGE_ATTACK);

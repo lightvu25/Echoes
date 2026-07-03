@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class PassUI : MonoBehaviour
+public class PassUI : MonoBehaviour, IUIPanel
 {
     [SerializeField] private TextMeshProUGUI titleTextMesh;
     [SerializeField] private TextMeshProUGUI playButtonTextMesh;
@@ -14,7 +14,6 @@ public class PassUI : MonoBehaviour
     private void Start()
     {
         PlayerInteract.Instance.OnGoal += PlayerInteract_OnGoal;
-        // Bypassing traditional game over UI in favor of seamless cinematic death reload
         // PlayerInteract.Instance.OnDead += PlayerInteract_OnDead;
         Hide();
     }
@@ -32,23 +31,31 @@ public class PassUI : MonoBehaviour
         titleTextMesh.text = "YOU ESCAPED";
         playButtonTextMesh.text = "CONTINUE";
         playButtonClickAction = GameManager.Instance.GoToNextLevel;
-        Show();
+        
+        if (UIManager.Instance != null)
+            UIManager.Instance.OpenPanel(UIPanelType.Pass);
+        else
+            Show();
     }
 
     private void PlayerInteract_OnDead(object sender, EventArgs e)
     {
         titleTextMesh.text = "YOU ARE DEAD";
         playButtonTextMesh.text = "WAKE UP";
-        playButtonClickAction = GameManager.Instance.RetryLevel;
-        Show();
+        playButtonClickAction = () => GameSession.Instance.HandlePlayerDeath();
+        
+        if (UIManager.Instance != null)
+            UIManager.Instance.OpenPanel(UIPanelType.Pass);
+        else
+            Show();
     }
 
-    private void Show()
+    public void Show()
     {
         gameObject.SetActive(true);
     }
 
-    private void Hide()
+    public void Hide()
     {
         gameObject.SetActive(false);
     }

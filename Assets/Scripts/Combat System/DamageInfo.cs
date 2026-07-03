@@ -72,6 +72,17 @@ public struct DamageInfo
     /// </summary>
     public bool isCritical;
 
+    /// <summary>
+    /// Nguyên tố hiện tại đang sử dụng (Dành cho hệ thống Element)
+    /// </summary>
+    public EchoData activeElement;
+
+    /// <summary>
+    /// Cấp độ của Player khi gây sát thương
+    /// </summary>
+    public int playerLevel;
+    public bool isTrueDamage;
+
     // ===== Factory Methods =====
 
     /// <summary>
@@ -91,7 +102,8 @@ public struct DamageInfo
             hitFreezeTime = 0f,
             attacker = attacker,
             damageSource = "Unknown",
-            isCritical = false
+            isCritical = false,
+            isTrueDamage = false
         };
     }
 

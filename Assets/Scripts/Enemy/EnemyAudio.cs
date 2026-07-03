@@ -6,41 +6,46 @@ public class EnemyAudio : MonoBehaviour
     [SerializeField] private AudioSource attackAudioSource;
     [SerializeField] private AudioSource stepAudioSource;
 
-    private EnemyInteract enemyInteract;
-    private EnemyMovement enemyMovement;
+    private EnemyBrain enemyBrain;
 
     private void Awake()
     {
-        enemyInteract = GetComponent<EnemyInteract>();
-        enemyMovement = GetComponent<EnemyMovement>();
+        enemyBrain = GetComponentInParent<EnemyBrain>();
     }
 
     private void Start()
     {
-        enemyInteract.OnAttack += EnemyInteract_OnAttack;
-        enemyMovement.OnPatrol += EnemyMovement_OnPatrol;
+        if (enemyBrain != null)
+        {
+            enemyBrain.OnAttack += EnemyBrain_OnAttack;
+        }
     }
 
-    private void EnemyInteract_OnAttack(object sender, EventArgs e)
+    private void Update()
     {
+        if (enemyBrain != null && (enemyBrain.CurrentState == EnemyBrain.State.Patrol || enemyBrain.CurrentState == EnemyBrain.State.Chase))
+        {
+            if (!stepAudioSource.isPlaying)
+                stepAudioSource.Play();
+        }
+        else
+        {
+            if (stepAudioSource.isPlaying)
+                stepAudioSource.Stop();
+        }
+    }
+
+    private void EnemyBrain_OnAttack(object sender, EventArgs e)
+    {
+        if (attackAudioSource != null)
             attackAudioSource.Play();
-    }
-
-    private void EnemyMovement_OnPatrol(object sender, EventArgs e)
-    {
-        if (!stepAudioSource.isPlaying)
-            stepAudioSource.Play();
     }
 
     private void OnDestroy()
     {
-        if (enemyInteract != null)
+        if (enemyBrain != null)
         {
-            enemyInteract.OnAttack -= EnemyInteract_OnAttack;
-        }
-        if (enemyMovement != null)
-        {
-            enemyMovement.OnPatrol -= EnemyMovement_OnPatrol;
+            enemyBrain.OnAttack -= EnemyBrain_OnAttack;
         }
     }
 }

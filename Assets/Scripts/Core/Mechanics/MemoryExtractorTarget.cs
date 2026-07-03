@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MemoryExtractorTarget : MonoBehaviour, IExtractable, IFeedbackProvider
 {
-    [SerializeField] private ElementData memoryToExtract;
+    [SerializeField] private EchoData memoryToExtract;
     [SerializeField] private int extractionUses = 1;
     [SerializeField] private GameObject extractVFXPrefab;
     [SerializeField] private bool destroyOnDepletion = true;
@@ -46,8 +46,8 @@ public class MemoryExtractorTarget : MonoBehaviour, IExtractable, IFeedbackProvi
             else
             {
                 
-                if (FeedbackUIManager.Instance != null)
-                    FeedbackUIManager.Instance.HideInteractPrompt();
+                if (FeedbackUI.Instance != null)
+                    FeedbackUI.Instance.HideInteractPrompt();
             }
         }
     }

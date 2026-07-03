@@ -13,13 +13,13 @@ public class PlayerStats : MonoBehaviour
     // Events
     public event Action<int> OnLevelUp;
     public event Action<int> OnGoldChanged;
-    public event Action<int> OnMemoryFragmentsChanged;
+    public event Action<int> OnAstralShardsChanged;
     public event Action<int, int> OnExpChanged;
 
     public int CurrentLevel => GameSession.Instance.currentRun.currentLevel;
     public int CurrentExp => GameSession.Instance.currentRun.currentExp;
     public int CurrentGold => GameSession.Instance.currentRun.runGold;
-    public int MemoryFragments => GameSession.Instance.currentRun.runMemoryFragments;
+    public int CurrentAstralShards => GameSession.Instance.currentRun.currentAstralShards;
 
     private void Awake()
     {
@@ -47,12 +47,12 @@ public class PlayerStats : MonoBehaviour
         GameSession.Instance.SaveCurrentRun();
     }
 
-    public void AddMemoryFragments(int amount)
+    public void AddAstralShards(int amount)
     {
         if (amount <= 0) return;
 
-        GameSession.Instance.currentRun.runMemoryFragments += amount;
-        OnMemoryFragmentsChanged?.Invoke(MemoryFragments);
+        GameSession.Instance.currentRun.currentAstralShards += amount;
+        OnAstralShardsChanged?.Invoke(CurrentAstralShards);
         GameSession.Instance.SaveCurrentRun();
     }
 
@@ -66,12 +66,12 @@ public class PlayerStats : MonoBehaviour
         return true;
     }
 
-    public bool SpendMemoryFragments(int amount)
+    public bool SpendAstralShards(int amount)
     {
-        if (amount <= 0 || MemoryFragments < amount) return false;
+        if (amount <= 0 || CurrentAstralShards < amount) return false;
 
-        GameSession.Instance.currentRun.runMemoryFragments -= amount;
-        OnMemoryFragmentsChanged?.Invoke(MemoryFragments);
+        GameSession.Instance.currentRun.currentAstralShards -= amount;
+        OnAstralShardsChanged?.Invoke(CurrentAstralShards);
         GameSession.Instance.SaveCurrentRun();
         return true;
     }
@@ -79,10 +79,10 @@ public class PlayerStats : MonoBehaviour
     public void ResetRunCurrencies()
     {
         GameSession.Instance.currentRun.runGold = 0;
-        GameSession.Instance.currentRun.runMemoryFragments = 0;
+        GameSession.Instance.currentRun.currentAstralShards = 0;
         
         OnGoldChanged?.Invoke(0);
-        OnMemoryFragmentsChanged?.Invoke(0);
+        OnAstralShardsChanged?.Invoke(0);
         
         GameSession.Instance.SaveCurrentRun();
     }

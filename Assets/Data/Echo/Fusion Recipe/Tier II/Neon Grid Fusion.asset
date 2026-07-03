@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
+  m_Name: Neon Grid Fusion
+  m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
+  recipeID: REC_PLASMA
+  elementA: {fileID: 11400000, guid: 3ec18f11c8e531742b8da89ec45d2a5f, type: 2}
+  elementB: {fileID: 11400000, guid: ad25f0b543aeff743a2e4684cd30e4c8, type: 2}
+  resultElement: {fileID: 11400000, guid: eee33a29634bd514ab4b5370609394c7, type: 2}
+  recipeTier: 2
+  requiredConstellationNode: FUSION_FORGE_UP

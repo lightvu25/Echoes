@@ -41,6 +41,7 @@ public class EnemyData : ScriptableObject
     public float attackRange;
     public float attackSpeed;
     public float attackCooldown;
+    public float telegraphDuration = 0.5f;
 
     [Header("Attack Hitbox")]
     public Vector2 attackHitboxSize = new Vector2(1.5f, 1.5f);
@@ -71,9 +72,9 @@ public class EnemyData : ScriptableObject
     public int goldAmountMax = 5;
 
     [Space(10)]
-    [Range(0f, 100f)] public float memoryFragmentDropChance = 10f;
-    public int memoryFragmentAmountMin = 1;
-    public int memoryFragmentAmountMax = 2;
+    [Range(0f, 100f)] public float astralShardDropChance = 10f;
+    public int astralShardAmountMin = 1;
+    public int astralShardAmountMax = 2;
 
     private void OnValidate()
     {

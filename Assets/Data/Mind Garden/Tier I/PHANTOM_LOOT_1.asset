@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24ddb98f6482beb4888e83daea1cfca0, type: 3}
+  m_Name: PHANTOM_LOOT_1
+  m_EditorClassIdentifier: Assembly-CSharp::ConstellationData
+  _skillID: PHANTOM_LOOT_1
+  _skillName: Phantom's Legacy I
+  _tier: 1
+  _description: Recovers 25% of the Shards/Gold you lost.
+  _icon: {fileID: 7167803854801387119, guid: 9f2d4b16f3b8edd4393887e74278ed4e, type: 3}
+  _uiPosition: {x: 0, y: 0}
+  _memoryCost: 50
+  _prerequisites: []

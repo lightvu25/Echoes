@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46d96918c01a23c42abddfe0a2b24e2b, type: 3}
+  m_Name: MobLoot
+  m_EditorClassIdentifier: Assembly-CSharp::LootTable
+  lootItems:
+  - itemPrefab: {fileID: 1252801066187718037, guid: b871f7afb053c6b4d9fa400a4335bff1, type: 3}
+    dropChance: 100
+    itemTier: 1
+    minAmount: 1
+    maxAmount: 5
+    type: 3
+  - itemPrefab: {fileID: 5906014342740351065, guid: 73ad028fa1075a94e99851b0c28da90c, type: 3}
+    dropChance: 15
+    itemTier: 2
+    minAmount: 1
+    maxAmount: 3
+    type: 3
+  - itemPrefab: {fileID: 5906014342740351065, guid: 73ad028fa1075a94e99851b0c28da90c, type: 3}
+    dropChance: 5
+    itemTier: 1
+    minAmount: 1
+    maxAmount: 1
+    type: 2
+  - itemPrefab: {fileID: 5906014342740351065, guid: 73ad028fa1075a94e99851b0c28da90c, type: 3}
+    dropChance: 2
+    itemTier: 1
+    minAmount: 1
+    maxAmount: 1
+    type: 0

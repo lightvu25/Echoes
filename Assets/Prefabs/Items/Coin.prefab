@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 100120733575480688}
   - component: {fileID: 3361504452711290184}
   - component: {fileID: 506457963648067062}
+  - component: {fileID: 3782002959516907320}
   m_Layer: 9
   m_Name: Tier 3
   m_TagString: Untagged
@@ -104,6 +105,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3dbd8e42f7d023409e80664d5f4e8e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinPickup
+--- !u!61 &3782002959516907320
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161142816245999617}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.0078125, y: 0.1015625}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.4, y: -0.8}
+    oldSize: {x: 0.078125, y: 0.078125}
+    newSize: {x: 0.15625, y: 0.09375}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.078125, y: 0.078125}
+  m_EdgeRadius: 0
 --- !u!1 &1252801066187718037
 GameObject:
   m_ObjectHideFlags: 0
@@ -115,7 +162,6 @@ GameObject:
   - component: {fileID: 460378128425737404}
   - component: {fileID: 5785459912199095392}
   - component: {fileID: 751349774327000955}
-  - component: {fileID: 7984768985088627178}
   m_Layer: 9
   m_Name: Coin
   m_TagString: Untagged
@@ -159,7 +205,6 @@ MonoBehaviour:
   type: 0
   magnetAcceleration: 30
   magnetDelay: 1
-  collectionDistance: 0.5
   damagePopupPrefab: {fileID: 2608304708606694418, guid: f475178fad115d044af6c3edba2aaed2, type: 3}
   visualTiers:
   - {fileID: 1569243328370949282}
@@ -169,6 +214,7 @@ MonoBehaviour:
   - {fileID: 1290834792083964816}
   - {fileID: 9128649121393654434}
   valueThresholds: 01000000050000000a000000140000003200000064000000
+  relicData: {fileID: 0}
 --- !u!50 &751349774327000955
 Rigidbody2D:
   serializedVersion: 5
@@ -196,42 +242,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &7984768985088627178
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252801066187718037}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.06
 --- !u!1 &1290834792083964816
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,6 +253,7 @@ GameObject:
   - component: {fileID: 7677517402266892430}
   - component: {fileID: 3527419090504896692}
   - component: {fileID: 6686968290355111834}
+  - component: {fileID: 6260608912620858025}
   m_Layer: 9
   m_Name: Tier 5
   m_TagString: Untagged
@@ -336,6 +347,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3dbd8e42f7d023409e80664d5f4e8e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinPickup
+--- !u!61 &6260608912620858025
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290834792083964816}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.0078125, y: 0.0546875}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5555556, y: -0.2}
+    oldSize: {x: 0.140625, y: 0.078125}
+    newSize: {x: 0.15625, y: 0.09375}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.140625, y: 0.078125}
+  m_EdgeRadius: 0
 --- !u!1 &1569243328370949282
 GameObject:
   m_ObjectHideFlags: 0
@@ -347,6 +404,7 @@ GameObject:
   - component: {fileID: 4938200954979978683}
   - component: {fileID: 8820899951603139718}
   - component: {fileID: 5299472575342781593}
+  - component: {fileID: 4351028240971749246}
   m_Layer: 9
   m_Name: Tier 1
   m_TagString: Untagged
@@ -440,6 +498,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3dbd8e42f7d023409e80664d5f4e8e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinPickup
+--- !u!61 &4351028240971749246
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569243328370949282}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.03125, y: 0.0625}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 1, y: -0.5}
+    oldSize: {x: 0.0625, y: 0.0625}
+    newSize: {x: 0.15625, y: 0.09375}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.0625, y: 0.0625}
+  m_EdgeRadius: 0
 --- !u!1 &2938569952145356296
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,6 +555,7 @@ GameObject:
   - component: {fileID: 1513534935386484866}
   - component: {fileID: 2676425265762177731}
   - component: {fileID: 3883796668486704345}
+  - component: {fileID: 271437832976598854}
   m_Layer: 9
   m_Name: Tier 2
   m_TagString: Untagged
@@ -544,6 +649,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3dbd8e42f7d023409e80664d5f4e8e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinPickup
+--- !u!61 &271437832976598854
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2938569952145356296}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.0234375, y: 0.0625}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.8, y: -0.5}
+    oldSize: {x: 0.078125, y: 0.0625}
+    newSize: {x: 0.15625, y: 0.09375}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.078125, y: 0.0625}
+  m_EdgeRadius: 0
 --- !u!1 &8480674514415059778
 GameObject:
   m_ObjectHideFlags: 0
@@ -555,6 +706,7 @@ GameObject:
   - component: {fileID: 3296048762712817640}
   - component: {fileID: 1249528693734328257}
   - component: {fileID: 4026976498980620541}
+  - component: {fileID: 8581709517135995326}
   m_Layer: 9
   m_Name: Tier 4
   m_TagString: Untagged
@@ -648,6 +800,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3dbd8e42f7d023409e80664d5f4e8e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinPickup
+--- !u!61 &8581709517135995326
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8480674514415059778}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.0234375, y: 0.0546875}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.71428573, y: -0.2}
+    oldSize: {x: 0.109375, y: 0.078125}
+    newSize: {x: 0.15625, y: 0.09375}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.109375, y: 0.078125}
+  m_EdgeRadius: 0
 --- !u!1 &9128649121393654434
 GameObject:
   m_ObjectHideFlags: 0
@@ -659,6 +857,7 @@ GameObject:
   - component: {fileID: 3225031794532490953}
   - component: {fileID: 3059637924085566298}
   - component: {fileID: 6110644927835066658}
+  - component: {fileID: 4183191801474453253}
   m_Layer: 9
   m_Name: Tier 6
   m_TagString: Untagged
@@ -752,3 +951,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3dbd8e42f7d023409e80664d5f4e8e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CoinPickup
+--- !u!61 &4183191801474453253
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9128649121393654434}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.0625}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: -0.16666667}
+    oldSize: {x: 0.15625, y: 0.09375}
+    newSize: {x: 0.15625, y: 0.09375}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.15625, y: 0.09375}
+  m_EdgeRadius: 0

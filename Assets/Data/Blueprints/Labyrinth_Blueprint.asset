@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7adf065c4622b54d86f5d6d77ca446f, type: 3}
+  m_Name: Labyrinth_Blueprint
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  nodes:
+  - nodeName: Start
+    roomType: 0
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 0
+    childrenIndices: 0100000002000000
+  - nodeName: Path A
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 0
+    childrenIndices: 03000000
+  - nodeName: Path B
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 0
+    childrenIndices: 04000000
+  - nodeName: Checkpoint
+    roomType: 2
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 0
+    childrenIndices: 05000000
+  - nodeName: Dead End
+    roomType: 7
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 0
+    childrenIndices: 
+  - nodeName: Goal
+    roomType: 6
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 0
+    childrenIndices: 

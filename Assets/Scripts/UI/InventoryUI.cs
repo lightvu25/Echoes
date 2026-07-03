@@ -3,25 +3,8 @@ using UnityEngine.Rendering;
 using DG.Tweening;
 using System;
 
-/// <summary>
-/// Main inventory panel controller.
-///
-/// Responsibilities
-/// ----------------
-/// • Shows / hides the inventory UI panel with a blur effect.
-/// • Enters "Slot Unlock Mode" when <see cref="PlayerInventoryCore.OnSlotUnlockRequired"/> fires.
-///   In this mode, Time.timeScale is set to 0 and <see cref="SlotUnlockPanel"/> is shown.
-/// • After the player chooses a slot, resumes the game and hides the panel.
-///
-/// Decoupling note
-/// ---------------
-/// This class subscribes to PlayerInventoryCore events; it never polls inventory state directly.
-/// All state mutations go back through PlayerInventoryCore method calls.
-/// </summary>
-public class InventoryUI : MonoBehaviour
+public class InventoryUI : MonoBehaviour, IUIPanel
 {
-    public static InventoryUI Instance { get; private set; }
-
     [Header("Panels")]
     [SerializeField] private GameObject uiRoot;
     [SerializeField] private SlotUnlockPanel slotUnlockPanel;
@@ -33,21 +16,24 @@ public class InventoryUI : MonoBehaviour
     public bool IsOpen { get; private set; } = false;
     private bool isInUnlockMode = false;
 
-    // ------------------------------------------------------------------ //
-    //  Unity lifecycle                                                     //
-    // ------------------------------------------------------------------ //
-
-    private void Awake()
-    {
-        if (Instance == null) Instance = this;
-        else { Destroy(gameObject); return; }
-    }
-
     private void Start()
     {
-        GameManager.Instance.OnGamePaused         += GameManager_OnGamePaused;
-        PlayerInventoryCore.Instance.OnSlotUnlockRequired += HandleSlotUnlockRequired;
-        PlayerInventoryCore.Instance.OnInventoryChanged   += HandleInventoryChanged;
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnGamePaused += GameManager_OnGamePaused;
+        }
+
+        if (PlayerInventoryCore.Instance != null)
+        {
+            PlayerInventoryCore.Instance.OnSlotUnlockRequired += HandleSlotUnlockRequired;
+            PlayerInventoryCore.Instance.OnInventoryChanged   += HandleInventoryChanged;
+        }
+
+        if (GameInput.Instance != null)
+        {
+            GameInput.Instance.OnCancelPressed += HandleCancelPressed;
+            GameInput.Instance.OnInventoryPressed += HandleInventoryToggle;
+        }
 
         Hide();
     }
@@ -62,23 +48,33 @@ public class InventoryUI : MonoBehaviour
             PlayerInventoryCore.Instance.OnSlotUnlockRequired -= HandleSlotUnlockRequired;
             PlayerInventoryCore.Instance.OnInventoryChanged   -= HandleInventoryChanged;
         }
+
+        if (GameInput.Instance != null)
+        {
+            GameInput.Instance.OnCancelPressed -= HandleCancelPressed;
+            GameInput.Instance.OnInventoryPressed -= HandleInventoryToggle;
+        }
     }
 
-    private void Update()
+    private void HandleInventoryToggle()
     {
-        // Allow closing the regular inventory view with Escape, but NOT the unlock panel.
-        if (IsOpen && !isInUnlockMode && Input.GetKeyDown(KeyCode.Escape))
+        if (IsOpen && !isInUnlockMode) 
+        {
             Hide();
+        }
+        else if (!IsOpen)
+        {
+            UIManager.Instance.OpenPanel(UIPanelType.Inventory);
+        }
     }
 
-    // ------------------------------------------------------------------ //
-    //  Event handlers                                                      //
-    // ------------------------------------------------------------------ //
+    private void HandleCancelPressed()
+    {
+        if (IsOpen && !isInUnlockMode) Hide();
+    }
 
     private void GameManager_OnGamePaused(object sender, EventArgs e)
     {
-        // If the game is paused externally while we're in unlock mode,
-        // stay open — the unlock must be resolved first.
         if (!isInUnlockMode) Hide();
     }
 
@@ -93,9 +89,6 @@ public class InventoryUI : MonoBehaviour
         if (IsOpen) RefreshSlots();
     }
 
-    // ------------------------------------------------------------------ //
-    //  Public API                                                          //
-    // ------------------------------------------------------------------ //
 
     public void Show()
     {
@@ -113,20 +106,11 @@ public class InventoryUI : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    /// <summary>
-    /// Called by <see cref="SlotUnlockPanel"/> when the player clicks a category slot.
-    /// Unlocks the chosen slot, resumes time, and hides the panel.
-    /// </summary>
-    /// <param name="chosenCategory">The category the player chose to unlock.</param>
     public void OnSlotChosen(ItemCategory chosenCategory)
     {
         PlayerInventoryCore.Instance.UnlockSlot(chosenCategory);
         Hide();
     }
-
-    // ------------------------------------------------------------------ //
-    //  Private helpers                                                     //
-    // ------------------------------------------------------------------ //
 
     private void EnterUnlockMode()
     {

@@ -1,0 +1,4 @@
+{
+  "csharpCode": "var guids = UnityEditor.AssetDatabase.FindAssets(\"t:Prefab\", new[] { \"Assets/Prefabs/Rooms\" });\nvar report = new System.Text.StringBuilder();\nforeach(var guid in guids) {\n    var path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);\n    var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.GameObject>(path);\n    if (prefab == null) continue;\n    var col = prefab.GetComponent<UnityEngine.Collider2D>();\n    var size = col != null ? col.bounds.size : UnityEngine.Vector3.zero;\n    report.AppendLine($\"{prefab.name} | Size: {size.x} x {size.y}\");\n}\nSystem.IO.File.WriteAllText(\"RoomSizes.txt\", report.ToString());",
+  "isMethodBody": true
+}
