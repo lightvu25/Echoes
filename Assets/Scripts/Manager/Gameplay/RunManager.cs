@@ -35,6 +35,14 @@ public class RunManager : MonoBehaviour
         _instance = this;
     }
 
+    private void Update()
+    {
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.currentLevelTime += Time.deltaTime;
+        }
+    }
+
     public void GrantBlessing(BlessingData blessing)
     {
         if (GameSession.Instance == null || GameSession.Instance.currentRun == null) return;

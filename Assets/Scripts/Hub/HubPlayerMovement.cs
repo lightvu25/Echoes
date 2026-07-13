@@ -2,21 +2,26 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// Handles logical, graph-based movement for the player in the HubScene.
-/// Completely replaces standard physics-based PlayerMovement and relies
-/// on direct component checking instead of colliders/triggers.
+/// Handles logical, graph-based movement for the player in the MindScene.
+/// Evaluates NodeConnections, checks for Cut branches, and Challenge Door conditions.
 /// </summary>
-public class HubPlayerMovement : MonoBehaviour
+public class MindPlayerMovement : MonoBehaviour
 {
     [Header("Graph Movement Settings")]
     [Tooltip("The node the player is currently standing on.")]
-    public HubNode currentNode;
+    public MindNode currentNode;
     
     [Tooltip("Speed of transition between nodes.")]
     public float moveSpeed = 10f;
 
     private bool isMoving = false;
     private Animator animator;
+
+    // To handle continuous inputs as one-shots
+    private bool upPressedLastFrame;
+    private bool downPressedLastFrame;
+    private bool leftPressedLastFrame;
+    private bool rightPressedLastFrame;
 
     private void Awake()
     {
@@ -27,45 +32,50 @@ public class HubPlayerMovement : MonoBehaviour
     {
         if (currentNode != null)
         {
-            // Snap to current node at start
             transform.position = currentNode.transform.position;
         }
         else
         {
-            Debug.LogWarning("[HubPlayerMovement] No starting node assigned!");
+            Debug.LogWarning("[MindPlayerMovement] No starting node assigned!");
         }
     }
 
     private void Update()
     {
-        if (isMoving || currentNode == null) return;
+        if (isMoving || currentNode == null || GameInput.Instance == null) return;
 
-        // 1. Listen for discrete inputs to move along the graph
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        bool upPressed = GameInput.Instance.IsUpActionPressed();
+        bool downPressed = GameInput.Instance.IsDownActionPressed();
+        bool leftPressed = GameInput.Instance.IsLeftActionPressed();
+        bool rightPressed = GameInput.Instance.IsRightActionPressed();
+
+        if (upPressed && !upPressedLastFrame)
         {
-            TryMoveToNode(currentNode.upNode);
+            TryMove(currentNode.upConnection);
         }
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        else if (downPressed && !downPressedLastFrame)
         {
-            TryMoveToNode(currentNode.downNode);
+            TryMove(currentNode.downConnection);
         }
-        else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (leftPressed && !leftPressedLastFrame)
         {
-            TryMoveToNode(currentNode.leftNode);
-            // Flip sprite left
+            TryMove(currentNode.leftConnection);
             transform.localScale = new Vector3(-1, 1, 1);
         }
-        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        else if (rightPressed && !rightPressedLastFrame)
         {
-            TryMoveToNode(currentNode.rightNode);
-            // Flip sprite right
+            TryMove(currentNode.rightConnection);
             transform.localScale = new Vector3(1, 1, 1);
         }
+
+        upPressedLastFrame = upPressed;
+        downPressedLastFrame = downPressed;
+        leftPressedLastFrame = leftPressed;
+        rightPressedLastFrame = rightPressed;
         
-        // 2. Handle interactions like opening the Mind Garden UI
+        // Handle Interactions (Mind Garden Altar, Exit, etc.)
         if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F))
         {
-            // Try to find an interactable on the current node
             if (currentNode.TryGetComponent<IInteractable>(out var interactable))
             {
                 interactable.Interact();
@@ -73,42 +83,66 @@ public class HubPlayerMovement : MonoBehaviour
         }
     }
 
-    private void TryMoveToNode(HubNode targetNode)
+    private void TryMove(NodeConnection connection)
     {
-        if (targetNode != null)
+        if (connection == null || connection.targetNode == null) return;
+
+        if (connection.isCut)
         {
-            StartCoroutine(MoveToNode(targetNode));
+            Debug.Log("[MindPlayerMovement] Cannot traverse a cut branch!");
+            return;
         }
+
+        MindNode target = connection.targetNode;
+
+        // Challenge Door Checks
+        if (target.nodeType == NodeType.ChallengeNoHit)
+        {
+            int noHitKills = GameSession.Instance?.currentRun?.currentLevelNoHitKills ?? 0;
+            if (noHitKills < target.requiredNoHitKills)
+            {
+                Debug.Log($"[MindPlayerMovement] No-hit door locked. Need {target.requiredNoHitKills} kills without damage. Have: {noHitKills}");
+                return;
+            }
+        }
+        else if (target.nodeType == NodeType.ChallengeSpeedrun)
+        {
+            float levelTime = GameSession.Instance?.currentRun?.currentLevelTime ?? 9999f;
+            if (levelTime > target.requiredSpeedrunTime)
+            {
+                Debug.Log($"[MindPlayerMovement] Speedrun door locked. Needed to reach goal under {target.requiredSpeedrunTime}s. Took: {levelTime}s");
+                return;
+            }
+        }
+
+        StartCoroutine(MoveToNode(target));
     }
 
-    private IEnumerator MoveToNode(HubNode targetNode)
+    private IEnumerator MoveToNode(MindNode targetNode)
     {
         isMoving = true;
 
         if (animator != null)
         {
-            animator.SetFloat("Speed", 1f); // Start running animation
+            animator.SetFloat("Speed", 1f); 
             animator.SetBool("IsGrounded", true);
         }
 
-        // Move smoothly towards the target node
         while (Vector3.Distance(transform.position, targetNode.transform.position) > 0.01f)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetNode.transform.position, moveSpeed * Time.deltaTime);
             yield return null;
         }
 
-        // Snap to exact position
         transform.position = targetNode.transform.position;
         currentNode = targetNode;
         
         if (animator != null)
         {
-            animator.SetFloat("Speed", 0f); // Return to idle
+            animator.SetFloat("Speed", 0f);
         }
 
-        // Logical Arrival Check (Trigger-less)
-        if (currentNode.TryGetComponent<HubExitNode>(out var exitNode))
+        if (currentNode.TryGetComponent<MindExitNode>(out var exitNode))
         {
             exitNode.TriggerExit();
         }

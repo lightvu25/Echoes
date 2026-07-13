@@ -13,6 +13,10 @@ public class RunData
     public List<string> currentRelics = new List<string>();
     public int mapSeed;
     public int levelNumber = 1;
+    public float currentLevelTime = 0f;
+    public int currentLevelNoHitKills = 0;
+    public int magicToxicity = 0;
+    public float relicBonusModifier = 1.0f;
     public int bonusSorcery = 0;
     public int bonusResonance = 0;
     public int bonusVitality = 0;

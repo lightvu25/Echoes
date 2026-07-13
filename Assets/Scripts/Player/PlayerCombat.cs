@@ -57,6 +57,11 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         int finalDamage = healthSystem.TakeDamage(damageInfo);
 
+        if (finalDamage > 0 && GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.currentLevelNoHitKills = 0;
+        }
+
         if (damageInfo.knockbackForce > 0f && rb != null)
         {
             ApplyKnockback(damageInfo.knockbackDirection, damageInfo.knockbackForce);

@@ -1,9 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Central altar in the HubScene that opens the Mind Garden upgrade UI.
-/// Implements IInteractable and IFeedbackProvider to match the existing
-/// interaction system used by Chest and other interactables.
+/// Central altar in the MindScene that opens the Mind Garden upgrade UI.
+/// Provides backend logic for cutting and connecting branches.
 /// </summary>
 public class MindGardenAltar : MonoBehaviour, IInteractable, IFeedbackProvider
 {
@@ -21,14 +20,50 @@ public class MindGardenAltar : MonoBehaviour, IInteractable, IFeedbackProvider
     {
         Debug.Log("[MindGardenAltar] Opening Mind Garden Upgrade UI...");
 
-        // Spawn optional VFX
         if (interactEffect != null)
         {
             Instantiate(interactEffect, transform.position + Vector3.up, Quaternion.identity);
         }
 
-        // TODO: Open the Mind Garden upgrade panel.
-        // This will be expanded to show the Memory Web UI, allowing the player
-        // to spend Echoes currency on permanent upgrades and unlock new paths.
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.OpenPanel(UIPanelType.MindGarden);
+        }
+    }
+
+    /// <summary>
+    /// Backend method to be called by the UI when a branch is CUT.
+    /// Increases Magic Toxicity.
+    /// </summary>
+    public void CutBranch(NodeConnection connection)
+    {
+        if (connection == null || connection.isCut) return;
+
+        connection.isCut = true;
+        connection.isConnected = false;
+
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.magicToxicity += connection.magicToxicityCost;
+            Debug.Log($"[MindGardenAltar] Cut branch to {connection.targetNode.name}. Magic Toxicity increased to {GameSession.Instance.currentRun.magicToxicity}.");
+        }
+    }
+
+    /// <summary>
+    /// Backend method to be called by the UI when a branch is CONNECTED.
+    /// Increases Relic Bonus and base difficulty.
+    /// </summary>
+    public void ConnectBranch(NodeConnection connection)
+    {
+        if (connection == null || connection.isConnected) return;
+
+        connection.isConnected = true;
+        connection.isCut = false;
+
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.relicBonusModifier += connection.relicBonusPercentage;
+            Debug.Log($"[MindGardenAltar] Connected branch to {connection.targetNode.name}. Relic Bonus increased to {GameSession.Instance.currentRun.relicBonusModifier}.");
+        }
     }
 }

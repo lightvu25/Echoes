@@ -139,6 +139,10 @@ public class EnemyCombat : MonoBehaviour, IDamageable
     }
     private void HealthSystem_OnDeath(object sender, EventArgs e)
     {
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.currentLevelNoHitKills++;
+        }
         OnEnemyDied?.Invoke(this, EventArgs.Empty);
     }
     public int CurrentHP => healthSystem != null ? healthSystem.CurrentHP : 0;
