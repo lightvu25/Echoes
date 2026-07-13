@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoData
   itemID: ECHO_PLASMA
   itemName: Plasma
-  itemIcon: {fileID: 7225244483827635998, guid: ac45797a311f67e4cba1e34139805923, type: 3}
+  itemIcon: {fileID: -120427032376199028, guid: c03eb81b12224894b9205e5f229a3792, type: 3}
   description: 'Base ATK Speed x3. Trade-off: Constant HP drain and disables all
     healing'
   dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
@@ -27,5 +27,8 @@ MonoBehaviour:
   hasStatusEffect: 1
   statusProcCoefficient: 0.5
   uniqueModifierID: FUS_OVERCLOCK
+  trailColor: {r: 1, g: 1, b: 1, a: 1}
+  stateVFXPrefab: {fileID: 0}
+  hitImpactPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

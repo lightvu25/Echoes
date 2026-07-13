@@ -154,6 +154,12 @@ public class PlayerInteract : MonoBehaviour
 
     private void HandleInteract()
     {
+        if (UIManager.Instance != null && UIManager.Instance.IsAnyPanelOpen)
+        {
+            UIManager.Instance.CloseCurrentPanel();
+            return;
+        }
+
         if (state == State.Normal && !IsRewinding)
         {
             if (currentInteractable != null)
@@ -174,6 +180,17 @@ public class PlayerInteract : MonoBehaviour
         }
     }
 
+    public void TriggerGoal(Goal goal)
+    {
+        OnGoal?.Invoke(this, new OnGoalEventArgs
+        {
+            passing = true,
+            score = (int)coinPickups,
+            goal = goal
+        });
+        SetState(State.GameOver);
+    }
+
     private void OnTriggerEnter2D(Collider2D collider2D)
     {
         // if (collider2D.gameObject.TryGetComponent(out CoinPickup coinPickup))
@@ -187,18 +204,6 @@ public class PlayerInteract : MonoBehaviour
         // });
         //     coinPickup.DestroySelf();
         // }
-
-        if (collider2D.gameObject.TryGetComponent(out Goal goal))
-        {
-            OnGoal?.Invoke(this, new OnGoalEventArgs
-            {
-                passing = true,
-                score = (int)coinPickups,
-                goal = goal
-            });
-            SetState(State.GameOver);
-            return;
-        }
 
         if (collider2D.gameObject.TryGetComponent(out IInteractable interactable))
         {

@@ -26,8 +26,8 @@ TagManager:
   - Interactable
   - Particle
   - Item
-  - 
-  - 
+  - VFX
+  - NPC
   - 
   - 
   - 
@@ -61,6 +61,18 @@ TagManager:
     locked: 0
   - name: MinimapIcon
     uniqueID: 2913024167
+    locked: 0
+  - name: Cutscene
+    uniqueID: 4195658985
+    locked: 0
+  - name: Player
+    uniqueID: 3207139797
+    locked: 0
+  - name: VFX
+    uniqueID: 3328226695
+    locked: 0
+  - name: Item
+    uniqueID: 2042535025
     locked: 0
   - name: UI
     uniqueID: 195113763

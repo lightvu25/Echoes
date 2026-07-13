@@ -55,8 +55,8 @@ public class EchoEffectManager : MonoBehaviour
     // ==========================================
     private void HandleBeforeDamageApplied(IDamageable target, ref DamageInfo damageInfo)
     {
-        if (damageInfo.activeElement == null) return;
-        string modifierID = damageInfo.activeElement.uniqueModifierID;
+        if (damageInfo.activeEcho == null) return;
+        string modifierID = damageInfo.activeEcho.uniqueModifierID;
 
         // BLAZE - Ignition: Sát thương tăng theo % máu đã mất của quái
         if (modifierID == "IGNITION")
@@ -117,8 +117,8 @@ public class EchoEffectManager : MonoBehaviour
     // ==========================================
     private void HandleOnHitTarget(object sender, AttackHitbox.HitEventArgs e)
     {
-        if (e.damageInfo.activeElement == null) return;
-        string modifierID = e.damageInfo.activeElement.uniqueModifierID;
+        if (e.damageInfo.activeEcho == null) return;
+        string modifierID = e.damageInfo.activeEcho.uniqueModifierID;
 
         // Avoid infinite loop from secondary damage sources
         if (e.damageInfo.damageSource == "ArcChain" || e.damageInfo.damageSource == "BlackHole") return;
@@ -126,7 +126,7 @@ public class EchoEffectManager : MonoBehaviour
         EchoStatusReceiver status = e.target.Transform.GetComponent<EchoStatusReceiver>();
         if (status == null) status = e.target.Transform.gameObject.AddComponent<EchoStatusReceiver>();
 
-        float baseChance = e.damageInfo.activeElement.statusProcCoefficient;
+        float baseChance = e.damageInfo.activeEcho.statusProcCoefficient;
         float currentProc = e.damageInfo.procCoefficient;
         bool procSuccessful = DamageCalculator.ShouldProc(baseChance, currentProc);
 
@@ -196,7 +196,7 @@ public class EchoEffectManager : MonoBehaviour
             {
                 DamageInfo chainInfo = DamageInfo.Create(Mathf.RoundToInt(originalInfo.baseDamage * 0.5f), gameObject);
                 chainInfo.damageSource = "ArcChain"; // Gắn tag để không bị nảy vô hạn
-                chainInfo.activeElement = originalInfo.activeElement;
+                chainInfo.activeEcho = originalInfo.activeEcho;
 
                 nextTarget.TakeDamage(chainInfo);
                 
@@ -207,7 +207,7 @@ public class EchoEffectManager : MonoBehaviour
 
     private void HandleDefensiveModifiers(ref int damageAmount, ref DamageInfo info)
     {
-        string activeModifier = PlayerInventoryCore.Instance?.ActiveElement?.uniqueModifierID ?? "";
+        string activeModifier = PlayerInventoryCore.Instance?.ActiveEcho?.uniqueModifierID ?? "";
 
         if (activeModifier == "FUS_RAGNAROK" && damageAmount > 0)
         {
@@ -219,7 +219,7 @@ public class EchoEffectManager : MonoBehaviour
 
     public void HandlePlayerDash(Vector3 startPos, Vector3 endPos)
     {
-        string activeModifier = PlayerInventoryCore.Instance?.ActiveElement?.uniqueModifierID ?? "";
+        string activeModifier = PlayerInventoryCore.Instance?.ActiveEcho?.uniqueModifierID ?? "";
         
         if (activeModifier == "FUS_AFTERBURNER" && fireTrailPrefab != null)
         {

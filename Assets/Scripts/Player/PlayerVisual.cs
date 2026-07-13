@@ -44,6 +44,7 @@ public class PlayerVisual : MonoBehaviour
         _animator.SetFloat("VelocityY", playerMovement.rb.linearVelocity.y);
         _animator.SetBool("isWallSliding", playerMovement.isSliding);
         _animator.SetBool("isClimbing", playerMovement.isClimbing);
+        _animator.SetBool("isPlunging", playerMovement.isPlunging);
 
         if (particleWalkingPrefab != null)
         {
@@ -68,13 +69,13 @@ public class PlayerVisual : MonoBehaviour
 
     private void HandleLand(object sender, EventArgs e)
     {
-        _animator.Play("Fall");
-        
-        if (particleLandPrefab != null) ObjectPoolManager.SpawnObject(particleLandPrefab.gameObject, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.ParticleSystem);
+        if (particleLandPrefab != null) 
+            ObjectPoolManager.SpawnObject(particleLandPrefab.gameObject, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.ParticleSystem);
     }
 
     private void HandleFall(object sender, EventArgs e)
     {
+        if (playerAttack != null && playerAttack.IsAttacking) return;
         _animator.Play("Fall");
     }
 
@@ -90,7 +91,13 @@ public class PlayerVisual : MonoBehaviour
 
     private void HandleAttack(object sender, EventArgs e)
     {
-        _animator.Play("Attack");
+        if (e is PlayerAttack.AttackEventArgs attackArgs)
+        {
+            if (!string.IsNullOrEmpty(attackArgs.animationName))
+            {
+                _animator.Play(attackArgs.animationName);
+            }
+        }
     }
 
     private void HandleDead(object sender, EventArgs e)
@@ -112,6 +119,10 @@ public class PlayerVisual : MonoBehaviour
         if (playerInteract != null)
         {
             playerInteract.OnDead -= HandleDead;
+        }
+        if (playerAttack != null)
+        {
+            playerAttack.OnAttackStarted -= HandleAttack;
         }
     }
 }

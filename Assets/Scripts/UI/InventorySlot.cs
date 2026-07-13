@@ -93,7 +93,7 @@ public class InventorySlot : MonoBehaviour
         if (PlayerInventoryCore.Instance == null) return 0;
         return category switch
         {
-            ItemCategory.Element => PlayerInventoryCore.Instance.UnlockedElementSlots,
+            ItemCategory.Echo => PlayerInventoryCore.Instance.UnlockedEchoSlots,
             ItemCategory.Relic   => PlayerInventoryCore.Instance.UnlockedRelicSlots,
             _                    => PlayerInventoryCore.Instance.UnlockedItemSlots,
         };

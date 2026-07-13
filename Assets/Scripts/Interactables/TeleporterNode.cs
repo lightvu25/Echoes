@@ -102,6 +102,10 @@ public class TeleporterNode : MonoBehaviour, IInteractable
         // Open the Map UI where the player can select a destination
         if (UIManager.Instance != null)
         {
+            if (TeleportManager.Instance != null)
+            {
+                TeleportManager.Instance.CurrentActiveNode = this;
+            }
             UIManager.Instance.OpenPanel(UIPanelType.Map);
         }
         else

@@ -42,6 +42,7 @@ public class EnemyData : ScriptableObject
     public float attackSpeed;
     public float attackCooldown;
     public float telegraphDuration = 0.5f;
+    public bool canBackstep;
 
     [Header("Attack Hitbox")]
     public Vector2 attackHitboxSize = new Vector2(1.5f, 1.5f);

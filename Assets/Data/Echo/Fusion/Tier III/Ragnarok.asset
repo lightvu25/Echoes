@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoData
   itemID: ECHO_RAGNAROK
   itemName: Event Horizon
-  itemIcon: {fileID: 7225244483827635998, guid: ac45797a311f67e4cba1e34139805923, type: 3}
+  itemIcon: {fileID: -6562253583209701066, guid: bfe23277d58c6d647ae96c72c172e563, type: 3}
   description: 'Ultimate Berserker state. Insane attack speed & shatter damage. Trade-off:
     HP is locked at 1. Any hit is fatal'
   dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
@@ -27,5 +27,8 @@ MonoBehaviour:
   hasStatusEffect: 1
   statusProcCoefficient: 0.5
   uniqueModifierID: FUS_RAGNAROK
+  trailColor: {r: 1, g: 1, b: 1, a: 1}
+  stateVFXPrefab: {fileID: 0}
+  hitImpactPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

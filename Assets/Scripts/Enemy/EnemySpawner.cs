@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -19,9 +19,11 @@ public class EnemySpawner : MonoBehaviour
     [Header("Enemy Pool")]
     [SerializeField] private List<EnemySpawnEntry> possibleEnemies = new();
 
-    public void Init()
+    public void Init(int currentTier)
     {
-        if (Random.value > spawnChance)
+        float finalSpawnChance = Mathf.Clamp01(spawnChance + ((currentTier - 1) * 0.05f));
+
+        if (Random.value > finalSpawnChance)
         {
             Destroy(gameObject);
             return;

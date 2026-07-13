@@ -73,6 +73,13 @@ public class BombAttack : MonoBehaviour, IEnemyAttack
 
             target.TakeDamage(damageInfo);
         }
+
+        // Explicitly kill the bomber
+        EnemyCombat combat = GetComponentInParent<EnemyCombat>();
+        if (combat != null && !combat.IsDead)
+        {
+            combat.TakeDamage(new DamageInfo { baseDamage = 9999, attacker = gameObject, damageSource = "Suicide" });
+        }
     }
 
     private void OnDrawGizmosSelected()

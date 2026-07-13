@@ -2334,6 +2334,9 @@ MonoBehaviour:
   - direction: 1
     exitPoint: {fileID: 3153129815915760305}
   isExplored: 0
+  OriginalBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!1 &4940459583283160383
 GameObject:
   m_ObjectHideFlags: 0

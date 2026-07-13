@@ -1,9 +1,9 @@
 ﻿<Solution>
-  <Project Path="com.IvanMurzak.Unity.MCP.Editor.Tests.csproj" />
   <Project Path="com.IvanMurzak.Unity.MCP.Editor.csproj" />
   <Project Path="AstarPathfindingProject.csproj" />
   <Project Path="com.IvanMurzak.Unity.MCP.Runtime.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="com.IvanMurzak.Unity.MCP.Editor.Tests.csproj" />
   <Project Path="PackageToolsEditor.csproj" />
   <Project Path="com.IvanMurzak.Unity.MCP.Installer.Tests.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />

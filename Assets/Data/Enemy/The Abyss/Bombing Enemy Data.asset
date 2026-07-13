@@ -12,36 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937470260c5f20049a9c20727a4ad0eb, type: 3}
   m_Name: Bombing Enemy Data
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  maxHP: 50
+  maxHP: 100
   defense: 0
   patrolMaxSpeed: 2
   patrolAcceleration: 1.5
   patrolAccelAmount: 37.5
   patrolDecceleration: 1.5
   patrolDeccelAmount: 37.5
-  patrolRadius: 6
+  patrolRadius: 7
   patrolWaitTimeMin: 2
   patrolWaitTimeMax: 4
   groundCheckDistance: 1.5
   wallCheckDistance: 0.5
-  chaseMaxSpeed: 2.5
-  chaseAcceleration: 2.5
+  chaseMaxSpeed: 4
+  chaseAcceleration: 4
   chaseAccelAmount: 50
-  chaseDecceleration: 2.5
+  chaseDecceleration: 4
   chaseDeccelAmount: 50
   doConserveMomentum: 0
   attackBase: 35
   attackRange: 8
-  attackSpeed: 0.5
-  attackCooldown: 3
+  attackSpeed: 1
+  attackCooldown: 1
   telegraphDuration: 1.2
-  attackHitboxSize: {x: 3.5, y: 3.5}
-  attackHitboxOffset: {x: 0, y: 0}
+  canBackstep: 1
+  attackHitboxSize: {x: 7, y: 5}
+  attackHitboxOffset: {x: 5, y: 0}
   knockbackForce: 6
   attackTargetLayers:
     serializedVersion: 2
     m_Bits: 384
-  visionRange: 10
+  visionRange: 15
   fovAngle: 120
   closeDetectionRange: 1.5
   groundLayer:
@@ -59,6 +60,6 @@ MonoBehaviour:
   goldDropChance: 80
   goldAmountMin: 3
   goldAmountMax: 12
-  memoryFragmentDropChance: 10
-  memoryFragmentAmountMin: 1
-  memoryFragmentAmountMax: 2
+  astralShardDropChance: 10
+  astralShardAmountMin: 1
+  astralShardAmountMax: 2

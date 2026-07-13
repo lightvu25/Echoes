@@ -269,7 +269,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 195113763
-  m_SortingLayer: 6
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -799598293471900272, guid: 9c8fd0bde46cf5c4cae14faaf317b1fb, type: 3}
@@ -677,9 +677,9 @@ GameObject:
   - component: {fileID: 4983165032818890787}
   - component: {fileID: 3642573737597159644}
   - component: {fileID: 6824184076466527968}
-  - component: {fileID: 4040680065139279148}
   - component: {fileID: 7402941070533416229}
   - component: {fileID: 5744286393587405592}
+  - component: {fileID: 5495738676859021622}
   m_Layer: 8
   m_Name: Melee Enemy
   m_TagString: Enemy
@@ -800,6 +800,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcdd33a2a6cc40e49889ecd7efc51987, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthSystem
+  combatStatsAsset: {fileID: 0}
   maxHP: 50
   currentHP: 50
   maxSlots: 4
@@ -883,21 +884,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MeleeAttack
   data: {fileID: 11400000, guid: f7aea8ea9d4101641a67826dcab109f1, type: 2}
   activeTime: 0.1
---- !u!114 &4040680065139279148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8247203597836570067}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91b06e52c2fcfd045bf9e6f60beac5e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttack
-  data: {fileID: 11400000, guid: f7aea8ea9d4101641a67826dcab109f1, type: 2}
-  startupDelay: 0.2
-  activeTime: 0.1
 --- !u!114 &7402941070533416229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -930,6 +916,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91852f13e0f9bce4b857a2302b265ced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyEvolutionModifier
+--- !u!114 &5495738676859021622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8247203597836570067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22de6c6f4601ead408f5b4b16df4882d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FallDamageHandler
+  safeVelocityThreshold: -4
+  fatalVelocityThreshold: -8
+  maxFallDamage: 50
+  groundCheck: {fileID: 5486571649054120816}
+  groundCheckSize: {x: 0.49, y: 0.03}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &9102165767309968662
 GameObject:
   m_ObjectHideFlags: 0
@@ -991,7 +997,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

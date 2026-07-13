@@ -117,6 +117,7 @@ public class ObjectPoolManager : MonoBehaviour
 
         if (pool == null)
         {
+            objectToReturn.SetActive(false);
             Destroy(objectToReturn);
         }
         else

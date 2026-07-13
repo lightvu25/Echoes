@@ -1,6 +1,6 @@
 public enum ItemCategory
 {
-    Element,
+    Echo,
     Relic,
     Item
 }

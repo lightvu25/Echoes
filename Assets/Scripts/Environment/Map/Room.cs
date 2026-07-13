@@ -31,6 +31,9 @@ public class Room : MonoBehaviour
 
     public string RoomId { get; private set; }
     public RoomExitsMask ExitsMask { get; private set; }
+    public RoomEventType AssignedEvent { get; set; }
+
+    [HideInInspector] public Bounds OriginalBounds;
 
     private void Awake()
     {
@@ -38,10 +41,42 @@ public class Room : MonoBehaviour
         CalculateExitsMask();
     }
 
+    private void Start()
+    {
+        // Automatically create a Trigger Collider for Fog of War detection if it doesn't exist
+        Collider2D existingCol = GetComponent<Collider2D>();
+        if (existingCol != null)
+        {
+            existingCol.isTrigger = true;
+        }
+        else if (OriginalBounds.size != Vector3.zero)
+        {
+            BoxCollider2D box = gameObject.AddComponent<BoxCollider2D>();
+            box.isTrigger = true;
+            // OriginalBounds is in world space, we need local space for the BoxCollider
+            box.offset = transform.InverseTransformPoint(OriginalBounds.center);
+            
+            // Adjust size to account for any scaling on the room prefab or its parents
+            box.size = new Vector2(
+                OriginalBounds.size.x / Mathf.Max(0.001f, Mathf.Abs(transform.lossyScale.x)), 
+                OriginalBounds.size.y / Mathf.Max(0.001f, Mathf.Abs(transform.lossyScale.y))
+            );
+        }
+    }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!isExplored && collision.CompareTag("Player"))
+        {
+            isExplored = true;
+            OnRoomExplored?.Invoke(this);
+        }
+    }
 
     public Bounds GetBounds()
     {
+        if (OriginalBounds.size != Vector3.zero) return OriginalBounds;
+
         Collider2D col = GetComponent<Collider2D>();
         if (col != null)
             return col.bounds;

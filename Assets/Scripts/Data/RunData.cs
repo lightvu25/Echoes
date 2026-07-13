@@ -19,7 +19,7 @@ public class RunData
     public int vitalityShrinesTaken = 0;
     public int sorceryShrinesTaken = 0;
     public int resonanceShrinesTaken = 0;
-    public int unlockedElementSlots = 1;
+    public int unlockedEchoSlots = 1;
     public int unlockedRelicSlots = 1;
     public int unlockedItemSlots = 1;
     public const int MAX_SLOTS = 4;

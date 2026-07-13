@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoData
   itemID: ECHO_SUPERNOVA
   itemName: Supernova
-  itemIcon: {fileID: 7225244483827635998, guid: ac45797a311f67e4cba1e34139805923, type: 3}
+  itemIcon: {fileID: 7851799026461638597, guid: 6411bb1e7f7616245b3d63cacd168543, type: 3}
   description: Vacuum pulls enemies into the blazing trail before detonating the
     Oblivion mark
   dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
@@ -27,5 +27,8 @@ MonoBehaviour:
   hasStatusEffect: 0
   statusProcCoefficient: 0
   uniqueModifierID: FUS_SUPERNOVA
+  trailColor: {r: 1, g: 1, b: 1, a: 1}
+  stateVFXPrefab: {fileID: 0}
+  hitImpactPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

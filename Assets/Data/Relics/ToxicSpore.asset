@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c05dfc89ba078264fa52c3cdb46c0cda, type: 3}
+  m_Name: ToxicSpore
+  m_EditorClassIdentifier: Assembly-CSharp::RelicData
+  itemID: ToxicSpore
+  itemName: Toxic Spore
+  itemIcon: {fileID: 0}
+  description: The 3rd hit of your basic combo always inflicts Poison (Damage over
+    time).
+  dropPrefab: {fileID: 0}
+  itemTier: 1
+  basePrice: 50
+  RelicID: ToxicSpore
+  RelicNameEN: Toxic Spore
+  Rarity: 0
+  FactionBonus: +1 Random Stat
+  CoreEffect: The 3rd hit of your basic combo always inflicts Poison (Damage over
+    time).
+  RelicIcon: {fileID: 0}

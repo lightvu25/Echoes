@@ -59,7 +59,8 @@ public class EnemyEvolutionModifier : MonoBehaviour
         // Already chasing or attacking — no need to override
         if (brain.CurrentState == EnemyBrain.State.Chase
             || brain.CurrentState == EnemyBrain.State.Telegraph
-            || brain.CurrentState == EnemyBrain.State.Attack)
+            || brain.CurrentState == EnemyBrain.State.Attack
+            || brain.CurrentState == EnemyBrain.State.Notice)
         {
             return;
         }
@@ -77,6 +78,6 @@ public class EnemyEvolutionModifier : MonoBehaviour
         }
 
         sensor.TriggerGlobalAggro();
-        brain.ForceChase();
+        brain.ForceNotice();
     }
 }

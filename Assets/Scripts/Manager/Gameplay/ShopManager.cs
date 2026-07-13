@@ -1,77 +1,73 @@
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-
-public class ShopItem
-{
-    public string label;
-    public int coinCost;
-    public Action onPurchase;
-}
 
 public class ShopManager : MonoBehaviour
 {
     public static ShopManager Instance { get; private set; }
 
-    public event Action<ShopItem[]> OnShopOpened;
+    [Header("Global Item Pools")]
+    [SerializeField] private List<ConsumableData> masterConsumables;
+    [SerializeField] private List<RelicData> masterRelics;
+    [SerializeField] private List<EchoData> masterEchoes;
 
-    private ShopItem[] currentShopItems;
+    private List<ConsumableData> availableConsumables;
+    private List<RelicData> availableRelics;
+    private List<EchoData> availableEchoes;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
-
-    public void OpenShop()
-    {
-        currentShopItems = new ShopItem[]
+        if (Instance == null)
         {
-            new ShopItem
-            {
-                label = "Buy Healing (+50 HP)",
-                coinCost = 20,
-                onPurchase = () => BuyHealing(50)
-            },
-            new ShopItem
-            {
-                label = "Buy Max HP Slot (+25 Max HP)",
-                coinCost = 100,
-                onPurchase = () => BuyMaxHPSlot(25)
-            }
-        };
-
-        OnShopOpened?.Invoke(currentShopItems);
-    }
-
-    public void TryPurchase(int index)
-    {
-        if (currentShopItems == null || index < 0 || index >= currentShopItems.Length) return;
-
-        ShopItem item = currentShopItems[index];
-        if (PlayerStats.Instance != null && PlayerStats.Instance.SpendGold(item.coinCost))
-        {
-            item.onPurchase?.Invoke();
-            Debug.Log($"ShopManager: Purchased {item.label}");
+            Instance = this;
+            InitializePools();
+            // DontDestroyOnLoad(gameObject); // Uncomment if this needs to persist across scene loads
         }
         else
         {
-            Debug.LogWarning("ShopManager: Not enough gold to purchase!");
+            Destroy(gameObject);
         }
     }
 
-    private void BuyHealing(int amount)
+    private void InitializePools()
     {
-        if (PlayerStats.Instance != null && PlayerStats.Instance.TryGetComponent(out HealthSystem healthSys))
+        availableConsumables = new List<ConsumableData>(masterConsumables);
+        availableRelics = new List<RelicData>(masterRelics);
+        availableEchoes = new List<EchoData>(masterEchoes);
+    }
+
+    /// <summary>
+    /// Pulls a random item from the global pool.
+    /// Relics and Echoes are removed from the pool so they cannot be encountered twice in the same run.
+    /// </summary>
+    public ItemBaseData GetRandomItem(ItemCategory category, int minTier)
+    {
+        switch (category)
         {
-            healthSys.Heal(amount);
+            case ItemCategory.Item: // Consumables
+                return GetAndRemoveRandom(availableConsumables.Cast<ItemBaseData>().ToList(), minTier, false);
+            case ItemCategory.Relic:
+                return GetAndRemoveRandom(availableRelics.Cast<ItemBaseData>().ToList(), minTier, true);
+            case ItemCategory.Echo:
+                return GetAndRemoveRandom(availableEchoes.Cast<ItemBaseData>().ToList(), minTier, true);
+            default:
+                return null;
         }
     }
 
-    private void BuyMaxHPSlot(int hpGain)
+    private ItemBaseData GetAndRemoveRandom(List<ItemBaseData> pool, int minTier, bool removeFromPool)
     {
-        if (PlayerStats.Instance != null && PlayerStats.Instance.TryGetComponent(out HealthSystem healthSys))
+        var validItems = pool.Where(item => item != null && item.itemTier >= minTier).ToList();
+        if (validItems.Count == 0) return null;
+
+        ItemBaseData selected = validItems[Random.Range(0, validItems.Count)];
+        
+        if (removeFromPool)
         {
-            healthSys.SetMaxHP(healthSys.MaxHP + hpGain, true); 
+            if (selected is RelicData r) availableRelics.Remove(r);
+            if (selected is EchoData e) availableEchoes.Remove(e);
         }
+
+        return selected;
     }
 }

@@ -29,10 +29,26 @@ public class ThrowBombAttack : MonoBehaviour, IEnemyAttack
     [Tooltip("The duration the enemy is locked in the attack state.")]
     [SerializeField] private float attackDuration = 1.5f;
     
+    [Tooltip("Delay before the bomb is actually spawned (sync with animation windup).")]
+    [SerializeField] private float throwDelay = 0.5f;
+    
     [Tooltip("Amount of torque applied to make the bomb spin in the air.")]
     [SerializeField] private float torqueAmount = -30f;
 
+    [Header("Aim Settings")]
+    [Tooltip("If true, perfectly calculates the trajectory to hit the player.")]
+    [SerializeField] private bool predictiveAiming = true;
+
+    [Tooltip("How high above the target the bomb should arc. Higher = loopier throw.")]
+    [SerializeField] private float arcHeight = 3f;
+
     private Coroutine attackCoroutine;
+    private EnemySensor sensor;
+
+    private void Awake()
+    {
+        sensor = GetComponentInParent<EnemySensor>();
+    }
 
     /// <summary>
     /// Called by the EnemyBrain to start the attack sequence.
@@ -67,10 +83,21 @@ public class ThrowBombAttack : MonoBehaviour, IEnemyAttack
 
     private IEnumerator AttackRoutine()
     {
+        // Get attack speed from the brain data
+        float speed = 1f;
+        EnemyBrain brain = GetComponentInParent<EnemyBrain>();
+        if (brain != null && brain.Data != null && brain.Data.attackSpeed > 0)
+        {
+            speed = brain.Data.attackSpeed;
+        }
+
+        // Wait for the animation windup!
+        yield return new WaitForSeconds(throwDelay / speed);
+
         ThrowBomb();
 
-        // Wait for the animation/attack sequence to finish
-        yield return new WaitForSeconds(attackDuration);
+        // Wait for the REST of the animation/attack sequence to finish
+        yield return new WaitForSeconds((attackDuration - throwDelay) / speed);
 
         IsAttacking = false;
         OnAttackFinished?.Invoke(this, EventArgs.Empty);
@@ -80,7 +107,7 @@ public class ThrowBombAttack : MonoBehaviour, IEnemyAttack
     {
         if (bombPrefab == null || throwPoint == null) 
         {
-            Debug.LogWarning("[ThrowBombAttack] Missing bombPrefab or throwPoint reference.");
+            Debug.LogWarning($"[{gameObject.name}] [ThrowBombAttack] Missing bombPrefab or throwPoint reference.");
             return;
         }
 
@@ -94,7 +121,7 @@ public class ThrowBombAttack : MonoBehaviour, IEnemyAttack
             Quaternion.identity, 
             ObjectPoolManager.PoolType.Projectile
         );
-        
+
         if (bombObj != null)
         {
             // Assign owner so it doesn't blow up the enemy itself
@@ -102,6 +129,20 @@ public class ThrowBombAttack : MonoBehaviour, IEnemyAttack
             if (bomb != null)
             {
                 bomb.SetOwner(gameObject);
+                
+                // Ignore physical collision between the bomb and the thrower
+                Collider2D bombCol = bombObj.GetComponent<Collider2D>();
+                Collider2D[] throwerCols = transform.root.GetComponentsInChildren<Collider2D>();
+                if (bombCol != null)
+                {
+                    foreach (var tCol in throwerCols)
+                    {
+                        if (tCol != bombCol) // Just in case
+                        {
+                            Physics2D.IgnoreCollision(bombCol, tCol);
+                        }
+                    }
+                }
             }
 
             // Apply forces
@@ -110,8 +151,56 @@ public class ThrowBombAttack : MonoBehaviour, IEnemyAttack
             {
                 rb.linearVelocity = Vector2.zero;
                 
-                // Impulse force for the throw arc
-                Vector2 force = new Vector2(throwForceX * facingDir, throwForceY);
+                Vector2 force = new Vector2(throwForceX * facingDir, throwForceY) * rb.mass;
+
+                if (predictiveAiming && sensor != null && sensor.TargetPlayer != null)
+                {
+                    Vector2 targetPos = sensor.TargetPlayer.position;
+                    Vector2 startPos = throwPoint.position;
+                    
+                    float gravity = Physics2D.gravity.y * rb.gravityScale;
+                    
+                    // We only calculate if gravity is pulling downwards
+                    if (gravity < 0)
+                    {
+                        // Scale the arc height based on horizontal distance so close targets don't shoot straight up!
+                        float dist = Mathf.Abs(targetPos.x - startPos.x);
+                        float dynamicArcHeight = Mathf.Clamp(dist * 0.4f, 0.5f, arcHeight);
+                        
+                        // Calculate required peak height above the highest point
+                        float height = Mathf.Max(targetPos.y - startPos.y, 0f) + dynamicArcHeight;
+                        
+                        // vy = sqrt(-2 * g * h)
+                        float vy = Mathf.Sqrt(-2f * gravity * height);
+                        
+                        // Time to reach peak
+                        float timeUp = vy / -gravity;
+                        
+                        // Time to fall from peak to target
+                        float fallDistance = height - (targetPos.y - startPos.y);
+                        float timeDown = Mathf.Sqrt(2f * fallDistance / -gravity);
+                        
+                        float totalTime = timeUp + timeDown;
+                        
+                        // vx = dx / t
+                        float vx = (targetPos.x - startPos.x) / totalTime;
+                        
+                        // Force = Mass * Velocity for Impulse
+                        force = new Vector2(vx, vy) * rb.mass;
+                        
+                        BombProjectile bombProj = bombObj.GetComponent<BombProjectile>();
+                        if (bombProj != null)
+                        {
+                            bombProj.FlyToTarget(totalTime);
+                        }
+                    }
+                }
+                else
+                {
+                    // Fallback to inspector force if aimbot is disabled
+                    force = new Vector2(throwForceX * facingDir, throwForceY);
+                }
+
                 rb.AddForce(force, ForceMode2D.Impulse);
                 
                 // Impulse torque for the spin (multiplied by facingDir so it rolls correctly)

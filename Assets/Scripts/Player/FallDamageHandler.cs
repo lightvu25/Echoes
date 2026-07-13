@@ -8,6 +8,10 @@ public class FallDamageHandler : MonoBehaviour
     [SerializeField] private float fatalVelocityThreshold = -35f;
     [SerializeField] private int maxFallDamage = 50;
 
+    [Header("Stun Effect")]
+    [SerializeField] private int stunDamageThreshold = 30;
+    [SerializeField] private float stunDuration = 1f;
+
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Vector2 groundCheckSize = new Vector2(0.49f, 0.03f);
@@ -15,13 +19,16 @@ public class FallDamageHandler : MonoBehaviour
 
     private Rigidbody2D rb;
     private IDamageable damageable;
+    private PlayerMovement playerMovement;
 
     private float peakFallVelocity = 0f;
     public float FallDamageModifier { get; set; } = 1f;
+    public bool BypassNextFallDamage { get; set; } = false;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerMovement = GetComponent<PlayerMovement>();
         damageable = GetComponentInParent<IDamageable>();
         if (damageable == null)
         {
@@ -44,9 +51,9 @@ public class FallDamageHandler : MonoBehaviour
                 peakFallVelocity = rb.linearVelocity.y;
             }
         }
-        else if (isGrounded && peakFallVelocity < 0f)
+        else if (isGrounded && Mathf.Abs(rb.linearVelocity.y) < 0.1f && peakFallVelocity < 0f)
         {
-            if (peakFallVelocity < safeVelocityThreshold)
+            if (peakFallVelocity < safeVelocityThreshold && !BypassNextFallDamage)
             {
                 float damagePercentage = Mathf.InverseLerp(safeVelocityThreshold, fatalVelocityThreshold, peakFallVelocity);
                 float rawDamage = Mathf.Lerp(0, maxFallDamage, damagePercentage);
@@ -54,6 +61,7 @@ public class FallDamageHandler : MonoBehaviour
 
                 if (finalDamage > 0 && damageable != null)
                 {
+                    Debug.Log($"[FallDamage] Dealt {finalDamage} damage. PeakVelocity: {peakFallVelocity}, BypassNextFallDamage: {BypassNextFallDamage}");
                     DamageInfo damageInfo = new DamageInfo
                     {
                         baseDamage = finalDamage,
@@ -63,9 +71,15 @@ public class FallDamageHandler : MonoBehaviour
                         attacker = gameObject
                     };
                     damageable.TakeDamage(damageInfo);
+
+                    if (finalDamage >= stunDamageThreshold && playerMovement != null)
+                    {
+                        playerMovement.ApplyStun(stunDuration);
+                    }
                 }
             }
 
+            BypassNextFallDamage = false;
             peakFallVelocity = 0f;
         }
     }

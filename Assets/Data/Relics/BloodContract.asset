@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c05dfc89ba078264fa52c3cdb46c0cda, type: 3}
+  m_Name: BloodContract
+  m_EditorClassIdentifier: Assembly-CSharp::RelicData
+  itemID: BloodContract
+  itemName: Blood Contract
+  itemIcon: {fileID: 0}
+  description: Shop items cost 0 Currency, but permanently cost 1 Max HP segment
+    to purchase.
+  dropPrefab: {fileID: 0}
+  itemTier: 3
+  basePrice: 50
+  RelicID: BloodContract
+  RelicNameEN: Blood Contract
+  Rarity: 2
+  FactionBonus: +3 Stats (All)
+  CoreEffect: Shop items cost 0 Currency, but permanently cost 1 Max HP segment to
+    purchase.
+  RelicIcon: {fileID: 0}

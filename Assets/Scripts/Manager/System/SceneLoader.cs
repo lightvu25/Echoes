@@ -7,6 +7,7 @@ public static class SceneLoader
     {
         MainMenuScene,
         GameScene,
+        HubScene,
         GameOverScene
     }
 

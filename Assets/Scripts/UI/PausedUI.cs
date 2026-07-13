@@ -79,9 +79,13 @@ public class PausedUI : MonoBehaviour, IUIPanel
         }
     }
 
+    private int lastInteractionFrame = -1;
+
     private void GameInput_OnMenuButtonPressed(object sender, System.EventArgs e)
     {
         if (UIManager.Instance != null && UIManager.Instance.WasPanelClosedThisFrame) return;
+        if (Time.frameCount == lastInteractionFrame) return;
+        lastInteractionFrame = Time.frameCount;
 
         if (gameObject.activeSelf)
         {
@@ -114,6 +118,8 @@ public class PausedUI : MonoBehaviour, IUIPanel
     private void GameInput_OnCancelPressed()
     {
         if (UIManager.Instance != null && UIManager.Instance.WasPanelClosedThisFrame) return;
+        if (Time.frameCount == lastInteractionFrame) return;
+        lastInteractionFrame = Time.frameCount;
 
         if (gameObject.activeSelf)
         {

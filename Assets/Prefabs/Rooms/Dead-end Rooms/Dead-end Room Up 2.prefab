@@ -229,7 +229,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1152070563
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 2
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
@@ -561,6 +561,7 @@ GameObject:
   m_Component:
   - component: {fileID: 289972338128186252}
   - component: {fileID: -6543285213713455762}
+  - component: {fileID: 5735208843426262172}
   m_Layer: 0
   m_Name: Dead-end Room Up 2
   m_TagString: Untagged
@@ -581,6 +582,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 634384248544298242}
   - {fileID: 933590431778131988}
   - {fileID: 5101271743696042992}
   - {fileID: 7452327910596387629}
@@ -606,6 +608,68 @@ MonoBehaviour:
   - direction: 0
     exitPoint: {fileID: 5101271743696042992}
   isExplored: 0
+  OriginalBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+--- !u!60 &5735208843426262172
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3204592522672744526}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 5.9999714, y: -5}
+      - {x: 5.9999714, y: -2}
+      - {x: -2, y: -1.9999714}
+      - {x: -1.9999714, y: 1}
+      - {x: 6, y: 1.0000286}
+      - {x: 5.9999714, y: 4}
+      - {x: 4, y: 4.0000296}
+      - {x: 3.9999714, y: 7}
+      - {x: 0, y: 6.9999704}
+      - {x: -0.00002861023, y: 4}
+      - {x: -6, y: 3.9999704}
+      - {x: -5.9999714, y: -5}
+  m_UseDelaunayMesh: 1
 --- !u!1 &3589386868723961580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1801,10 +1865,6 @@ Tilemap:
     m_Data: {fileID: 317166638, guid: b1be0ce378052494295181da82d14c9d, type: 3}
   - m_RefCount: 3
     m_Data: {fileID: 706378319, guid: b1be0ce378052494295181da82d14c9d, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
   m_TileMatrixArray:
   - m_RefCount: 100
     m_Data:
@@ -3184,7 +3244,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1643036567
-  m_SortingLayer: 4
+  m_SortingLayer: 3
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
@@ -3335,6 +3395,68 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4582741209919704383, guid: 675c42ad1f1d82b42945a693bacbcc31, type: 3}
   m_PrefabInstance: {fileID: 1587033252166278612}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1959375929407816531
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 289972338128186252}
+    m_Modifications:
+    - target: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -5.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7639742590146618916, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+      propertyPath: m_Name
+      value: AnchorEcho
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+--- !u!4 &634384248544298242 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1440258090084320849, guid: f0828170dca160840a8d0f1450851ab2, type: 3}
+  m_PrefabInstance: {fileID: 1959375929407816531}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3629074866296573950
 PrefabInstance:

@@ -44,7 +44,7 @@ Material:
     - _Thickness: 0
     m_Colors:
     - White: {r: 1, g: 1, b: 1, a: 1}
-    - _OutlineColor: {r: 1.7150943, g: 2.991602, b: 3, a: 1}
+    - _OutlineColor: {r: 6.8514094, g: 11.950766, b: 11.984314, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &3894341007887869295

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoData
   itemID: ECHO_EVENT_HORIZON
   itemName: Event Horizon
-  itemIcon: {fileID: 7225244483827635998, guid: ac45797a311f67e4cba1e34139805923, type: 3}
+  itemIcon: {fileID: -3686940721284674238, guid: 6f2fc668cb190f547a3b75c97eba14bf, type: 3}
   description: Creates a massive black hole that sucks enemies into a glitched lava
     pit, dealing True DMG over time
   dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
@@ -27,5 +27,8 @@ MonoBehaviour:
   hasStatusEffect: 1
   statusProcCoefficient: 1
   uniqueModifierID: FUS_EVENT_HORIZON
+  trailColor: {r: 1, g: 1, b: 1, a: 1}
+  stateVFXPrefab: {fileID: 0}
+  hitImpactPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

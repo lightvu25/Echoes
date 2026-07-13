@@ -49,6 +49,14 @@ public class EnemySensor : MonoBehaviour
             return;
         }
 
+        IDamageable playerDamageable = targetPlayer.GetComponent<IDamageable>();
+        if (playerDamageable != null && playerDamageable.IsDead)
+        {
+            IsPlayerVisible = false;
+            DistanceToPlayer = float.MaxValue;
+            return;
+        }
+
         // Global aggro: skip all checks, player is always "visible"
         if (isGlobalAggroActive)
         {

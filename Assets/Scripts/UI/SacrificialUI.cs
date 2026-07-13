@@ -29,6 +29,11 @@ public class SacrificialUI : MonoBehaviour, IUIPanel
 
     private void Awake()
     {
+        if (forgeButton != null)
+        {
+            forgeButton.onClick.RemoveAllListeners();
+            forgeButton.onClick.AddListener(ExecuteFusion);
+        }
         gameObject.SetActive(false);
     }
 
@@ -76,8 +81,8 @@ public class SacrificialUI : MonoBehaviour, IUIPanel
             Destroy(child.gameObject);
         }
 
-        IReadOnlyList<ItemBaseData> elements = PlayerInventoryCore.Instance.GetEquippedList(ItemCategory.Element);
-        int maxSlots = PlayerInventoryCore.Instance.UnlockedElementSlots;
+        IReadOnlyList<ItemBaseData> elements = PlayerInventoryCore.Instance.GetEquippedList(ItemCategory.Echo);
+        int maxSlots = PlayerInventoryCore.Instance.UnlockedEchoSlots;
 
         for (int i = 0; i < maxSlots; i++)
         {

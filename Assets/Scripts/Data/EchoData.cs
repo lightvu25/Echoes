@@ -5,11 +5,10 @@ public enum EchoRange { Melee, Mid, Ranged, Hybrid }
 [CreateAssetMenu(fileName = "New Echo", menuName = "Data/Echo Data")]
 public class EchoData : ItemBaseData
 {
-    public override ItemCategory Category => ItemCategory.Element;
+    public override ItemCategory Category => ItemCategory.Echo;
 
     [Header("Echo Info")]
     public EchoType echoType;
-    public int echoTier = 1;
     public bool isFusionResult;
 
     [Header("Combat Stats")]
@@ -24,6 +23,11 @@ public class EchoData : ItemBaseData
 
     [Header("Unique Mechanics")]
     public string uniqueModifierID;
+
+    [Header("Visual Effects")]
+    public Color trailColor = Color.white;
+    public ParticleSystem stateVFXPrefab;
+    public GameObject hitImpactPrefab;
 
     [HideInInspector] public int level = 1;
     [HideInInspector] public float currentStatusProc;

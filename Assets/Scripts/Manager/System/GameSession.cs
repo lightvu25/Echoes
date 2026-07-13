@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Playables;
 using System.Collections;
 public class GameSession : MonoBehaviour
 {
@@ -10,11 +11,19 @@ public class GameSession : MonoBehaviour
     public ProfileData currentProfile;
     public RunData currentRun;
 
+    [HideInInspector] public MemoryNodeData pendingNextNode;
+
     private void Awake()
-    { 
-        Debug.Log($"[GameSession] Awake called on {gameObject.name}");
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
-        
+        DontDestroyOnLoad(gameObject);
+
         Initialize();
     }
     
@@ -58,24 +67,22 @@ public class GameSession : MonoBehaviour
 
     private IEnumerator HandlePlayerDeathSequence()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
+        int lostShards = currentRun.runGold;
+
+        CutsceneManager cutsceneManager = FindFirstObjectByType<CutsceneManager>();
+        if (cutsceneManager != null)
         {
-            var move = player.GetComponent<PlayerMovement>();
-            if (move != null) move.enabled = false;
-            
-            var combat = player.GetComponent<PlayerCombat>();
-            if (combat != null) combat.enabled = false;
-            var anim = player.GetComponentInChildren<Animator>();
-            if (anim != null) anim.SetTrigger("Death");
+            yield return StartCoroutine(cutsceneManager.PlayDeathSequence(lostShards));
         }
-        
-        yield return new WaitForSeconds(2.5f);
-        
+        else
+        {
+            // Fallback if no CutsceneManager is in the scene
+            yield return new WaitForSeconds(2f);
+        }
+
+        // --- Cleanup & Reset ---
         SaveManager.deleteRun();
-        
         StartNewRun();
-        
         SceneManager.LoadScene(hubWorldSceneName);
     }
 

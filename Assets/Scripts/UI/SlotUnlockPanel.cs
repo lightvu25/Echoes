@@ -31,7 +31,7 @@ public class SlotUnlockPanel : MonoBehaviour
 
     private void Awake()
     {
-        elementButton?.onClick.AddListener(() => Choose(ItemCategory.Element));
+        elementButton?.onClick.AddListener(() => Choose(ItemCategory.Echo));
         relicButton  ?.onClick.AddListener(() => Choose(ItemCategory.Relic));
         itemButton   ?.onClick.AddListener(() => Choose(ItemCategory.Item));
 
@@ -53,7 +53,7 @@ public class SlotUnlockPanel : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        RefreshButton(elementButton, elementLabel, elementSlots, "Element", ItemCategory.Element);
+        RefreshButton(elementButton, elementLabel, elementSlots, "Echo", ItemCategory.Echo);
         RefreshButton(relicButton,   relicLabel,   relicSlots,   "Relic",   ItemCategory.Relic);
         RefreshButton(itemButton,    itemLabel,     itemSlots,    "Item",    ItemCategory.Item);
 

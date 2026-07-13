@@ -1,263 +1,419 @@
 using System;
 using System.Collections;
 using UnityEngine;
+
+[RequireComponent(typeof(PlaystyleManager))]
 public class PlayerAttack : MonoBehaviour
 {
     public event EventHandler<AttackEventArgs> OnAttackStarted;
     public event EventHandler<AttackEventArgs> OnAttackEnded;
+    public event EventHandler<AttackEventArgs> OnAttackCancelled;
 
     public class AttackEventArgs : EventArgs
     {
         public AttackType attackType;
+        public PlaystyleType playstyleType;
         public int comboStep;
+        public string animationName;
     }
 
     public enum AttackType
     {
-        Basic,      // Tap attack
-        Heavy,      // Hold attack
-        Dash,       // Attack during dash
-        Air         // Attack in air
+        Basic,
+        Dash,
+        Air
     }
 
     [Header("References")]
     [SerializeField] private InputConfig inputConfig;
-    [SerializeField] private CombatStats combatStats;
     [SerializeField] private AttackHitbox attackHitbox;
     [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] private Animator animator;
 
-    [Header("Basic Attack Combo")]
-    [Tooltip("Number of hits in basic combo chain")]
-    [SerializeField] private int maxComboSteps = 3;
-    [Tooltip("Time window to input next combo hit")]
-    [SerializeField] private float comboWindow = 0.4f;
-    [Tooltip("Damage multiplier per combo step")]
-    [SerializeField] private float[] comboDamageMultipliers = { 1f, 1.2f, 1.5f };
-
-    [Header("Attack Timings")]
-    [SerializeField] private float basicAttackDuration = 0.3f;
-    [SerializeField] private float heavyAttackDuration = 0.5f;
+    [Header("Dash & Air Attacks")]
     [SerializeField] private float dashAttackDuration = 0.25f;
     [SerializeField] private float airAttackDuration = 0.35f;
-
-    [Header("Heavy Attack")]
-    [Tooltip("Hold time to trigger heavy attack")]
-    [SerializeField] private float heavyAttackHoldTime = 0.3f;
-    [SerializeField] private float heavyAttackDamageMultiplier = 2f;
-
-    [Header("Proc Coefficients")]
-    [SerializeField] private float basicProcCoef = 1f;
-    [SerializeField] private float heavyProcCoef = 1.5f;
     [SerializeField] private float dashProcCoef = 0.7f;
     [SerializeField] private float airProcCoef = 0.8f;
+    [SerializeField] private Vector2 dashAttackHitboxSize = new Vector2(2f, 1f);
+    [SerializeField] private Vector2 dashAttackHitboxOffset = new Vector2(1f, 0f);
+    [SerializeField] private Vector2 airAttackHitboxSize = new Vector2(2f, 2f);
+    [SerializeField] private Vector2 airAttackHitboxOffset = new Vector2(0f, 0f);
+
+    [Header("Plunge Attack")]
+    [SerializeField] private float plungeRadius = 2.5f;
+    [SerializeField] private float plungeDamageMultiplier = 2.5f;
+    [SerializeField] private GameObject plungeImpactVFX;
+    [SerializeField] private float safePlungeDistance = 15f;
+    [SerializeField] private float maxPlungeDistance = 30f;
+    [Range(0f, 1f)]
+    [SerializeField] private float maxPlungeSelfDamagePercent = 0.5f;
+    [SerializeField] private Vector2 plungeFallHitboxSize = new Vector2(2f, 2f);
+    [SerializeField] private Vector2 plungeFallHitboxOffset = new Vector2(0f, -1f);
+
+    [Header("Ranged Attack")]
+    [SerializeField] private Transform firePoint;
+
+    [Header("Attack Movement")]
+    [SerializeField] private float meleeLungeForce = 7f;
+
+    [Header("Combo Reset")]
+    [SerializeField] private float comboResetTime = 2f;
 
     public float temporaryDamageMultiplier = 1f;
 
-    [Header("Plunge Attack")]
-    [Tooltip("Radius of the AOE damage circle on landing.")]
-    [SerializeField] private float plungeRadius = 2.5f;
-    [Tooltip("Damage multiplier relative to baseAttack.")]
-    [SerializeField] private float plungeDamageMultiplier = 2.5f;
-    [Tooltip("Optional impact VFX spawned at player feet.")]
-    [SerializeField] private GameObject plungeImpactVFX;
+    private PlaystyleManager playstyleManager;
+    private HealthSystem healthSystem;
+    private bool isAttacking;
+    private int currentComboStep;
+    private float lastAttackTime;
+    private bool comboQueued;
+    private PlaystyleType queuedPlaystyle;
+    private int pendingDirection;
 
-    // State
-    private bool isAttacking = false;
-    private int currentComboStep = 0;
-    private float comboTimer = 0f;
-    private float attackHoldTime = 0f;
-    private bool comboQueued = false;
     private AttackType currentAttackType;
+    private PlaystyleType currentPlaystyle;
+
+    private int pendingDamage;
+    private float pendingProcCoef;
+    private bool pendingHitboxConfigured;
+    private Vector2 pendingHitboxSize;
+    private Vector2 pendingHitboxOffset;
+    private PlaystyleType pendingStyleType;
+    private GameObject pendingProjectilePrefab;
+    
+    private System.Collections.Generic.HashSet<IDamageable> hitDuringPlunge = new System.Collections.Generic.HashSet<IDamageable>();
+
+    public bool IsDirectionLocked { get; private set; }
+
+    private void Awake()
+    {
+        playstyleManager = GetComponent<PlaystyleManager>();
+        healthSystem = GetComponent<HealthSystem>();
+    }
 
     private void Update()
     {
-        HandleComboTimer();
         HandleAttackInput();
-    }
 
-    private void HandleComboTimer()
-    {
-        if (comboTimer > 0f)
+        if (playerMovement != null)
         {
-            comboTimer -= Time.deltaTime;
-            if (comboTimer <= 0f)
+            if (playerMovement.isPlunging)
             {
-                // Combo reset
-                currentComboStep = 0;
+                HandlePlungeFallingDamage();
+            }
+            else if (hitDuringPlunge.Count > 0)
+            {
+                hitDuringPlunge.Clear();
             }
         }
     }
 
     private void HandleAttackInput()
     {
+        if (healthSystem != null && healthSystem.IsDead) return;
+        if (playerMovement != null && playerMovement.isStunned) return;
+
         if (inputConfig == null) return;
 
-        // Track hold time for heavy attack
-        if (inputConfig.GetAttackHeld())
+        if (inputConfig.GetAttackMagicDown())
         {
-            attackHoldTime += Time.deltaTime;
+            TryStartAttack(PlaystyleType.Magic);
         }
-
-        // Attack button pressed
-        if (inputConfig.GetAttackDown())
+        else if (inputConfig.GetAttackLongDown())
         {
-            attackHoldTime = 0f;
-
-            if (!isAttacking)
-            {
-                DetermineAndExecuteAttack();
-            }
-            else
-            {
-                // Queue next combo hit
-                comboQueued = true;
-            }
+            TryStartAttack(PlaystyleType.LongRange);
         }
-
-        // Attack button released (check for heavy attack)
-        if (inputConfig.GetAttackUp())
+        else if (inputConfig.GetAttackMidDown())
         {
-            if (attackHoldTime >= heavyAttackHoldTime && !isAttacking)
+            TryStartAttack(PlaystyleType.MidRange);
+        }
+        else if (inputConfig.GetAttackMeleeDown())
+        {
+            if (playerMovement != null && !playerMovement.isGrounded && inputConfig.GetVerticalInput() < -0.1f)
             {
-                ExecuteAttack(AttackType.Heavy);
+                // It's a plunge attack, let PlayerMovement handle it.
+                return;
             }
-            attackHoldTime = 0f;
+            TryStartAttack(PlaystyleType.Melee);
         }
     }
 
-    private void DetermineAndExecuteAttack()
+    private void TryStartAttack(PlaystyleType type)
     {
-        // Plunge is handled separately via ExecutePlungeAOE; skip normal logic.
-        if (playerMovement != null && playerMovement.isPlunging) return;
+        if (!playstyleManager.IsPlaystyleUnlocked(type)) return;
+        if (type == PlaystyleType.Magic && !playstyleManager.CanUseMagic()) return;
 
-        AttackType type;
-
-        if (playerMovement != null && playerMovement.isDashing)
+        if (!isAttacking)
         {
-            type = AttackType.Dash;
-        }
-        else if (playerMovement != null && !IsGrounded())
-        {
-            type = AttackType.Air;
+            // Reset combo if too much time has passed or playstyle changed
+            if (Time.time - lastAttackTime > comboResetTime || currentPlaystyle != type)
+            {
+                currentComboStep = 0;
+            }
+            DetermineAndExecuteAttack(type);
         }
         else
         {
-            type = AttackType.Basic;
+            // Buffer the next attack input
+            comboQueued = true;
+            queuedPlaystyle = type;
+
+            // Capture direction intent for the next combo step
+            float horizontalInput = inputConfig.GetHorizontalInput();
+            if (horizontalInput != 0f)
+            {
+                pendingDirection = horizontalInput > 0f ? 1 : -1;
+            }
+        }
+    }
+
+    private void DetermineAndExecuteAttack(PlaystyleType type)
+    {
+        if (playerMovement != null && playerMovement.isPlunging) return;
+        
+        // Let PlayerMovement handle Plunge initiation if holding down in air
+        if (playerMovement != null && !IsGrounded() && inputConfig != null && inputConfig.GetVerticalInput() < -0.1f) return;
+
+        AttackType attType = AttackType.Basic;
+        if (playerMovement != null && playerMovement.isDashing)
+        {
+            attType = AttackType.Dash;
+        }
+        else if (playerMovement != null && !IsGrounded())
+        {
+            attType = AttackType.Air;
         }
 
-        ExecuteAttack(type);
+        ExecuteAttack(attType, type);
     }
 
-    private void ExecuteAttack(AttackType type)
+    private void ExecuteAttack(AttackType attType, PlaystyleType styleType)
     {
         if (isAttacking) return;
+        currentAttackType = attType;
+        currentPlaystyle = styleType;
 
-        currentAttackType = type;
-        StartCoroutine(AttackRoutine(type));
+        StartCoroutine(AttackRoutine(attType, styleType));
     }
 
-    private IEnumerator AttackRoutine(AttackType type)
+    private IEnumerator AttackRoutine(AttackType attType, PlaystyleType styleType)
     {
         isAttacking = true;
         comboQueued = false;
+        pendingDirection = 0;
+        IsDirectionLocked = true;
 
-        // Determine attack parameters
-        float duration;
-        float damageMultiplier;
-        float procCoef;
-
-        switch (type)
+        PlaystyleData pData = playstyleManager.GetPlaystyleData(styleType);
+        if (pData == null)
         {
-            case AttackType.Heavy:
-                duration = heavyAttackDuration;
-                damageMultiplier = heavyAttackDamageMultiplier;
-                procCoef = heavyProcCoef;
-                currentComboStep = 0; // Heavy resets combo
-                break;
-
-            case AttackType.Dash:
-                duration = dashAttackDuration;
-                damageMultiplier = 1.3f;
-                procCoef = dashProcCoef;
-                currentComboStep = 0;
-                break;
-
-            case AttackType.Air:
-                duration = airAttackDuration;
-                damageMultiplier = 1.1f;
-                procCoef = airProcCoef;
-                break;
-
-            default: // Basic
-                duration = basicAttackDuration;
-                damageMultiplier = GetComboDamageMultiplier();
-                procCoef = basicProcCoef;
-                break;
+            CleanupAttack();
+            yield break;
         }
 
-        // Fire event
-        OnAttackStarted?.Invoke(this, new AttackEventArgs
-        {
-            attackType = type,
-            comboStep = currentComboStep
-        });
+        // Strict combo cycle: always wrap around
+        if (currentComboStep >= pData.comboSteps) currentComboStep = 0;
 
-        // Calculate damage
-        int baseDamage = combatStats != null ? combatStats.baseAttack : 10;
-        
-        float elementDamageMult = 1f;
-        if (PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveElement != null)
+        float dmgMult = attType == AttackType.Basic && pData.comboDamageMultipliers.Length > currentComboStep
+            ? pData.comboDamageMultipliers[currentComboStep]
+            : (attType == AttackType.Dash ? 1.3f : 1.1f);
+
+        float procCoef = attType == AttackType.Basic ? pData.procCoefficient : (attType == AttackType.Dash ? dashProcCoef : airProcCoef);
+
+        string animName = pData.attackAnimationNames != null && pData.attackAnimationNames.Length > currentComboStep
+            ? pData.attackAnimationNames[currentComboStep]
+            : "Attack";
+
+        if (attType != AttackType.Basic)
         {
-            elementDamageMult = PlayerInventoryCore.Instance.ActiveElement.baseDamageMultiplier;
+            animName = attType == AttackType.Dash ? "AttackDash" : "Air Attack";
+            currentComboStep = 0;
         }
 
-        int finalDamage = Mathf.RoundToInt(baseDamage * damageMultiplier * temporaryDamageMultiplier * elementDamageMult);
-
-        // Activate hitbox
-        if (attackHitbox != null)
+        var args = new AttackEventArgs
         {
-            attackHitbox.Activate(finalDamage, procCoef);
+            attackType = attType,
+            playstyleType = styleType,
+            comboStep = currentComboStep,
+            animationName = animName
+        };
+
+        OnAttackStarted?.Invoke(this, args);
+
+        // Melee lunge
+        if (attType == AttackType.Basic && styleType == PlaystyleType.Melee && playerMovement != null && playerMovement.isGrounded)
+        {
+            float facingDir = playerMovement.isFacingRight ? 1f : -1f;
+            playerMovement.rb.linearVelocity = new Vector2(0f, playerMovement.rb.linearVelocity.y);
+            playerMovement.rb.AddForce(new Vector2(facingDir * meleeLungeForce, 0f), ForceMode2D.Impulse);
         }
 
-        // Wait for attack duration
-        yield return new WaitForSeconds(duration);
+        int baseDamage = healthSystem != null && healthSystem.CombatStats != null ? healthSystem.CombatStats.baseAttack : 10;
+        int damageToPass = Mathf.RoundToInt(baseDamage * dmgMult * temporaryDamageMultiplier);
 
-        // Attack ended
-        isAttacking = false;
-
-        // Handle combo progression
-        if (type == AttackType.Basic)
+        if (styleType == PlaystyleType.Melee || styleType == PlaystyleType.MidRange || styleType == PlaystyleType.LongRange)
         {
-            currentComboStep++;
-            if (currentComboStep >= maxComboSteps)
+            if (attackHitbox != null)
             {
-                currentComboStep = 0;
+                if (attType == AttackType.Basic && pData.hitboxSizes.Length > currentComboStep)
+                {
+                    pendingHitboxSize = pData.hitboxSizes[currentComboStep];
+                    pendingHitboxOffset = pData.hitboxOffsets[currentComboStep];
+                    pendingHitboxConfigured = true;
+                }
+                else if (attType == AttackType.Dash)
+                {
+                    pendingHitboxSize = dashAttackHitboxSize;
+                    pendingHitboxOffset = dashAttackHitboxOffset;
+                    pendingHitboxConfigured = true;
+                }
+                else if (attType == AttackType.Air)
+                {
+                    pendingHitboxSize = airAttackHitboxSize;
+                    pendingHitboxOffset = airAttackHitboxOffset;
+                    pendingHitboxConfigured = true;
+                }
+                else
+                {
+                    pendingHitboxConfigured = false;
+                }
             }
-            comboTimer = comboWindow;
+            else
+            {
+                pendingHitboxConfigured = false;
+            }
+
+            pendingDamage = damageToPass;
+            pendingProcCoef = procCoef;
+            pendingStyleType = styleType;
+            pendingProjectilePrefab = pData.projectilePrefab;
+
+            // Dash and Air attacks still trigger instantly (unless you add animation events for them too)
+            if (attType != AttackType.Basic)
+            {
+                TriggerHitbox();
+            }
+        }
+        else if (styleType == PlaystyleType.Magic && pData.magicAoEPrefab != null)
+        {
+            Instantiate(pData.magicAoEPrefab, transform.position, Quaternion.identity);
         }
 
-        // Fire end event
-        OnAttackEnded?.Invoke(this, new AttackEventArgs
+        // Wait for the animation to finish instead of a fixed duration
+        if (attType == AttackType.Basic)
         {
-            attackType = type,
-            comboStep = currentComboStep
-        });
+            yield return WaitForAnimationEnd(animName);
+        }
+        else
+        {
+            yield return new WaitForSeconds(attType == AttackType.Dash ? dashAttackDuration : airAttackDuration);
+        }
 
-        // Check for queued combo
-        if (comboQueued && type == AttackType.Basic)
+        if (attType == AttackType.Basic)
+        {
+            lastAttackTime = Time.time;
+            currentComboStep++;
+            if (currentComboStep >= pData.comboSteps) currentComboStep = 0;
+        }
+
+        CleanupAttack();
+        OnAttackEnded?.Invoke(this, args);
+
+        // Process buffered combo input
+        if (comboQueued)
         {
             comboQueued = false;
-            DetermineAndExecuteAttack();
+
+            // Apply direction change between combo steps
+            if (pendingDirection != 0 && playerMovement != null)
+            {
+                bool wantFaceRight = pendingDirection > 0;
+                if (wantFaceRight != playerMovement.isFacingRight)
+                {
+                    playerMovement.CheckDirectionToFace(wantFaceRight);
+                }
+            }
+            pendingDirection = 0;
+
+            DetermineAndExecuteAttack(queuedPlaystyle);
         }
     }
 
-    private float GetComboDamageMultiplier()
+    private IEnumerator WaitForAnimationEnd(string stateName)
     {
-        if (comboDamageMultipliers == null || comboDamageMultipliers.Length == 0)
-            return 1f;
+        // Wait one frame for the animator to start the state
+        yield return null;
 
-        int index = Mathf.Clamp(currentComboStep, 0, comboDamageMultipliers.Length - 1);
-        return comboDamageMultipliers[index];
+        if (animator == null) yield break;
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        // Safety: make sure we're in the correct state
+        if (!stateInfo.IsName(stateName))
+        {
+            // Wait a couple more frames in case there's a transition delay
+            for (int i = 0; i < 3; i++)
+            {
+                yield return null;
+                stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+                if (stateInfo.IsName(stateName)) break;
+            }
+        }
+
+        if (stateInfo.IsName(stateName))
+        {
+            // Wait until the animation has played through at least once
+            float clipLength = stateInfo.length;
+            float elapsed = stateInfo.normalizedTime * clipLength;
+            float remaining = clipLength - elapsed;
+            if (remaining > 0f) yield return new WaitForSeconds(remaining);
+        }
+    }
+
+    private void CleanupAttack()
+    {
+        isAttacking = false;
+        IsDirectionLocked = false;
+    }
+
+    public void CancelAttackForMovement()
+    {
+        if (!isAttacking) return;
+
+        StopAllCoroutines();
+        CleanupAttack();
+        comboQueued = false;
+        currentComboStep = 0;
+        pendingDirection = 0;
+
+        if (attackHitbox != null) attackHitbox.Deactivate();
+
+        OnAttackCancelled?.Invoke(this, new AttackEventArgs
+        {
+            attackType = currentAttackType,
+            playstyleType = currentPlaystyle,
+            comboStep = currentComboStep
+        });
+    }
+
+    public void CancelAttack()
+    {
+        if (!isAttacking) return;
+
+        StopAllCoroutines();
+        CleanupAttack();
+        comboQueued = false;
+        currentComboStep = 0;
+        pendingDirection = 0;
+
+        if (attackHitbox != null) attackHitbox.Deactivate();
+
+        OnAttackEnded?.Invoke(this, new AttackEventArgs
+        {
+            attackType = currentAttackType,
+            playstyleType = currentPlaystyle,
+            comboStep = currentComboStep
+        });
     }
 
     private bool IsGrounded()
@@ -269,79 +425,289 @@ public class PlayerAttack : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Check if currently in attack animation.
-    /// </summary>
     public bool IsAttacking => isAttacking;
-
-    /// <summary>
-    /// Get current combo step (0-indexed).
-    /// </summary>
     public int CurrentComboStep => currentComboStep;
-
     public AttackType CurrentAttackType => currentAttackType;
+    public PlaystyleType CurrentPlaystyle => currentPlaystyle;
     public AttackHitbox CurrentAttackHitbox => attackHitbox;
 
     public void EnableAttackHitbox()
     {
-        attackHitbox.gameObject.SetActive(true);
+        if (attackHitbox != null) attackHitbox.gameObject.SetActive(true);
     }
 
     public void DisableAttackHitbox()
     {
-        attackHitbox.gameObject.SetActive(false);
+        if (attackHitbox != null) attackHitbox.gameObject.SetActive(false);
     }
 
-    /// <summary>Cancel the current attack. Called when player is knocked back.</summary>
-    public void CancelAttack()
+    // Call this from an Animation Event!
+    public void TriggerHitbox()
     {
-        if (!isAttacking) return;
+        if (pendingStyleType == PlaystyleType.Melee || pendingStyleType == PlaystyleType.MidRange)
+        {
+            if (attackHitbox != null)
+            {
+                if (pendingHitboxSize != Vector2.zero)
+                    attackHitbox.Configure(pendingHitboxSize, pendingHitboxOffset);
 
-        StopAllCoroutines();
-        isAttacking = false;
-        comboQueued = false;
-        currentComboStep = 0;
+                attackHitbox.Activate(pendingDamage, pendingProcCoef);
+                SpawnComboVFX();
+            }
+        }
+        else if (pendingStyleType == PlaystyleType.LongRange && pendingProjectilePrefab != null)
+        {
+            Vector2 facingDir = playerMovement != null && playerMovement.isFacingRight ? Vector2.right : Vector2.left;
+            Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position + (Vector3)facingDir * 0.5f + Vector3.up * 1.0f;
+            
+            GameObject proj = ObjectPoolManager.SpawnObject(pendingProjectilePrefab, spawnPos, Quaternion.identity, ObjectPoolManager.PoolType.Projectile);
+            proj.transform.localScale = transform.localScale;
 
+            Projectile pScript = proj.GetComponent<Projectile>();
+            if (pScript != null)
+            {
+                DamageInfo dInfo = new DamageInfo
+                {
+                    baseDamage = pendingDamage,
+                    multiplicativeStack = 1f,
+                    procCoefficient = pendingProcCoef,
+                    attacker = gameObject,
+                    damageSource = "PlayerProjectile",
+                    isCritical = false
+                };
+                
+                if (PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveEcho != null)
+                {
+                    dInfo.activeEcho = PlayerInventoryCore.Instance.ActiveEcho;
+                    if (PlayerStats.Instance != null) dInfo.playerLevel = PlayerStats.Instance.CurrentLevel;
+                }
+                
+                if (healthSystem != null && healthSystem.CombatStats != null && UnityEngine.Random.value < healthSystem.CombatStats.critChance)
+                {
+                    dInfo.isCritical = true;
+                    dInfo.multiplicativeStack *= healthSystem.CombatStats.critMultiplier;
+                }
+
+                // Fire the projectile at 20 units/sec
+                pScript.SetupPlayerProjectile(dInfo, facingDir * 20f);
+            }
+        }
+    }
+
+    private void SpawnComboVFX()
+    {
+        PlaystyleData pData = playstyleManager.GetPlaystyleData(currentPlaystyle);
+        if (pData == null) return;
+
+        // Only spawn VFX if the playstyle requires an active Echo and we have one, 
+        // OR if it doesn't require an active Echo (normal attacks).
+        if (pData.requiresActiveEcho && (PlayerInventoryCore.Instance == null || PlayerInventoryCore.Instance.ActiveEcho == null))
+            return;
+
+        if (pData.comboVFXPrefabs != null && pData.comboVFXPrefabs.Length > 0)
+        {
+            // Fallback to Element 0 if the current combo step doesn't have a specific prefab assigned
+            GameObject vfxPrefab = null;
+            Vector2 vfxOffset = Vector2.zero;
+
+            if (currentComboStep < pData.comboVFXPrefabs.Length && pData.comboVFXPrefabs[currentComboStep] != null)
+            {
+                vfxPrefab = pData.comboVFXPrefabs[currentComboStep];
+            }
+            else
+            {
+                vfxPrefab = pData.comboVFXPrefabs[0];
+            }
+
+            // Get the specific offset for this combo step
+            if (pData.vfxOffsets != null && currentComboStep < pData.vfxOffsets.Length)
+            {
+                vfxOffset = pData.vfxOffsets[currentComboStep];
+            }
+            else if (pData.vfxOffsets != null && pData.vfxOffsets.Length > 0)
+            {
+                vfxOffset = pData.vfxOffsets[0]; // Fallback to first offset
+            }
+
+            if (vfxPrefab != null)
+            {
+                // Calculate spawn position based on player facing direction and the specific VFX offset
+                float dirMultiplier = playerMovement != null && playerMovement.isFacingRight ? 1f : -1f;
+                Vector3 spawnPos = transform.position + new Vector3(vfxOffset.x * dirMultiplier, vfxOffset.y, 0f);
+                
+                GameObject vfx = ObjectPoolManager.SpawnObject(vfxPrefab, spawnPos, vfxPrefab.transform.rotation, ObjectPoolManager.PoolType.ParticleSystem);
+                
+                // Flip the VFX to match player facing direction
+                Vector3 vfxScale = vfx.transform.localScale;
+                vfxScale.x = playerMovement != null && playerMovement.isFacingRight ? Mathf.Abs(vfxScale.x) : -Mathf.Abs(vfxScale.x);
+                vfx.transform.localScale = vfxScale;
+
+                // Tell the VFX which combo step it is playing
+                ComboVFXController vfxController = vfx.GetComponent<ComboVFXController>();
+                if (vfxController != null)
+                {
+                    vfxController.PlayComboStep(currentComboStep);
+                }
+            }
+        }
+    }
+
+    public void StartPlungeFallHitbox()
+    {
+        if (attackHitbox != null && healthSystem != null && healthSystem.CombatStats != null)
+        {
+            attackHitbox.Configure(plungeFallHitboxSize, plungeFallHitboxOffset); 
+            attackHitbox.isPlungeFalling = true;
+        }
+    }
+
+    public void StopPlungeFallHitbox()
+    {
         if (attackHitbox != null)
-            attackHitbox.Deactivate();
-
-        OnAttackEnded?.Invoke(this, new AttackEventArgs
         {
-            attackType = currentAttackType,
-            comboStep = currentComboStep
-        });
+            attackHitbox.isPlungeFalling = false;
+        }
     }
 
-    public void ExecutePlungeAOE()
+
+    public void ExecutePlungeAOE(float dropDistance)
     {
-        int baseDamage  = combatStats != null ? combatStats.baseAttack : 10;
-        
+        int baseDamage = healthSystem != null && healthSystem.CombatStats != null ? healthSystem.CombatStats.baseAttack : 10;
+
         float elementDamageMult = 1f;
-        if (PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveElement != null)
+        if (PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveEcho != null)
         {
-            elementDamageMult = PlayerInventoryCore.Instance.ActiveElement.baseDamageMultiplier;
+            elementDamageMult = PlayerInventoryCore.Instance.ActiveEcho.baseDamageMultiplier;
         }
 
         int finalDamage = Mathf.RoundToInt(baseDamage * plungeDamageMultiplier * elementDamageMult);
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(
-            transform.position, plungeRadius, LayerMask.GetMask("Enemy"));
+        LayerMask targetMask = attackHitbox != null ? attackHitbox.TargetLayers : LayerMask.GetMask("Enemy");
+        Vector2 direction = transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
+        Vector2 originPos = attackHitbox != null ? (Vector2)attackHitbox.transform.position : (Vector2)transform.position;
+        Vector2 center = originPos + new Vector2(plungeFallHitboxOffset.x * direction.x, plungeFallHitboxOffset.y);
+        Collider2D[] hits = Physics2D.OverlapBoxAll(center, plungeFallHitboxSize, 0f, targetMask);
 
         foreach (Collider2D col in hits)
         {
-            if (col.TryGetComponent<IDamageable>(out var damageable))
+            IDamageable damageable = col.GetComponentInParent<IDamageable>();
+            if (damageable != null)
             {
                 damageable.TakeDamage(new DamageInfo
                 {
                     baseDamage       = finalDamage,
+                    multiplicativeStack = 1f,
+                    procCoefficient  = 1f,
                     attacker         = gameObject,
                     knockbackForce   = 0f,
-                    knockbackDirection = Vector2.zero
+                    knockbackDirection = Vector2.zero,
+                    damageSource     = "PlungeAttack"
                 });
+                
+                EchoStatusReceiver status = col.GetComponentInParent<EchoStatusReceiver>();
+                if (status != null)
+                {
+                    status.ApplyStun(1f);
+                }
             }
         }
 
         if (plungeImpactVFX != null)
             Instantiate(plungeImpactVFX, transform.position, Quaternion.identity);
+
+        if (dropDistance > safePlungeDistance && healthSystem != null)
+        {
+            float exceedDistance = dropDistance - safePlungeDistance;
+            float maxExceed = maxPlungeDistance - safePlungeDistance;
+            float damagePercent = Mathf.Clamp01(exceedDistance / maxExceed) * maxPlungeSelfDamagePercent;
+            
+            int selfDamage = Mathf.CeilToInt(healthSystem.MaxHP * damagePercent);
+            if (selfDamage > 0)
+            {
+                Debug.Log($"[PlungeSelfDamage] Dealt {selfDamage} damage. DropDistance: {dropDistance}, SafeDist: {safePlungeDistance}, MaxHP: {healthSystem.MaxHP}");
+                healthSystem.TakeDamage(new DamageInfo
+                {
+                    baseDamage = selfDamage,
+                    attacker = gameObject,
+                    damageSource = "PlungeSelfDamage",
+                    knockbackForce = 0f,
+                    knockbackDirection = Vector2.zero
+                });
+            }
+        }
+    }
+
+    private void HandlePlungeFallingDamage()
+    {
+        LayerMask targetMask = attackHitbox != null ? attackHitbox.TargetLayers : LayerMask.GetMask("Enemy");
+        Vector2 direction = transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
+        Vector2 originPos = attackHitbox != null ? (Vector2)attackHitbox.transform.position : (Vector2)transform.position;
+        Vector2 center = originPos + new Vector2(plungeFallHitboxOffset.x * direction.x, plungeFallHitboxOffset.y);
+        Collider2D[] hits = Physics2D.OverlapBoxAll(center, plungeFallHitboxSize, 0f, targetMask);
+        foreach (var col in hits)
+        {
+            IDamageable damageable = col.GetComponentInParent<IDamageable>();
+            if (damageable != null)
+            {
+                if (!hitDuringPlunge.Contains(damageable) && !damageable.IsDead)
+                {
+                    hitDuringPlunge.Add(damageable);
+
+                    int baseDamage = healthSystem != null && healthSystem.CombatStats != null ? healthSystem.CombatStats.baseAttack : 10;
+                    float elementDamageMult = 1f;
+                    if (PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveEcho != null)
+                    {
+                        elementDamageMult = PlayerInventoryCore.Instance.ActiveEcho.baseDamageMultiplier;
+                    }
+
+                    int finalDamage = Mathf.RoundToInt(baseDamage * plungeDamageMultiplier * elementDamageMult);
+
+                    damageable.TakeDamage(new DamageInfo
+                    {
+                        baseDamage = finalDamage,
+                        multiplicativeStack = 1f,
+                        procCoefficient = 0.5f,
+                        attacker = gameObject,
+                        knockbackForce = 0f,
+                        knockbackDirection = Vector2.zero,
+                        damageSource = "PlungeFall"
+                    });
+                }
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = new Color(0f, 1f, 1f, 0.5f); // Cyan
+        Gizmos.DrawWireSphere(transform.position, plungeRadius);
+
+#if UNITY_EDITOR
+        if (playstyleManager != null)
+        {
+            PlaystyleData pData = playstyleManager.GetPlaystyleData(currentPlaystyle);
+            if (pData != null && pData.vfxOffsets != null)
+            {
+                // Draw gizmos assuming the player is facing right
+                for (int i = 0; i < pData.vfxOffsets.Length; i++)
+                {
+                    Vector2 offset = pData.vfxOffsets[i];
+                    Vector3 spawnPos = transform.position + new Vector3(offset.x, offset.y, 0f);
+                    
+                    // Draw a colored sphere for each combo step
+                    if (i == 0) Gizmos.color = Color.red;       // Combo 1
+                    else if (i == 1) Gizmos.color = Color.green; // Combo 2
+                    else if (i == 2) Gizmos.color = Color.blue;  // Combo 3
+                    else Gizmos.color = Color.yellow;
+
+                    Gizmos.DrawWireSphere(spawnPos, 0.2f);
+                    
+                    // Optional: Draw a line from player center to the spawn point
+                    Gizmos.color = new Color(Gizmos.color.r, Gizmos.color.g, Gizmos.color.b, 0.3f);
+                    Gizmos.DrawLine(transform.position, spawnPos);
+                }
+            }
+        }
+#endif
     }
 }

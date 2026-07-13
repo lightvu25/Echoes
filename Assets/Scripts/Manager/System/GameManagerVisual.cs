@@ -1,4 +1,4 @@
-﻿using Unity.Cinemachine;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class GameManagerVisual : MonoBehaviour
@@ -34,6 +34,5 @@ public class GameManagerVisual : MonoBehaviour
     {
         Transform goalCollectVfxTransform = Instantiate(pickupCollectVfxPrefab, e.goal.transform.position, Quaternion.identity);
         Destroy(goalCollectVfxTransform.gameObject, 1f);
-        pickupCinemachineImpulseSource.GenerateImpulse(4f);
     }
 }

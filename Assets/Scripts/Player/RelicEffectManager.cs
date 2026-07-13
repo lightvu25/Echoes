@@ -7,6 +7,7 @@ public class RelicEffectManager : MonoBehaviour
     private PlayerAttack playerAttack;
     private InventoryManager inventoryManager;
     private PlayerCombat playerCombat;
+    private PlaystyleManager playstyleManager;
 
     [Header("Dying Amulet")]
     [SerializeField] private GameObject goldPrefab;
@@ -16,6 +17,7 @@ public class RelicEffectManager : MonoBehaviour
         playerAttack = GetComponent<PlayerAttack>();
         inventoryManager = GetComponent<InventoryManager>();
         playerCombat = GetComponent<PlayerCombat>();
+        playstyleManager = GetComponent<PlaystyleManager>();
     }
 
     private void OnEnable()
@@ -45,9 +47,13 @@ public class RelicEffectManager : MonoBehaviour
 
     private void PlayerAttack_OnAttackStarted(object sender, PlayerAttack.AttackEventArgs e)
     {
-        if (inventoryManager.HasRelic("Iron_Ring") && e.attackType == PlayerAttack.AttackType.Basic && e.comboStep == 2)
+        if (inventoryManager.HasRelic("Iron_Ring") && e.attackType == PlayerAttack.AttackType.Basic)
         {
-            playerAttack.temporaryDamageMultiplier = 2f;
+            PlaystyleData pData = playstyleManager != null ? playstyleManager.GetPlaystyleData(e.playstyleType) : null;
+            if (pData != null && e.comboStep == pData.comboSteps - 1)
+            {
+                playerAttack.temporaryDamageMultiplier = 2f;
+            }
         }
     }
 
@@ -58,7 +64,7 @@ public class RelicEffectManager : MonoBehaviour
 
     private void AttackHitbox_OnBeforeDamageApplied(IDamageable target, ref DamageInfo damageInfo)
     {
-        if (inventoryManager.HasRelic("Compensating_Saw") && playerAttack.CurrentAttackType == PlayerAttack.AttackType.Heavy)
+        if (inventoryManager.HasRelic("Compensating_Saw"))
         {
             if (target is EnemyCombat enemy && enemy.IsKnockedBack)
             {

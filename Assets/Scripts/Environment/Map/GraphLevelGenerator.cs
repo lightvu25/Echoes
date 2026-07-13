@@ -12,31 +12,16 @@ public enum RoomNodeType
     Reward,
     Elite,
     Goal,
-    DeadEnd
-}
-
-[System.Serializable]
-public class RoomTypeLimit
-{
-    public RoomNodeType roomType;
-    public int maxAllowed = 1;
-    [HideInInspector] public int currentCount = 0;
-}
-
-[System.Serializable]
-public class EventTypeLimit
-{
-    public RoomEventType eventType;
-    public int minRequired = 0;
-    public int maxAllowed = 1;
-    [HideInInspector] public int currentCount = 0;
-    [HideInInspector] public int remainingCandidates = 0;
+    DeadEnd,
+    Teleport
 }
 
 public class GraphLevelGenerator : BaseLevelGenerator
 {
-    [Header("Level Blueprint")]
-    public LevelBlueprint levelBlueprint;
+    public static GraphLevelGenerator Instance { get; private set; }
+
+    [Header("Level Blueprints")]
+    public List<LevelBlueprint> levelBlueprints = new List<LevelBlueprint>();
 
     private struct NodeTask
     {
@@ -44,20 +29,6 @@ public class GraphLevelGenerator : BaseLevelGenerator
         public int nodeIndex;
         public NodeBlueprint blueprint;
     }
-
-    [Header("Room Prefab Pools")]
-    [SerializeField] private List<GameObject> startRoomPrefabs = new List<GameObject>();
-    [SerializeField] private List<GameObject> normalRoomPrefabs = new List<GameObject>();
-    [SerializeField] private List<GameObject> statueRoomPrefabs = new List<GameObject>();
-    [SerializeField] private List<GameObject> buffRoomPrefabs = new List<GameObject>();
-    [SerializeField] private List<GameObject> rewardRoomPrefabs = new List<GameObject>();
-    [SerializeField] private List<GameObject> eliteRoomPrefabs = new List<GameObject>();
-    [SerializeField] private List<GameObject> goalRoomPrefabs = new List<GameObject>();
-    [SerializeField] private List<GameObject> deadEndRoomPrefabs = new List<GameObject>();
-
-    [Header("Generation Limits")]
-    public List<RoomTypeLimit> roomTypeLimits = new List<RoomTypeLimit>();
-    public List<EventTypeLimit> eventTypeLimits = new List<EventTypeLimit>();
 
     [Header("Overlap Prevention")]
     [SerializeField] private float minimumRoomSpacing = 2f;
@@ -69,11 +40,27 @@ public class GraphLevelGenerator : BaseLevelGenerator
     private readonly Dictionary<int, List<int>> _activeGraph = new Dictionary<int, List<int>>();
     private readonly Dictionary<GameObject, int> _prefabUsageCount = new Dictionary<GameObject, int>();
     private Transform _playerSpawnPoint;
+    
+    // The current level data being used
+    private LevelBlueprint _currentLevelData;
+
+    public IReadOnlyList<Room> PlacedRooms => _placedRoomComponents;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this) Destroy(gameObject);
+        else Instance = this;
+    }
 
     public override void GenerateMap(int levelNumber)
     {
+        if (levelBlueprints == null || levelBlueprints.Count == 0) return;
+        
+        int index = Mathf.Clamp(levelNumber - 1, 0, levelBlueprints.Count - 1);
+        _currentLevelData = levelBlueprints[index];
+
         ClearGraphState();
-        if (levelBlueprint == null || levelBlueprint.nodes == null || levelBlueprint.nodes.Count == 0) return;
+        if (_currentLevelData.nodes == null || _currentLevelData.nodes.Count == 0) return;
 
         BuildActiveGraph();
 
@@ -81,7 +68,7 @@ public class GraphLevelGenerator : BaseLevelGenerator
         if (startRoom == null) return;
 
         Queue<NodeTask> queue = new Queue<NodeTask>();
-        queue.Enqueue(new NodeTask { room = startRoom, nodeIndex = 0, blueprint = levelBlueprint.nodes[0] });
+        queue.Enqueue(new NodeTask { room = startRoom, nodeIndex = 0, blueprint = _currentLevelData.nodes[0] });
 
         while (queue.Count > 0)
         {
@@ -91,24 +78,19 @@ public class GraphLevelGenerator : BaseLevelGenerator
 
             if (!_activeGraph.TryGetValue(currentIdx, out List<int> activeChildren)) continue;
 
-            activeChildren = activeChildren.OrderByDescending(idx => levelBlueprint.nodes[idx].forceDirection).ToList();
+            activeChildren = activeChildren.OrderByDescending(idx => _currentLevelData.nodes[idx].forceDirection).ToList();
             
             foreach (int childIndex in activeChildren)
             {
-                NodeBlueprint childBlueprint = levelBlueprint.nodes[childIndex];
+                NodeBlueprint childBlueprint = _currentLevelData.nodes[childIndex];
                 
                 RoomNodeType effectiveRoomType = childBlueprint.roomType;
-                RoomTypeLimit rLimit = roomTypeLimits.Find(x => x.roomType == effectiveRoomType);
-                if (rLimit != null && rLimit.currentCount >= rLimit.maxAllowed)
-                {
-                    effectiveRoomType = RoomNodeType.Normal; 
-                }
 
                 RoomEventType effectiveEventType = RoomEventType.None;
                 
                 if (childBlueprint.eventType != RoomEventType.None)
                 {
-                    EventTypeLimit eLimit = eventTypeLimits.Find(x => x.eventType == childBlueprint.eventType);
+                    EventTypeLimit eLimit = _currentLevelData.eventTypeLimits.Find(x => x.eventType == childBlueprint.eventType);
                     if (eLimit != null)
                     {
                         bool forceSpawn = false;
@@ -122,7 +104,16 @@ public class GraphLevelGenerator : BaseLevelGenerator
 
                         if ((forceSpawn || randomSpawn) && eLimit.currentCount < eLimit.maxAllowed)
                         {
-                            effectiveEventType = childBlueprint.eventType; 
+                            bool isParentTeleport = (currentRoom.AssignedEvent == RoomEventType.Teleport);
+                            if (childBlueprint.eventType == RoomEventType.Teleport && isParentTeleport)
+                            {
+                                effectiveEventType = RoomEventType.None;
+                                if (forceSpawn) eLimit.remainingCandidates++; 
+                            }
+                            else
+                            {
+                                effectiveEventType = childBlueprint.eventType; 
+                            }
                         }
                         eLimit.remainingCandidates--; 
                     }
@@ -144,14 +135,23 @@ public class GraphLevelGenerator : BaseLevelGenerator
                 // --- LOG QUAN TRỌNG 2: SẬP NHÁNH ---
                 if (nextRoom == null) 
                 {
-                    Debug.Log($"[GraphLevelGenerator] BRANCH FAILED: Không thể đặt Node '{childBlueprint.nodeName}'. Tất cả các cửa đều bị đè map hoặc không khớp hướng!");
+                    int requiredDoors = futureActiveChildren.Count + 1;
+                    if (futureActiveChildren.Count == 0 && effectiveRoomType != RoomNodeType.Start) requiredDoors = 1; // DeadEnd needs 1 door
+
+                    Debug.Log($"[GraphLevelGenerator] BRANCH FAILED: Không thể đặt Node '{childBlueprint.nodeName}' (Loại: {effectiveRoomType}).\n" +
+                              $"Nguyên nhân: Không tìm thấy Prefab nào thỏa mãn ĐỒNG THỜI các điều kiện sau:\n" +
+                              $"- Thuộc danh sách Prefab của loại phòng này.\n" +
+                              $"- Có ĐÚNG {requiredDoors} cửa (Exits).\n" +
+                              $"- Có cửa vào khớp với cửa ra của phòng trước.\n" +
+                              $"- Không bị đè lên các phòng đã tạo trước đó.");
                     continue;
                 }
 
-                if (rLimit != null) rLimit.currentCount++;
+                nextRoom.AssignedEvent = effectiveEventType;
+
                 if (effectiveEventType != RoomEventType.None)
                 {
-                    EventTypeLimit eLimit = eventTypeLimits.Find(x => x.eventType == effectiveEventType);
+                    EventTypeLimit eLimit = _currentLevelData.eventTypeLimits.Find(x => x.eventType == effectiveEventType);
                     if (eLimit != null) eLimit.currentCount++;
                 }
 
@@ -159,8 +159,36 @@ public class GraphLevelGenerator : BaseLevelGenerator
             }
         }
         
+        if (RuntimeLevelPopulator.Instance != null)
+        {
+            RuntimeLevelPopulator.Instance.PopulateRooms(_placedRoomComponents, _currentLevelData);
+        }
+        else
+        {
+            Debug.LogWarning("[GraphLevelGenerator] RuntimeLevelPopulator is missing in the scene!");
+        }
+
+        // Cache original bounds before TilemapMerger strips the tilemaps
+        foreach (Room room in _placedRoomComponents) 
+        {
+            room.OriginalBounds = GetRoomBounds(room);
+        }
+
         RuntimeTilemapMerger.Instance.MergeAllRooms(_spawnedRooms);
         Debug.Log($"[GraphLevelGenerator] Generation complete. Placed {_spawnedRooms.Count} rooms.");
+        
+        MapUI mapUI = MapUI.Instance;
+        if (mapUI == null) mapUI = FindFirstObjectByType<MapUI>(FindObjectsInactive.Include);
+
+        if (mapUI != null)
+        {
+            mapUI.InitializeMapGraph(_placedRoomComponents);
+            if (_placedRoomComponents.Count > 0)
+            {
+                mapUI.RevealRoom(_placedRoomComponents[0]);
+            }
+        }
+
         NotifyGenerationComplete();
     }
 
@@ -196,7 +224,7 @@ public class GraphLevelGenerator : BaseLevelGenerator
         List<ExitDirection> mandatoryFutureExits = new List<ExitDirection>();
         foreach (int childIdx in futureActiveChildren)
         {
-            NodeBlueprint futureChild = levelBlueprint.nodes[childIdx];
+            NodeBlueprint futureChild = _currentLevelData.nodes[childIdx];
             if (futureChild.forceDirection) mandatoryFutureExits.Add(futureChild.requiredDir);
         }
 
@@ -275,8 +303,14 @@ public class GraphLevelGenerator : BaseLevelGenerator
                 candidateRoom.RemoveExit(entranceB);
                 RegisterRoom(candidate, candidateRoom);
 
+                int currentTier = 1;
+                if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+                {
+                    currentTier = GameSession.Instance.currentRun.levelNumber;
+                }
+
                 EnemySpawner[] spawners = candidate.GetComponentsInChildren<EnemySpawner>();
-                foreach (EnemySpawner spawner in spawners) spawner.Init();
+                foreach (EnemySpawner spawner in spawners) spawner.Init(currentTier);
 
                 if (_prefabUsageCount.ContainsKey(prefab)) _prefabUsageCount[prefab]++;
                 else _prefabUsageCount[prefab] = 1;
@@ -303,22 +337,31 @@ public class GraphLevelGenerator : BaseLevelGenerator
     private Bounds GetRoomBounds(Room room)
     {
         UnityEngine.Tilemaps.TilemapRenderer[] renderers = room.GetComponentsInChildren<UnityEngine.Tilemaps.TilemapRenderer>();
-        bool foundGround = false;
+        
+        // Priority 1: Check for a dedicated Minimap Tilemap
+        foreach (var r in renderers)
+        {
+            if (r.gameObject.layer == LayerMask.NameToLayer("Minimap Background") || r.gameObject.name.Contains("Minimap"))
+            {
+                r.GetComponent<UnityEngine.Tilemaps.Tilemap>().CompressBounds();
+                if (r.bounds.size != Vector3.zero) return r.bounds;
+            }
+        }
+
+        // Priority 3: Fallback to encapsulating all tilemaps
+        bool foundBounds = false;
         Bounds combined = new Bounds(room.transform.position, Vector3.zero);
 
         foreach (var r in renderers)
         {
-            if (r.gameObject.name == "Ground")
-            {
-                r.GetComponent<UnityEngine.Tilemaps.Tilemap>().CompressBounds();
-                if (!foundGround) { combined = r.bounds; foundGround = true; }
-                else { combined.Encapsulate(r.bounds); }
-            }
-        }
-        if (foundGround) return combined;
+            r.GetComponent<UnityEngine.Tilemaps.Tilemap>().CompressBounds();
+            if (r.bounds.size == Vector3.zero) continue;
 
-        Collider2D col = room.GetComponent<Collider2D>();
-        if (col != null) return col.bounds;
+            if (!foundBounds) { combined = r.bounds; foundBounds = true; }
+            else { combined.Encapsulate(r.bounds); }
+        }
+        if (foundBounds) return combined;
+
         return new Bounds(room.transform.position, new Vector3(20f, 12f, 1f));
     }
 
@@ -326,21 +369,23 @@ public class GraphLevelGenerator : BaseLevelGenerator
     {
         switch (eventType)
         {
-            case RoomEventType.Statue: return statueRoomPrefabs;
-            case RoomEventType.Reward: return rewardRoomPrefabs;
-            case RoomEventType.Elite: return eliteRoomPrefabs;
+            case RoomEventType.Statue: return _currentLevelData.statueRoomPrefabs;
+            case RoomEventType.Reward: return _currentLevelData.rewardRoomPrefabs;
+            case RoomEventType.Elite: return _currentLevelData.eliteRoomPrefabs;
+            case RoomEventType.Story: return _currentLevelData.storyRoomPrefabs;
+            case RoomEventType.EchoRoom: return _currentLevelData.echoRoomPrefabs;
         }
 
         return roomType switch
         {
-            RoomNodeType.Start   => startRoomPrefabs,
-            RoomNodeType.Normal  => normalRoomPrefabs,
-            RoomNodeType.Statue  => statueRoomPrefabs,
-            RoomNodeType.Reward  => rewardRoomPrefabs,
-            RoomNodeType.Elite   => eliteRoomPrefabs,
-            RoomNodeType.Buff    => buffRoomPrefabs,
-            RoomNodeType.DeadEnd => deadEndRoomPrefabs,
-            RoomNodeType.Goal    => goalRoomPrefabs,
+            RoomNodeType.Start   => _currentLevelData.startRoomPrefabs,
+            RoomNodeType.Normal  => _currentLevelData.normalRoomPrefabs,
+            RoomNodeType.Statue  => _currentLevelData.statueRoomPrefabs,
+            RoomNodeType.Reward  => _currentLevelData.rewardRoomPrefabs,
+            RoomNodeType.Elite   => _currentLevelData.eliteRoomPrefabs,
+            RoomNodeType.Buff    => _currentLevelData.buffRoomPrefabs,
+            RoomNodeType.DeadEnd => _currentLevelData.deadEndRoomPrefabs,
+            RoomNodeType.Goal    => _currentLevelData.goalRoomPrefabs,
             _ => null
         };
     }
@@ -360,11 +405,13 @@ public class GraphLevelGenerator : BaseLevelGenerator
         _prefabUsageCount.Clear();
         _playerSpawnPoint = null;
 
-        foreach (var r in roomTypeLimits) r.currentCount = 0;
-        foreach (var e in eventTypeLimits) 
+        if (_currentLevelData != null)
         {
-            e.currentCount = 0;
-            e.remainingCandidates = 0;
+            foreach (var e in _currentLevelData.eventTypeLimits) 
+            {
+                e.currentCount = 0;
+                e.remainingCandidates = 0;
+            }
         }
     }
 
@@ -383,21 +430,21 @@ public class GraphLevelGenerator : BaseLevelGenerator
         Queue<int> queue = new Queue<int>();
         queue.Enqueue(0);
 
-        if (levelBlueprint.nodes.Count > 0) CountEventCandidate(levelBlueprint.nodes[0]);
+        if (_currentLevelData.nodes.Count > 0) CountEventCandidate(_currentLevelData.nodes[0]);
 
         while (queue.Count > 0)
         {
             int currentIdx = queue.Dequeue();
-            NodeBlueprint currentBp = levelBlueprint.nodes[currentIdx];
+            NodeBlueprint currentBp = _currentLevelData.nodes[currentIdx];
             List<int> activeChildren = new List<int>();
 
             if (currentBp.childrenIndices != null)
             {
                 foreach (int childIdx in currentBp.childrenIndices)
                 {
-                    if (childIdx < 0 || childIdx >= levelBlueprint.nodes.Count) continue;
+                    if (childIdx < 0 || childIdx >= _currentLevelData.nodes.Count) continue;
 
-                    NodeBlueprint childBp = levelBlueprint.nodes[childIdx];
+                    NodeBlueprint childBp = _currentLevelData.nodes[childIdx];
                     
                     if (Random.value <= childBp.spawnChance)
                     {
@@ -419,7 +466,7 @@ public class GraphLevelGenerator : BaseLevelGenerator
     {
         if (bp.eventType != RoomEventType.None)
         {
-            var eLimit = eventTypeLimits.Find(x => x.eventType == bp.eventType);
+            var eLimit = _currentLevelData.eventTypeLimits.Find(x => x.eventType == bp.eventType);
             if (eLimit != null) eLimit.remainingCandidates++;
         }
     }

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Player stats
   m_EditorClassIdentifier: Assembly-CSharp::CombatStats
   maxHP: 100
-  defense: 0
-  baseAttack: 1000
-  critChance: 0.05
+  defense: 10
+  baseAttack: 30
+  critChance: 0.5
   critMultiplier: 1.5
   knockbackForce: 5
   hitFreezeTime: 0.05

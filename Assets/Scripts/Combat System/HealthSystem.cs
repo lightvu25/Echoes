@@ -27,10 +27,14 @@ public class HealthSystem : MonoBehaviour
     }
 
     // ===== Stats =====
+    [Header("Data (Optional)")]
+    [Tooltip("If assigned, overrides maxHP, defense, and iFrameDuration below.")]
+    [SerializeField] private CombatStats combatStatsAsset;
+
     [Header("Health")]
     [SerializeField] private int maxHP = 100;
     [SerializeField] private int currentHP;
-    [SerializeField] private int maxSlots = 3;
+    [SerializeField] private int maxSlots = 4;
 
     [Header("Defense")]
     [SerializeField] private float defense = 0f;
@@ -52,6 +56,7 @@ public class HealthSystem : MonoBehaviour
     private TimeFreezer timeFreezer;
 
     // ===== Properties =====
+    public CombatStats CombatStats => combatStatsAsset;
     public int CurrentHP => currentHP;
     public int MaxHP => maxHP;
     public int MaxSlots => maxSlots;
@@ -73,6 +78,13 @@ public class HealthSystem : MonoBehaviour
 
     private void Awake()
     {
+        if (combatStatsAsset != null)
+        {
+            maxHP = combatStatsAsset.maxHP;
+            defense = combatStatsAsset.defense;
+            iFrameDuration = combatStatsAsset.iFrameDuration;
+        }
+
         currentHP = maxHP;
         colorFlasher = GetComponent<SpriteColorFlasher>();
         timeFreezer = GetComponent<TimeFreezer>();
@@ -91,9 +103,9 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
-    public void TakeDamage(DamageInfo damageInfo)
+    public int TakeDamage(DamageInfo damageInfo)
     {
-        if (isDead || isInvincible) return;
+        if (isDead || isInvincible) return 0;
 
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, defense);
 
@@ -160,6 +172,8 @@ public class HealthSystem : MonoBehaviour
             currentHP = 0;
             Die();
         }
+
+        return finalDamage;
     }
 
     public void Heal(int amount)

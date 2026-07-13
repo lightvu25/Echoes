@@ -13,9 +13,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         public Vector2 knockbackDir;
     }
 
-    [Header("References")]
-    [SerializeField] private CombatStats combatStats;
-    [SerializeField] private PlayerMovement playerMovement;
 
     [Header("Knockback")]
     [SerializeField] private float knockbackDuration = 0.2f;
@@ -24,7 +21,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private PlayerAttack playerAttack;
     private Rigidbody2D rb;
     private Coroutine _knockbackCoroutine;
-    public bool isKnockedBack = false;
+    private bool isKnockedBack = false;
 
     public bool IsDead => healthSystem != null && healthSystem.IsDead;
     public Transform Transform => transform;
@@ -39,13 +36,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        // Initialize from combat stats
-        if (combatStats != null && healthSystem != null)
-        {
-            healthSystem.SetMaxHP(combatStats.maxHP, true);
-            healthSystem.SetDefense(combatStats.defense);
-        }
-
         // Subscribe to health events
         if (healthSystem != null)
         {
@@ -64,9 +54,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     public void TakeDamage(DamageInfo damageInfo)
     {
         if (healthSystem == null || healthSystem.IsDead) return;
-        if (healthSystem.IsInvincible) return;
 
-        healthSystem.TakeDamage(damageInfo);
+        int finalDamage = healthSystem.TakeDamage(damageInfo);
 
         if (damageInfo.knockbackForce > 0f && rb != null)
         {
@@ -75,7 +64,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         GameFeelManager.Instance?.ProcessPlayerHit();
 
-        int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, Defense);
         OnDamageReceived?.Invoke(this, new DamageReceivedArgs
         {
             damage = finalDamage,

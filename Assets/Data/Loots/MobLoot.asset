@@ -37,3 +37,9 @@ MonoBehaviour:
     minAmount: 1
     maxAmount: 1
     type: 0
+  - itemPrefab: {fileID: 5906014342740351065, guid: 73ad028fa1075a94e99851b0c28da90c, type: 3}
+    dropChance: 2
+    itemTier: 1
+    minAmount: 1
+    maxAmount: 1
+    type: 0

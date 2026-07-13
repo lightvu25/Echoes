@@ -118,7 +118,7 @@ public class InventoryUI : MonoBehaviour, IUIPanel
         Time.timeScale = 0f;
         Show();
         slotUnlockPanel?.Display(
-            PlayerInventoryCore.Instance.UnlockedElementSlots,
+            PlayerInventoryCore.Instance.UnlockedEchoSlots,
             PlayerInventoryCore.Instance.UnlockedRelicSlots,
             PlayerInventoryCore.Instance.UnlockedItemSlots);
     }

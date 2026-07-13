@@ -27,5 +27,10 @@ MonoBehaviour:
   hasStatusEffect: 1
   statusProcCoefficient: 0.25
   uniqueModifierID: CHAIN_ARC
+  trailColor: {r: 1, g: 1, b: 1, a: 1}
+  stateVFXPrefab: {fileID: 0}
+  hitImpactPrefab: {fileID: 0}
+  comboVFXPrefabs:
+  - {fileID: 0}
   level: 1
   currentStatusProc: 0

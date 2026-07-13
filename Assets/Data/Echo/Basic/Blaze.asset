@@ -18,8 +18,9 @@ MonoBehaviour:
   description: Attacks deal up to 10% additional damage based on the target's missing
     health
   dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  itemTier: 1
+  basePrice: 50
   echoType: 1
-  echoTier: 1
   isFusionResult: 0
   baseDamageMultiplier: 1.2
   attacksPerSecond: 1
@@ -27,5 +28,8 @@ MonoBehaviour:
   hasStatusEffect: 1
   statusProcCoefficient: 0.25
   uniqueModifierID: IGNITION
+  trailColor: {r: 1, g: 1, b: 1, a: 1}
+  stateVFXPrefab: {fileID: 0}
+  hitImpactPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

@@ -41,7 +41,7 @@ public class PlayerInventoryCore : MonoBehaviour
     //  Equipped lists (read-only externally)                               //
     // ------------------------------------------------------------------ //
 
-    private readonly List<ItemBaseData> equippedElements = new();
+    private readonly List<ItemBaseData> equippedEchoes = new();
     private readonly List<ItemBaseData> equippedRelics   = new();
     private readonly List<ItemBaseData> equippedItems    = new();
 
@@ -63,14 +63,14 @@ public class PlayerInventoryCore : MonoBehaviour
     private HealthSystem healthSystem;
 
     /// <summary>Index of the currently active Element slot (used by HotbarController).</summary>
-    private int activeElementIndex = 0;
+    private int activeEchoIndex = 0;
 
     // ------------------------------------------------------------------ //
     //  Public accessors                                                    //
     // ------------------------------------------------------------------ //
 
     /// <summary>Read-only view of equipped Elements.</summary>
-    public IReadOnlyList<ItemBaseData> EquippedElements => equippedElements;
+    public IReadOnlyList<ItemBaseData> EquippedEchoes => equippedEchoes;
 
     /// <summary>Read-only view of equipped Relics.</summary>
     public IReadOnlyList<ItemBaseData> EquippedRelics => equippedRelics;
@@ -79,9 +79,9 @@ public class PlayerInventoryCore : MonoBehaviour
     public IReadOnlyList<ItemBaseData> EquippedItems => equippedItems;
 
     /// <summary>Element at the active hotbar index, or null if the slot is empty.</summary>
-    public EchoData ActiveElement =>
-        activeElementIndex < equippedElements.Count
-            ? equippedElements[activeElementIndex] as EchoData
+    public EchoData ActiveEcho =>
+        activeEchoIndex < equippedEchoes.Count
+            ? equippedEchoes[activeEchoIndex] as EchoData
             : null;
 
     // ------------------------------------------------------------------ //
@@ -91,7 +91,7 @@ public class PlayerInventoryCore : MonoBehaviour
     private static RunData Run => GameSession.Instance?.currentRun;
 
     /// <summary>Number of unlocked Element slots (strictly 4).</summary>
-    public int UnlockedElementSlots => 4;
+    public int UnlockedEchoSlots => 4;
 
     /// <summary>Number of unlocked Relic slots.</summary>
     public int UnlockedRelicSlots => Mathf.Clamp(
@@ -120,7 +120,7 @@ public class PlayerInventoryCore : MonoBehaviour
         // Migration guard: if an old save has 0 for any slot count, reset to 1.
         if (Run != null)
         {
-            if (Run.unlockedElementSlots <= 0) Run.unlockedElementSlots = 1;
+            if (Run.unlockedEchoSlots <= 0) Run.unlockedEchoSlots = 1;
             if (Run.unlockedRelicSlots   <= 0) Run.unlockedRelicSlots   = 1;
             if (Run.unlockedItemSlots    <= 0) Run.unlockedItemSlots    = 1;
         }
@@ -181,7 +181,7 @@ public class PlayerInventoryCore : MonoBehaviour
         }
         else
         {
-            if (item.Category == ItemCategory.Element)
+            if (item.Category == ItemCategory.Echo)
             {
                 SpawnDroppedItem(item);
             }
@@ -243,8 +243,8 @@ public class PlayerInventoryCore : MonoBehaviour
 
         switch (category)
         {
-            case ItemCategory.Element:
-                Run.unlockedElementSlots = Mathf.Min(Run.unlockedElementSlots + 1, RunData.MAX_SLOTS);
+            case ItemCategory.Echo:
+                Run.unlockedEchoSlots = Mathf.Min(Run.unlockedEchoSlots + 1, RunData.MAX_SLOTS);
                 break;
             case ItemCategory.Relic:
                 Run.unlockedRelicSlots = Mathf.Min(Run.unlockedRelicSlots + 1, RunData.MAX_SLOTS);
@@ -267,31 +267,31 @@ public class PlayerInventoryCore : MonoBehaviour
     /// Clamps to the current number of unlocked Element slots.
     /// </summary>
     /// <param name="index">0-based slot index.</param>
-    public void SetActiveElementIndex(int index)
+    public void SetActiveEchoIndex(int index)
     {
-        int max = Mathf.Max(0, UnlockedElementSlots - 1);
-        activeElementIndex = Mathf.Clamp(index, 0, max);
+        int max = Mathf.Max(0, UnlockedEchoSlots - 1);
+        activeEchoIndex = Mathf.Clamp(index, 0, max);
     }
 
     /// <summary>
     /// Returns the currently active EchoData based on the activeElementIndex.
     /// Used by combat scripts (e.g. AttackHitbox) to determine damage types.
     /// </summary>
-    public EchoData GetActiveElement()
+    public EchoData GetActiveEcho()
     {
-        if (equippedElements == null || equippedElements.Count == 0) return null;
-        if (activeElementIndex >= 0 && activeElementIndex < equippedElements.Count)
-            return equippedElements[activeElementIndex] as EchoData;
+        if (equippedEchoes == null || equippedEchoes.Count == 0) return null;
+        if (activeEchoIndex >= 0 && activeEchoIndex < equippedEchoes.Count)
+            return equippedEchoes[activeEchoIndex] as EchoData;
         return null;
     }
 
     /// <summary>
     /// Returns all active ElementTypes across equipped Elements (for combat use).
     /// </summary>
-    public List<EchoType> GetAllActiveElementTypes()
+    public List<EchoType> GetAllActiveEchoTypes()
     {
         var result = new List<EchoType>();
-        foreach (var item in equippedElements)
+        foreach (var item in equippedEchoes)
         {
             if (item is EchoData ed && ed.echoType != EchoType.None)
                 result.Add(ed.echoType);
@@ -322,7 +322,7 @@ public class PlayerInventoryCore : MonoBehaviour
     /// </summary>
     private void HandleSlotsDecreased(int _)
     {
-        TrimList(equippedElements, UnlockedElementSlots);
+        TrimList(equippedEchoes, UnlockedEchoSlots);
         TrimList(equippedRelics,   UnlockedRelicSlots);
         TrimList(equippedItems,    UnlockedItemSlots);
         OnInventoryChanged?.Invoke();
@@ -336,14 +336,14 @@ public class PlayerInventoryCore : MonoBehaviour
 
     private List<ItemBaseData> GetList(ItemCategory category) => category switch
     {
-        ItemCategory.Element => equippedElements,
+        ItemCategory.Echo => equippedEchoes,
         ItemCategory.Relic   => equippedRelics,
         _                    => equippedItems
     };
 
     private int GetUnlockedCount(ItemCategory category) => category switch
     {
-        ItemCategory.Element => UnlockedElementSlots,
+        ItemCategory.Echo => UnlockedEchoSlots,
         ItemCategory.Relic   => UnlockedRelicSlots,
         _                    => UnlockedItemSlots
     };

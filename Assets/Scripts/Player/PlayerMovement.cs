@@ -59,6 +59,15 @@ public class PlayerMovement : MonoBehaviour
 
     private float _wallJumpStartTime;
     private int   _lastWallJumpDir;
+    private float _plungeStartY;
+    
+    private float stunTimer;
+    public bool isStunned => stunTimer > 0f;
+
+    public void ApplyStun(float duration)
+    {
+        stunTimer = Mathf.Max(stunTimer, duration);
+    }
     
     private float _lastJumpExecTime;
 
@@ -139,6 +148,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0f) return;
+
         LastOnGroundTime     -= Time.deltaTime;
         LastOnWallTime       -= Time.deltaTime;
         LastOnWallRightTime  -= Time.deltaTime;
@@ -146,10 +157,20 @@ public class PlayerMovement : MonoBehaviour
         LastPressedJumpTime  -= Time.deltaTime;
         LastPressedDashTime  -= Time.deltaTime;
 
-        _moveInput.x = inputConfig != null ? inputConfig.GetHorizontalInput() : Input.GetAxisRaw("Horizontal");
-        _moveInput.y = inputConfig != null ? inputConfig.GetVerticalInput()   : Input.GetAxisRaw("Vertical");
-
         if (isDead) return;
+
+        if (stunTimer > 0f)
+        {
+            stunTimer -= Time.deltaTime;
+            _moveInput = Vector2.zero;
+            LastPressedJumpTime = 0f;
+            LastPressedDashTime = 0f;
+        }
+        else
+        {
+            _moveInput.x = inputConfig != null ? inputConfig.GetHorizontalInput() : Input.GetAxisRaw("Horizontal");
+            _moveInput.y = inputConfig != null ? inputConfig.GetVerticalInput()   : Input.GetAxisRaw("Vertical");
+        }
 
         if (isWallJumping && Time.time - _wallJumpStartTime < Data.wallJumpTime)
         {
@@ -163,7 +184,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (this.isGrounded)
             {
-                _moveInput.x = 0; // Stop horizontal movement while attacking on the ground
+                _moveInput.x = 0;
             }
         }
         else if (_moveInput.x != 0)
@@ -174,8 +195,14 @@ public class PlayerMovement : MonoBehaviour
         bool jumpDown = inputConfig != null ? inputConfig.GetJumpDown() : Input.GetKeyDown(KeyCode.Space);
         bool jumpUp   = inputConfig != null ? inputConfig.GetJumpUp()   : Input.GetKeyUp(KeyCode.Space);
 
-        if (!isAttackLocked && jumpDown)
+        if (jumpDown)
         {
+            if (isAttackLocked && playerAttack != null)
+            {
+                playerAttack.CancelAttackForMovement();
+                isAttackLocked = false;
+            }
+
             if (_moveInput.y < -0.1f)
             {
                 StartCoroutine(DropThroughPlatform());
@@ -196,19 +223,29 @@ public class PlayerMovement : MonoBehaviour
         if (jumpUp)
             OnJumpUpInput();
 
-        if (!isAttackLocked && (inputConfig != null ? inputConfig.GetDashDown() : Input.GetKeyDown(KeyCode.LeftShift)))
+        if (inputConfig != null ? inputConfig.GetDashDown() : Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            if (isAttackLocked && playerAttack != null)
+            {
+                playerAttack.CancelAttackForMovement();
+                isAttackLocked = false;
+            }
             OnDashInput();
+        }
 
-        bool attackDown = inputConfig != null ? inputConfig.GetAttackDown() : Input.GetKeyDown(KeyCode.J);
-        if (!isPlunging && LastOnGroundTime <= 0 && _moveInput.y < -0.1f && attackDown
-            && GameDataManager.Instance != null && GameDataManager.Instance.isPlungeAttackUnlocked)
+        bool attackDown = inputConfig != null ? inputConfig.GetAttackMeleeDown() : Input.GetKeyDown(KeyCode.J);
+        
+        if (!isPlunging && attackDown && _moveInput.y < -0.1f && LastOnGroundTime <= 0)
         {
             isPlunging            = true;
             isJumping             = false;
             _isJumpFalling        = false;
             rb.linearVelocity     = new Vector2(0f, -plungeSpeed);
             SetGravityScale(0);
-            if (_fallDamageHandler != null) _fallDamageHandler.FallDamageModifier = 0.3f;
+            if (_fallDamageHandler != null) _fallDamageHandler.BypassNextFallDamage = true;
+            _plungeStartY = transform.position.y;
+            
+            if (playerAttack != null) playerAttack.StartPlungeFallHitbox();
         }
 
         bool isGrounded = false;
@@ -218,12 +255,15 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (rb.linearVelocity.y <= 0.05f && (Time.time - _lastJumpExecTime > 0.15f))
                 {
-                    LastOnGroundTime = Data.coyoteTime;
-                    isJumping        = false;
-                    isWallJumping    = false;
-                    _isJumpFalling   = false;
+                    if (!isPlunging || Mathf.Abs(rb.linearVelocity.y) < 0.1f)
+                    {
+                        LastOnGroundTime = Data.coyoteTime;
+                        isJumping        = false;
+                        isWallJumping    = false;
+                        _isJumpFalling   = false;
+                        isGrounded       = true;
+                    }
                 }
-                isGrounded = true;
             }
 
             RaycastHit2D fromHit = Physics2D.BoxCast(_fromWallCheckPoint.position, _wallCheckSize, 0f, isFacingRight ? Vector2.right : Vector2.left, 0.1f, _wallLayer);
@@ -443,12 +483,19 @@ public class PlayerMovement : MonoBehaviour
 
         if (isCurrentlyGrounded && !_wasGrounded)
         {
-            if (_fallDamageHandler != null) _fallDamageHandler.FallDamageModifier = 1f;
             if (isPlunging)
             {
+                if (_fallDamageHandler != null) _fallDamageHandler.BypassNextFallDamage = true;
                 isPlunging = false;
                 SetGravityScale(Data.gravityScale);
-                playerAttack?.ExecutePlungeAOE();
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+                float dropDistance = _plungeStartY - transform.position.y;
+                
+                if (playerAttack != null) 
+                {
+                    playerAttack.StopPlungeFallHitbox();
+                    playerAttack.ExecutePlungeAOE(dropDistance);
+                }
             }
             OnLand?.Invoke(this, EventArgs.Empty);
         }
@@ -691,7 +738,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!isDashing && _dashesLeft < Data.dashAmount && LastOnGroundTime > 0 && !_dashRefilling)
             StartCoroutine(nameof(RefillDash), 1);
-        return _dashesLeft > 0;
+        return !isDashing && _dashesLeft > 0;
     }
 
     public bool CanSlide() => LastOnWallTime > 0 && !isWallJumping && LastOnGroundTime <= 0 && !isLedgeGrabbing && !_ledgeCoroutineRunning;
@@ -704,6 +751,13 @@ public class PlayerMovement : MonoBehaviour
     {
         Time.timeScale = 0f;
         yield return new WaitForSecondsRealtime(duration);
+        
+        // Do not force time back to 1 if a UI panel is open
+        if (UIManager.Instance != null && UIManager.Instance.IsAnyPanelOpen)
+        {
+            yield break;
+        }
+        
         Time.timeScale = 1;
     }
 
@@ -719,7 +773,6 @@ public class PlayerMovement : MonoBehaviour
         SetGravityScale(0);
 
         if (healthSystem != null) healthSystem.SetInvincible(true);
-        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), true);
 
         bool hasSpaceClaw = inventoryManager != null && inventoryManager.HasRelic("Space_Claw");
         if (hasSpaceClaw && _moveInput.y > 0.1f)
@@ -765,7 +818,6 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
 
         isDashing = false;
-        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Enemy"), false);
     }
 
     private IEnumerator RefillDash(int amount)
@@ -853,6 +905,11 @@ public class PlayerMovement : MonoBehaviour
     private void OnDestroy()
     {
         PlayerInteract.Instance.OnDead -= PlayerInteract_OnDead;
+    }
+
+    private void OnDisable()
+    {
+        isDashing = false;
     }
 
     private void OnDrawGizmos()

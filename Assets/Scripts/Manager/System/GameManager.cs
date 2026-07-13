@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Unity.Cinemachine;
 
 public class GameManager : MonoBehaviour
@@ -34,6 +36,23 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("[GameManager] No BaseLevelGenerator assigned. Aborting level load.");
             return;
+        }
+
+        // --- Read pending memory node from Hub transition ---
+        MemoryNodeData pendingNode = GameSession.Instance?.pendingNextNode;
+        if (pendingNode != null)
+        {
+            Debug.Log($"[GameManager] Applying memory route: {pendingNode.nodeName} (ID: {pendingNode.nodeID})");
+            if (pendingNode.mapModifiers != null)
+            {
+                foreach (var mod in pendingNode.mapModifiers)
+                {
+                    Debug.Log($"  Modifier: {mod.modifierName} | Type: {mod.type} | Value: {mod.value}");
+                }
+            }
+            // Clear after reading — modifiers will be wired into
+            // EvolutionManager/BurdenManager in a future step.
+            GameSession.Instance.pendingNextNode = null;
         }
 
         int depth = GameSession.Instance.currentRun.levelNumber;
@@ -71,6 +90,46 @@ public class GameManager : MonoBehaviour
         }
 
         GameSession.Instance.SaveCurrentRun();
+    }
+
+    // ------------------------------------------------------------------ //
+    //  Hub Scene Transition                                                //
+    // ------------------------------------------------------------------ //
+
+    /// <summary>
+    /// Called when the player reaches a Goal. Disables player control,
+    /// saves the run, and starts the transition to HubScene.
+    /// </summary>
+    public void TriggerLevelTransition(Vector3 goalPos)
+    {
+        Debug.Log("[GameManager] Level transition triggered — heading to Hub.");
+
+        // Disable player input
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            var move = player.GetComponent<PlayerMovement>();
+            if (move != null) move.enabled = false;
+
+            var combat = player.GetComponent<PlayerCombat>();
+            if (combat != null) combat.enabled = false;
+        }
+
+        GameSession.Instance.SaveCurrentRun();
+
+        StartCoroutine(TransitionToHub(goalPos));
+    }
+
+    private IEnumerator TransitionToHub(Vector3 goalPos)
+    {
+        CutsceneManager cutsceneManager = FindFirstObjectByType<CutsceneManager>();
+        if (cutsceneManager != null)
+        {
+            yield return StartCoroutine(cutsceneManager.PlayGoalSequence(goalPos));
+        }
+        
+        Debug.Log("[GameManager] Loading HubScene...");
+        SceneManager.LoadScene("HubScene");
     }
 
     private System.Collections.IEnumerator SpawnPlayerSafely(Vector3 targetPosition)
@@ -137,7 +196,8 @@ public class GameManager : MonoBehaviour
 
     private void Player_OnGoal(object sender, PlayerInteract.OnGoalEventArgs e)
     {
-        GoToNextLevel();
+        Vector3 goalPos = e.goal != null ? e.goal.transform.position : PlayerInteract.Instance.transform.position;
+        TriggerLevelTransition(goalPos);
     }
 
     private void Player_OnStateChanged(object sender, PlayerInteract.OnStateChangedEventArgs e)

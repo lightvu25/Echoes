@@ -75,7 +75,7 @@ public struct DamageInfo
     /// <summary>
     /// Nguyên tố hiện tại đang sử dụng (Dành cho hệ thống Element)
     /// </summary>
-    public EchoData activeElement;
+    public EchoData activeEcho;
 
     /// <summary>
     /// Cấp độ của Player khi gây sát thương

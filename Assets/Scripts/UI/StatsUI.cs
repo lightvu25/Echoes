@@ -54,6 +54,16 @@ public class StatsUI : MonoBehaviour, IUIPanel
 
     private void Start()
     {
+        // Clear editor mockups
+        if (coreSlot != null) coreSlot.InstantlyClear();
+        if (fragmentSlots != null)
+        {
+            foreach (var slot in fragmentSlots)
+            {
+                if (slot != null) slot.InstantlyClear();
+            }
+        }
+
         // --- Currency events (PlayerStats) ---
         if (PlayerStats.Instance != null)
         {
@@ -85,6 +95,11 @@ public class StatsUI : MonoBehaviour, IUIPanel
             Debug.LogWarning("StatsUI: PlayerInventoryCore.Instance is null in Start(). " +
                              "Make sure the Player object is present and its Awake() runs first.");
         }
+
+        if (PlayerInteract.Instance != null)
+        {
+            PlayerInteract.Instance.OnDead += HandlePlayerDead;
+        }
     }
 
     private void OnDestroy()
@@ -108,13 +123,23 @@ public class StatsUI : MonoBehaviour, IUIPanel
         {
             PlayerInventoryCore.Instance.OnInventoryChanged -= HandleInventoryChanged;
         }
+
+        if (PlayerInteract.Instance != null)
+        {
+            PlayerInteract.Instance.OnDead -= HandlePlayerDead;
+        }
+    }
+
+    private void HandlePlayerDead(object sender, System.EventArgs e)
+    {
+        Hide();
     }
     
     private void HandleInventoryChanged()
     {
         if (PlayerInventoryCore.Instance != null)
         {
-            UpdateHealthSlots(PlayerInventoryCore.Instance.EquippedElements);
+            UpdateHealthSlots(PlayerInventoryCore.Instance.EquippedEchoes);
         }
     }
     

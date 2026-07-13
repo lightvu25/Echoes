@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// Ultra-thin input bridge for hotbar Element cycling.
 /// Listens for keyboard and scroll-wheel input from <see cref="GameInput"/>
-/// and delegates to <see cref="PlayerInventoryCore.SetActiveElementIndex"/>.
+/// and delegates to <see cref="PlayerInventoryCore.SetActiveEchoIndex"/>.
 ///
 /// This class intentionally holds NO inventory state.
 /// All state lives in PlayerInventoryCore.
@@ -63,13 +63,13 @@ public class HotbarController : MonoBehaviour
     private void SetIndex(int index)
     {
         currentIndex = index;
-        PlayerInventoryCore.Instance?.SetActiveElementIndex(currentIndex);
+        PlayerInventoryCore.Instance?.SetActiveEchoIndex(currentIndex);
     }
 
     private int GetEffectiveSlotCount()
     {
         return PlayerInventoryCore.Instance != null
-            ? Mathf.Max(1, PlayerInventoryCore.Instance.UnlockedElementSlots)
+            ? Mathf.Max(1, PlayerInventoryCore.Instance.UnlockedEchoSlots)
             : MAX_HOTBAR_SLOTS;
     }
 }

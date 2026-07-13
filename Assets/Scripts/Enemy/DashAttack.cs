@@ -18,9 +18,12 @@ public class DashAttack : MonoBehaviour, IEnemyAttack
     private Rigidbody2D rb;
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
+    private EnemySensor sensor;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        sensor = GetComponent<EnemySensor>();
     }
 
     public void ExecuteAttack()
@@ -42,12 +45,17 @@ public class DashAttack : MonoBehaviour, IEnemyAttack
     private IEnumerator DashRoutine()
     {
         hitTargets.Clear();
-        float direction = transform.localScale.x >= 0 ? 1f : -1f;
+        
+        Vector2 dashDir = new Vector2(transform.lossyScale.x >= 0 ? 1f : -1f, 0f);
+        if (sensor != null && sensor.TargetPlayer != null)
+        {
+            dashDir = ((Vector2)sensor.TargetPlayer.position - (Vector2)transform.position).normalized;
+        }
 
         float timer = 0f;
         while (timer < dashDuration)
         {
-            rb.linearVelocity = new Vector2(direction * dashSpeed, 0f);
+            rb.linearVelocity = dashDir * dashSpeed;
             CheckDashHits();
             timer += Time.deltaTime;
             yield return null;

@@ -51,6 +51,7 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
         {
             brain.OnAttack += Brain_OnAttack;
             brain.OnNotice += Brain_OnNotice;
+            brain.OnStateChanged += Brain_OnStateChanged;
         }
 
         if (enemyCombat != null)
@@ -77,6 +78,7 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
         {
             brain.OnAttack -= Brain_OnAttack;
             brain.OnNotice -= Brain_OnNotice;
+            brain.OnStateChanged -= Brain_OnStateChanged;
         }
         if (enemyCombat != null)
         {
@@ -102,6 +104,18 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
         animator.SetTrigger("isAttacking");
         animator.SetBool("isPatroling", false);
         animator.SetBool("isRunning", false);
+    }
+
+    private void Brain_OnStateChanged(object sender, EnemyBrain.OnStateArgs e)
+    {
+        if (e.state == EnemyBrain.State.Attack)
+        {
+            animator.speed = brain.Data.attackSpeed > 0 ? brain.Data.attackSpeed : 1f;
+        }
+        else
+        {
+            animator.speed = 1f;
+        }
     }
 
     private void Brain_OnNotice(object sender, EventArgs e)

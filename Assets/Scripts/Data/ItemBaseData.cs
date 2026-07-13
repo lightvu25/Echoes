@@ -23,5 +23,12 @@ public abstract class ItemBaseData : ScriptableObject
     [Tooltip("Prefab spawned into the world when this item is dropped.")]
     public GameObject dropPrefab;
 
+    [Header("Shop & Economy")]
+    [Tooltip("Tier rating used for drop generation and shop pricing (e.g., Tier 1, Tier 2).")]
+    public int itemTier = 1;
+
+    [Tooltip("Base gold price of this item in the shop.")]
+    public int basePrice = 50;
+
     public abstract ItemCategory Category { get; }
 }

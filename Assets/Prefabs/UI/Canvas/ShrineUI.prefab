@@ -65,8 +65,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The first attack immediately following a Dash gains 15% increased attack
-    speed.
+  m_text: Gain a temporary shield equal to 10% of Max HP when entering a new combat
+    room.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -203,7 +203,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Lumin Bloodline
+  m_text: Relic Luxury
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -453,7 +453,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 15% chance to drop a 10 HP healing orb upon defeating an enemy.
+  m_text: Increases 10% chance of mobs dropping relics.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -729,7 +729,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hidden Tempest
+  m_text: Starlight Carapace
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -866,7 +866,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Random Nova
+  m_text: Blade of Memories
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -1142,7 +1142,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Defeating an enemy has a 15% chance to trigger a random Echo explosion.
+  m_text: Deals 20% bonus damage to enemies below 30% HP.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}

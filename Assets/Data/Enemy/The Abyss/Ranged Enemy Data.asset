@@ -33,10 +33,10 @@ MonoBehaviour:
   attackBase: 30
   attackRange: 3
   attackSpeed: 1
-  attackCooldown: 1.5
+  attackCooldown: 1
   telegraphDuration: 0.4
-  attackHitboxSize: {x: 1.5, y: 1.5}
-  attackHitboxOffset: {x: 0.75, y: 0}
+  attackHitboxSize: {x: 7, y: 3}
+  attackHitboxOffset: {x: 5, y: 0}
   knockbackForce: 5
   attackTargetLayers:
     serializedVersion: 2
@@ -59,6 +59,6 @@ MonoBehaviour:
   goldDropChance: 100
   goldAmountMin: 1
   goldAmountMax: 5
-  memoryFragmentDropChance: 10
-  memoryFragmentAmountMin: 1
-  memoryFragmentAmountMax: 2
+  astralShardDropChance: 10
+  astralShardAmountMin: 1
+  astralShardAmountMax: 2

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c05dfc89ba078264fa52c3cdb46c0cda, type: 3}
+  m_Name: SpikedCleats
+  m_EditorClassIdentifier: Assembly-CSharp::RelicData
+  itemID: SpikedCleats
+  itemName: Spiked Cleats
+  itemIcon: {fileID: 0}
+  description: Wall-jumping grants a 20% Movement Speed boost for 1.5 seconds.
+  dropPrefab: {fileID: 0}
+  itemTier: 2
+  basePrice: 50
+  RelicID: SpikedCleats
+  RelicNameEN: Spiked Cleats
+  Rarity: 1
+  FactionBonus: +2 Random Stats
+  CoreEffect: Wall-jumping grants a 20% Movement Speed boost for 1.5 seconds.
+  RelicIcon: {fileID: 0}

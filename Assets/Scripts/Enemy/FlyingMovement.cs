@@ -37,7 +37,8 @@ public class FlyingMovement : MonoBehaviour, IEnemyMovement
         if (direction.x != 0) FaceDirection(direction.x > 0);
 
         float oscillation = Mathf.Sin(Time.time * oscillationSpeed + oscillationPhase) * hoverOscillation;
-        Vector2 targetVelocity = new Vector2(direction.x * maxSpeed, oscillation);
+        
+        Vector2 targetVelocity = new Vector2(direction.x * maxSpeed, (direction.y * maxSpeed) + oscillation);
 
         Rb.linearVelocity = Vector2.Lerp(Rb.linearVelocity, targetVelocity, accelAmount * Time.deltaTime);
 

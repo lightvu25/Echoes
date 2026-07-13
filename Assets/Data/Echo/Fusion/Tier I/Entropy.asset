@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoData
   itemID: ECHO_ENTROPY
   itemName: Entropy
-  itemIcon: {fileID: 7225244483827635998, guid: ac45797a311f67e4cba1e34139805923, type: 3}
+  itemIcon: {fileID: -5837257681173369713, guid: 07a1b48191b8e214fbcf58d37e6b6dcb, type: 3}
   description: '100% True DMG. Trade-off: Weapon hitbox scales randomly per swing'
   dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
   echoType: 8
@@ -26,5 +26,8 @@ MonoBehaviour:
   hasStatusEffect: 1
   statusProcCoefficient: 0.5
   uniqueModifierID: FUS_ENTROPY
+  trailColor: {r: 1, g: 1, b: 1, a: 1}
+  stateVFXPrefab: {fileID: 0}
+  hitImpactPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

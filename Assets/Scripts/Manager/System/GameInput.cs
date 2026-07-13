@@ -128,6 +128,20 @@ public class GameInput : MonoBehaviour
     private void Menu_performed(InputAction.CallbackContext obj) => OnMenuButtonPressed?.Invoke(this, EventArgs.Empty);
     private void OnDestroy() => inputActions.Disable();
 
+    public void SetInputsEnabled(bool isEnabled)
+    {
+        if (isEnabled)
+        {
+            inputActions?.Enable();
+            this.enabled = true;
+        }
+        else
+        {
+            inputActions?.Disable();
+            this.enabled = false;
+        }
+    }
+
     public bool IsUpActionPressed() => inputActions.Player.PlayerUp.IsPressed();
     public bool IsDownActionPressed() => inputActions.Player.PlayerDown.IsPressed();
     public bool IsLeftActionPressed() => inputActions.Player.PlayerLeft.IsPressed();

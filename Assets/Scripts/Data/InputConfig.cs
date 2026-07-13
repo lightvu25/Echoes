@@ -41,6 +41,12 @@ public class InputConfig : ScriptableObject
     public KeyCode mapKey = KeyCode.M;
     public KeyCode cancelKey = KeyCode.Escape;
 
+    [Header("Playstyle Keys")]
+    public KeyCode meleeKey = KeyCode.J;
+    public KeyCode midRangeKey = KeyCode.K;
+    public KeyCode longRangeKey = KeyCode.L;
+    public KeyCode magicKey = KeyCode.Semicolon;
+
     // Combat Input Methods
     public bool GetAttackDown() => GameInput.Instance != null && GameInput.Instance.IsAttackActionPressed();
     public bool GetAttackHeld() => GameInput.Instance != null && GameInput.Instance.IsAttackActionHeld();
@@ -48,6 +54,19 @@ public class InputConfig : ScriptableObject
     
     public bool GetSkillDown() => GameInput.Instance != null && GameInput.Instance.IsSkillActionPressed();
     public bool GetSpecialDown() => GameInput.Instance != null && GameInput.Instance.IsSpecialActionPressed();
+
+    // Playstyle Inputs
+    public bool GetAttackMeleeDown() => Input.GetKeyDown(meleeKey) || GetAttackDown(); // Fallback to primary attack
+    public bool GetAttackMeleeHeld() => Input.GetKey(meleeKey) || GetAttackHeld();
+    
+    public bool GetAttackMidDown() => Input.GetKeyDown(midRangeKey);
+    public bool GetAttackMidHeld() => Input.GetKey(midRangeKey);
+    
+    public bool GetAttackLongDown() => Input.GetKeyDown(longRangeKey);
+    public bool GetAttackLongHeld() => Input.GetKey(longRangeKey);
+    
+    public bool GetAttackMagicDown() => Input.GetKeyDown(magicKey);
+    public bool GetAttackMagicHeld() => Input.GetKey(magicKey);
 
     // Movement
     

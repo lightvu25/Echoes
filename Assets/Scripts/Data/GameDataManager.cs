@@ -7,10 +7,9 @@ public class GameDataManager : MonoBehaviour
 
     // Skill IDs
     private const string ID_TRIPLE_JUMP    = "Skill_TripleJump";
-    private const string ID_PLUNGE_ATTACK  = "Skill_PlungeAttack";
 
     public bool isTripleJumpUnlocked   => Profile != null && Profile.HasSkill(ID_TRIPLE_JUMP);
-    public bool isPlungeAttackUnlocked => Profile != null && Profile.HasSkill(ID_PLUNGE_ATTACK);
+    public bool isPlungeAttackUnlocked => true; // Unlocked by default
 
     private static ProfileData Profile => GameSession.Instance?.currentProfile;
 
@@ -73,9 +72,6 @@ public class GameDataManager : MonoBehaviour
 
     [ContextMenu("Debug: Toggle Triple Jump")] // [CẬP NHẬT] Đổi tên menu
     public void Debug_ToggleTripleJump() => DebugToggle(ID_TRIPLE_JUMP);
-
-    [ContextMenu("Debug: Toggle Plunge Attack")]
-    public void Debug_TogglePlungeAttack() => DebugToggle(ID_PLUNGE_ATTACK);
 
     private void DebugToggle(string skillID)
     {

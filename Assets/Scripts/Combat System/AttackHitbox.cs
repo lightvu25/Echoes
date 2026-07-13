@@ -21,6 +21,7 @@ public class AttackHitbox : MonoBehaviour
     [SerializeField] private Vector2 hitboxSize = new Vector2(1f, 1f);
     [SerializeField] private Vector2 hitboxOffset = new Vector2(0.5f, 0f);
     [SerializeField] private LayerMask targetLayers;
+    public LayerMask TargetLayers => targetLayers;
 
     [Header("Timing")]
     [SerializeField] private float startupTime = 0.05f;
@@ -37,6 +38,7 @@ public class AttackHitbox : MonoBehaviour
     [SerializeField] private CombatStats combatStats;
 
     private bool isActive = false;
+    public bool isPlungeFalling = false;
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
     private Dictionary<IDamageable, float> multiHitTimers = new Dictionary<IDamageable, float>();
     private GameObject owner;
@@ -57,6 +59,12 @@ public class AttackHitbox : MonoBehaviour
         baseDamage = damage;
         procCoefficient = procCoef;
         Activate();
+    }
+
+    public void Configure(Vector2 size, Vector2 offset)
+    {
+        hitboxSize = size;
+        hitboxOffset = offset;
     }
 
     public void Deactivate()
@@ -149,7 +157,7 @@ public class AttackHitbox : MonoBehaviour
         if (owner.CompareTag("Player"))
         {
             if (PlayerInventoryCore.Instance != null)
-                damageInfo.activeElement = PlayerInventoryCore.Instance.GetActiveElement();
+                damageInfo.activeEcho = PlayerInventoryCore.Instance.GetActiveEcho();
             
             if (PlayerStats.Instance != null)
                 damageInfo.playerLevel = PlayerStats.Instance.CurrentLevel;
@@ -166,11 +174,11 @@ public class AttackHitbox : MonoBehaviour
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, target.Defense);
         
         // Debug Log for Testing
-        if (damageInfo.activeElement != null)
+        if (damageInfo.activeEcho != null)
         {
             Debug.Log($"[Damage Test] Hit {target.Transform.name} | " +
                       $"Base: {baseDamage} | " +
-                      $"Element: {damageInfo.activeElement.itemName} (Lvl {damageInfo.playerLevel}) | " +
+                      $"Element: {damageInfo.activeEcho.itemName} (Lvl {damageInfo.playerLevel}) | " +
                       $"Final: {finalDamage}");
         }
 
@@ -183,11 +191,16 @@ public class AttackHitbox : MonoBehaviour
         OnHitTarget?.Invoke(this, new HitEventArgs { target = target, damageInfo = damageInfo, finalDamage = finalDamage });
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
-        Vector2 direction = transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
+        GameObject root = transform.root.gameObject;
+        Vector2 direction = root.transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
         Vector2 center = (Vector2)transform.position + new Vector2(hitboxOffset.x * direction.x, hitboxOffset.y);
-        Gizmos.color = isActive ? Color.red : Color.yellow;
+
+        Gizmos.color = (isActive || isPlungeFalling) ? new Color(1f, 0f, 0f, 0.4f) : new Color(1f, 1f, 0f, 0.25f);
+        Gizmos.DrawCube(center, hitboxSize);
+
+        Gizmos.color = (isActive || isPlungeFalling) ? Color.red : Color.yellow;
         Gizmos.DrawWireCube(center, hitboxSize);
     }
 }
