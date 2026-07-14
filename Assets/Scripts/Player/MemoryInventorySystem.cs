@@ -50,11 +50,6 @@ public class MemoryInventorySystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Called by HealthSystem.OnUnlockedSlotsDecreased when the player loses a slot.
-    /// Drops excess items until the inventory fits within the new capacity.
-    /// </summary>
-    /// <param name="newUnlockedSlots">The new number of unlocked slots.</param>
     private void HandleSlotsDecreased(int newUnlockedSlots)
     {
         while (activeSlots.Count > newUnlockedSlots && activeSlots.Count > coreSlotCount)

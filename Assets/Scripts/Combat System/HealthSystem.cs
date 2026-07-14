@@ -8,7 +8,6 @@ public class HealthSystem : MonoBehaviour
     public event EventHandler<HealEventArgs> OnHealed;
     public event EventHandler OnDeath;
     public event Action<int> OnSlotsChanged;
-    /// <summary>Fires when unlocked slots DECREASE, passing the new lower slot count.</summary>
     public event Action<int> OnUnlockedSlotsDecreased;
 
     public class DamageEventArgs : EventArgs
