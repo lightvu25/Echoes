@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: VialOfAshes
   itemName: Vial of Ashes
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 6681545623831346936, guid: 9ef9e3ebe28c7d04d838c25262f67812, type: 3}
   description: Killing an enemy afflicted by an Element (Burn/Poison) triggers an
     AoE explosion.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 2
   basePrice: 50
-  RelicID: VialOfAshes
-  RelicNameEN: Vial of Ashes
   Rarity: 1
   FactionBonus: +2 Random Stats
-  CoreEffect: Killing an enemy afflicted by an Element (Burn/Poison) triggers an
-    AoE explosion.
-  RelicIcon: {fileID: 0}

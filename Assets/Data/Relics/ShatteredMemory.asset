@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: ShatteredMemory
   itemName: Shattered Memory
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -8246186014234393107, guid: 9d8b9b67c2ab55f4fa106a62b7402253, type: 3}
   description: Killing an enemy grants +5% Attack Speed (Stacks up to 5 times). Resets
     per room.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50
-  RelicID: ShatteredMemory
-  RelicNameEN: Shattered Memory
   Rarity: 0
   FactionBonus: +1 Random Stat
-  CoreEffect: Killing an enemy grants +5% Attack Speed (Stacks up to 5 times). Resets
-    per room.
-  RelicIcon: {fileID: 0}

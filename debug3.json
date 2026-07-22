@@ -1,4 +1,0 @@
-{
-  "csharpCode": "var sb = new System.Text.StringBuilder(); var rooms = UnityEngine.Object.FindObjectsByType<Room>(UnityEngine.FindObjectsInactive.Include, UnityEngine.FindObjectsSortMode.None); sb.AppendLine($\"Found {rooms.Length} Rooms:\"); foreach (var r in rooms) { var b = r.GetBounds(); sb.AppendLine($\" - {r.gameObject.name} | Pos: {r.transform.position} | Bounds: {b.center}, size: {b.size} | Event: {r.AssignedEvent}\"); } var tm = RuntimeTilemapMerger.Instance.globalGroundTilemap; if (tm != null) { sb.AppendLine($\"Global Tilemap: {tm.name} | Active: {tm.gameObject.activeInHierarchy} | Bounds: {tm.localBounds}\"); var comp = tm.GetComponent<UnityEngine.CompositeCollider2D>(); sb.AppendLine($\"CompositeCollider: {(comp != null ? \"Yes\" : \"No\")} | Enabled: {(comp != null ? comp.enabled.ToString() : \"N/A\")}\"); } else { sb.AppendLine(\"Global Tilemap NOT FOUND!\"); } UnityEngine.Debug.Log(sb.ToString());",
-  "isMethodBody": true
-}

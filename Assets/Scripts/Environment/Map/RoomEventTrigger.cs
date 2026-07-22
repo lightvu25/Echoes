@@ -5,22 +5,21 @@ using UnityEngine;
 public class RoomEventTrigger : MonoBehaviour
 {
     [Header("Camera Zoom")]
-    [Tooltip("Override the camera's orthographic size while the player is inside.")]
     public bool modifyCameraZoom;
     public float targetZoomSize = 14f;
 
-    // ------------------------------------------------------------------ //
-    //  Future effects can be added here as additional [Header] sections:  //
-    //                                                                      //
-    //  [Header("Ambient Audio")]                                           //
-    //  public bool overrideAmbientAudio;                                   //
-    //  public AudioClip ambientClip;                                       //
-    //                                                                      //
-    //  [Header("Post Processing")]                                         //
-    //  public bool enableHorrorProfile;                                    //
-    // ------------------------------------------------------------------ //
+    [Header("Ambient & Music Audio")]
+    public bool overrideRoomAudio;
+    public string roomMusicTrack;
+    public string roomAmbientTrack;
+
+    [Header("Exit Behavior")]
+    public bool resetAudioOnExit = true;
+    public string defaultMapMusic = "The Abyss";
+    public string defaultAmbientTrack = "Abyss Ambient";
 
     private bool _zoomApplied;
+    private bool _audioApplied;
 
     private void Awake()
     {
@@ -36,6 +35,19 @@ public class RoomEventTrigger : MonoBehaviour
             CinemachineCameraZoom2D.Instance?.SetTargetOrthographicSize(targetZoomSize);
             _zoomApplied = true;
         }
+
+        if (overrideRoomAudio && !_audioApplied)
+        {
+            if (!string.IsNullOrEmpty(roomMusicTrack))
+            {
+                MusicManager.Instance?.PlayMusic(roomMusicTrack, 1f);
+            }
+            if (!string.IsNullOrEmpty(roomAmbientTrack))
+            {
+                MusicManager.Instance?.PlayAmbient(roomAmbientTrack, 1f);
+            }
+            _audioApplied = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -46,6 +58,19 @@ public class RoomEventTrigger : MonoBehaviour
         {
             CinemachineCameraZoom2D.Instance?.SetNormalOrthographicSize();
             _zoomApplied = false;
+        }
+
+        if (_audioApplied && resetAudioOnExit)
+        {
+            if (!string.IsNullOrEmpty(defaultMapMusic))
+            {
+                MusicManager.Instance?.PlayMusic(defaultMapMusic, 1f);
+            }
+            if (!string.IsNullOrEmpty(defaultAmbientTrack))
+            {
+                MusicManager.Instance?.PlayAmbient(defaultAmbientTrack, 1f);
+            }
+            _audioApplied = false;
         }
     }
 }

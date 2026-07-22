@@ -894,6 +894,9 @@ MonoBehaviour:
   _panelAnimator: {fileID: 5957504103164660438}
   linePrefab: {fileID: 7352672257131892390, guid: e2736ad4c6540a74eaefe8288f3ab1df, type: 3}
   starMapContent: {fileID: 4028336102379561985}
+  scrollRect: {fileID: 0}
+  focusOffset: {x: 0, y: 0}
+  focusZoomScale: 1
 --- !u!114 &5957504103164660438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1244,9 +1247,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 3323231215987945203}
   _holdProgressImage: {fileID: 3982363451497959487}
   _borderImage: {fileID: 3731593404522738428}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -1512,9 +1512,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 7166898668755124744}
   _holdProgressImage: {fileID: 2882359025244267772}
   _borderImage: {fileID: 359132953799401233}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -1855,9 +1852,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 9011222864438247824}
   _holdProgressImage: {fileID: 5264836710473610570}
   _borderImage: {fileID: 5921687274959361816}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -3085,9 +3079,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 4861727962798381678}
   _holdProgressImage: {fileID: 729514808670023610}
   _borderImage: {fileID: 6233816254623316513}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -3203,9 +3194,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 7757032168658859902}
   _holdProgressImage: {fileID: 1558513928695048111}
   _borderImage: {fileID: 2879357071204915422}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -3471,9 +3459,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 8598880935077519246}
   _holdProgressImage: {fileID: 2888289700928075394}
   _borderImage: {fileID: 1885093519360911959}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -3664,9 +3649,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 5866991046483950415}
   _holdProgressImage: {fileID: 3820651346943698298}
   _borderImage: {fileID: 1558169289687949968}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -3994,9 +3976,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 8989233543256435724}
   _holdProgressImage: {fileID: 1985075593617896728}
   _borderImage: {fileID: 5191895923791146173}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -4262,9 +4241,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 5411704306892691753}
   _holdProgressImage: {fileID: 1435438627668619650}
   _borderImage: {fileID: 5251389593132285163}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -5567,9 +5543,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 509222914485477008}
   _holdProgressImage: {fileID: 5525352537288398605}
   _borderImage: {fileID: 9052212425710039656}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -5835,9 +5808,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 1128680077109228325}
   _holdProgressImage: {fileID: 6250348054950739536}
   _borderImage: {fileID: 7204450734058871696}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -6315,9 +6285,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 6933755156534128577}
   _holdProgressImage: {fileID: 7619367589794063166}
   _borderImage: {fileID: 8192364597833068037}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -6659,9 +6626,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 414063936027192428}
   _holdProgressImage: {fileID: 8116273452829356386}
   _borderImage: {fileID: 7942007988701969780}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -6777,9 +6741,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 6987967430109601902}
   _holdProgressImage: {fileID: 2756101138711450230}
   _borderImage: {fileID: 8331440792512435983}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -8062,9 +8023,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 6162585082370458559}
   _holdProgressImage: {fileID: 2646659543108543382}
   _borderImage: {fileID: 4144136545003783995}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -8480,9 +8438,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 8672699969375986823}
   _holdProgressImage: {fileID: 5245077340793410128}
   _borderImage: {fileID: 4953932344252794795}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
@@ -8673,9 +8628,6 @@ MonoBehaviour:
   _backgroundImage: {fileID: 976631448237425229}
   _holdProgressImage: {fileID: 9165915397277987669}
   _borderImage: {fileID: 9188219991411980874}
-  _colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
-  _colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}
-  _colorUnlocked: {r: 0.3, g: 0.85, b: 0.45, a: 1}
   _holdDuration: 1.2
   colorLocked: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   colorAvailable: {r: 1, g: 0.85, b: 0.2, a: 1}

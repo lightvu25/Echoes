@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
-public enum UIAnimationType { FadeOnly, PopUp, SlideUp }
+public enum UIAnimationType { FadeOnly, PopUp, SlideUp, SlideHorizontal }
 
 [RequireComponent(typeof(CanvasGroup))]
 public class UIPanelAnimator : MonoBehaviour
@@ -62,6 +62,12 @@ public class UIPanelAnimator : MonoBehaviour
                 transform.DOLocalMove(_originalPosition, animationDuration).SetEase(Ease.OutBack).SetUpdate(true);
                 CanvasGroup.DOFade(1f, animationDuration).SetUpdate(true);
                 break;
+
+            case UIAnimationType.SlideHorizontal:
+                transform.localScale = new Vector3(0f, _originalScale.y, _originalScale.z);
+                transform.DOScale(_originalScale, animationDuration).SetEase(Ease.OutBack).SetUpdate(true);
+                CanvasGroup.DOFade(1f, animationDuration).SetUpdate(true);
+                break;
         }
     }
 
@@ -99,6 +105,15 @@ public class UIPanelAnimator : MonoBehaviour
                 var targetPos = _originalPosition;
                 targetPos.y -= 50f;
                 transform.DOLocalMove(targetPos, animationDuration).SetEase(Ease.InBack).SetUpdate(true);
+                CanvasGroup.DOFade(0f, animationDuration).SetUpdate(true)
+                    .OnComplete(() => {
+                        gameObject.SetActive(false);
+                        transform.localPosition = _originalPosition;
+                    });
+                break;
+
+            case UIAnimationType.SlideHorizontal:
+                transform.DOScale(new Vector3(0f, _originalScale.y, _originalScale.z), animationDuration).SetEase(Ease.InBack).SetUpdate(true);
                 CanvasGroup.DOFade(0f, animationDuration).SetUpdate(true)
                     .OnComplete(() => {
                         gameObject.SetActive(false);

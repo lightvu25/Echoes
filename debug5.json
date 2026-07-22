@@ -1,4 +1,0 @@
-{
-  "csharpCode": "var sb = new System.Text.StringBuilder(); var teleporters = UnityEngine.Object.FindObjectsByType<TeleporterNode>(UnityEngine.FindObjectsInactive.Include, UnityEngine.FindObjectsSortMode.None); int groundLayerMask = UnityEngine.LayerMask.GetMask(\"Ground\"); sb.AppendLine($\"Ground LayerMask: {groundLayerMask}\"); foreach (var t in teleporters) { var hit = UnityEngine.Physics2D.Raycast(t.transform.position, UnityEngine.Vector2.down, 100f, groundLayerMask); sb.AppendLine($\"Teleporter {t.nodeName} at {t.transform.position}:\"); if (hit.collider != null) { sb.AppendLine($\"  -> Found Ground: {hit.collider.name} at {hit.point} (dist: {t.transform.position.y - hit.point.y})\"); } else { sb.AppendLine(\"  -> NO GROUND IN GROUND LAYER WITHIN 100 UNITS!\"); } } UnityEngine.Debug.Log(sb.ToString());",
-  "isMethodBody": true
-}

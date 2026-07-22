@@ -16,6 +16,8 @@ public class FlyingMovement : MonoBehaviour, IEnemyMovement
     public bool IsGroundedAhead => true;
     public bool IsWallAhead => false;
     public bool IsKnockedBack { get; private set; }
+    public bool IsRooted { get; private set; }
+    private float rootTimer = 0f;
 
     private float oscillationPhase;
 
@@ -31,9 +33,18 @@ public class FlyingMovement : MonoBehaviour, IEnemyMovement
         oscillationPhase = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
     }
 
+    private void Update()
+    {
+        if (IsRooted)
+        {
+            rootTimer -= Time.deltaTime;
+            if (rootTimer <= 0f) IsRooted = false;
+        }
+    }
+
     public void Move(Vector2 direction, float maxSpeed, float accelAmount, float deccelAmount)
     {
-        if (IsKnockedBack) return;
+        if (IsKnockedBack || IsRooted) return;
         if (direction.x != 0) FaceDirection(direction.x > 0);
 
         float oscillation = Mathf.Sin(Time.time * oscillationSpeed + oscillationPhase) * hoverOscillation;
@@ -59,6 +70,14 @@ public class FlyingMovement : MonoBehaviour, IEnemyMovement
     }
 
     public void SetKnockedBack(bool value) => IsKnockedBack = value;
+
+    public void ApplyRoot(float duration)
+    {
+        IsRooted = true;
+        rootTimer = Mathf.Max(rootTimer, duration);
+        Rb.linearVelocity = Vector2.zero;
+        OnIdle?.Invoke(this, EventArgs.Empty);
+    }
 
     private void Turn()
     {

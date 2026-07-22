@@ -34,7 +34,7 @@ public class ReturnToPool : MonoBehaviour
     {
         if (!useFixedDelay)
         {
-            if (animator != null)
+            if (animator != null && animator.runtimeAnimatorController != null)
             {
                 AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
                 // Return to pool when the animation finishes playing
@@ -42,6 +42,12 @@ public class ReturnToPool : MonoBehaviour
                 {
                     ObjectPoolManager.ReturnObjectToPool(gameObject);
                 }
+            }
+            else if (animator != null && animator.runtimeAnimatorController == null)
+            {
+                // If there's an Animator but no controller, it will never finish. Fallback to fixed delay.
+                useFixedDelay = true;
+                routine = StartCoroutine(Routine(time));
             }
             else if (particleSys != null)
             {

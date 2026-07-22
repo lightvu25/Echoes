@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: EchoWhetstone
   itemName: Echo Whetstone
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 3585742424517436885, guid: e814bde3717de55479a0113ca76fb4c6, type: 3}
   description: Dashing through an enemy guarantees your next attack within 2s deals
     +100% damage.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 2
   basePrice: 50
-  RelicID: EchoWhetstone
-  RelicNameEN: Echo Whetstone
   Rarity: 1
   FactionBonus: +2 Random Stats
-  CoreEffect: Dashing through an enemy guarantees your next attack within 2s deals
-    +100% damage.
-  RelicIcon: {fileID: 0}

@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: StalactiteHeart
   itemName: Stalactite Heart
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 2427878260986436854, guid: 7c9feb1dd72191e46bfa8e8475bdf692, type: 3}
   description: 'Upon taking fatal damage: Destroys this Relic, heals 50% HP, and
     freezes enemies for 3s.'
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 3
   basePrice: 50
-  RelicID: StalactiteHeart
-  RelicNameEN: Stalactite Heart
   Rarity: 2
   FactionBonus: +3 Stats (All)
-  CoreEffect: 'Upon taking fatal damage: Destroys this Relic, heals 50% HP, and freezes
-    enemies for 3s.'
-  RelicIcon: {fileID: 0}

@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: EchoingSigil
   itemName: Echoing Sigil
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 6681545623831346936, guid: 9ef9e3ebe28c7d04d838c25262f67812, type: 3}
   description: Every attack creates a delayed Echo that hits again after 0.25s for
     60% damage.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 3
   basePrice: 50
-  RelicID: EchoingSigil
-  RelicNameEN: Echoing Sigil
   Rarity: 2
   FactionBonus: +3 Stats (All)
-  CoreEffect: Every attack creates a delayed Echo that hits again after 0.25s for
-    60% damage.
-  RelicIcon: {fileID: 0}

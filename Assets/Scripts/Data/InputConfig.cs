@@ -40,6 +40,8 @@ public class InputConfig : ScriptableObject
     public KeyCode inventoryKey = KeyCode.E;
     public KeyCode mapKey = KeyCode.M;
     public KeyCode cancelKey = KeyCode.Escape;
+    public KeyCode healKey = KeyCode.H;
+    public KeyCode toolKey = KeyCode.T;
 
     [Header("Playstyle Keys")]
     public KeyCode meleeKey = KeyCode.J;
@@ -125,4 +127,6 @@ public class InputConfig : ScriptableObject
     public bool GetInventoryDown() => Input.GetKeyDown(inventoryKey);
     public bool GetMapDown() => Input.GetKeyDown(mapKey);
     public bool GetCancelDown() => Input.GetKeyDown(cancelKey);
+    public bool GetHealDown() => Input.GetKeyDown(healKey);
+    public bool GetToolDown() => Input.GetKeyDown(toolKey);
 }

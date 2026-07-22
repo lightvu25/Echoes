@@ -8,8 +8,6 @@ public class PlayerInteract : MonoBehaviour
     public bool IsRewinding = false;
 
     public event EventHandler<OnCoinPickupEventArgs> OnCoinPickup;
-    public event EventHandler<OnTimePickupEventArgs> OnTimePickup;
-    public event EventHandler<OnGoalEventArgs> OnGoal;
     public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
 
     public event EventHandler OnDead;
@@ -19,21 +17,9 @@ public class PlayerInteract : MonoBehaviour
         public CoinPickup coinPickup;
     }
 
-    public class OnTimePickupEventArgs : EventArgs
-    {
-        public TimePickup timePickup;
-    }
-
     public class OnStateChangedEventArgs : EventArgs
     {
         public State state;
-    }
-
-    public class OnGoalEventArgs : EventArgs
-    {
-        public bool passing;
-        public int score;
-        public Goal goal;
     }
 
     public enum State
@@ -180,16 +166,6 @@ public class PlayerInteract : MonoBehaviour
         }
     }
 
-    public void TriggerGoal(Goal goal)
-    {
-        OnGoal?.Invoke(this, new OnGoalEventArgs
-        {
-            passing = true,
-            score = (int)coinPickups,
-            goal = goal
-        });
-        SetState(State.GameOver);
-    }
 
     private void OnTriggerEnter2D(Collider2D collider2D)
     {
@@ -215,20 +191,6 @@ public class PlayerInteract : MonoBehaviour
             currentExtractable = extractable;
         }
 
-        if (collider2D.gameObject.TryGetComponent(out TimePickup timePickup))
-        {
-            float timeAmount = 2f;
-            time += timeAmount;
-            if (time > timeMax)
-            {
-                time = timeMax;
-            }
-            OnTimePickup?.Invoke(this, new OnTimePickupEventArgs
-            {
-                timePickup = timePickup
-            });
-            timePickup.DestroySelf();
-        }
     }
 
     private void OnTriggerExit2D(Collider2D collider2D)

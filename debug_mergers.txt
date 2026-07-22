@@ -1,2 +1,0 @@
-Mergers count: 1
-Merger GameObject: TilemapMerger

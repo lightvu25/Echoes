@@ -7,13 +7,38 @@ public class ShopManager : MonoBehaviour
     public static ShopManager Instance { get; private set; }
 
     [Header("Global Item Pools")]
-    [SerializeField] private List<ConsumableData> masterConsumables;
+    [SerializeField] private List<ToolData> masterTools;
     [SerializeField] private List<RelicData> masterRelics;
     [SerializeField] private List<EchoData> masterEchoes;
 
-    private List<ConsumableData> availableConsumables;
+    private List<ToolData> availableTools;
     private List<RelicData> availableRelics;
     private List<EchoData> availableEchoes;
+
+    [System.Serializable]
+    public struct TierChance
+    {
+        public int tier;
+        [Range(0, 100)] public float chance;
+    }
+
+    [Header("Relic Tier Chances")]
+    [Tooltip("Setup the percentage for each tier. Make sure they sum up to 100. Example: Tier 1 = 60, Tier 2 = 30, Tier 3 = 10")]
+    [SerializeField] private List<TierChance> relicTierChances = new List<TierChance>
+    {
+        new TierChance { tier = 1, chance = 60f },
+        new TierChance { tier = 2, chance = 30f },
+        new TierChance { tier = 3, chance = 10f }
+    };
+
+    [Header("Echo Tier Chances")]
+    [Tooltip("Setup the percentage for each tier. Make sure they sum up to 100.")]
+    [SerializeField] private List<TierChance> echoTierChances = new List<TierChance>
+    {
+        new TierChance { tier = 1, chance = 60f },
+        new TierChance { tier = 2, chance = 30f },
+        new TierChance { tier = 3, chance = 10f }
+    };
 
     private void Awake()
     {
@@ -31,7 +56,7 @@ public class ShopManager : MonoBehaviour
 
     private void InitializePools()
     {
-        availableConsumables = new List<ConsumableData>(masterConsumables);
+        availableTools = new List<ToolData>(masterTools);
         availableRelics = new List<RelicData>(masterRelics);
         availableEchoes = new List<EchoData>(masterEchoes);
     }
@@ -40,27 +65,57 @@ public class ShopManager : MonoBehaviour
     /// Pulls a random item from the global pool.
     /// Relics and Echoes are removed from the pool so they cannot be encountered twice in the same run.
     /// </summary>
-    public ItemBaseData GetRandomItem(ItemCategory category, int minTier)
+    public ItemBaseData GetRandomItem(ItemCategory category, int minTier = 1)
     {
         switch (category)
         {
-            case ItemCategory.Item: // Consumables
-                return GetAndRemoveRandom(availableConsumables.Cast<ItemBaseData>().ToList(), minTier, false);
+            case ItemCategory.Tool: // Tools
+                return GetAndRemoveRandom(availableTools.Cast<ItemBaseData>().ToList(), minTier, false, null);
             case ItemCategory.Relic:
-                return GetAndRemoveRandom(availableRelics.Cast<ItemBaseData>().ToList(), minTier, true);
+                return GetAndRemoveRandom(availableRelics.Cast<ItemBaseData>().ToList(), minTier, true, relicTierChances);
             case ItemCategory.Echo:
-                return GetAndRemoveRandom(availableEchoes.Cast<ItemBaseData>().ToList(), minTier, true);
+                return GetAndRemoveRandom(availableEchoes.Cast<ItemBaseData>().ToList(), minTier, true, echoTierChances);
             default:
                 return null;
         }
     }
 
-    private ItemBaseData GetAndRemoveRandom(List<ItemBaseData> pool, int minTier, bool removeFromPool)
+    private ItemBaseData GetAndRemoveRandom(List<ItemBaseData> pool, int minTier, bool removeFromPool, List<TierChance> tierChances)
     {
-        var validItems = pool.Where(item => item != null && item.itemTier >= minTier).ToList();
-        if (validItems.Count == 0) return null;
+        // First, filter by minTier
+        var validItems = pool.Where(item => 
+        {
+            if (item == null) return false;
+            return GetItemTier(item) >= minTier;
+        }).ToList();
 
-        ItemBaseData selected = validItems[Random.Range(0, validItems.Count)];
+        if (validItems.Count == 0) 
+        {
+            Debug.LogWarning($"[ShopManager] No valid items found for minTier {minTier}!");
+            return null;
+        }
+
+        ItemBaseData selected = null;
+
+        // If we have custom tier chances, try to pick an item of a specific tier
+        if (tierChances != null && tierChances.Count > 0)
+        {
+            int targetTier = RollForTier(tierChances);
+            
+            // Try to find items of exactly the target tier
+            var tierSpecificItems = validItems.Where(item => GetItemTier(item) == targetTier).ToList();
+            
+            if (tierSpecificItems.Count > 0)
+            {
+                selected = tierSpecificItems[Random.Range(0, tierSpecificItems.Count)];
+            }
+        }
+
+        // Fallback to random if no tier chances were provided, or if the target tier had no valid items left
+        if (selected == null)
+        {
+            selected = validItems[Random.Range(0, validItems.Count)];
+        }
         
         if (removeFromPool)
         {
@@ -69,5 +124,27 @@ public class ShopManager : MonoBehaviour
         }
 
         return selected;
+    }
+
+    private int GetItemTier(ItemBaseData item)
+    {
+        if (item is RelicData relic) return (int)relic.Rarity + 1;
+        if (item is EchoData echo) return echo.level;
+        return item.itemTier;
+    }
+
+    private int RollForTier(List<TierChance> chances)
+    {
+        float total = chances.Sum(c => c.chance);
+        float roll = Random.Range(0, total);
+        float current = 0;
+
+        foreach (var c in chances)
+        {
+            current += c.chance;
+            if (roll <= current) return c.tier;
+        }
+        
+        return chances.Last().tier;
     }
 }

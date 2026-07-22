@@ -45,6 +45,7 @@ public class MemorySlot : MonoBehaviour
         if (icon != null)
         {
             itemIcon.sprite  = icon;
+            itemIcon.SetNativeSize();
             itemIcon.enabled = true;
         }
         else
@@ -63,9 +64,27 @@ public class MemorySlot : MonoBehaviour
         if (itemIcon != null)
         {
             itemIcon.sprite  = icon;
-            itemIcon.enabled = true;
+            if (icon != null)
+            {
+                itemIcon.SetNativeSize();
+                itemIcon.enabled = true;
+            }
+            else
+            {
+                itemIcon.enabled = false;
+            }
         }
 
+        if (animator != null)
+            animator.SetTrigger(TRIGGER_FORMED);
+    }
+
+    /// <summary>
+    /// Plays the "Formed" animation for the shell without touching the item icon.
+    /// Useful for when a slot capacity is recovered via healing.
+    /// </summary>
+    public void PlayShellFormed()
+    {
         if (animator != null)
             animator.SetTrigger(TRIGGER_FORMED);
     }

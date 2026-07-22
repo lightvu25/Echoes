@@ -3,13 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public enum LootItemType { Equipment, Relic, Consumable, Currency }
+public enum LootItemType { Equipment, Relic, Consumable, Currency, Echo }
 
 public struct DropResult
 {
     public GameObject prefab;
     public int totalAmount;
     public LootItemType type;
+}
+
+public struct LootBonuses
+{
+    public float relicBonus;
+    public float echoBonus;
+    public float equipmentBonus;
+    
+    public float roomRelicMultiplier;
+    public float roomEchoMultiplier;
+    public float roomEquipmentMultiplier;
 }
 
 [Serializable]
@@ -34,7 +45,7 @@ public class LootItem
 public class LootTable : ScriptableObject
 {
     public List<LootItem> lootItems = new();
-    public List<DropResult> GetDrops(float chanceMultiplier, int minTierAllowed)
+    public List<DropResult> GetDrops(float chanceMultiplier, int minTierAllowed, LootBonuses bonuses = default)
     {
         var drops = new List<DropResult>();
 
@@ -44,7 +55,50 @@ public class LootTable : ScriptableObject
 
             if (item.type != LootItemType.Consumable && item.type != LootItemType.Currency && item.itemTier < minTierAllowed) continue;
 
-            float finalChance = item.dropChance * chanceMultiplier;
+            float typedBonus = 0f;
+            float roomMultiplier = 1f;
+
+            switch (item.type)
+            {
+                case LootItemType.Relic:
+                    typedBonus = bonuses.relicBonus;
+                    roomMultiplier = bonuses.roomRelicMultiplier == 0f ? 1f : bonuses.roomRelicMultiplier;
+                    break;
+                case LootItemType.Echo:
+                    typedBonus = bonuses.echoBonus;
+                    roomMultiplier = bonuses.roomEchoMultiplier == 0f ? 1f : bonuses.roomEchoMultiplier;
+                    break;
+                case LootItemType.Equipment:
+                    typedBonus = bonuses.equipmentBonus;
+                    roomMultiplier = bonuses.roomEquipmentMultiplier == 0f ? 1f : bonuses.roomEquipmentMultiplier;
+                    break;
+            }
+
+            float rawChance = (item.dropChance + (typedBonus * 100f)) * chanceMultiplier * roomMultiplier;
+
+            bool isGuaranteed = false;
+            var run = GameSession.Instance?.currentRun;
+            if (run != null)
+            {
+                if (item.type == LootItemType.Relic && run.minGuaranteedRelics > 0)
+                {
+                    isGuaranteed = true;
+                    run.minGuaranteedRelics--;
+                }
+                else if (item.type == LootItemType.Echo && run.minGuaranteedEchoes > 0)
+                {
+                    isGuaranteed = true;
+                    run.minGuaranteedEchoes--;
+                }
+                else if (item.type == LootItemType.Equipment && run.minGuaranteedEquipment > 0)
+                {
+                    isGuaranteed = true;
+                    run.minGuaranteedEquipment--;
+                }
+            }
+
+            float finalChance = isGuaranteed ? 100f : Mathf.Min(rawChance, 100f);
+
             if (Random.Range(0f, 100f) <= finalChance)
             {
                 drops.Add(new DropResult

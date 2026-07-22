@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: VampiricFang
   itemName: Vampiric Fang
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 7125338970148385524, guid: 89e7290c08634f9479d84b916ff57366, type: 3}
   description: Killing an enemy with a Plunge Attack heals 10% of Max HP.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 3
   basePrice: 50
-  RelicID: VampiricFang
-  RelicNameEN: Vampiric Fang
   Rarity: 2
   FactionBonus: +3 Stats (All)
-  CoreEffect: Killing an enemy with a Plunge Attack heals 10% of Max HP.
-  RelicIcon: {fileID: 0}

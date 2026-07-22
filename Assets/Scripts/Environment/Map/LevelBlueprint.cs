@@ -6,14 +6,14 @@ public enum RoomEventType
 {
     None,
     Elite,
-    Blacksmith,
+    Shop,
     CursedChest,
-    Statue,
+    Rune,
     Reward,
     Story,
     HighMagicFactor,
-    Rune,
     Teleport,
+    Echo,
     EchoRoom
 }
 
@@ -45,6 +45,13 @@ public struct EchoNodeRate
 }
 
 [System.Serializable]
+public struct EnemyNodeRate
+{
+    public GameObject enemyPrefab;
+    [Range(0, 100)] public float weight;
+}
+
+[System.Serializable]
 public class EventTypeLimit
 {
     public RoomEventType eventType;
@@ -63,20 +70,32 @@ public class LevelBlueprint : ScriptableObject
     [Header("Room Prefab Pools")]
     public List<GameObject> startRoomPrefabs = new List<GameObject>();
     public List<GameObject> normalRoomPrefabs = new List<GameObject>();
-    public List<GameObject> statueRoomPrefabs = new List<GameObject>();
-    public List<GameObject> buffRoomPrefabs = new List<GameObject>();
-    public List<GameObject> rewardRoomPrefabs = new List<GameObject>();
-    public List<GameObject> eliteRoomPrefabs = new List<GameObject>();
     public List<GameObject> goalRoomPrefabs = new List<GameObject>();
     public List<GameObject> deadEndRoomPrefabs = new List<GameObject>();
+    public List<GameObject> runeRoomPrefabs = new List<GameObject>();
+    public List<GameObject> rewardRoomPrefabs = new List<GameObject>();
+    public List<GameObject> eliteRoomPrefabs = new List<GameObject>();
     public List<GameObject> storyRoomPrefabs = new List<GameObject>();
     public List<GameObject> echoRoomPrefabs = new List<GameObject>();
-
+    public List<GameObject> cursedChestRoomPrefabs = new List<GameObject>();
+    public List<GameObject> highMagicFactorRoomPrefabs = new List<GameObject>();
+    public List<GameObject> shopRoomPrefabs = new List<GameObject>();
+    
     [Header("Generation Limits")]
     public List<EventTypeLimit> eventTypeLimits = new List<EventTypeLimit>();
 
     [Header("Extraction Node Settings")]
-    [Tooltip("Independent chance (0.0 to 1.0) for each anchor to successfully spawn a node.")]
     [Range(0f, 1f)] public float anchorSpawnChance = 0.3f;
     public List<EchoNodeRate> echoNodePool = new List<EchoNodeRate>();
+
+    [Header("Enemy Node Settings")]
+    [Range(0f, 1f)] public float groundEnemySpawnChance = 0.6f;
+    public List<EnemyNodeRate> groundEnemyPool = new List<EnemyNodeRate>();
+    
+    [Range(0f, 1f)] public float airEnemySpawnChance = 0.4f;
+    public List<EnemyNodeRate> airEnemyPool = new List<EnemyNodeRate>();
+
+    [Header("Elite Enemy Settings")]
+    [Tooltip("Drag your Elite prefabs here from Assets/Prefab/Enemy/Elites so they can be spawned by Toxicity.")]
+    public List<GameObject> availableElitePrefabs = new List<GameObject>();
 }

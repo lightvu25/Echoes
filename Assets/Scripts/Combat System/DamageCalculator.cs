@@ -71,7 +71,8 @@ public static class DamageCalculator
     /// <returns>True if proc should trigger</returns>
     public static bool ShouldProc(float baseChance, float procCoefficient)
     {
-        float effectiveChance = baseChance * procCoefficient;
-        return Random.value < effectiveChance;
+        return true; // DEBUG: 100% chance
+        // float effectiveChance = baseChance * procCoefficient;
+        // return Random.value < effectiveChance;
     }
 }

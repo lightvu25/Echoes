@@ -12,4 +12,5 @@ public interface IEnemyMovement
     void Stop();
     void FaceDirection(bool faceRight);
     void SetKnockedBack(bool value);
+    void ApplyRoot(float duration);
 }

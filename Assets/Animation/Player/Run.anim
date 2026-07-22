@@ -22,15 +22,15 @@ AnimationClip:
     curve:
     - time: 0
       value: {fileID: -6799484087222538840, guid: 25ec1cbac94498f438b3ef310815cff7, type: 3}
-    - time: 0.15
+    - time: 0.083333336
       value: {fileID: -2885887879035636014, guid: 25ec1cbac94498f438b3ef310815cff7, type: 3}
-    - time: 0.28333333
+    - time: 0.16666667
       value: {fileID: -5274931157107827354, guid: 25ec1cbac94498f438b3ef310815cff7, type: 3}
-    - time: 0.43333334
+    - time: 0.25
       value: {fileID: -293841158295909951, guid: 25ec1cbac94498f438b3ef310815cff7, type: 3}
-    - time: 0.56666666
+    - time: 0.33333334
       value: {fileID: 2879441703388672094, guid: 25ec1cbac94498f438b3ef310815cff7, type: 3}
-    - time: 0.71666664
+    - time: 0.41666666
       value: {fileID: -9152295527884433983, guid: 25ec1cbac94498f438b3ef310815cff7, type: 3}
     attribute: m_Sprite
     path: 
@@ -65,7 +65,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.7333333
+    m_StopTime: 0.43333334
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -84,4 +84,11 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0
+    functionName: PlayLoopingSound
+    data: Run
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0

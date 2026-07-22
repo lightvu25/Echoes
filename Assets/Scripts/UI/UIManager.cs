@@ -10,6 +10,8 @@ public class UIManager : MonoBehaviour
     {
         public UIPanelType panelType;
         public GameObject panelObject;
+        [Tooltip("If true, time will freeze (timeScale=0) when this panel opens.")]
+        public bool freezeTime = true;
     }
 
     [Header("UI Panels Registration")]
@@ -17,12 +19,11 @@ public class UIManager : MonoBehaviour
 
     private Dictionary<UIPanelType, IUIPanel> panelsDict = new Dictionary<UIPanelType, IUIPanel>();
     private UIPanelType currentActivePanel = UIPanelType.None;
+    public UIPanelType CurrentActivePanel => currentActivePanel;
 
-    // Panels that should NOT freeze time when opened
-    private static readonly HashSet<UIPanelType> noFreezePanels = new HashSet<UIPanelType>
-    {
-        UIPanelType.Inventory
-    };
+    // Deprecated HashSet, use the bool in UIPanelMapping instead.
+    // Keeping for backwards compatibility if needed, but not actively used in OpenPanel anymore.
+    private static readonly HashSet<UIPanelType> noFreezePanels = new HashSet<UIPanelType>();
 
     private int lastPanelCloseFrame = -1;
 
@@ -84,7 +85,8 @@ public class UIManager : MonoBehaviour
         panelsDict[type].Show();
         currentActivePanel = type;
 
-        if (!noFreezePanels.Contains(type))
+        var mapping = panelMappings.Find(m => m.panelType == type);
+        if (mapping != null && mapping.freezeTime)
         {
             Time.timeScale = 0f;
         }
@@ -119,6 +121,16 @@ public class UIManager : MonoBehaviour
     }
 
     public bool IsAnyPanelOpen => currentActivePanel != UIPanelType.None;
+
+    public bool IsTimeFrozenByPanel
+    {
+        get
+        {
+            if (currentActivePanel == UIPanelType.None) return false;
+            var mapping = panelMappings.Find(m => m.panelType == currentActivePanel);
+            return mapping != null && mapping.freezeTime;
+        }
+    }
 
     public bool WasPanelClosedThisFrame => Time.frameCount == lastPanelCloseFrame;
 }

@@ -42,7 +42,7 @@ public class InteractableTrigger : MonoBehaviour, IInteractable
         var interactables = GetComponents<IInteractable>();
         foreach (var interactable in interactables)
         {
-            if (interactable != this)
+            if (!ReferenceEquals(interactable, this))
             {
                 interactable.Interact();
             }

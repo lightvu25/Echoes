@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: AcidicGallbladder
   itemName: Acidic Gallbladder
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 1122147644762484269, guid: 4932553c2d82bdb49bdb0129e52cd986, type: 3}
   description: Grants immunity to acid/poison pools and environmental hazards.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50
-  RelicID: AcidicGallbladder
-  RelicNameEN: Acidic Gallbladder
   Rarity: 0
   FactionBonus: +1 Random Stat
-  CoreEffect: Grants immunity to acid/poison pools and environmental hazards.
-  RelicIcon: {fileID: 0}

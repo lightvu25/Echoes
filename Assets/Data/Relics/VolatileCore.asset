@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: VolatileCore
   itemName: Volatile Core
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -2320765986681808681, guid: c30b42618ec650f48b119bcd95c77580, type: 3}
   description: Negates knockback from explosions and reflects 50% of the blast damage
     outwards.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 2
   basePrice: 50
-  RelicID: VolatileCore
-  RelicNameEN: Volatile Core
   Rarity: 1
   FactionBonus: +2 Random Stats
-  CoreEffect: Negates knockback from explosions and reflects 50% of the blast damage
-    outwards.
-  RelicIcon: {fileID: 0}

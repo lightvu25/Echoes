@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: BurrowersScale
   itemName: Burrower's Scale
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -8824503106597406660, guid: b0e2b47004c8b8f4b89b8224503425f5, type: 3}
   description: Reduces incoming physical Melee damage by 15%.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50
-  RelicID: BurrowersScale
-  RelicNameEN: Burrower's Scale
   Rarity: 0
   FactionBonus: +1 Random Stat
-  CoreEffect: Reduces incoming physical Melee damage by 15%.
-  RelicIcon: {fileID: 0}

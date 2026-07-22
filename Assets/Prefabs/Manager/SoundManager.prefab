@@ -44,7 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 012bf944e3dfcc7409b4212c8a1e1dd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  coinPickupAudioClip: {fileID: 8300000, guid: f7148206dc4cb414bb7ae940e011a912, type: 3}
-  timePickupAudioClip: {fileID: 8300000, guid: f7148206dc4cb414bb7ae940e011a912, type: 3}
-  failAudioClip: {fileID: 8300000, guid: 5c47578cf0e06fe47a64c0fbfbad4545, type: 3}
-  successAudioClip: {fileID: 8300000, guid: 5e811af3a891aae419753de3094e5aa3, type: 3}
+  audioMixer: {fileID: 24100000, guid: 9b4754405d6970d4d971880af937288c, type: 2}
+  sfxMixerGroup: {fileID: 2795143675836899455, guid: 9b4754405d6970d4d971880af937288c, type: 2}
+  sfxVolumeParam: SFXVolume
+  initialPoolSize: 10
+  evolutionSound: {fileID: 8300000, guid: 9e87dbb2be8983b41811b0ebf36e84aa, type: 3}

@@ -199,12 +199,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1252801066187718037}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f937aa49fa72e64f818665b054ed10e, type: 3}
+  m_Script: {fileID: 11500000, guid: d1fb0c4ec3940434ba0c678b4c106269, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collectible
   type: 0
-  magnetAcceleration: 30
-  magnetDelay: 1
+  magnetAcceleration: 7
+  magnetDelay: 0.5
   damagePopupPrefab: {fileID: 2608304708606694418, guid: f475178fad115d044af6c3edba2aaed2, type: 3}
   visualTiers:
   - {fileID: 1569243328370949282}
@@ -213,8 +213,7 @@ MonoBehaviour:
   - {fileID: 8480674514415059778}
   - {fileID: 1290834792083964816}
   - {fileID: 9128649121393654434}
-  valueThresholds: 01000000050000000a000000140000003200000064000000
-  relicData: {fileID: 0}
+  valueThresholds: 0100000002000000050000000a0000000f00000014000000
 --- !u!50 &751349774327000955
 Rigidbody2D:
   serializedVersion: 5

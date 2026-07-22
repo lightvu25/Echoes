@@ -29,7 +29,7 @@ public abstract class BaseLevelGenerator : MonoBehaviour
         _spawnedRooms.Clear();
     }
 
-    /// <summary>Public teardown entry point for GameManager to call before regeneration.</summary>
+    // Public teardown entry point for GameManager to call before regeneration
     public void ClearMap() => ClearSpawnedRooms();
 
     // Filters pool by required exit mask; returns fallbackErrorRoom on mismatch.

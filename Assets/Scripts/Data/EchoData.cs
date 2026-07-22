@@ -28,6 +28,7 @@ public class EchoData : ItemBaseData
     public Color trailColor = Color.white;
     public ParticleSystem stateVFXPrefab;
     public GameObject hitImpactPrefab;
+    public GameObject voidMarkVFXPrefab;
 
     [HideInInspector] public int level = 1;
     [HideInInspector] public float currentStatusProc;

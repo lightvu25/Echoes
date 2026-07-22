@@ -29,7 +29,6 @@ public class CinemachineCameraShake2D : MonoBehaviour
         if (PlayerInteract.Instance != null)
         {
             PlayerInteract.Instance.OnCoinPickup += HandleCoinPickup;
-            PlayerInteract.Instance.OnTimePickup += HandleTimePickup;
         }
     }
 
@@ -38,7 +37,6 @@ public class CinemachineCameraShake2D : MonoBehaviour
         if (PlayerInteract.Instance != null)
         {
             PlayerInteract.Instance.OnCoinPickup -= HandleCoinPickup;
-            PlayerInteract.Instance.OnTimePickup -= HandleTimePickup;
         }
     }
 
@@ -47,10 +45,7 @@ public class CinemachineCameraShake2D : MonoBehaviour
         ShakeCamera(pickupShakeForce);
     }
 
-    private void HandleTimePickup(object sender, PlayerInteract.OnTimePickupEventArgs e)
-    {
-        ShakeCamera(pickupShakeForce);
-    }
+
 
     /// <summary>
     /// Forwards a shake request to <see cref="GameFeelManager"/>.

@@ -17,25 +17,81 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        
         Debug.Log("[GameManager] Awake called. Setting Instance.");
         Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Start()
     {
-        Debug.Log("[GameManager] Start called.");
-        if (PlayerInteract.Instance == null) Debug.LogError("[GameManager] PlayerInteract.Instance is NULL!");
+        if (currentGenerator != null) 
+        {
+            // If starting directly in the scene (first run), OnSceneLoaded might have already run, 
+            // or we might need to run it. SceneLoaded runs before Start, so we don't need to do anything here if we already initialized.
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (this != Instance) return;
+
+        Debug.Log($"[GameManager] OnSceneLoaded called for scene: {scene.name}");
         
+        // FIX: Ensure time is unpaused before initializing a new scene!
+        // This prevents the player from being frozen if they transitioned while timeScale was 0.
+        Time.timeScale = 1f;
+        
+        currentGenerator = FindFirstObjectByType<BaseLevelGenerator>();
+        cinemachineCamera = FindFirstObjectByType<CinemachineCamera>();
+
+        StartCoroutine(InitializeSceneRoutine());
+    }
+
+    private IEnumerator InitializeSceneRoutine()
+    {
+        yield return null;
+
+        CutsceneManager cutsceneManager = FindFirstObjectByType<CutsceneManager>();
+        if (cutsceneManager != null)
+        {
+            // Ensure player inputs are unlocked when a new scene starts, 
+            // even if initialization aborts early (e.g. in MindScene)
+            if (GameInput.Instance != null)
+                GameInput.Instance.SetInputsEnabled(true);
+        }
+
+        if (PlayerInteract.Instance == null) 
+        {
+            Debug.LogWarning("[GameManager] PlayerInteract.Instance is NULL! Skipping initialization.");
+            yield break;
+        }
+        
+        PlayerInteract.Instance.OnCoinPickup  -= Player_OnCoinPickup;
+        PlayerInteract.Instance.OnStateChanged -= Player_OnStateChanged;
+
         PlayerInteract.Instance.OnCoinPickup  += Player_OnCoinPickup;
-        PlayerInteract.Instance.OnGoal        += Player_OnGoal;
         PlayerInteract.Instance.OnStateChanged += Player_OnStateChanged;
-
-
 
         if (currentGenerator == null)
         {
-            Debug.LogError("[GameManager] No BaseLevelGenerator assigned. Aborting level load.");
-            return;
+            Debug.LogWarning("[GameManager] No BaseLevelGenerator assigned in this scene. Aborting level load.");
+            yield break;
         }
 
         // --- Read pending memory node from Hub transition ---
@@ -43,22 +99,49 @@ public class GameManager : MonoBehaviour
         if (pendingNode != null)
         {
             Debug.Log($"[GameManager] Applying memory route: {pendingNode.nodeName} (ID: {pendingNode.nodeID})");
-            if (pendingNode.mapModifiers != null)
+            
+            // Reset modifiers
+            if (GameSession.Instance.currentRun != null)
+            {
+                GameSession.Instance.currentRun.currentLevelRelicMultiplier = 1f;
+                GameSession.Instance.currentRun.currentLevelEchoMultiplier = 1f;
+                GameSession.Instance.currentRun.currentLevelEquipmentMultiplier = 1f;
+            }
+
+            if (pendingNode.mapModifiers != null && GameSession.Instance.currentRun != null)
             {
                 foreach (var mod in pendingNode.mapModifiers)
                 {
                     Debug.Log($"  Modifier: {mod.modifierName} | Type: {mod.type} | Value: {mod.value}");
+                    switch (mod.type)
+                    {
+                        case MapModifier.ModifierType.RelicLootMultiplier:
+                            GameSession.Instance.currentRun.currentLevelRelicMultiplier = mod.value;
+                            break;
+                        case MapModifier.ModifierType.EchoLootMultiplier:
+                            GameSession.Instance.currentRun.currentLevelEchoMultiplier = mod.value;
+                            break;
+                        case MapModifier.ModifierType.EquipmentLootMultiplier:
+                            GameSession.Instance.currentRun.currentLevelEquipmentMultiplier = mod.value;
+                            break;
+                    }
                 }
             }
-            // Clear after reading — modifiers will be wired into
-            // EvolutionManager/BurdenManager in a future step.
             GameSession.Instance.pendingNextNode = null;
         }
 
-        int depth = GameSession.Instance.currentRun.levelNumber;
+        int depth = 1;
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            depth = GameSession.Instance.currentRun.levelNumber;
+        }
+        
         currentGenerator.GenerateMap(depth);
 
-        GameDataManager.Instance?.IncrementLevelAttempt(depth);
+        if (GameDataManager.Instance != null)
+        {
+            GameDataManager.Instance.IncrementLevelAttempt(depth);
+        }
 
         Transform spawn = currentGenerator.GetPlayerSpawnPoint();
         if (spawn != null)
@@ -66,8 +149,14 @@ public class GameManager : MonoBehaviour
             StartCoroutine(SpawnPlayerSafely(spawn.position));
         }
 
-        cinemachineCamera.Target.TrackingTarget = PlayerInteract.Instance.transform;
-        CinemachineCameraZoom2D.Instance.SetNormalOrthographicSize();
+        if (cinemachineCamera != null && PlayerInteract.Instance != null)
+        {
+            cinemachineCamera.Target.TrackingTarget = PlayerInteract.Instance.transform;
+            if (CinemachineCameraZoom2D.Instance != null)
+            {
+                CinemachineCameraZoom2D.Instance.SetNormalOrthographicSize();
+            }
+        }
     }
 
     // ------------------------------------------------------------------ //
@@ -96,10 +185,7 @@ public class GameManager : MonoBehaviour
     //  Hub Scene Transition                                                //
     // ------------------------------------------------------------------ //
 
-    /// <summary>
-    /// Called when the player reaches a Goal. Disables player control,
-    /// saves the run, and starts the transition to HubScene.
-    /// </summary>
+
     public void TriggerLevelTransition(Vector3 goalPos)
     {
         Debug.Log("[GameManager] Level transition triggered — heading to Hub.");
@@ -128,8 +214,8 @@ public class GameManager : MonoBehaviour
             yield return StartCoroutine(cutsceneManager.PlayGoalSequence(goalPos));
         }
         
-        Debug.Log("[GameManager] Loading HubScene...");
-        SceneManager.LoadScene("HubScene");
+        Debug.Log("Loading MindScene...");
+        SceneManager.LoadScene("MindScene");
     }
 
     private System.Collections.IEnumerator SpawnPlayerSafely(Vector3 targetPosition)
@@ -148,13 +234,18 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // Wait enough time to ensure composite colliders rebuild their geometry
         yield return new WaitForSeconds(0.5f);
 
         if (rb != null) 
         {
             rb.linearVelocity = Vector2.zero;
             rb.simulated = true;
+        }
+
+        CutsceneManager cutsceneManager = FindFirstObjectByType<CutsceneManager>();
+        if (cutsceneManager != null)
+        {
+            yield return StartCoroutine(cutsceneManager.PlayOpeningSequence());
         }
     }
 
@@ -192,12 +283,6 @@ public class GameManager : MonoBehaviour
         {
             PlayerStats.Instance?.AddGold(1);
         }
-    }
-
-    private void Player_OnGoal(object sender, PlayerInteract.OnGoalEventArgs e)
-    {
-        Vector3 goalPos = e.goal != null ? e.goal.transform.position : PlayerInteract.Instance.transform.position;
-        TriggerLevelTransition(goalPos);
     }
 
     private void Player_OnStateChanged(object sender, PlayerInteract.OnStateChangedEventArgs e)

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &360521058531614490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7230381815890174134}
+  m_Layer: 11
+  m_Name: VFX Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7230381815890174134
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360521058531614490}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2090545651872280205}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3024749415299252389
 GameObject:
   m_ObjectHideFlags: 0
@@ -78,7 +109,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 195113763
-  m_SortingLayer: 8
+  m_SortingLayer: 10
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7631889286582480796, guid: fa5ab1ee79322864f847ddcec6c923ab, type: 3}
@@ -103,8 +134,8 @@ GameObject:
   - component: {fileID: 155855887508250025}
   - component: {fileID: 2193948382417411307}
   - component: {fileID: 6733640705125545912}
-  - component: {fileID: 936946424754813592}
   - component: {fileID: -1439138560455886875}
+  - component: {fileID: 8275998404340255636}
   m_Layer: 0
   m_Name: Goal
   m_TagString: MemorySource
@@ -126,6 +157,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5123020807516772111}
+  - {fileID: 7230381815890174134}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &155855887508250025
@@ -260,18 +292,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.671875, y: 1.734375}
   m_EdgeRadius: 0
---- !u!114 &936946424754813592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7276161421347573496}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08edf1a3e7bf7f84391fea9d7369e972, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Goal
 --- !u!114 &-1439138560455886875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,8 +307,8 @@ MonoBehaviour:
   onInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 936946424754813592}
-        m_TargetAssemblyTypeName: Goal, Assembly-CSharp
+      - m_Target: {fileID: 8275998404340255636}
+        m_TargetAssemblyTypeName: GoalExit, Assembly-CSharp
         m_MethodName: Interact
         m_Mode: 1
         m_Arguments:
@@ -304,3 +324,16 @@ MonoBehaviour:
   targetSpriteRenderer: {fileID: 155855887508250025}
   outlineThickness: 0.02
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &8275998404340255636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7276161421347573496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db04dec39b6e69c4e91dba91a61f2670, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GoalExit
+  interactVfxPrefab: {fileID: 0}

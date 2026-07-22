@@ -41,9 +41,9 @@ public class PlayerInventoryCore : MonoBehaviour
     //  Equipped lists (read-only externally)                               //
     // ------------------------------------------------------------------ //
 
-    private readonly List<ItemBaseData> equippedEchoes = new();
-    private readonly List<ItemBaseData> equippedRelics   = new();
-    private readonly List<ItemBaseData> equippedItems    = new();
+    private readonly ItemBaseData[] equippedEchoes = new ItemBaseData[RunData.MAX_SLOTS];
+    private readonly ItemBaseData[] equippedRelics = new ItemBaseData[RunData.MAX_SLOTS];
+    private readonly ItemBaseData[] equippedTools  = new ItemBaseData[RunData.MAX_SLOTS];
 
     // ------------------------------------------------------------------ //
     //  Drop physics settings                                               //
@@ -64,6 +64,9 @@ public class PlayerInventoryCore : MonoBehaviour
 
     /// <summary>Index of the currently active Element slot (used by HotbarController).</summary>
     private int activeEchoIndex = 0;
+    
+    /// <summary>The currently active slot index (0 to 3). Useful for checking combat styles.</summary>
+    public int ActiveEchoIndex => activeEchoIndex;
 
     // ------------------------------------------------------------------ //
     //  Public accessors                                                    //
@@ -75,12 +78,12 @@ public class PlayerInventoryCore : MonoBehaviour
     /// <summary>Read-only view of equipped Relics.</summary>
     public IReadOnlyList<ItemBaseData> EquippedRelics => equippedRelics;
 
-    /// <summary>Read-only view of equipped Items (consumables).</summary>
-    public IReadOnlyList<ItemBaseData> EquippedItems => equippedItems;
+    /// <summary>Read-only view of equipped Tools.</summary>
+    public IReadOnlyList<ItemBaseData> EquippedTools => equippedTools;
 
     /// <summary>Element at the active hotbar index, or null if the slot is empty.</summary>
     public EchoData ActiveEcho =>
-        activeEchoIndex < equippedEchoes.Count
+        activeEchoIndex < RunData.MAX_SLOTS
             ? equippedEchoes[activeEchoIndex] as EchoData
             : null;
 
@@ -97,9 +100,9 @@ public class PlayerInventoryCore : MonoBehaviour
     public int UnlockedRelicSlots => Mathf.Clamp(
         Run != null ? Run.unlockedRelicSlots : 1, 1, RunData.MAX_SLOTS);
 
-    /// <summary>Number of unlocked Item slots.</summary>
-    public int UnlockedItemSlots => Mathf.Clamp(
-        Run != null ? Run.unlockedItemSlots : 1, 1, RunData.MAX_SLOTS);
+    /// <summary>Number of unlocked Tool slots.</summary>
+    public int UnlockedEquipmentSlots => Mathf.Clamp(
+        Run != null ? Run.unlockedEquipmentSlots : 1, 1, RunData.MAX_SLOTS);
 
     // ------------------------------------------------------------------ //
     //  Unity lifecycle                                                     //
@@ -122,7 +125,7 @@ public class PlayerInventoryCore : MonoBehaviour
         {
             if (Run.unlockedEchoSlots <= 0) Run.unlockedEchoSlots = 1;
             if (Run.unlockedRelicSlots   <= 0) Run.unlockedRelicSlots   = 1;
-            if (Run.unlockedItemSlots    <= 0) Run.unlockedItemSlots    = 1;
+            if (Run.unlockedEquipmentSlots    <= 0) Run.unlockedEquipmentSlots    = 1;
         }
     }
 
@@ -162,22 +165,37 @@ public class PlayerInventoryCore : MonoBehaviour
             return;
         }
 
-        List<ItemBaseData> list  = GetList(item.Category);
-        int                limit = GetUnlockedCount(item.Category);
+        ItemBaseData[] arr = GetArray(item.Category);
+        int limit = GetUnlockedCount(item.Category);
 
-        if (item is EchoData echoData)
+        if (item is EchoData echoData && !echoData.name.Contains("(Clone)"))
         {
             EchoData runtimeInstance = Instantiate(echoData);
             runtimeInstance.InitRuntime();
             item = runtimeInstance;
         }
-
-        if (list.Count < limit)
+        else if (item is RelicData relicData && !relicData.name.Contains("(Clone)"))
         {
-            list.Add(item);
-            OnInventoryChanged?.Invoke();
-            
+            RelicData runtimeInstance = Instantiate(relicData);
+            runtimeInstance.InitRuntime();
+            item = runtimeInstance;
+        }
 
+        int emptyIndex = -1;
+        for (int i = 0; i < limit; i++)
+        {
+            if (arr[i] == null)
+            {
+                emptyIndex = i;
+                break;
+            }
+        }
+
+        if (emptyIndex >= 0)
+        {
+            arr[emptyIndex] = item;
+            if (item is RelicData r) AddRelicStats(r);
+            OnInventoryChanged?.Invoke();
         }
         else
         {
@@ -202,15 +220,17 @@ public class PlayerInventoryCore : MonoBehaviour
     {
         if (equipped == null || incoming == null) return;
 
-        List<ItemBaseData> list = GetList(incoming.Category);
-        int index = list.IndexOf(equipped);
+        ItemBaseData[] arr = GetArray(incoming.Category);
+        int index = Array.IndexOf(arr, equipped);
         if (index < 0)
         {
-            Debug.LogWarning($"[PlayerInventoryCore] SwapItem: '{equipped.itemName}' not found in {incoming.Category} list.");
+            Debug.LogWarning($"[PlayerInventoryCore] SwapItem: '{equipped.itemName}' not found in {incoming.Category} array.");
             return;
         }
 
-        list[index] = incoming;
+        arr[index] = incoming;
+        if (equipped is RelicData rEquipped) RemoveRelicStats(rEquipped);
+        if (incoming is RelicData rIncoming) AddRelicStats(rIncoming);
         SpawnDroppedItem(equipped);
         OnInventoryChanged?.Invoke();
     }
@@ -221,11 +241,60 @@ public class PlayerInventoryCore : MonoBehaviour
     public void RemoveEquippedItem(ItemBaseData item)
     {
         if (item == null) return;
-        List<ItemBaseData> list = GetList(item.Category);
-        if (list.Remove(item))
+        ItemBaseData[] arr = GetArray(item.Category);
+        int index = Array.IndexOf(arr, item);
+        if (index >= 0)
         {
+            if (arr[index] is RelicData r) RemoveRelicStats(r);
+            arr[index] = null;
             OnInventoryChanged?.Invoke();
         }
+    }
+
+    /// <summary>
+    /// Removes an item from the equipped list by its ID without dropping it.
+    /// Used by self-destructing relics or items.
+    /// </summary>
+    public void RemoveItemByID(string itemID)
+    {
+        if (string.IsNullOrEmpty(itemID)) return;
+
+        // Check all arrays
+        RemoveByIDFromArray(equippedEchoes, itemID);
+        RemoveByIDFromArray(equippedRelics, itemID);
+        RemoveByIDFromArray(equippedTools, itemID);
+    }
+
+    private void RemoveByIDFromArray(ItemBaseData[] arr, string itemID)
+    {
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (arr[i] != null && arr[i].itemID == itemID)
+            {
+                if (arr[i] is RelicData r) RemoveRelicStats(r);
+                arr[i] = null;
+                OnInventoryChanged?.Invoke();
+                return;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Swaps or moves items within a category array.
+    /// </summary>
+    public void MoveOrSwapItem(ItemCategory category, int fromIndex, int toIndex)
+    {
+        ItemBaseData[] arr = GetArray(category);
+        if (fromIndex < 0 || fromIndex >= RunData.MAX_SLOTS || toIndex < 0 || toIndex >= RunData.MAX_SLOTS) return;
+        
+        int limit = GetUnlockedCount(category);
+        if (fromIndex >= limit || toIndex >= limit) return;
+        
+        ItemBaseData temp = arr[fromIndex];
+        arr[fromIndex] = arr[toIndex];
+        arr[toIndex] = temp;
+        
+        OnInventoryChanged?.Invoke();
     }
 
     // ------------------------------------------------------------------ //
@@ -249,8 +318,8 @@ public class PlayerInventoryCore : MonoBehaviour
             case ItemCategory.Relic:
                 Run.unlockedRelicSlots = Mathf.Min(Run.unlockedRelicSlots + 1, RunData.MAX_SLOTS);
                 break;
-            case ItemCategory.Item:
-                Run.unlockedItemSlots = Mathf.Min(Run.unlockedItemSlots + 1, RunData.MAX_SLOTS);
+            case ItemCategory.Tool:
+                Run.unlockedEquipmentSlots = Mathf.Min(Run.unlockedEquipmentSlots + 1, RunData.MAX_SLOTS);
                 break;
         }
 
@@ -279,8 +348,8 @@ public class PlayerInventoryCore : MonoBehaviour
     /// </summary>
     public EchoData GetActiveEcho()
     {
-        if (equippedEchoes == null || equippedEchoes.Count == 0) return null;
-        if (activeEchoIndex >= 0 && activeEchoIndex < equippedEchoes.Count)
+        if (equippedEchoes == null) return null;
+        if (activeEchoIndex >= 0 && activeEchoIndex < RunData.MAX_SLOTS)
             return equippedEchoes[activeEchoIndex] as EchoData;
         return null;
     }
@@ -305,7 +374,7 @@ public class PlayerInventoryCore : MonoBehaviour
     /// </summary>
     /// <param name="category">The inventory category to look up.</param>
     public IReadOnlyList<ItemBaseData> GetEquippedList(ItemCategory category) =>
-        GetList(category);
+        GetArray(category);
 
     // ------------------------------------------------------------------ //
     //  Event handlers                                                      //
@@ -322,9 +391,9 @@ public class PlayerInventoryCore : MonoBehaviour
     /// </summary>
     private void HandleSlotsDecreased(int _)
     {
-        TrimList(equippedEchoes, UnlockedEchoSlots);
-        TrimList(equippedRelics,   UnlockedRelicSlots);
-        TrimList(equippedItems,    UnlockedItemSlots);
+        TrimArray(equippedEchoes, UnlockedEchoSlots);
+        TrimArray(equippedRelics,   UnlockedRelicSlots);
+        TrimArray(equippedTools,    UnlockedEquipmentSlots);
         OnInventoryChanged?.Invoke();
     }
 
@@ -334,27 +403,63 @@ public class PlayerInventoryCore : MonoBehaviour
     //  Private helpers                                                     //
     // ------------------------------------------------------------------ //
 
-    private List<ItemBaseData> GetList(ItemCategory category) => category switch
+    private ItemBaseData[] GetArray(ItemCategory category) => category switch
     {
         ItemCategory.Echo => equippedEchoes,
         ItemCategory.Relic   => equippedRelics,
-        _                    => equippedItems
+        _                    => equippedTools
     };
 
     private int GetUnlockedCount(ItemCategory category) => category switch
     {
         ItemCategory.Echo => UnlockedEchoSlots,
         ItemCategory.Relic   => UnlockedRelicSlots,
-        _                    => UnlockedItemSlots
+        _                    => UnlockedEquipmentSlots
     };
 
-    private void TrimList(List<ItemBaseData> list, int maxCount)
+    private void TrimArray(ItemBaseData[] arr, int maxCount)
     {
-        while (list.Count > maxCount)
+        for (int i = maxCount; i < arr.Length; i++)
         {
-            int last = list.Count - 1;
-            SpawnDroppedItem(list[last]);
-            list.RemoveAt(last);
+            if (arr[i] != null)
+            {
+                if (arr[i] is RelicData r) RemoveRelicStats(r);
+                SpawnDroppedItem(arr[i]);
+                arr[i] = null;
+            }
+        }
+    }
+
+    private void AddRelicStats(RelicData relic)
+    {
+        if (Run != null)
+        {
+            Run.bonusVitality += relic.bonusVitality;
+            Run.bonusSorcery += relic.bonusSorcery;
+            Run.bonusResonance += relic.bonusResonance;
+
+            if (relic.bonusVitality > 0 && healthSystem != null)
+            {
+                int hpGain = relic.bonusVitality * 10;
+                healthSystem.SetMaxHP(healthSystem.MaxHP + hpGain, false);
+                healthSystem.Heal(hpGain);
+            }
+        }
+    }
+
+    private void RemoveRelicStats(RelicData relic)
+    {
+        if (Run != null)
+        {
+            Run.bonusVitality -= relic.bonusVitality;
+            Run.bonusSorcery -= relic.bonusSorcery;
+            Run.bonusResonance -= relic.bonusResonance;
+
+            if (relic.bonusVitality > 0 && healthSystem != null)
+            {
+                int hpLoss = relic.bonusVitality * 10;
+                healthSystem.SetMaxHP(Mathf.Max(1, healthSystem.MaxHP - hpLoss), false);
+            }
         }
     }
 
@@ -371,8 +476,8 @@ public class PlayerInventoryCore : MonoBehaviour
         float  randomY   = UnityEngine.Random.Range(popForceMin, popForceMax);
         Vector2 popForce = new Vector2(randomX, randomY);
 
-        if (dropped.TryGetComponent(out Collectible collectible))
-            collectible.Initialize(1, popForce);
+        if (dropped.TryGetComponent(out ItemDrop itemDrop))
+            itemDrop.Initialize(popForce, item);
         else if (dropped.TryGetComponent(out Rigidbody2D rb))
             rb.AddForce(popForce, ForceMode2D.Impulse);
     }

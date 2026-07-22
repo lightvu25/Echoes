@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: BatsTalon
   itemName: Bat's Talon
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -6981806975733853947, guid: ac7de1fcb1d8fbe49ac48fc468afc72c, type: 3}
   description: Aerial Attacks deal +30% Damage.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 2
   basePrice: 50
-  RelicID: BatsTalon
-  RelicNameEN: Bat's Talon
   Rarity: 1
   FactionBonus: +2 Random Stats
-  CoreEffect: Aerial Attacks deal +30% Damage.
-  RelicIcon: {fileID: 0}

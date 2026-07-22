@@ -15,7 +15,7 @@ public class FusionSlot : MonoBehaviour, IDropHandler
             {
                 if (slottedItemUI != null)
                 {
-                    slottedItemUI.ReturnToOriginalParent();
+                    slottedItemUI.ReturnToInventory();
                 }
 
                 droppedElement.transform.SetParent(transform);
@@ -53,7 +53,7 @@ public class FusionSlot : MonoBehaviour, IDropHandler
     {
         if (slottedItemUI != null)
         {
-            slottedItemUI.ReturnToOriginalParent();
+            slottedItemUI.ReturnToInventory();
         }
         SlottedElement = null;
         slottedItemUI = null;

@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: CondemnedRing
   itemName: Condemned Ring
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 4739198233148410310, guid: ac20649c8bcee374ab133fd261ede7ab, type: 3}
   description: Max HP is permanently locked to 1. All attacks are guaranteed Critical
     Hits.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 3
   basePrice: 50
-  RelicID: CondemnedRing
-  RelicNameEN: Condemned Ring
   Rarity: 2
   FactionBonus: +3 Stats (All)
-  CoreEffect: Max HP is permanently locked to 1. All attacks are guaranteed Critical
-    Hits.
-  RelicIcon: {fileID: 0}

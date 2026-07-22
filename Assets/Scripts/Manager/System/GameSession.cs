@@ -48,6 +48,19 @@ public class GameSession : MonoBehaviour
         currentRun.currentHealth = 100;
         currentRun.mapSeed = Random.Range(0, 999999);
         currentRun.levelNumber = 1;
+
+        int startingGold = 0;
+        if (MetaProgressionManager.Instance != null)
+        {
+            if (MetaProgressionManager.Instance.HasSkill("GOLD_RESERVE_1")) startingGold += 100;
+            if (MetaProgressionManager.Instance.HasSkill("GOLD_RESERVE_2")) startingGold += 150; // Total 250? Or maybe just add directly.
+            
+            // Mind Garden Loot Bonuses
+            if (MetaProgressionManager.Instance.HasSkill("LOOT_RELIC_1")) currentRun.bonusRelicChance += 0.05f;
+            if (MetaProgressionManager.Instance.HasSkill("LOOT_ECHO_1")) currentRun.bonusEchoChance += 0.05f;
+            if (MetaProgressionManager.Instance.HasSkill("LOOT_EQUIPMENT_1")) currentRun.bonusEquipmentChance += 0.05f;
+        }
+        currentRun.runGold = startingGold;
     }
     public void HandlePlayerDeath()
     {

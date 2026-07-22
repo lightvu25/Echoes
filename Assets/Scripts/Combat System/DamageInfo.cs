@@ -82,6 +82,7 @@ public struct DamageInfo
     /// </summary>
     public int playerLevel;
     public bool isTrueDamage;
+    public bool isPiercing;
 
     // ===== Factory Methods =====
 
@@ -103,7 +104,8 @@ public struct DamageInfo
             attacker = attacker,
             damageSource = "Unknown",
             isCritical = false,
-            isTrueDamage = false
+            isTrueDamage = false,
+            isPiercing = false
         };
     }
 

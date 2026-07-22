@@ -225,20 +225,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 5906014342740351065}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f937aa49fa72e64f818665b054ed10e, type: 3}
+  m_Script: {fileID: 11500000, guid: b7e3f03d5c43ffc448f3b81c09daf8e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collectible
-  type: 2
-  magnetAcceleration: 10
-  magnetDelay: 1.5
-  damagePopupPrefab: {fileID: 2608304708606694418, guid: f475178fad115d044af6c3edba2aaed2, type: 3}
-  visualTiers:
-  - {fileID: 5906014342740351065}
-  valueThresholds: 01000000
-  auraRenderer: {fileID: 0}
+  auraRenderer: {fileID: 3330109140375763895}
   tierAuras:
-  - {fileID: 0}
-  itemData: {fileID: 0}
+  - {fileID: -7982188467941105043, guid: c17852441d04f9a47a5c1beac8bd7fb3, type: 3}
+  - {fileID: -663432257710793722, guid: 4fcd53cf164bc87499bdbf6b9ed69118, type: 3}
+  - {fileID: 4603076347710536886, guid: ea2c5b379f08e0941926ee2fb85828d0, type: 3}
+  itemData: {fileID: 11400000, guid: e1fed57bc2fc0bc4ba9c9ec5904c2115, type: 2}
+  itemSpriteRenderer: {fileID: 460266005602714887}
 --- !u!1 &8555279673392773166
 GameObject:
   m_ObjectHideFlags: 0

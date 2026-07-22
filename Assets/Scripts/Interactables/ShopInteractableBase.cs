@@ -17,14 +17,14 @@ public abstract class ShopInteractableBase : MonoBehaviour, IInteractable
 
     protected abstract void DoInteract();
 
-    private void OnTriggerEnter2D(Collider2D other)
+    protected virtual void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
         playerRef = other.transform;
         if (!activeInRange.Contains(this)) activeInRange.Add(this);
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    protected virtual void OnTriggerExit2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
         activeInRange.Remove(this);
@@ -57,11 +57,26 @@ public abstract class ShopInteractableBase : MonoBehaviour, IInteractable
         AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position, volume);
     }
 
+    private Dictionary<TextMeshPro, Color> originalTextColors = new Dictionary<TextMeshPro, Color>();
+    private Dictionary<SpriteRenderer, Color> originalSpriteColors = new Dictionary<SpriteRenderer, Color>();
+
     protected IEnumerator FlashTextColor(TextMeshPro text, Color flashColor, float duration)
     {
-        Color original = text.color;
+        if (!originalTextColors.ContainsKey(text))
+            originalTextColors[text] = text.color;
+
         text.color = flashColor;
         yield return new WaitForSeconds(duration);
-        if (text != null) text.color = original;
+        if (text != null) text.color = originalTextColors[text];
+    }
+
+    protected IEnumerator FlashSpriteColor(SpriteRenderer sr, Color flashColor, float duration)
+    {
+        if (!originalSpriteColors.ContainsKey(sr))
+            originalSpriteColors[sr] = sr.color;
+
+        sr.color = flashColor;
+        yield return new WaitForSeconds(duration);
+        if (sr != null) sr.color = originalSpriteColors[sr];
     }
 }

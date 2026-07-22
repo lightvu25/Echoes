@@ -79,7 +79,8 @@ public class Chest : MonoBehaviour, IInteractable, IFeedbackProvider
             yield break;
         }
 
-        List<DropResult> drops = lootTable.GetDrops(1f, chestTier);
+        LootBonuses bonuses = LootBonusResolver.Resolve();
+        List<DropResult> drops = lootTable.GetDrops(1f, chestTier, bonuses);
         SpawnDrops(drops);
     }
 
@@ -92,11 +93,11 @@ public class Chest : MonoBehaviour, IInteractable, IFeedbackProvider
             if (result.type == LootItemType.Currency)
             {
                 GameObject obj = ObjectPoolManager.SpawnObject(result.prefab, origin, Quaternion.identity, ObjectPoolManager.PoolType.Loot);
-                if (obj.TryGetComponent(out Collectible collectible))
+                if (obj.TryGetComponent(out ResourceDrop resourceDrop))
                 {
                     float x = Random.Range(-1f, 1f);
                     float y = Random.Range(popForceMin, popForceMax);
-                    collectible.Initialize(result.totalAmount, new Vector2(x, y));
+                    resourceDrop.Initialize(result.totalAmount, new Vector2(x, y));
                 }
                 else
                 {

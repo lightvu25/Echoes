@@ -17,6 +17,9 @@ public class MapModifier
         RoomCount,
         TrapFrequency,
         LootMultiplier,
-        BossEnabled
+        BossEnabled,
+        RelicLootMultiplier,
+        EchoLootMultiplier,
+        EquipmentLootMultiplier
     }
 }

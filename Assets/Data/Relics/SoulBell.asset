@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: SoulBell
   itemName: Soul Bell
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -2171782338965537886, guid: eba8d3cef0de1d943a4890b5958c18f0, type: 3}
   description: Defeating an Elite/Boss grants a Shield that negates 1 hit without
     dropping items.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 3
   basePrice: 50
-  RelicID: SoulBell
-  RelicNameEN: Soul Bell
   Rarity: 2
   FactionBonus: +3 Stats (All)
-  CoreEffect: Defeating an Elite/Boss grants a Shield that negates 1 hit without
-    dropping items.
-  RelicIcon: {fileID: 0}

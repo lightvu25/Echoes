@@ -46,7 +46,13 @@ public class FallDamageHandler : MonoBehaviour
 
         if (!isGrounded && rb.linearVelocity.y < 0)
         {
-            if (rb.linearVelocity.y < peakFallVelocity)
+            // Ignore velocity changes if we are currently performing a plunge attack,
+            // because PlayerAttack handles plunge self-damage based on drop distance.
+            if (playerMovement != null && playerMovement.isPlunging)
+            {
+                // Do nothing
+            }
+            else if (rb.linearVelocity.y < peakFallVelocity)
             {
                 peakFallVelocity = rb.linearVelocity.y;
             }

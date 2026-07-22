@@ -31,135 +31,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5640882089561480607}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1242271943948131021
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2920253977313211518}
-  - component: {fileID: 5842819788804085113}
-  m_Layer: 8
-  m_Name: StepAudio
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2920253977313211518
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242271943948131021}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5640882089561480607}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &5842819788804085113
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242271943948131021}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 29fc45061a64db1488bf794c8309ffe3, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1 &1301627492814987612
 GameObject:
   m_ObjectHideFlags: 0
@@ -269,7 +140,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 195113763
-  m_SortingLayer: 9
+  m_SortingLayer: 10
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7631889286582480796, guid: fa5ab1ee79322864f847ddcec6c923ab, type: 3}
@@ -407,8 +278,9 @@ GameObject:
   m_Component:
   - component: {fileID: 255216875940072176}
   - component: {fileID: 4220651430361137062}
+  - component: {fileID: 31533547253452744}
   m_Layer: 8
-  m_Name: AttackAudio
+  m_Name: EnemyAudio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -526,6 +398,35 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &31533547253452744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3480915062406626493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcaefb77e0df30f4696e23e41105e74e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EntityAudioManager
+  sfxMixerGroup: {fileID: 2795143675836899455, guid: 9b4754405d6970d4d971880af937288c, type: 2}
+  sounds:
+  - id: Roar
+    clip: {fileID: 8300000, guid: 7a4a858e6528f474aaaf0fa5c77affdb, type: 3}
+    volume: 1
+  - id: Throw Bomb
+    clip: {fileID: 8300000, guid: 08d57fbff63d81d4d882fa468a50007f, type: 3}
+    volume: 1
+  - id: Patrol
+    clip: {fileID: 8300000, guid: 213e96d481b22a046b42b109e723c467, type: 3}
+    volume: 1
+  - id: Chase
+    clip: {fileID: 8300000, guid: e7654b822dadca04da26ded280e61e0c, type: 3}
+    volume: 1
+  - id: Dead
+    clip: {fileID: 8300000, guid: 68ac2bdf36b485b448a1f899159484f7, type: 3}
+    volume: 1
 --- !u!1 &3537034702755151689
 GameObject:
   m_ObjectHideFlags: 0
@@ -804,7 +705,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5640882089561480607}
   - component: {fileID: 3253495775269768501}
-  - component: {fileID: 4158954378465485700}
   - component: {fileID: 30084099364794236}
   - component: {fileID: 2434607277094997996}
   - component: {fileID: 4269877125141051423}
@@ -816,6 +716,7 @@ GameObject:
   - component: {fileID: 5744286393587405592}
   - component: {fileID: 296809493355205}
   - component: {fileID: -4999266143223472534}
+  - component: {fileID: 8441679189029836243}
   m_Layer: 8
   m_Name: Bombing Enemy
   m_TagString: Enemy
@@ -842,7 +743,6 @@ Transform:
   - {fileID: 3901698716808841291}
   - {fileID: 5710020400054520358}
   - {fileID: 5234459240972386383}
-  - {fileID: 2920253977313211518}
   - {fileID: 255216875940072176}
   - {fileID: 6882995355841520969}
   - {fileID: 4503382128196253927}
@@ -879,20 +779,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &4158954378465485700
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8247203597836570067}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 951bf87741f985f4b876aae88d4503e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyAudio
-  attackAudioSource: {fileID: 4220651430361137062}
-  stepAudioSource: {fileID: 5842819788804085113}
 --- !u!114 &30084099364794236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1079,6 +965,19 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &8441679189029836243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8247203597836570067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caabe4b176034b543b12d40e9e3f0562, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EchoStatusReceiver
+  iceBlockPrefab: {fileID: 3112956029507099662, guid: 4047595db58ff084ea2c0133cb6a5956, type: 3}
 --- !u!1 &9102165767309968662
 GameObject:
   m_ObjectHideFlags: 0
@@ -1181,9 +1080,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9102165767309968662}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f83e53b0e937e7645b2ca54b2dc515a7, type: 2}
+  m_Controller: {fileID: 9100000, guid: 69fb70683d8dba442a32327ec545ff09, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1202,7 +1101,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9102165767309968662}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f64287b63a3205740b0b03b5a554c9c7, type: 3}
   m_Name: 

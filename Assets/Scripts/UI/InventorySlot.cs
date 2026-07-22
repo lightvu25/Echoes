@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using DG.Tweening;
 using System.Collections.Generic;
 
-public class InventorySlot : MonoBehaviour
+public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, ITooltipDataProvider
 {
     [Header("Visuals")]
     [SerializeField] private Image itemIconImage;
@@ -13,6 +14,9 @@ public class InventorySlot : MonoBehaviour
     [Header("Identity")]
     [SerializeField] private ItemCategory category;
     [SerializeField] private int slotIndex;
+
+    public ItemCategory Category => category;
+    public int SlotIndex => slotIndex;
 
     [Header("Glow")]
     [SerializeField] private float glowPulseAlpha = 0.8f;
@@ -65,6 +69,16 @@ public class InventorySlot : MonoBehaviour
     //  Private helpers                                                     //
     // ------------------------------------------------------------------ //
 
+    public ItemBaseData GetTooltipData()
+    {
+        if (PlayerInventoryCore.Instance == null) return null;
+        int unlockedCount = GetUnlockedCount();
+        if (slotIndex >= unlockedCount) return null;
+        
+        IReadOnlyList<ItemBaseData> list = PlayerInventoryCore.Instance.GetEquippedList(category);
+        return slotIndex < list.Count ? list[slotIndex] : null;
+    }
+
     private void Refresh()
     {
         if (PlayerInventoryCore.Instance == null) return;
@@ -84,7 +98,10 @@ public class InventorySlot : MonoBehaviour
         {
             itemIconImage.gameObject.SetActive(item != null && isUnlocked);
             if (item != null && isUnlocked)
+            {
                 itemIconImage.sprite = item.itemIcon;
+                itemIconImage.SetNativeSize();
+            }
         }
     }
 
@@ -95,13 +112,80 @@ public class InventorySlot : MonoBehaviour
         {
             ItemCategory.Echo => PlayerInventoryCore.Instance.UnlockedEchoSlots,
             ItemCategory.Relic   => PlayerInventoryCore.Instance.UnlockedRelicSlots,
-            _                    => PlayerInventoryCore.Instance.UnlockedItemSlots,
+            _                    => PlayerInventoryCore.Instance.UnlockedEquipmentSlots,
         };
     }
 
     private void OnClicked()
     {
-        // Currently used by SlotUnlockPanel flow only — InventoryUI handles the callback.
-        // Future: allow drag-and-drop or right-click drop from here.
+        // Currently used by SlotUnlockPanel flow only
+    }
+
+    // ------------------------------------------------------------------ //
+    //  Drag and Drop                                                       //
+    // ------------------------------------------------------------------ //
+
+    private GameObject ghostIcon;
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (PlayerInventoryCore.Instance == null) return;
+        
+        int unlockedCount = GetUnlockedCount();
+        if (slotIndex >= unlockedCount) return; // Cannot drag locked slot
+
+        IReadOnlyList<ItemBaseData> list = PlayerInventoryCore.Instance.GetEquippedList(category);
+        if (slotIndex >= list.Count || list[slotIndex] == null) return; // Cannot drag empty slot
+
+        ghostIcon = new GameObject("DragGhost");
+        Canvas rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
+        ghostIcon.transform.SetParent(rootCanvas.transform, false);
+
+        Image img = ghostIcon.AddComponent<Image>();
+        img.sprite = itemIconImage.sprite;
+        img.raycastTarget = false; // Important: so it doesn't block OnDrop
+
+        RectTransform rt = ghostIcon.GetComponent<RectTransform>();
+        rt.sizeDelta = itemIconImage.rectTransform.rect.size;
+        rt.position = eventData.position;
+
+        // Visually fade the original
+        if (itemIconImage != null)
+        {
+            itemIconImage.color = new Color(1, 1, 1, 0.5f);
+        }
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (ghostIcon != null)
+        {
+            ghostIcon.GetComponent<RectTransform>().position = eventData.position;
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (ghostIcon != null)
+        {
+            Destroy(ghostIcon);
+        }
+        
+        if (itemIconImage != null)
+        {
+            itemIconImage.color = new Color(1, 1, 1, 1f);
+        }
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        InventorySlot sourceSlot = eventData.pointerDrag?.GetComponent<InventorySlot>();
+        if (sourceSlot != null)
+        {
+            if (sourceSlot.Category == this.Category)
+            {
+                PlayerInventoryCore.Instance.MoveOrSwapItem(this.Category, sourceSlot.SlotIndex, this.SlotIndex);
+            }
+        }
     }
 }

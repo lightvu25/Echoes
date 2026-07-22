@@ -7,6 +7,7 @@ public class DraggableElement : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 {
     public EchoData elementData { get; private set; }
     public Transform originalParent { get; private set; }
+    public Transform defaultParent { get; private set; }
 
     private CanvasGroup canvasGroup;
     [SerializeField] private Image iconImage;
@@ -15,6 +16,11 @@ public class DraggableElement : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         canvasGroup = GetComponent<CanvasGroup>();
         if (iconImage == null) iconImage = GetComponent<Image>();
+    }
+
+    private void Start()
+    {
+        if (defaultParent == null) defaultParent = transform.parent;
     }
 
     public void Setup(EchoData data)
@@ -46,6 +52,8 @@ public class DraggableElement : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         if (slot != null)
         {
             slot.RemoveItemReference();
+            var ui = UIManager.Instance?.GetPanel<SacrificialUI>(UIPanelType.SacrificialFusion);
+            if (ui != null) ui.CheckRecipe();
         }
 
         transform.SetParent(transform.root);
@@ -70,7 +78,7 @@ public class DraggableElement : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
         if (transform.parent == transform.root)
         {
-            ReturnToOriginalParent();
+            ReturnToInventory();
         }
     }
 
@@ -78,5 +86,18 @@ public class DraggableElement : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         transform.SetParent(originalParent);
         transform.localPosition = Vector3.zero;
+    }
+
+    public void ReturnToInventory()
+    {
+        if (defaultParent != null)
+        {
+            transform.SetParent(defaultParent);
+            transform.localPosition = Vector3.zero;
+        }
+        else
+        {
+            ReturnToOriginalParent();
+        }
     }
 }

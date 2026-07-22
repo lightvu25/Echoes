@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class MindGardenUI : MonoBehaviour, IUIPanel
 {
@@ -35,7 +37,14 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
     public GameObject linePrefab; 
     public Transform starMapContent;
 
+    [Header("Scrolling View")]
+    public ScrollRect scrollRect;
+    public Vector2 focusOffset = Vector2.zero;
+    public float focusZoomScale = 1f;
+
     private Dictionary<string, SkillNodeUI> _nodeDict = new Dictionary<string, SkillNodeUI>();
+    private Coroutine _focusCoroutine;
+
     private class NodeConnection
     {
         public string childID;
@@ -63,6 +72,12 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
         if (GameInput.Instance != null)
             GameInput.Instance.OnCancelPressed += HandleCancelPressed;
 
+        if (MetaProgressionManager.Instance != null)
+        {
+            MetaProgressionManager.Instance.OnDataChanged += HandleDataChanged;
+            MetaProgressionManager.Instance.OnSkillUnlocked += HandleSkillUnlocked;
+        }
+
         IsOpen = false;
         HideImmediate();
     }
@@ -73,7 +88,7 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
         {
             if (childNode == null || childNode.Data == null) continue;
 
-            foreach (ConstellationData prereq in childNode.Data.Prerequisites)
+            foreach (MindGardenNodeData prereq in childNode.Data.Prerequisites)
             {
                 if (prereq == null) continue;
 
@@ -106,6 +121,24 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
 
         if (GameInput.Instance != null)
             GameInput.Instance.OnCancelPressed -= HandleCancelPressed;
+
+        if (MetaProgressionManager.Instance != null)
+        {
+            MetaProgressionManager.Instance.OnDataChanged -= HandleDataChanged;
+            MetaProgressionManager.Instance.OnSkillUnlocked -= HandleSkillUnlocked;
+        }
+    }
+
+    private void HandleDataChanged()
+    {
+        RefreshAllNodes();
+        UpdateCurrencyLabels();
+        OnDataChanged?.Invoke();
+    }
+
+    private void HandleSkillUnlocked(MindGardenNodeData skill)
+    {
+        ShowSkillInfo(skill, SkillNodeUI.NodeState.Unlocked);
     }
 
     private void OnGamePaused(object sender, EventArgs e)
@@ -148,19 +181,13 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
 
     public void BuyPermanentMaxHP(int hpAmount, int cost)
     {
-        if (!ValidateReferences() || cost <= 0) return;
-        if (PlayerStats.Instance == null || PlayerStats.Instance.CurrentAstralShards < cost) return;
-
-        if (PlayerStats.Instance.SpendAstralShards(cost))
+        if (MetaProgressionManager.Instance != null)
         {
-            GameSession.Instance.currentProfile.bonusStartingMaxHP += hpAmount;
-            SaveManager.saveProfile(GameSession.Instance.currentProfile);
-            UpdateCurrencyLabels();
-            OnDataChanged?.Invoke();
+            MetaProgressionManager.Instance.BuyPermanentMaxHP(hpAmount, cost);
         }
     }
 
-    public void ShowSkillInfo(ConstellationData skill, SkillNodeUI.NodeState state)
+    public void ShowSkillInfo(MindGardenNodeData skill, SkillNodeUI.NodeState state)
     {
         if (skill == null) return;
 
@@ -177,9 +204,24 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
 
         if (_infoCost != null)
         {
-            _infoCost.text = state == SkillNodeUI.NodeState.Unlocked
-                ? "— Already Unlocked —"
-                : $"Cost: {skill.MemoryCost} Astral Shards";
+            if (state == SkillNodeUI.NodeState.Unlocked)
+            {
+                _infoCost.text = "— Already Unlocked —";
+            }
+            else
+            {
+                int invested = GameSession.Instance?.currentProfile?.GetInvestedAmount(skill.SkillID) ?? 0;
+                int remainingCost = skill.MemoryCost - invested;
+                
+                if (invested > 0)
+                {
+                    _infoCost.text = $"Cost: {remainingCost} Astral Shards ({invested}/{skill.MemoryCost} invested)";
+                }
+                else
+                {
+                    _infoCost.text = $"Cost: {skill.MemoryCost} Astral Shards";
+                }
+            }
         }
 
         if (_infoPrerequisites != null)
@@ -207,44 +249,70 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
                 _                               => "LOCKED",
             };
         }
+
+        if (scrollRect != null && EventSystem.current.currentSelectedGameObject != null)
+        {
+            RectTransform target = EventSystem.current.currentSelectedGameObject.GetComponent<RectTransform>();
+            if (target != null)
+            {
+                if (_focusCoroutine != null) StopCoroutine(_focusCoroutine);
+                _focusCoroutine = StartCoroutine(FocusNodeRoutine(target));
+            }
+        }
+    }
+
+    private IEnumerator FocusNodeRoutine(RectTransform target)
+    {
+        if (scrollRect == null || target == null) yield break;
+
+        RectTransform viewRect = scrollRect.viewport != null ? scrollRect.viewport : scrollRect.GetComponent<RectTransform>();
+        Vector2 viewportCenter = viewRect.rect.center;
+        
+        // Calculate the target position relative to the content's pivot
+        Vector2 targetPosition = scrollRect.content.InverseTransformPoint(target.position);
+        
+        float elapsedTime = 0f;
+        float duration = 0.25f;
+        Vector2 startPos = scrollRect.content.anchoredPosition;
+        Vector3 startScale = scrollRect.content.localScale;
+        Vector3 endScale = new Vector3(focusZoomScale, focusZoomScale, 1f);
+
+        // Calculate final position accounting for scale
+        Vector2 endPos = viewportCenter - (targetPosition * focusZoomScale) + focusOffset;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.unscaledDeltaTime;
+            float t = Mathf.SmoothStep(0, 1, elapsedTime / duration);
+            
+            scrollRect.content.anchoredPosition = Vector2.Lerp(startPos, endPos, t);
+            scrollRect.content.localScale = Vector3.Lerp(startScale, endScale, t);
+            
+            yield return null;
+        }
+
+        scrollRect.content.anchoredPosition = endPos;
+        scrollRect.content.localScale = endScale;
     }
 
     public void ClearSkillInfo() => SetInfoPanelVisible(false);
 
-    private void HandleUnlockRequested(ConstellationData skill)
+    private void HandleUnlockRequested(MindGardenNodeData skill)
     {
-        if (skill == null || !ValidateReferences()) return;
-
-        ProfileData profile = GameSession.Instance.currentProfile;
-
-        if (profile.HasSkill(skill.SkillID))
+        if (MetaProgressionManager.Instance != null)
         {
-            Debug.LogWarning($"[ConstellationUIManager] Skill '{skill.SkillID}' is already unlocked.");
-            return;
+            MetaProgressionManager.Instance.RequestUnlock(skill);
         }
+    }
 
-        if (!skill.ArePrerequisitesMet(profile.unlockedSkillIDs))
+    /// <summary>Called by a SkillNodeUI when it is first-clicked, to deselect all other nodes.</summary>
+    public void UnfocusAllNodes()
+    {
+        foreach (SkillNodeUI node in _allNodes)
         {
-            Debug.LogWarning($"[ConstellationUIManager] Prerequisites for '{skill.SkillID}' not met.");
-            return;
+            if (node != null)
+                node.Unfocus();
         }
-
-        if (PlayerStats.Instance == null || PlayerStats.Instance.CurrentAstralShards < skill.MemoryCost)
-        {
-            Debug.LogWarning($"[MindGardenUI] Not enough Astral Shards (have {RunShards}, need {skill.MemoryCost}).");
-            return;
-        }
-
-        PlayerStats.Instance.SpendAstralShards(skill.MemoryCost);
-        profile.unlockedSkillIDs.Add(skill.SkillID);
-        SaveManager.saveProfile(profile);
-
-        RefreshAllNodes();
-        UpdateCurrencyLabels();
-        ShowSkillInfo(skill, SkillNodeUI.NodeState.Unlocked);
-        OnDataChanged?.Invoke();
-
-        Debug.Log($"[MindGardenUI] '{skill.SkillName}' unlocked. Remaining run shards: {RunShards}.");
     }
 
     public void RefreshAllNodes()
@@ -254,7 +322,14 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
         ProfileData profile = GameSession.Instance.currentProfile;
         
         foreach (SkillNodeUI node in _allNodes)
-            node?.Refresh(profile);
+        {
+            if (node != null && node.Data != null)
+            {
+                node.Refresh(profile);
+                string status = profile.HasSkill(node.Data.SkillID) ? "UNLOCKED" : "LOCKED";
+                Debug.Log($"[MindGardenUI Debug] Skill '{node.Data.SkillName}' ({node.Data.SkillID}) is {status}.");
+            }
+        }
 
         UpdateLineColors(profile);
     }
@@ -281,6 +356,11 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
         }
     }
 
+    public void UpdateCurrencyOnly()
+    {
+        UpdateCurrencyLabels();
+    }
+
     private void UpdateCurrencyLabels()
     {
         if (!ValidateReferences()) return;
@@ -295,13 +375,13 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
         if (_infoDefaultMessage != null) _infoDefaultMessage.SetActive(!visible);
     }
 
-    private List<string> BuildMissingPrerequisitesList(ConstellationData skill)
+    private List<string> BuildMissingPrerequisitesList(MindGardenNodeData skill)
     {
         var missing = new List<string>();
         if (!ValidateReferences()) return missing;
 
         ProfileData profile = GameSession.Instance.currentProfile;
-        foreach (ConstellationData prereq in skill.Prerequisites)
+        foreach (MindGardenNodeData prereq in skill.Prerequisites)
         {
             if (prereq != null && !profile.HasSkill(prereq.SkillID))
                 missing.Add(prereq.SkillName);
@@ -313,7 +393,7 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
     {
         if (GameSession.Instance == null || GameSession.Instance.currentProfile == null)
         {
-            Debug.LogError("[ConstellationUIManager] GameSession or currentProfile is null.");
+            Debug.LogError("[MindGardenUI] GameSession or currentProfile is null.");
             return false;
         }
 

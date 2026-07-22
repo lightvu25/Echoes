@@ -80,7 +80,8 @@ public class EnemyDrop : MonoBehaviour
         float burdenMultiplier = BurdenManager.Instance != null ? BurdenManager.Instance.CurrentDropRateMultiplier : 1f;
         float finalDropMultiplier = dropChanceMultiplier * burdenMultiplier;
 
-        List<DropResult> drops = lootTable.GetDrops(finalDropMultiplier, minTierAllowed);
+        LootBonuses bonuses = LootBonusResolver.Resolve();
+        List<DropResult> drops = lootTable.GetDrops(finalDropMultiplier, minTierAllowed, bonuses);
         Vector3 origin = transform.position + Vector3.up * 0.5f;
 
         float dirX = 1f;
@@ -108,11 +109,11 @@ public class EnemyDrop : MonoBehaviour
                 {
                     if (chunk <= 0) continue;
                     GameObject obj = ObjectPoolManager.SpawnObject(result.prefab, origin, Quaternion.identity, ObjectPoolManager.PoolType.Loot);
-                    if (obj.TryGetComponent(out Collectible collectible))
+                    if (obj.TryGetComponent(out ResourceDrop resourceDrop))
                     {
                         float randomX = dirX * Random.Range(3f, 5f) * sidewaysForceMod; 
                         float randomY = Random.Range(popForceMin, popForceMax); 
-                        collectible.Initialize(chunk, new Vector2(randomX, randomY));
+                        resourceDrop.Initialize(chunk, new Vector2(randomX, randomY));
                     }
                 }
             }

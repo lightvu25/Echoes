@@ -1,4 +1,0 @@
-{
-  "csharpCode": "using UnityEngine; using System.Text; public class Script { public static string Main() { var sb = new StringBuilder(); var rooms = Object.FindObjectsByType<Room>(FindObjectsInactive.Include, FindObjectsSortMode.None); sb.AppendLine($\"Found {rooms.Length} Rooms:\"); foreach (var r in rooms) { var b = r.GetBounds(); sb.AppendLine($\" - {r.gameObject.name} | Pos: {r.transform.position} | Bounds: {b.center}, size: {b.size}\"); } var tm = RuntimeTilemapMerger.Instance.globalGroundTilemap; if (tm != null) { sb.AppendLine($\"Global Tilemap: {tm.name} | Active: {tm.gameObject.activeInHierarchy} | Bounds: {tm.localBounds}\"); var comp = tm.GetComponent<CompositeCollider2D>(); sb.AppendLine($\"CompositeCollider: {(comp != null ? \\\"Yes\\\" : \\\"No\\\")} | Enabled: {(comp != null ? comp.enabled.ToString() : \\\"N/A\\\")}\"); } return sb.ToString(); } }",
-  "isMethodBody": false
-}

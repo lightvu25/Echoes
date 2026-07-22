@@ -25,6 +25,8 @@ public class GroundMovement : MonoBehaviour, IEnemyMovement
     public bool IsGroundedAhead { get; private set; }
     public bool IsWallAhead { get; private set; }
     public bool IsKnockedBack { get; private set; }
+    public bool IsRooted { get; private set; }
+    private float rootTimer = 0f;
 
     private void Awake()
     {
@@ -63,13 +65,18 @@ public class GroundMovement : MonoBehaviour, IEnemyMovement
         }
         else
         {
-            IsGroundedAhead = Physics2D.OverlapBox(_groundCheck.position, _groundCheckSize, 0f, data.groundLayer);
+        }
+
+        if (IsRooted)
+        {
+            rootTimer -= Time.deltaTime;
+            if (rootTimer <= 0f) IsRooted = false;
         }
     }
 
     public void Move(Vector2 direction, float maxSpeed, float accelAmount, float deccelAmount)
     {
-        if (IsKnockedBack) return;
+        if (IsKnockedBack || IsRooted) return;
         if (direction.x != 0) FaceDirection(direction.x > 0);
 
         float targetSpeed = Mathf.Lerp(Rb.linearVelocity.x, direction.x * maxSpeed, 10f * Time.deltaTime);
@@ -101,6 +108,14 @@ public class GroundMovement : MonoBehaviour, IEnemyMovement
     }
 
     public void SetKnockedBack(bool value) => IsKnockedBack = value;
+
+    public void ApplyRoot(float duration)
+    {
+        IsRooted = true;
+        rootTimer = Mathf.Max(rootTimer, duration);
+        Rb.linearVelocity = new Vector2(0, Rb.linearVelocity.y);
+        OnIdle?.Invoke(this, EventArgs.Empty);
+    }
 
     private void Turn()
     {

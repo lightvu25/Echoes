@@ -9,7 +9,7 @@ public class RunManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = FindObjectOfType<RunManager>();
+                _instance = FindFirstObjectByType<RunManager>();
                 if (_instance == null)
                 {
                     GameObject go = new GameObject("RunManager");
@@ -89,4 +89,5 @@ public class RunManager : MonoBehaviour
             }
         }
     }
+
 }

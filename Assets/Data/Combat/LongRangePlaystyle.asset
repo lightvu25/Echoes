@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlaystyleData
   playstyleType: 2
   displayName: LongRange
-  requiresActiveEcho: 0
+  requiresActiveEcho: 1
   comboSteps: 1
   comboWindow: 0.4
   comboDamageMultipliers:

@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     private HealthSystem healthSystem;
     private InventoryManager inventoryManager;
     private FallDamageHandler _fallDamageHandler;
+    private EntityAudioManager audioManager;
 
     [Header("Phantom Shadow")]
     [SerializeField] private GameObject phantomShadowPrefab;
@@ -59,6 +60,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float _wallJumpStartTime;
     private int   _lastWallJumpDir;
+    private float _lastDownInputTime;
+    private bool  _wasDownInput;
     private float _plungeStartY;
     
     private float stunTimer;
@@ -85,6 +88,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isDead = false;
 
     private float _waterSpeedMultiplier = 1f;
+    private float _buffSpeedMultiplier = 1f;
     private float _defaultLinearDrag;
 
     private bool _isTouchingClimbable;
@@ -94,6 +98,8 @@ public class PlayerMovement : MonoBehaviour
 
     public bool isGrounded => LastOnGroundTime > 0;
     public bool isRunning => Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded;
+
+    private bool _isDroppingThroughPlatform;
 
     [Header("Checks")]
     [SerializeField] private Transform _groundCheck;
@@ -136,6 +142,7 @@ public class PlayerMovement : MonoBehaviour
         healthSystem  = GetComponent<HealthSystem>();
         inventoryManager = GetComponent<InventoryManager>();
         _fallDamageHandler = GetComponent<FallDamageHandler>();
+        audioManager = GetComponentInChildren<EntityAudioManager>();
         _defaultLinearDrag = rb.linearDamping;
     }
 
@@ -170,6 +177,17 @@ public class PlayerMovement : MonoBehaviour
         {
             _moveInput.x = inputConfig != null ? inputConfig.GetHorizontalInput() : Input.GetAxisRaw("Horizontal");
             _moveInput.y = inputConfig != null ? inputConfig.GetVerticalInput()   : Input.GetAxisRaw("Vertical");
+
+            bool isDownInput = _moveInput.y < -0.1f;
+            if (isDownInput && !_wasDownInput)
+            {
+                if (Time.time - _lastDownInputTime < 0.3f)
+                {
+                    StartCoroutine(DropThroughPlatform());
+                }
+                _lastDownInputTime = Time.time;
+            }
+            _wasDownInput = isDownInput;
         }
 
         if (isWallJumping && Time.time - _wallJumpStartTime < Data.wallJumpTime)
@@ -249,7 +267,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         bool isGrounded = false;
-        if (!isDashing)
+        if (!isDashing && !_isDroppingThroughPlatform)
         {
             if (Physics2D.OverlapBox(_groundCheck.position, _groundCheckSize, 0f, _groundLayer))
             {
@@ -362,7 +380,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         int currentMaxJumps = (GameDataManager.Instance != null && GameDataManager.Instance.isTripleJumpUnlocked) ? 3 : 2;
-        if (LastOnGroundTime > 0 || isWallJumping || isLedgeGrabbing || isClimbing)
+        if (LastOnGroundTime > 0 || isWallJumping || isLedgeGrabbing || isClimbing || LastOnWallTime > 0)
         {
             _jumpsLeft = currentMaxJumps;
             if (_phantomShadowAnchor != null)
@@ -473,7 +491,7 @@ public class PlayerMovement : MonoBehaviour
             SetGravityScale(0);
         }
 
-        bool isCurrentlyGrounded = Physics2D.OverlapBox(_groundCheck.position, _groundCheckSize, 0f, _groundLayer);
+        bool isCurrentlyGrounded = !_isDroppingThroughPlatform && Physics2D.OverlapBox(_groundCheck.position, _groundCheckSize, 0f, _groundLayer);
 
         if (!isCurrentlyGrounded && _wasGrounded && rb.linearVelocity.y < 0.1f && !isJumping && !isDashing)
         {
@@ -505,6 +523,18 @@ public class PlayerMovement : MonoBehaviour
         if (isCurrentlyGrounded && isMoving  && !_wasMoving) OnRun?.Invoke(this, EventArgs.Empty);
         if (isCurrentlyGrounded && !isMoving && _wasMoving)  OnStopRun?.Invoke(this, EventArgs.Empty);
         _wasMoving = isMoving;
+
+        if (audioManager != null)
+        {
+            if (isCurrentlyGrounded && Mathf.Abs(rb.linearVelocity.x) > 0.1f)
+            {
+                audioManager.PlayLoopingSound("Run");
+            }
+            else
+            {
+                audioManager.StopLoopingSound();
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -589,6 +619,11 @@ public class PlayerMovement : MonoBehaviour
         _waterSpeedMultiplier = multiplier;
     }
 
+    public void SetBuffSpeedMultiplier(float multiplier)
+    {
+        _buffSpeedMultiplier = multiplier;
+    }
+
     public void SetLinearDrag(float drag)
     {
         rb.linearDamping = drag;
@@ -617,7 +652,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (playerCombat.IsKnockedBack) return;
 
-        float targetSpeed = _moveInput.x * Data.runMaxSpeed * _waterSpeedMultiplier;
+        float targetSpeed = _moveInput.x * Data.runMaxSpeed * _waterSpeedMultiplier * _buffSpeedMultiplier;
         targetSpeed = Mathf.Lerp(rb.linearVelocity.x, targetSpeed, lerpAmount);
 
         float accelRate;
@@ -872,6 +907,7 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator DropThroughPlatform()
     {
+        LastOnGroundTime = 0f;
         Collider2D[] colliders = Physics2D.OverlapBoxAll(_groundCheck.position, _groundCheckSize, 0f, _groundLayer);        
         foreach (Collider2D col in colliders)
         {
@@ -881,11 +917,13 @@ public class PlayerMovement : MonoBehaviour
 
             if (effector != null && effector.useOneWay && playerCollider != null)
             {
+                _isDroppingThroughPlatform = true;
                 Physics2D.IgnoreCollision(playerCollider, col, true);
                 
                 yield return new WaitForSeconds(dropTime);
                 
                 Physics2D.IgnoreCollision(playerCollider, col, false);
+                _isDroppingThroughPlatform = false;
                 break;
             }
         }

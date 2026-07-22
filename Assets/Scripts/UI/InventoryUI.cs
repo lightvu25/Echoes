@@ -60,7 +60,7 @@ public class InventoryUI : MonoBehaviour, IUIPanel
     {
         if (IsOpen && !isInUnlockMode) 
         {
-            Hide();
+            UIManager.Instance.ClosePanelIfOpen(UIPanelType.Inventory);
         }
         else if (!IsOpen)
         {
@@ -70,12 +70,18 @@ public class InventoryUI : MonoBehaviour, IUIPanel
 
     private void HandleCancelPressed()
     {
-        if (IsOpen && !isInUnlockMode) Hide();
+        if (IsOpen && !isInUnlockMode) 
+        {
+            UIManager.Instance.ClosePanelIfOpen(UIPanelType.Inventory);
+        }
     }
 
     private void GameManager_OnGamePaused(object sender, EventArgs e)
     {
-        if (!isInUnlockMode) Hide();
+        if (IsOpen && !isInUnlockMode) 
+        {
+            UIManager.Instance.ClosePanelIfOpen(UIPanelType.Inventory);
+        }
     }
 
     private void HandleSlotUnlockRequired()
@@ -99,11 +105,18 @@ public class InventoryUI : MonoBehaviour, IUIPanel
 
     public void Hide()
     {
+        bool wasInUnlockMode = isInUnlockMode;
         isInUnlockMode = false;
         IsOpen = false;
         if (uiRoot != null) uiRoot.SetActive(false);
         AnimateBlur(0f);
-        Time.timeScale = 1f;
+        
+        // Only force time back to 1 if we were the ones who froze it via Unlock Mode
+        // Otherwise let UIManager or GameManager handle time scale.
+        if (wasInUnlockMode)
+        {
+            Time.timeScale = 1f;
+        }
     }
 
     public void OnSlotChosen(ItemCategory chosenCategory)
@@ -120,7 +133,7 @@ public class InventoryUI : MonoBehaviour, IUIPanel
         slotUnlockPanel?.Display(
             PlayerInventoryCore.Instance.UnlockedEchoSlots,
             PlayerInventoryCore.Instance.UnlockedRelicSlots,
-            PlayerInventoryCore.Instance.UnlockedItemSlots);
+            PlayerInventoryCore.Instance.UnlockedEquipmentSlots);
     }
 
     private void RefreshSlots()

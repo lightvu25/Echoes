@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: DarkBandage
   itemName: Dark Bandage
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 4113574945793146722, guid: 3937d064cd5f1834abef54304f7b37f0, type: 3}
   description: Extends Invincibility Frames (I-frames) by 0.5s after taking damage.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50
-  RelicID: DarkBandage
-  RelicNameEN: Dark Bandage
   Rarity: 0
   FactionBonus: +1 Random Stat
-  CoreEffect: Extends Invincibility Frames (I-frames) by 0.5s after taking damage.
-  RelicIcon: {fileID: 0}

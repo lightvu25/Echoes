@@ -9,5 +9,7 @@ public enum UIPanelType
     Swap,
     Pass,
     Pause,
-    Map
+    Map,
+    MindNode,
+    MindNodeSelection
 }

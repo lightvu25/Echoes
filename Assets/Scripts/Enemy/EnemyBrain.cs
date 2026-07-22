@@ -442,6 +442,8 @@ public class EnemyBrain : MonoBehaviour
 
     private void DriveChase()
     {
+        if (movement == null) return;
+
         Vector2 direction;
         float optimalDistance = Mathf.Max(3f, data.attackHitboxOffset.x);
         bool shouldKite = _canBackstep && sensor.DistanceToPlayer <= optimalDistance && !IsTargetInHitboxZone() && Time.time >= _kiteStuckCooldown;

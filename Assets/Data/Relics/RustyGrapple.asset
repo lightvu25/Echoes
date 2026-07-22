@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: RustyGrapple
   itemName: Rusty Grapple
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -3373105326765705498, guid: 35ea78a33a7619341b030739313bce65, type: 3}
   description: Grappling an enemy pulls you to them and briefly stuns them for 0.5s.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50
-  RelicID: RustyGrapple
-  RelicNameEN: Rusty Grapple
   Rarity: 0
   FactionBonus: +1 Random Stat
-  CoreEffect: Grappling an enemy pulls you to them and briefly stuns them for 0.5s.
-  RelicIcon: {fileID: 0}

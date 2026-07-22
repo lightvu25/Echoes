@@ -66,12 +66,6 @@ public class InventoryManager : MonoBehaviour
 
                 AddRelic(recipe.resultRelic);
 
-                RelicEffectManager rem = GetComponent<RelicEffectManager>();
-                if (rem != null)
-                {
-                    rem.RefreshEffects();
-                }
-
                 return;
             }
         }

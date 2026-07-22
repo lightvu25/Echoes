@@ -13,8 +13,8 @@ public class EvolutionManager : MonoBehaviour
     /// <summary>Fired when the evolution tier advances. Carries the new tier data.</summary>
     public event Action<EvolutionTierData> OnTierChanged;
 
-    /// <summary>Fired when any enemy spots the player (shared vision propagation).</summary>
-    public event Action OnGlobalAggroTriggered;
+    /// <summary>Fired when any enemy spots the player (shared vision propagation). Carries spotter position.</summary>
+    public event Action<Vector3> OnGlobalAggroTriggered;
 
     [Header("Tier Configuration")]
     [Tooltip("Ordered list of evolution tiers. Index 0 is the base tier (no evolution).")]
@@ -114,6 +114,11 @@ public class EvolutionManager : MonoBehaviour
                 
                 Debug.Log($"<color=cyan>[Evolution] Tier Advanced! Now at: {newTier.tierName} (Kills: {currentKills})</color>");
                 OnTierChanged?.Invoke(newTier);
+                
+                if (SoundManager.Instance != null)
+                {
+                    SoundManager.Instance.PlayEvolutionSound();
+                }
             }
         }
     }
@@ -125,6 +130,6 @@ public class EvolutionManager : MonoBehaviour
     /// </summary>
     public void ReportPlayerSpotted(Vector3 spotterPosition)
     {
-        OnGlobalAggroTriggered?.Invoke();
+        OnGlobalAggroTriggered?.Invoke(spotterPosition);
     }
 }

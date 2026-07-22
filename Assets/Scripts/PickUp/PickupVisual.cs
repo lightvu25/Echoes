@@ -8,7 +8,6 @@ public class PickupVisual : MonoBehaviour
     private void Start()
     {
         PlayerInteract.Instance.OnCoinPickup += HandleCoinPickup;
-        PlayerInteract.Instance.OnTimePickup += HandleTimePickup;
     }
 
     private void OnDestroy()
@@ -16,7 +15,6 @@ public class PickupVisual : MonoBehaviour
         if (PlayerInteract.Instance != null)
         {
             PlayerInteract.Instance.OnCoinPickup -= HandleCoinPickup;
-            PlayerInteract.Instance.OnTimePickup -= HandleTimePickup;
         }
     }
 
@@ -25,10 +23,7 @@ public class PickupVisual : MonoBehaviour
         PlayPickupEffect(e.coinPickup.transform.position);
     }
 
-    private void HandleTimePickup(object sender, PlayerInteract.OnTimePickupEventArgs e)
-    {
-        PlayPickupEffect(e.timePickup.transform.position);
-    }
+
 
     private void PlayPickupEffect(Vector3 position)
     {

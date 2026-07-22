@@ -17,6 +17,8 @@ public class GameInput : MonoBehaviour
     public event Action OnInteractPressed;
     public event Action OnExtractPressed;
     public event Action OnCancelPressed;
+    public event Action OnHealPressed;
+    public event Action OnToolPressed;
 
     [Header("Input Configuration")]
     [SerializeField] private InputConfig inputConfig;
@@ -26,7 +28,14 @@ public class GameInput : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        
         Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         inputActions = new InputActions();
         inputActions.Enable();
@@ -64,6 +73,8 @@ public class GameInput : MonoBehaviour
         KeyCode interactKey = inputConfig != null ? inputConfig.interactKey : KeyCode.F;
         KeyCode extractKey = inputConfig != null ? inputConfig.extractKey : KeyCode.R;
         KeyCode cancelKey = inputConfig != null ? inputConfig.cancelKey : KeyCode.Escape;
+        KeyCode healKey = inputConfig != null ? inputConfig.healKey : KeyCode.H;
+        KeyCode toolKey = inputConfig != null ? inputConfig.toolKey : KeyCode.T;
 
         if (Input.GetKeyDown(mapKey)) OnMapTogglePressed?.Invoke();
         if (Input.GetKeyDown(invKey)) OnInventoryPressed?.Invoke();
@@ -71,6 +82,8 @@ public class GameInput : MonoBehaviour
         if (Input.GetKeyDown(interactKey)) OnInteractPressed?.Invoke();
         if (Input.GetKeyDown(extractKey)) OnExtractPressed?.Invoke();
         if (Input.GetKeyDown(cancelKey)) OnCancelPressed?.Invoke();
+        if (Input.GetKeyDown(healKey)) OnHealPressed?.Invoke();
+        if (Input.GetKeyDown(toolKey)) OnToolPressed?.Invoke();
     }
 
     private void ApplyBindings()
@@ -126,7 +139,14 @@ public class GameInput : MonoBehaviour
     }
 
     private void Menu_performed(InputAction.CallbackContext obj) => OnMenuButtonPressed?.Invoke(this, EventArgs.Empty);
-    private void OnDestroy() => inputActions.Disable();
+    private void OnDestroy() 
+    {
+        if (inputActions != null)
+        {
+            inputActions.Player.Menu.performed -= Menu_performed;
+            inputActions.Disable();
+        }
+    }
 
     public void SetInputsEnabled(bool isEnabled)
     {

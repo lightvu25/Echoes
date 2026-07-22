@@ -64,6 +64,7 @@ public class PlayerAttack : MonoBehaviour
 
     private PlaystyleManager playstyleManager;
     private HealthSystem healthSystem;
+    private EntityAudioManager audioManager;
     private bool isAttacking;
     private int currentComboStep;
     private float lastAttackTime;
@@ -90,6 +91,7 @@ public class PlayerAttack : MonoBehaviour
     {
         playstyleManager = GetComponent<PlaystyleManager>();
         healthSystem = GetComponent<HealthSystem>();
+        audioManager = GetComponentInChildren<EntityAudioManager>();
     }
 
     private void Update()
@@ -194,6 +196,21 @@ public class PlayerAttack : MonoBehaviour
         currentAttackType = attType;
         currentPlaystyle = styleType;
 
+        // Auto-select the echo slot corresponding to the playstyle
+        int slotIndex = styleType switch
+        {
+            PlaystyleType.Melee => 0,
+            PlaystyleType.MidRange => 1,
+            PlaystyleType.LongRange => 2,
+            PlaystyleType.Magic => 3,
+            _ => 0
+        };
+        
+        if (PlayerInventoryCore.Instance != null)
+        {
+            PlayerInventoryCore.Instance.SetActiveEchoIndex(slotIndex);
+        }
+
         StartCoroutine(AttackRoutine(attType, styleType));
     }
 
@@ -297,6 +314,7 @@ public class PlayerAttack : MonoBehaviour
         else if (styleType == PlaystyleType.Magic && pData.magicAoEPrefab != null)
         {
             Instantiate(pData.magicAoEPrefab, transform.position, Quaternion.identity);
+            SpawnComboVFX();
         }
 
         // Wait for the animation to finish instead of a fixed duration
@@ -453,6 +471,7 @@ public class PlayerAttack : MonoBehaviour
 
                 attackHitbox.Activate(pendingDamage, pendingProcCoef);
                 SpawnComboVFX();
+                PlayEchoSoundIfNeeded();
             }
         }
         else if (pendingStyleType == PlaystyleType.LongRange && pendingProjectilePrefab != null)
@@ -491,6 +510,17 @@ public class PlayerAttack : MonoBehaviour
                 // Fire the projectile at 20 units/sec
                 pScript.SetupPlayerProjectile(dInfo, facingDir * 20f);
             }
+            
+            SpawnComboVFX();
+            PlayEchoSoundIfNeeded();
+        }
+    }
+
+    private void PlayEchoSoundIfNeeded()
+    {
+        if (audioManager != null && PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveEcho != null)
+        {
+            audioManager.PlaySound("Echo Attack");
         }
     }
 

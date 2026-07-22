@@ -762,7 +762,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.CSharp">
-      <HintPath>Assets\Plugins\NuGet\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.pipeline@58c16695e488\Runtime\Plugins\CodeAnalysis\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Text.Encoding.CodePages">
@@ -794,7 +794,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Collections.Immutable">
-      <HintPath>Assets\Plugins\NuGet\System.Collections.Immutable.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.pipeline@58c16695e488\Runtime\Plugins\CodeAnalysis\System.Collections.Immutable.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions">
@@ -898,7 +898,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Reflection.Metadata">
-      <HintPath>Assets\Plugins\NuGet\System.Reflection.Metadata.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.pipeline@58c16695e488\Runtime\Plugins\CodeAnalysis\System.Reflection.Metadata.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64\Runtime\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.TextureAssets">

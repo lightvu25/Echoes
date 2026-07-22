@@ -92,11 +92,9 @@ public class RelicDataGenerator
 
     private static void PopulateRelicData(RelicData relic, RelicRawData data)
     {
-        relic.RelicID = data.RelicID;
-        relic.RelicNameEN = data.RelicNameEN;
         relic.Rarity = data.Rarity;
         relic.FactionBonus = data.FactionBonus;
-        relic.CoreEffect = data.CoreEffect;
+
         
         // Map to ItemBaseData fields to ensure compatibility with inventory/shop
         relic.itemID = data.RelicID;

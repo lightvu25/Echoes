@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: DriedCyclopsEye
   itemName: Dried Cyclops Eye
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -7650704251357762598, guid: 6d5685d26d558ca48bef58b58e8d876f, type: 3}
   description: Entering a new room highlights enemies' weak points for 5 seconds
     (Guaranteed Crits).
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 2
   basePrice: 50
-  RelicID: DriedCyclopsEye
-  RelicNameEN: Dried Cyclops Eye
   Rarity: 1
   FactionBonus: +2 Random Stats
-  CoreEffect: Entering a new room highlights enemies' weak points for 5 seconds (Guaranteed
-    Crits).
-  RelicIcon: {fileID: 0}

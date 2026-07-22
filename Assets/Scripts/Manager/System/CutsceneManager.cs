@@ -5,6 +5,9 @@ using TMPro;
 
 public class CutsceneManager : MonoBehaviour
 {
+    [Header("Opening Cutscene")]
+    public PlayableDirector openingDirector;
+
     [Header("Death Cutscene")]
     public PlayableDirector deathDirector;
     public TMP_Text shardSubTitleText;
@@ -14,16 +17,25 @@ public class CutsceneManager : MonoBehaviour
 
     private void Start()
     {
+        if (openingDirector != null)
+        {
+            openingDirector.timeUpdateMode = DirectorUpdateMode.UnscaledGameTime;
+            if (openingDirector.state != PlayState.Playing && !openingDirector.playOnAwake)
+                openingDirector.gameObject.SetActive(false);
+        }
+
         if (deathDirector != null)
         {
             deathDirector.timeUpdateMode = DirectorUpdateMode.UnscaledGameTime;
-            deathDirector.gameObject.SetActive(false);
+            if (deathDirector.state != PlayState.Playing && !deathDirector.playOnAwake)
+                deathDirector.gameObject.SetActive(false);
         }
 
         if (goalDirector != null)
         {
             goalDirector.timeUpdateMode = DirectorUpdateMode.UnscaledGameTime;
-            goalDirector.gameObject.SetActive(false);
+            if (goalDirector.state != PlayState.Playing && !goalDirector.playOnAwake)
+                goalDirector.gameObject.SetActive(false);
         }
     }
 
@@ -31,6 +43,7 @@ public class CutsceneManager : MonoBehaviour
     private PlayerAttack _playerAttack;
     private Rigidbody2D _playerRb;
     private Collider2D _playerCollider;
+    private MindPlayerMovement _mindPlayerMovement;
 
     private void CachePlayerComponents()
     {
@@ -41,20 +54,38 @@ public class CutsceneManager : MonoBehaviour
         _playerAttack = player.GetComponent<PlayerAttack>();
         _playerRb = player.GetComponent<Rigidbody2D>();
         _playerCollider = player.GetComponent<Collider2D>();
+        _mindPlayerMovement = player.GetComponent<MindPlayerMovement>();
     }
 
     private void LockPlayer(bool locked)
     {
-        if (_playerMovement == null) CachePlayerComponents();
+        if (_playerMovement == null && _mindPlayerMovement == null) CachePlayerComponents();
 
         if (_playerMovement != null)
             _playerMovement.enabled = !locked;
 
         if (_playerAttack != null)
             _playerAttack.enabled = !locked;
+            
+        if (_mindPlayerMovement != null)
+            _mindPlayerMovement.enabled = !locked;
 
         if (GameInput.Instance != null)
             GameInput.Instance.SetInputsEnabled(!locked);
+    }
+
+    public IEnumerator PlayOpeningSequence()
+    {
+        if (openingDirector == null) yield break;
+
+        LockPlayer(true);
+
+        openingDirector.gameObject.SetActive(true);
+        openingDirector.Play();
+        yield return StartCoroutine(WaitForDirectorOrSkip(openingDirector));
+        openingDirector.gameObject.SetActive(false);
+
+        LockPlayer(false);
     }
 
     public IEnumerator PlayDeathSequence(int lostShards)
@@ -78,7 +109,7 @@ public class CutsceneManager : MonoBehaviour
         {
             deathDirector.gameObject.SetActive(true);
             deathDirector.Play();
-            yield return new WaitForSecondsRealtime((float)deathDirector.duration);
+            yield return StartCoroutine(WaitForDirectorOrSkip(deathDirector));
         }
 
         yield return new WaitUntil(() => Input.anyKeyDown);
@@ -120,7 +151,7 @@ public class CutsceneManager : MonoBehaviour
         {
             goalDirector.gameObject.SetActive(true);
             goalDirector.Play();
-            yield return new WaitForSecondsRealtime((float)goalDirector.duration);
+            yield return StartCoroutine(WaitForDirectorOrSkip(goalDirector));
             goalDirector.gameObject.SetActive(false);
         }
         else
@@ -129,5 +160,34 @@ public class CutsceneManager : MonoBehaviour
         }
 
         LockPlayer(false);
+    }
+
+    private IEnumerator WaitForDirectorOrSkip(PlayableDirector director)
+    {
+        if (director == null) yield break;
+
+        float duration = (float)director.duration;
+        float timer = 0f;
+        float lastInputTime = -10f;
+        float doubleTapThreshold = 0.5f;
+
+        while (timer < duration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            if (Input.anyKeyDown)
+            {
+                if (Time.unscaledTime - lastInputTime < doubleTapThreshold)
+                {
+                    // Double tap detected! Fast-forward cutscene.
+                    director.time = director.duration;
+                    director.Evaluate();
+                    yield break;
+                }
+                lastInputTime = Time.unscaledTime;
+            }
+
+            yield return null;
+        }
     }
 }

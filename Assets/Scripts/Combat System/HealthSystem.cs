@@ -107,6 +107,17 @@ public class HealthSystem : MonoBehaviour
     {
         if (isDead || isInvincible) return 0;
 
+        // Play Impact Audio from Attacker
+        if (damageInfo.attacker != null)
+        {
+            var audioManager = damageInfo.attacker.GetComponentInChildren<EntityAudioManager>();
+            if (audioManager != null)
+            {
+                string soundId = damageInfo.isCritical ? "Attack Critical" : "Attack Normal";
+                audioManager.PlaySound(soundId);
+            }
+        }
+
         int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, defense);
 
         int previousSlots = UnlockedSlots;

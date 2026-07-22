@@ -78,6 +78,9 @@ public class BombAttack : MonoBehaviour, IEnemyAttack
         EnemyCombat combat = GetComponentInParent<EnemyCombat>();
         if (combat != null && !combat.IsDead)
         {
+            HealthSystem hs = combat.GetComponent<HealthSystem>();
+            if (hs != null) hs.SetInvincible(false);
+
             combat.TakeDamage(new DamageInfo { baseDamage = 9999, attacker = gameObject, damageSource = "Suicide" });
         }
     }

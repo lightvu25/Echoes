@@ -10,12 +10,20 @@ public class ShrineUI : MonoBehaviour, IUIPanel
     [Header("Panel")]
     [SerializeField] private UIPanelAnimator _panelAnimator;
     
+    [Header("Reroll Feature")]
+    [SerializeField] private UnityEngine.UI.Button rerollButton;
+    private const int REROLL_COST = 50;
+    
     public event Action<BlessingData[]> OnBlessingsOffered;
 
     private bool isOpen = false;
 
     private void Awake()
     {
+        if (rerollButton != null)
+        {
+            rerollButton.onClick.AddListener(OnRerollClicked);
+        }
         
         // Hide on start if it wasn't explicitly opened via Show()
         if (!isOpen)
@@ -42,6 +50,21 @@ public class ShrineUI : MonoBehaviour, IUIPanel
             UIManager.Instance.CloseCurrentPanel();
     }
 
+    private void OnRerollClicked()
+    {
+        if (PlayerStats.Instance != null && PlayerStats.Instance.CurrentGold >= REROLL_COST)
+        {
+            PlayerStats.Instance.SpendGold(REROLL_COST);
+            // Hide cards briefly or just re-roll immediately
+            DisplayRandomBlessings();
+        }
+        else
+        {
+            Debug.Log("[ShrineUI] Not enough gold to reroll!");
+            // Optionally play a 'deny' sound or shake animation here
+        }
+    }
+
     public void DisplayRandomBlessings()
     {
         Debug.Log("[DEBUG] ShrineUI.DisplayRandomBlessings() called.");
@@ -53,6 +76,19 @@ public class ShrineUI : MonoBehaviour, IUIPanel
 
         isOpen = true;
         if (_panelAnimator != null) _panelAnimator.Show(); else gameObject.SetActive(true);
+
+        // Check if Reroll Skill is unlocked
+        if (rerollButton != null)
+        {
+            bool hasRerollSkill = MetaProgressionManager.Instance != null && MetaProgressionManager.Instance.HasSkill("SHRINE_REROLL");
+            rerollButton.gameObject.SetActive(hasRerollSkill);
+            
+            // Disable button if not enough gold
+            if (hasRerollSkill && PlayerStats.Instance != null)
+            {
+                rerollButton.interactable = (PlayerStats.Instance.CurrentGold >= REROLL_COST);
+            }
+        }
 
         List<BlessingData> vitalityPool = new List<BlessingData>();
         List<BlessingData> destructionPool = new List<BlessingData>();

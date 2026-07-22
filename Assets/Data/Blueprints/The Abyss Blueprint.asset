@@ -28,26 +28,26 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 020000000300000004000000
-    eventType: 7
-    eventChance: 0.5
+    eventType: 0
+    eventChance: 0
     position: {x: 0, y: 0}
   - nodeName: 2
-    roomType: 7
+    roomType: 2
     spawnChance: 0.5
     forceDirection: 1
     requiredDir: 0
     childrenIndices: 
-    eventType: 7
-    eventChance: 0.5
+    eventType: 9
+    eventChance: 0.2
     position: {x: 0, y: 0}
   - nodeName: 3
-    roomType: 7
-    spawnChance: 0.5
+    roomType: 2
+    spawnChance: 1
     forceDirection: 1
     requiredDir: 1
     childrenIndices: 
     eventType: 0
-    eventChance: 0
+    eventChance: 1
     position: {x: 0, y: 0}
   - nodeName: 4
     roomType: 1
@@ -55,17 +55,17 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 0500000006000000
-    eventType: 9
+    eventType: 8
     eventChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 5
-    roomType: 7
+    roomType: 2
     spawnChance: 1
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 
-    eventType: 5
-    eventChance: 0.5
+    eventType: 2
+    eventChance: 1
     position: {x: 0, y: 0}
   - nodeName: 6
     roomType: 1
@@ -73,8 +73,8 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 1
     childrenIndices: 07000000
-    eventType: 9
-    eventChance: 0.4
+    eventType: 8
+    eventChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 7
     roomType: 1
@@ -82,11 +82,11 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 1
     childrenIndices: 0800000009000000
-    eventType: 9
+    eventType: 8
     eventChance: 0.3
     position: {x: 0, y: 0}
   - nodeName: 8
-    roomType: 7
+    roomType: 2
     spawnChance: 0.5
     forceDirection: 0
     requiredDir: 3
@@ -100,17 +100,17 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 1
     childrenIndices: 0a0000000b000000
-    eventType: 9
+    eventType: 0
     eventChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 10
-    roomType: 7
+    roomType: 2
     spawnChance: 1
     forceDirection: 0
     requiredDir: 2
     childrenIndices: 
-    eventType: 0
-    eventChance: 0
+    eventType: 2
+    eventChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 11
     roomType: 1
@@ -118,16 +118,16 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 0c0000000d000000
-    eventType: 9
+    eventType: 0
     eventChance: 0.4
     position: {x: 0, y: 0}
   - nodeName: 12
-    roomType: 4
+    roomType: 2
     spawnChance: 0.7
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 
-    eventType: 5
+    eventType: 2
     eventChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 13
@@ -136,7 +136,7 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 1
     childrenIndices: 0e000000
-    eventType: 0
+    eventType: 4
     eventChance: 0
     position: {x: 0, y: 0}
   - nodeName: 14
@@ -145,7 +145,7 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 0f000000
-    eventType: 9
+    eventType: 8
     eventChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 15
@@ -158,16 +158,16 @@ MonoBehaviour:
     eventChance: 0.4
     position: {x: 0, y: 0}
   - nodeName: 16
-    roomType: 7
+    roomType: 2
     spawnChance: 0.7
     forceDirection: 1
     requiredDir: 0
     childrenIndices: 
-    eventType: 7
+    eventType: 0
     eventChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 17
-    roomType: 7
+    roomType: 2
     spawnChance: 0.7
     forceDirection: 1
     requiredDir: 1
@@ -181,11 +181,11 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 1300000014000000
-    eventType: 9
+    eventType: 8
     eventChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 19
-    roomType: 4
+    roomType: 2
     spawnChance: 0.7
     forceDirection: 0
     requiredDir: 3
@@ -208,11 +208,11 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 0
     childrenIndices: 1600000017000000
-    eventType: 9
+    eventType: 8
     eventChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 22
-    roomType: 7
+    roomType: 2
     spawnChance: 1
     forceDirection: 0
     requiredDir: 2
@@ -230,7 +230,7 @@ MonoBehaviour:
     eventChance: 0
     position: {x: 0, y: 0}
   - nodeName: 24
-    roomType: 6
+    roomType: 3
     spawnChance: 1
     forceDirection: 0
     requiredDir: 0
@@ -260,21 +260,6 @@ MonoBehaviour:
   - {fileID: 5035022089927105487, guid: 9b0a5996ed4b17647ade512760d71ab5, type: 3}
   - {fileID: 5035022089927105487, guid: 55835b3283f3e7141896de72fcb2e99e, type: 3}
   - {fileID: 4732715494245023263, guid: 3af3e5c07ceb88542b0020541581e31e, type: 3}
-  statueRoomPrefabs:
-  - {fileID: 3204592522672744526, guid: cbc91db27c8deb243b35a37342361589, type: 3}
-  - {fileID: 3204592522672744526, guid: f861ae2628a681f46a4b660b60c8dc0a, type: 3}
-  - {fileID: 3204592522672744526, guid: 0ab8ffae19089344282b3a7f96b5a27b, type: 3}
-  - {fileID: 3204592522672744526, guid: f3515f870ba02c448898a6ff4df8a5a7, type: 3}
-  - {fileID: 3204592522672744526, guid: 17b76c1750f9c1642a0f21ad5c36b13a, type: 3}
-  - {fileID: 3204592522672744526, guid: 62858f4fa97ae2448833957f6af8947c, type: 3}
-  buffRoomPrefabs:
-  - {fileID: 0}
-  rewardRoomPrefabs:
-  - {fileID: 3204592522672744526, guid: 8406435077a98474b905cd546f21468b, type: 3}
-  - {fileID: 3204592522672744526, guid: be95aacc9de6b8146a55e73f172ffb8d, type: 3}
-  - {fileID: 3204592522672744526, guid: 12182ac5f5e43a14db4bbb6eab11d134, type: 3}
-  - {fileID: 3204592522672744526, guid: 508fcd1faa58bc04582fc4a3153fb26e, type: 3}
-  eliteRoomPrefabs: []
   goalRoomPrefabs:
   - {fileID: 4300262421782183009, guid: 629557783e1fbaf4a905a6afff8194b5, type: 3}
   - {fileID: 4300262421782183009, guid: 4c91ee2c400873f4cbf40ccced009d32, type: 3}
@@ -286,10 +271,31 @@ MonoBehaviour:
   - {fileID: 3204592522672744526, guid: 1fad8cddc35674d4bbf3ebb39d7f78f6, type: 3}
   - {fileID: 3204592522672744526, guid: 2dbb5fa555edd204e85d31afc617535f, type: 3}
   - {fileID: 3204592522672744526, guid: 1799b5d1362ccc340b9040c0af0d48b1, type: 3}
+  runeRoomPrefabs:
+  - {fileID: 3204592522672744526, guid: cbc91db27c8deb243b35a37342361589, type: 3}
+  - {fileID: 3204592522672744526, guid: f861ae2628a681f46a4b660b60c8dc0a, type: 3}
+  - {fileID: 3204592522672744526, guid: 0ab8ffae19089344282b3a7f96b5a27b, type: 3}
+  - {fileID: 3204592522672744526, guid: f3515f870ba02c448898a6ff4df8a5a7, type: 3}
+  - {fileID: 3204592522672744526, guid: 17b76c1750f9c1642a0f21ad5c36b13a, type: 3}
+  - {fileID: 3204592522672744526, guid: 62858f4fa97ae2448833957f6af8947c, type: 3}
+  - {fileID: 3204592522672744526, guid: 1c4f66ae723facd47a8e1daf25edbc31, type: 3}
+  rewardRoomPrefabs:
+  - {fileID: 3204592522672744526, guid: 8406435077a98474b905cd546f21468b, type: 3}
+  - {fileID: 3204592522672744526, guid: be95aacc9de6b8146a55e73f172ffb8d, type: 3}
+  - {fileID: 3204592522672744526, guid: 12182ac5f5e43a14db4bbb6eab11d134, type: 3}
+  - {fileID: 3204592522672744526, guid: 508fcd1faa58bc04582fc4a3153fb26e, type: 3}
+  eliteRoomPrefabs: []
   storyRoomPrefabs:
   - {fileID: 3204592522672744526, guid: bbe52c1c91f3f3c4aafbb6bb996f56e2, type: 3}
   echoRoomPrefabs:
   - {fileID: 3204592522672744526, guid: 071743a2dacfc164295c37bdd75b3cfd, type: 3}
+  cursedChestRoomPrefabs: []
+  highMagicFactorRoomPrefabs: []
+  shopRoomPrefabs:
+  - {fileID: 3204592522672744526, guid: 17dc82f7222bb05469d8ce9f6827bc4d, type: 3}
+  - {fileID: 3204592522672744526, guid: 2a91685aabe750d4d832de9802a729b8, type: 3}
+  - {fileID: 3204592522672744526, guid: 48371eb1a2d5f8545ab2fe7290b62579, type: 3}
+  - {fileID: 3204592522672744526, guid: f9b49bb73b191cf4cb975beaacacffeb, type: 3}
   eventTypeLimits:
   - eventType: 1
     minRequired: 0
@@ -304,12 +310,12 @@ MonoBehaviour:
   - eventType: 4
     minRequired: 3
     maxAllowed: 4
-    currentCount: 0
+    currentCount: 1
     remainingCandidates: 0
   - eventType: 5
     minRequired: 0
     maxAllowed: 1
-    currentCount: 0
+    currentCount: 1
     remainingCandidates: 0
   - eventType: 6
     minRequired: 0
@@ -324,12 +330,17 @@ MonoBehaviour:
   - eventType: 9
     minRequired: 4
     maxAllowed: 6
-    currentCount: 0
+    currentCount: 2
     remainingCandidates: 0
   - eventType: 9
     minRequired: 4
     maxAllowed: 6
     currentCount: 0
+    remainingCandidates: 0
+  - eventType: 2
+    minRequired: 1
+    maxAllowed: 2
+    currentCount: 2
     remainingCandidates: 0
   anchorSpawnChance: 0.3
   echoNodePool:
@@ -339,3 +350,10 @@ MonoBehaviour:
     weight: 33.3
   - nodePrefab: {fileID: 7639742590146618916, guid: 988a250aecf345b49baac2cc002c104a, type: 3}
     weight: 33.3
+  groundEnemySpawnChance: 0.5
+  groundEnemyPool:
+  - enemyPrefab: {fileID: 0}
+    weight: 0
+  airEnemySpawnChance: 0.4
+  airEnemyPool: []
+  availableElitePrefabs: []

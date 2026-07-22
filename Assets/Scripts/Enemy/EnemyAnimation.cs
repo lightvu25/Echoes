@@ -5,12 +5,14 @@ public class EnemyAnimation : MonoBehaviour
     private MeleeAttack meleeAttack;
     private EnemyBrain enemyBrain;
     private Animator animator;
+    private EntityAudioManager audioManager;
 
     private void Awake()
     {
         meleeAttack = GetComponentInParent<MeleeAttack>();
         enemyBrain = GetComponentInParent<EnemyBrain>();
         animator = GetComponent<Animator>();
+        audioManager = GetComponentInParent<EntityAudioManager>();
     }
 
     private void Start()
@@ -57,9 +59,35 @@ public class EnemyAnimation : MonoBehaviour
 
     private void EnemyBrain_OnStateChanged(object sender, EnemyBrain.OnStateArgs e)
     {
+        bool isMoving = e.state == EnemyBrain.State.Chase || e.state == EnemyBrain.State.Patrol;
+
         if (HasParameter("IsMoving"))
         {
-            animator.SetBool("IsMoving", e.state == EnemyBrain.State.Chase || e.state == EnemyBrain.State.Patrol);
+            animator.SetBool("IsMoving", isMoving);
+        }
+
+        if (audioManager != null)
+        {
+            if (isMoving)
+            {
+                if (e.state == EnemyBrain.State.Chase)
+                {
+                    audioManager.PlayLoopingSound("Chase");
+                }
+                else if (e.state == EnemyBrain.State.Patrol)
+                {
+                    audioManager.PlayLoopingSound("Patrol");
+                }
+            }
+            else
+            {
+                audioManager.StopLoopingSound();
+            }
+
+            if (e.state == EnemyBrain.State.Telegraph)
+            {
+                audioManager.PlaySound("Roar");
+            }
         }
     }
 
@@ -77,6 +105,12 @@ public class EnemyAnimation : MonoBehaviour
     {
         if (HasParameter("IsDead")) animator.SetBool("IsDead", true);
         if (HasParameter("Die")) animator.SetTrigger("Die");
+
+        if (audioManager != null)
+        {
+            audioManager.StopLoopingSound();
+            audioManager.PlaySoundGlobal("Dead");
+        }
     }
 
     public void TriggerHitbox()
@@ -87,5 +121,14 @@ public class EnemyAnimation : MonoBehaviour
     public void FinishAttack()
     { 
         meleeAttack?.FinishAttack();
+    }
+
+    // Call this from Animation Events to play sounds like "Roar", "Patrol", "Chase"
+    public void PlaySound(string soundId)
+    {
+        if (audioManager != null)
+        {
+            audioManager.PlaySound(soundId);
+        }
     }
 }

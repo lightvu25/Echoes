@@ -7,6 +7,7 @@ public class EchoStatusReceiver : MonoBehaviour
     public bool IsBurning { get; private set; }
     public bool IsSilenced { get; private set; }
     public bool IsStunned { get; private set; }
+    public bool IsVoidMarked { get; set; }
     
     private float slowTimer = 0f;
     private float freezeTimer = 0f;

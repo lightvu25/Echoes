@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public static class ConstellationDataGenerator
+public static class MindGardenNodeDataGenerator
 {
     private const string OUTPUT_FOLDER = "Assets/Constellation";
 
@@ -62,21 +62,21 @@ public static class ConstellationDataGenerator
         if (!AssetDatabase.IsValidFolder(OUTPUT_FOLDER))
         {
             AssetDatabase.CreateFolder("Assets", "Constellation");
-            Debug.Log($"[ConstellationDataGenerator] Created folder: {OUTPUT_FOLDER}");
+            Debug.Log($"[MindGardenNodeDataGenerator] Created folder: {OUTPUT_FOLDER}");
         }
 
         // --- Pass 1: Create assets and set scalar fields ---
-        var createdAssets = new Dictionary<string, ConstellationData>();
+        var createdAssets = new Dictionary<string, MindGardenNodeData>();
 
         foreach (NodeDef def in Nodes)
         {
             string assetPath = $"{OUTPUT_FOLDER}/{def.skillID}.asset";
 
             // Reuse existing asset to avoid destroying references
-            ConstellationData asset = AssetDatabase.LoadAssetAtPath<ConstellationData>(assetPath);
+            MindGardenNodeData asset = AssetDatabase.LoadAssetAtPath<MindGardenNodeData>(assetPath);
             if (asset == null)
             {
-                asset = ScriptableObject.CreateInstance<ConstellationData>();
+                asset = ScriptableObject.CreateInstance<MindGardenNodeData>();
                 AssetDatabase.CreateAsset(asset, assetPath);
             }
 
@@ -101,10 +101,10 @@ public static class ConstellationDataGenerator
         {
             if (string.IsNullOrEmpty(def.prerequisiteID)) continue;
 
-            if (!createdAssets.TryGetValue(def.skillID, out ConstellationData asset)) continue;
-            if (!createdAssets.TryGetValue(def.prerequisiteID, out ConstellationData prereqAsset))
+            if (!createdAssets.TryGetValue(def.skillID, out MindGardenNodeData asset)) continue;
+            if (!createdAssets.TryGetValue(def.prerequisiteID, out MindGardenNodeData prereqAsset))
             {
-                Debug.LogWarning($"[ConstellationDataGenerator] Prerequisite '{def.prerequisiteID}' not found for '{def.skillID}'.");
+                Debug.LogWarning($"[MindGardenNodeDataGenerator] Prerequisite '{def.prerequisiteID}' not found for '{def.skillID}'.");
                 continue;
             }
 
@@ -120,6 +120,6 @@ public static class ConstellationDataGenerator
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        Debug.Log($"[ConstellationDataGenerator] Successfully generated {Nodes.Length} Constellation assets in '{OUTPUT_FOLDER}'.");
+        Debug.Log($"[MindGardenNodeDataGenerator] Successfully generated {Nodes.Length} Constellation assets in '{OUTPUT_FOLDER}'.");
     }
 }

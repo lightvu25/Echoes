@@ -55,26 +55,32 @@
     <Compile Include="Assets\Scripts\Core\Mechanics\InteractableTrigger.cs" />
     <Compile Include="Assets\Scripts\UI\ShrineCardUI.cs" />
     <Compile Include="Assets\Scripts\PickUp\CoinPickup.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\EntropyModifier.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\EnvMapAnimator.cs" />
+    <Compile Include="Assets\Scripts\UI\MindNodeUI.cs" />
     <Compile Include="Assets\Scripts\UI\StatsUI.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemySpawner.cs" />
     <Compile Include="Assets\Scripts\Combat System\HealthSystem.cs" />
-    <Compile Include="Assets\Scripts\Data\ConsumableData.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
     <Compile Include="Assets\Scripts\UI\InventorySlot.cs" />
+    <Compile Include="Assets\Scripts\Player\Relics\StalactiteHeartRelic.cs" />
     <Compile Include="Assets\Scripts\Core\Interfaces\IUIPanel.cs" />
     <Compile Include="Assets\Scripts\Environment\WaterZone.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
+    <Compile Include="Assets\Scripts\Manager\Gameplay\MindPathManager.cs" />
     <Compile Include="Assets\Scripts\Enemy\RangedAttack.cs" />
     <Compile Include="Assets\Scripts\UI\SacrificialUI.cs" />
     <Compile Include="Assets\Scripts\UI\EnemyStatusUI.cs" />
     <Compile Include="Assets\Scripts\Enemy\BombProjectile.cs" />
+    <Compile Include="Assets\Scripts\UI\Tooltip\UITooltipManager.cs" />
     <Compile Include="Assets\Scripts\Manager\System\ReturnToPool.cs" />
+    <Compile Include="Assets\Scripts\Combat System\IEchoModifier.cs" />
     <Compile Include="Assets\Scripts\Manager\System\GameSession.cs" />
     <Compile Include="Assets\Scripts\Core\Interfaces\IInteractable.cs" />
     <Compile Include="Assets\Scripts\Data\FusionRecipeData.cs" />
     <Compile Include="Assets\Scripts\Manager\System\CutsceneLockPlayer.cs" />
     <Compile Include="Assets\Scripts\Manager\System\SceneLoader.cs" />
+    <Compile Include="Assets\Scripts\UI\MapIntroUI.cs" />
     <Compile Include="Assets\Scripts\Manager\System\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Animation\AwareIconAnimation.cs" />
     <Compile Include="Assets\Scripts\Player\FallDamageHandler.cs" />
@@ -84,6 +90,7 @@
     <Compile Include="Assets\Scripts\Manager\System\TickManager.cs" />
     <Compile Include="Assets\Scripts\Manager\System\GameManager.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUI.cs" />
+    <Compile Include="Assets\Scripts\Mind\MindPlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Environment\Map\RoomEventTrigger.cs" />
     <Compile Include="Assets\Scripts\Combat System\DamageInfo.cs" />
     <Compile Include="Assets\Scripts\Combat System\EchoStatusReceiver.cs" />
@@ -95,19 +102,22 @@
     <Compile Include="Assets\Scripts\Core Gameplay\PointInTime.cs" />
     <Compile Include="Assets\Scripts\Manager\Gameplay\GameFeelManager.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryUI.cs" />
-    <Compile Include="Assets\Scripts\Hub\MindGardenAltar.cs" />
     <Compile Include="Assets\Scripts\Combat System\TimeFreezer.cs" />
+    <Compile Include="Assets\Scripts\UI\CrimsonAmberUI.cs" />
     <Compile Include="Assets\Scripts\Interactables\SacrificialAltar.cs" />
     <Compile Include="Assets\Scripts\UI\PausedUI.cs" />
+    <Compile Include="Assets\Scripts\UI\Tooltip\ITooltipDataProvider.cs" />
     <Compile Include="Assets\Scripts\Data\MemoryNodeData.cs" />
     <Compile Include="Assets\Scripts\Data\RelicData.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerCombat.cs" />
     <Compile Include="Assets\Scripts\Manager\Gameplay\EchoEffectManager.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerToolController.cs" />
     <Compile Include="Assets\Scripts\Data\LootTable.cs" />
     <Compile Include="Assets\Scripts\Manager\Gameplay\EventManager.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyCombat.cs" />
     <Compile Include="Assets\Scripts\VFX\ComboVFXController.cs" />
     <Compile Include="Assets\Scripts\UI\MapPolygonUI.cs" />
+    <Compile Include="Assets\Scripts\PickUp\ItemDrop.cs" />
     <Compile Include="Assets\Scripts\Environment\ParallaxBackground.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
@@ -116,21 +126,28 @@
     <Compile Include="Assets\Scripts\Interactables\TeleporterNode.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
     <Compile Include="Assets\Scripts\Environment\Map\Room.cs" />
-    <Compile Include="Assets\Scripts\PickUp\TimePickup.cs" />
+    <Compile Include="Assets\Scripts\Equipments\CrimsonDart.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\ArcModifier.cs" />
     <Compile Include="Assets\Scripts\Player\PlaystyleManager.cs" />
     <Compile Include="Assets\Scripts\Interactables\AnomalousShrine.cs" />
     <Compile Include="Assets\Scripts\Manager\System\GameLevel.cs" />
-    <Compile Include="Assets\Scripts\PickUp\Goal.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\CryoStasisModifier.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerEchoVFX.cs" />
     <Compile Include="Assets\Scripts\Player\AnimationEventForwarder.cs" />
+    <Compile Include="Assets\Scripts\Audio\UIAudioManager.cs" />
     <Compile Include="Assets\Scripts\Core\Mechanics\Chest.cs" />
+    <Compile Include="Assets\Scripts\Environment\Interactables\CrimsonFlower.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\AnomalyModifier.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\FrostbiteModifier.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
+    <Compile Include="Assets\Scripts\Player\Relics\CompensatingSawRelic.cs" />
     <Compile Include="Assets\Scripts\UI\MapCameraController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\Scripts\Manager\System\MusicManager.cs" />
     <Compile Include="Assets\Scripts\Enemy\EvolutionManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
+    <Compile Include="Assets\Scripts\Debug\EchoDebugTester.cs" />
     <Compile Include="Assets\Scripts\Data\ItemBaseData.cs" />
     <Compile Include="Assets\Scripts\Manager\Gameplay\GlitchedZone.cs" />
     <Compile Include="Assets\Scripts\UI\UIPanelType.cs" />
@@ -138,8 +155,6 @@
     <Compile Include="Assets\Scripts\Environment\Map\LevelBlueprint.cs" />
     <Compile Include="Assets\Scripts\Enemy\GroundMovement.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
-    <Compile Include="Assets\Scripts\Player\HealingFlask.cs" />
-    <Compile Include="Assets\Scripts\Hub\HubNode.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerVisual.cs" />
     <Compile Include="Assets\Scripts\UI\DraggableElement.cs" />
@@ -149,25 +164,31 @@
     <Compile Include="Assets\Scripts\Manager\System\MinimapTileFog.cs" />
     <Compile Include="Assets\Scripts\UI\SkillNodeUI.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Player\Relics\CondemnedRingRelic.cs" />
     <Compile Include="Assets\Scripts\Interactables\ShopRoomManager.cs" />
-    <Compile Include="Assets\Scripts\Hub\HubExitNode.cs" />
+    <Compile Include="Assets\Scripts\Equipments\ArachneTrap.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyEvolutionModifier.cs" />
     <Compile Include="Assets\Scripts\Combat System\SpriteColorFlasher.cs" />
     <Compile Include="Assets\Scripts\Data\RelicRecipe.cs" />
     <Compile Include="Assets\Scripts\Manager\System\CutsceneManager.cs" />
     <Compile Include="Assets\Scripts\Manager\Gameplay\FireTrailEffect.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\RagnarokModifier.cs" />
     <Compile Include="Assets\Scripts\Data\PlaystyleData.cs" />
     <Compile Include="Assets\Scripts\Core\Interfaces\IExtractable.cs" />
     <Compile Include="Assets\Scripts\UI\UILineDrawer.cs" />
+    <Compile Include="Assets\Scripts\Mind\MindWorldRenderer.cs" />
     <Compile Include="Assets\Scripts\Combat System\AttackHitbox.cs" />
-    <Compile Include="Assets\Scripts\Environment\Map\AsciiLevelGenerator.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyData.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
+    <Compile Include="Assets\Scripts\Environment\Interactables\GoalExit.cs" />
+    <Compile Include="Assets\Scripts\Player\Relics\DyingAmuletRelic.cs" />
     <Compile Include="Assets\Scripts\Enemy\IEnemyAttack.cs" />
+    <Compile Include="Assets\Scripts\Equipments\ToxicFlask.cs" />
     <Compile Include="Assets\Scripts\Manager\Gameplay\RunManager.cs" />
     <Compile Include="Assets\Scripts\Combat System\DamageCalculator.cs" />
     <Compile Include="Assets\Scripts\Player\InventoryManager.cs" />
+    <Compile Include="Assets\Scripts\Data\MindNodeModifierData.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
     <Compile Include="Assets\Scripts\Data\CombatStats.cs" />
@@ -175,11 +196,16 @@
     <Compile Include="Assets\Scripts\Data\GameDataManager.cs" />
     <Compile Include="Assets\Scripts\UI\FusionSlot.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ChatController.cs" />
+    <Compile Include="Assets\Scripts\Player\Relics\IRelicEffect.cs" />
+    <Compile Include="Assets\Scripts\Manager\Gameplay\VFXFollower.cs" />
+    <Compile Include="Assets\Scripts\Manager\System\MetaProgressionManager.cs" />
     <Compile Include="Assets\Scripts\UI\UIZoomable.cs" />
     <Compile Include="Assets\Scripts\Data\EchoData.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifierContext.cs" />
     <Compile Include="Assets\Scripts\Environment\Trap\Thorns.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerRelicManager.cs" />
     <Compile Include="Assets\Scripts\Manager\System\ObjectPoolManager.cs" />
     <Compile Include="Assets\Scripts\Interactables\ShopInteractableBase.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
@@ -189,57 +215,76 @@
     <Compile Include="Assets\Scripts\Data\BlessingData.cs" />
     <Compile Include="Assets\Scripts\Manager\Gameplay\ShopManager.cs" />
     <Compile Include="Assets\Scripts\Manager\Gameplay\BuffSelectionManager.cs" />
-    <Compile Include="Assets\Scripts\PickUp\Collectible.cs" />
-    <Compile Include="Assets\Scripts\Player\RelicEffectManager.cs" />
+    <Compile Include="Assets\Scripts\UI\UIAudioHandler.cs" />
+    <Compile Include="Assets\Scripts\Audio\EntityAudioManager.cs" />
     <Compile Include="Assets\Scripts\Manager\System\GameInput.cs" />
     <Compile Include="Assets\Scripts\Visual\ItemAura.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInventoryCore.cs" />
+    <Compile Include="Assets\Scripts\Data\ToolData.cs" />
     <Compile Include="Assets\Scripts\Data\ProfileData.cs" />
+    <Compile Include="Assets\Scripts\Player\Relics\IronRingRelic.cs" />
     <Compile Include="Assets\Scripts\Enemy\FlyingMovement.cs" />
     <Compile Include="Assets\Scripts\Manager\System\MinimapManager.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\AfterburnerModifier.cs" />
     <Compile Include="Assets\Scripts\UI\Damage\DamagePopup.cs" />
-    <Compile Include="Assets\Scripts\Environment\Map\AsciiRoomParser.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerBuffManager.cs" />
+    <Compile Include="Assets\Scripts\Equipments\KineticRoot.cs" />
     <Compile Include="Assets\Scripts\Environment\Map\BaseLevelGenerator.cs" />
     <Compile Include="Assets\Scripts\Interactables\ShopPedestal.cs" />
     <Compile Include="Assets\Scripts\Core\Mechanics\WeaponVFXController.cs" />
+    <Compile Include="Assets\Scripts\UI\MindNodeSelectionUI.cs" />
     <Compile Include="Assets\Scripts\Camera\CinemachineCameraZoom2D.cs" />
+    <Compile Include="Assets\Scripts\Mind\MindNode.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyAnimation.cs" />
     <Compile Include="Assets\Scripts\Data\BuffData.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInteract.cs" />
+    <Compile Include="Assets\Scripts\UI\ModifierNodeUIController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
+    <Compile Include="Assets\Scripts\Audio\SceneMusicManager.cs" />
     <Compile Include="Assets\Scripts\Enemy\EvolutionTierData.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleEPOOutline.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyDrop.cs" />
     <Compile Include="Assets\Scripts\UI\SlotUnlockPanel.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerTool.cs" />
     <Compile Include="Assets\Scripts\UI\SwapSlotButton.cs" />
+    <Compile Include="Assets\Scripts\Data\LootBonusResolver.cs" />
     <Compile Include="Assets\Scripts\Environment\Map\RuntimeLevelPopulator.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStats.cs" />
     <Compile Include="Assets\Scripts\UI\GameOverUI.cs" />
     <Compile Include="Assets\Scripts\UI\MindGardenUI.cs" />
     <Compile Include="Assets\Scripts\Core\Mechanics\ClimbingObject.cs" />
     <Compile Include="Assets\Scripts\UI\MainMenuUI.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\VoidModifier.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\NeonGridModifier.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyAttack.cs" />
-    <Compile Include="Assets\Scripts\Enemy\EnemyAudio.cs" />
     <Compile Include="Assets\Scripts\Combat System\IDamageable.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerData.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleAudio.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\EventHorizonModifier.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
     <Compile Include="Assets\Scripts\Core\Interfaces\IFeedbackProvider.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexColorCycler.cs" />
-    <Compile Include="Assets\Scripts\Environment\Map\AbyssLevelGenerator.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\CurseModifier.cs" />
     <Compile Include="Assets\Scripts\UI\UIPanelAnimator.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\KineticModifier.cs" />
     <Compile Include="Assets\Scripts\Combat System\PlaystyleType.cs" />
     <Compile Include="Assets\Scripts\UI\MapUI.cs" />
     <Compile Include="Assets\Scripts\Manager\System\GameManagerVisual.cs" />
     <Compile Include="Assets\Scripts\Enemy\MeleeAttack.cs" />
     <Compile Include="Assets\Scripts\Data\ItemCategory.cs" />
     <Compile Include="Assets\Scripts\Enemy\DashAttack.cs" />
+    <Compile Include="Assets\Scripts\Equipments\ToxicCloud.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModulePhysics.cs" />
     <Compile Include="Assets\Scripts\UI\FeedbackUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
+    <Compile Include="Assets\Scripts\Mind\MindExitNode.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />
-    <Compile Include="Assets\Scripts\Player\PlayerAudio.cs" />
+    <Compile Include="Assets\Scripts\Equipments\BloodOreBomb.cs" />
+    <Compile Include="Assets\Scripts\Player\Relics\ShatteredMemoryRelic.cs" />
+    <Compile Include="Assets\Scripts\Player\CrimsonAmber.cs" />
+    <Compile Include="Assets\Scripts\PickUp\ResourceDrop.cs" />
+    <Compile Include="Assets\Scripts\UI\MindCurrencyUI.cs" />
     <Compile Include="Assets\Scripts\Environment\Map\RuntimeTilemapMerger.cs" />
     <Compile Include="Assets\Scripts\Manager\Gameplay\BlackHoleEffect.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs" />
@@ -253,8 +298,10 @@
     <Compile Include="Assets\InputActions.cs" />
     <Compile Include="Assets\Scripts\Enemy\TrainingDummy.cs" />
     <Compile Include="Assets\Scripts\Interactables\Runestone.cs" />
+    <Compile Include="Assets\Scripts\UI\Tooltip\UITooltipTrigger.cs" />
     <Compile Include="Assets\Scripts\Data\RunData.cs" />
     <Compile Include="Assets\Scripts\Enemy\LootSpawner.cs" />
+    <Compile Include="Assets\Scripts\Combat System\EchoModifiers\BlazeModifier.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemySensor.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleSprite.cs" />
     <Compile Include="Assets\Scripts\UI\ShrineUI.cs" />
@@ -262,6 +309,7 @@
     <Compile Include="Assets\Scripts\Environment\Map\EntityAnchor.cs" />
     <Compile Include="Assets\Scripts\Player\HotbarController.cs" />
     <Compile Include="Assets\Scripts\Manager\System\SaveManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\Gameplay\ChallengeTracker.cs" />
     <Compile Include="Assets\Scripts\UI\UIManager.cs" />
     <Compile Include="Assets\Scripts\UI\SwapUI.cs" />
     <Compile Include="Assets\Scripts\Manager\System\TimeManager.cs" />
@@ -270,10 +318,11 @@
     <Compile Include="Assets\Scripts\PickUp\PickupVisual.cs" />
     <Compile Include="Assets\Scripts\Data\MindGardenData.cs" />
     <Compile Include="Assets\Scripts\UI\PassUI.cs" />
+    <Compile Include="Assets\Scripts\Debug\DebugAddCurrency.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUtils.cs" />
     <Compile Include="Assets\Scripts\Data\InputConfig.cs" />
     <Compile Include="Assets\Scripts\Manager\System\MinimapPixelSnapper.cs" />
-    <Compile Include="Assets\Scripts\Hub\HubPlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerEventBus.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyBrain.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +332,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Roboto-Bold - License.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile-2-Pass.shader" />
+    <None Include="Assets\Audio\Musics\music-loop-bundle-2026-q2\_LICENSE.txt" />
     <None Include="Assets\Sprites\Enemy\EVil Wizard 2\EVil Wizard 2\License.txt" />
     <None Include="Assets\DOTween\DOTween.XML" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Unity - OFL.txt" />
@@ -299,19 +349,23 @@
     <None Include="Assets\Sprites\Player\template_free\LICENSE.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\Sprites\Enemy\Bringer-Of-Death\Bringer-Of-Death\License.txt" />
+    <None Include="Assets\Audio\Sounds\Free Fantasy SFX Pack By TomMusic\Free Fantasy SFX Pack By TomMusic\ReadMe.txt" />
     <None Include="Assets\Sprites\VFX\Pixel Art VFX - Fire Explosions - FREE Version\Thank you!.txt" />
     <None Include="Assets\Sprites\VFX\Pixel Art VFX - Necromancer - FREE Version\Thank you!.txt" />
     <None Include="Assets\Sprites\Player\male_hero_free\LICENSE.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\SDFFunctions.hlsl" />
+    <None Include="Assets\Audio\Sounds\Shapeforms Audio Free Sound Effects\Shapeforms Audio Free Sound Effects\Future UI Preview\Future UI info.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
+    <None Include="Assets\Audio\Musics\music-loop-bundle-2026-q2\_README.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\Sprites\VFX\PixelArtRPGVFXLite\ReadMe.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Audio\Sounds\Shapeforms Audio Free Sound Effects\Shapeforms Audio Free Sound Effects\20 Percent Off Coupon.txt" />
     <None Include="Assets\DOTween\DOTween.dll" />
     <None Include="Assets\DOTween\readme.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
@@ -908,7 +962,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis.CSharp">
-      <HintPath>Assets\Plugins\NuGet\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.pipeline@58c16695e488\Runtime\Plugins\CodeAnalysis\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Text.Encoding.CodePages">
@@ -928,7 +982,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Collections.Immutable">
-      <HintPath>Assets\Plugins\NuGet\System.Collections.Immutable.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.pipeline@58c16695e488\Runtime\Plugins\CodeAnalysis\System.Collections.Immutable.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions">
@@ -1020,7 +1074,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Reflection.Metadata">
-      <HintPath>Assets\Plugins\NuGet\System.Reflection.Metadata.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.pipeline@58c16695e488\Runtime\Plugins\CodeAnalysis\System.Reflection.Metadata.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64\Runtime\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil">
@@ -1631,12 +1689,12 @@
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Shared.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.Searcher.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.2D.PixelPerfect.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.2D.PixelPerfect.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Searcher.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.PlasticSCM.Editor">
@@ -1675,6 +1733,10 @@
       <HintPath>Library\ScriptAssemblies\Unity.Cinemachine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Unity.Pipeline.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Pipeline.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
       <Private>False</Private>
@@ -1685,6 +1747,10 @@
     </Reference>
     <Reference Include="Unity.2D.Psdimporter.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.2D.Psdimporter.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Pipeline">
+      <HintPath>Library\ScriptAssemblies\Unity.Pipeline.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.Flow">

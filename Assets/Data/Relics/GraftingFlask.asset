@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: GraftingFlask
   itemName: Grafting Flask
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -4108039252454196310, guid: 9ef9e3ebe28c7d04d838c25262f67812, type: 3}
   description: Permanently grants +1 Max HP segment, but reduces movement speed by
     5%.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50
-  RelicID: GraftingFlask
-  RelicNameEN: Grafting Flask
   Rarity: 0
   FactionBonus: +1 Random Stat
-  CoreEffect: Permanently grants +1 Max HP segment, but reduces movement speed by
-    5%.
-  RelicIcon: {fileID: 0}

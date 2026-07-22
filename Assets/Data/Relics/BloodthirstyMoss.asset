@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: BloodthirstyMoss
   itemName: Bloodthirsty Moss
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -2315835175532491689, guid: 18b0608cd3f533a4b893defb68993af2, type: 3}
   description: Picking up currency/drops has a 5% chance to heal 1 HP.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50
-  RelicID: BloodthirstyMoss
-  RelicNameEN: Bloodthirsty Moss
   Rarity: 0
   FactionBonus: +1 Random Stat
-  CoreEffect: Picking up currency/drops has a 5% chance to heal 1 HP.
-  RelicIcon: {fileID: 0}

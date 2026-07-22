@@ -234,22 +234,12 @@ PolygonCollider2D:
       - {x: 2, y: -6.9999714}
       - {x: 2.0000286, y: 0}
       - {x: 6, y: 0.00002861023}
-      - {x: 5.9999714, y: 6}
-      - {x: 4, y: 6.0000296}
-      - {x: 3.9999714, y: 7}
-      - {x: 2, y: 7.0000296}
-      - {x: 1.9999714, y: 8}
-      - {x: -1, y: 7.9999704}
-      - {x: -1.0000286, y: 7}
-      - {x: -2, y: 6.9999704}
-      - {x: -2.0000286, y: 6}
-      - {x: -3, y: 5.9999704}
-      - {x: -3.0000286, y: 2}
-      - {x: -6, y: 1.9999714}
-      - {x: -5.9999714, y: -3}
-      - {x: -5, y: -3.0000286}
-      - {x: -4.9999714, y: -6}
-      - {x: -4, y: -6.0000286}
+      - {x: 5.9999714, y: 8}
+      - {x: -5, y: 7.9999704}
+      - {x: -4.9999714, y: 4}
+      - {x: 2, y: 3.9999714}
+      - {x: 1.9999714, y: 3}
+      - {x: -4, y: 2.9999714}
       - {x: -3.9999714, y: -10}
   m_UseDelaunayMesh: 1
 --- !u!1 &3589386868723961580
@@ -5171,8 +5161,8 @@ Tilemap:
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: 1, y: -24, z: 0}
-  m_Size: {x: 12, y: 13, z: 1}
+  m_Origin: {x: 3, y: -24, z: 0}
+  m_Size: {x: 10, y: 13, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -6982,8 +6972,8 @@ Tilemap:
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: 16, y: -29, z: 0}
-  m_Size: {x: 12, y: 18, z: 1}
+  m_Origin: {x: 17, y: -29, z: 0}
+  m_Size: {x: 11, y: 18, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:

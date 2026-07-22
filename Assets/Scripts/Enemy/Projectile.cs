@@ -23,6 +23,7 @@ public class Projectile : MonoBehaviour
     private GameObject owner;
     
     private DamageInfo? overrideDamageInfo = null;
+    private System.Collections.Generic.HashSet<IDamageable> piercedTargets = new System.Collections.Generic.HashSet<IDamageable>();
 
     private void Awake()
     {
@@ -39,6 +40,7 @@ public class Projectile : MonoBehaviour
         rb.gravityScale = defaultGravityScale;
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
+        piercedTargets.Clear();
         lifetimeCoroutine = StartCoroutine(LifetimeRoutine());
     }
 
@@ -112,8 +114,9 @@ public class Projectile : MonoBehaviour
         if (isHitLayer)
         {
             IDamageable target = other.GetComponentInParent<IDamageable>();
-            if (target != null && !target.IsDead)
+            if (target != null && !target.IsDead && !piercedTargets.Contains(target))
             {
+                piercedTargets.Add(target);
                 DamageInfo info;
                 Vector2 knockDir = (other.transform.position - transform.position).normalized;
                 
@@ -131,11 +134,32 @@ public class Projectile : MonoBehaviour
                 if (scaleDamageWithSpeed && rb != null)
                 {
                     float currentSpeed = rb.linearVelocity.magnitude;
-                    // Example: 20 speed * 0.05 = +1.0 (double damage)
                     info.multiplicativeStack *= (1f + (currentSpeed * speedDamageMultiplier));
                 }
                 
-                target.TakeDamage(info);
+                bool handledByPlayer = false;
+                if (overrideDamageInfo.HasValue && owner != null && owner.CompareTag("Player"))
+                {
+                    PlayerAttack pa = owner.GetComponent<PlayerAttack>();
+                    if (pa != null && pa.CurrentAttackHitbox != null)
+                    {
+                        handledByPlayer = true;
+                        pa.CurrentAttackHitbox.InvokeBeforeDamageApplied(target, ref info);
+                        int finalDamage = DamageCalculator.CalculateFinalDamage(info, target.Defense);
+                        target.TakeDamage(info);
+                        pa.CurrentAttackHitbox.InvokeOnHitTarget(target, info, finalDamage);
+                    }
+                }
+                
+                if (!handledByPlayer)
+                {
+                    target.TakeDamage(info);
+                }
+                
+                if (info.isPiercing)
+                {
+                    return; // Skip pool return for piercing
+                }
             }
         }
 

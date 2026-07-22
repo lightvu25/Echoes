@@ -54,7 +54,7 @@ public class EnemyEvolutionModifier : MonoBehaviour
     /// Called when any enemy spots the player (shared vision).
     /// Checks if this enemy is within the global aggro radius, then triggers aggro.
     /// </summary>
-    private void HandleGlobalAggro()
+    private void HandleGlobalAggro(Vector3 spotterPosition)
     {
         // Already chasing or attacking — no need to override
         if (brain.CurrentState == EnemyBrain.State.Chase
@@ -69,11 +69,12 @@ public class EnemyEvolutionModifier : MonoBehaviour
         if (EvolutionManager.Instance != null)
         {
             float radius = EvolutionManager.Instance.GlobalAggroRadius;
-            if (!float.IsPositiveInfinity(radius))
+            if (!float.IsPositiveInfinity(radius) && radius > 0f)
             {
-                // If the spotter's position matters for radius checks,
-                // the manager would need to pass it. For now, all enemies react.
-                // This is a placeholder for future radius-based filtering.
+                if (Vector3.Distance(transform.position, spotterPosition) > radius)
+                {
+                    return; // Too far away from the spotter
+                }
             }
         }
 

@@ -464,7 +464,11 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
         if (fowRawImageRect != null)
         {
             RawImage rawImg = fowRawImageRect.GetComponent<RawImage>();
-            if (rawImg != null) rawImg.texture = _fogTexture;
+            if (rawImg != null)
+            {
+                rawImg.texture = _fogTexture;
+                rawImg.raycastTarget = false;
+            }
 
             // CRITICAL FIX: Use the TilemapRenderer's WORLD space bounds to align perfectly with the UI Rooms,
             // which are also positioned using their WORLD space bounds!

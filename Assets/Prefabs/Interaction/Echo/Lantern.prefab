@@ -166,7 +166,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  iconPrefab: {fileID: 8270603724649358730, guid: 563f43968a07b104a9fb7b5918ec3976, type: 3}
+  iconPrefab: {fileID: 8270603724649358730, guid: 4b3a2afa03c98894ba2e41c8179f88c6, type: 3}
   iconOffset: {x: 0, y: 1.5, z: 0}
   targetSpriteRenderer: {fileID: 925060024996951413}
   outlineThickness: 0.02

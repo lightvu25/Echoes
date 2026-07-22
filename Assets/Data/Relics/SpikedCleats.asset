@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: SpikedCleats
   itemName: Spiked Cleats
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -2559668039942416992, guid: cc5d5498ad8ff3b448041fa791341966, type: 3}
   description: Wall-jumping grants a 20% Movement Speed boost for 1.5 seconds.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 2
   basePrice: 50
-  RelicID: SpikedCleats
-  RelicNameEN: Spiked Cleats
   Rarity: 1
   FactionBonus: +2 Random Stats
-  CoreEffect: Wall-jumping grants a 20% Movement Speed boost for 1.5 seconds.
-  RelicIcon: {fileID: 0}

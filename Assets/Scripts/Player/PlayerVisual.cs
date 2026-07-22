@@ -14,14 +14,19 @@ public class PlayerVisual : MonoBehaviour
 
     private PlayerMovement playerMovement;
     private PlayerInteract playerInteract;
-
     private PlayerAttack playerAttack;
+    private PlayerCombat playerCombat;
+    private CrimsonAmber crimsonAmber;
+    private PlayerTool playerTool;
 
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
         playerInteract = GetComponent<PlayerInteract>();
         playerAttack = GetComponent<PlayerAttack>();
+        playerCombat = GetComponent<PlayerCombat>();
+        crimsonAmber = GetComponent<CrimsonAmber>();
+        playerTool = GetComponent<PlayerTool>();
     }
 
     private void Start()
@@ -31,8 +36,12 @@ public class PlayerVisual : MonoBehaviour
         playerMovement.OnGrab += HandleLedgeGrab;
         playerMovement.OnGetup += HandleLedgeClimb;
         playerMovement.OnFall += HandleFall;
+        playerMovement.OnDash += HandleDash;
         playerInteract.OnDead += HandleDead;
         playerAttack.OnAttackStarted += HandleAttack;
+        if (playerCombat != null) playerCombat.OnDamageReceived += HandleDamage;
+        if (crimsonAmber != null) crimsonAmber.OnConsume += HandleConsume;
+        if (playerTool != null) playerTool.OnConsume += HandleConsume;
     }
 
     private void Update()
@@ -45,6 +54,7 @@ public class PlayerVisual : MonoBehaviour
         _animator.SetBool("isWallSliding", playerMovement.isSliding);
         _animator.SetBool("isClimbing", playerMovement.isClimbing);
         _animator.SetBool("isPlunging", playerMovement.isPlunging);
+        _animator.SetBool("isDashing", playerMovement.isDashing);
 
         if (particleWalkingPrefab != null)
         {
@@ -79,6 +89,16 @@ public class PlayerVisual : MonoBehaviour
         _animator.Play("Fall");
     }
 
+    private void HandleDash(object sender, EventArgs e)
+    {
+        _animator.Play("Dash");
+    }
+
+    private void HandleConsume()
+    {
+        _animator.Play("Consume");
+    }
+
     private void HandleLedgeGrab(object sender, EventArgs e)
     {
         _animator.Play("Ledge grab"); 
@@ -106,6 +126,14 @@ public class PlayerVisual : MonoBehaviour
         if (particleDiePrefab != null) ObjectPoolManager.SpawnObject(particleDiePrefab.gameObject, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.ParticleSystem);
     }
 
+    private void HandleDamage(object sender, PlayerCombat.DamageReceivedArgs e)
+    {
+        if (e.damage > 0)
+        {
+            _animator.Play("Hurt");
+        }
+    }
+
     private void OnDestroy()
     {
         if (playerMovement != null)
@@ -115,6 +143,7 @@ public class PlayerVisual : MonoBehaviour
             playerMovement.OnGrab -= HandleLedgeGrab;
             playerMovement.OnGetup -= HandleLedgeClimb;
             playerMovement.OnFall -= HandleFall;
+            playerMovement.OnDash -= HandleDash;
         }
         if (playerInteract != null)
         {
@@ -123,6 +152,18 @@ public class PlayerVisual : MonoBehaviour
         if (playerAttack != null)
         {
             playerAttack.OnAttackStarted -= HandleAttack;
+        }
+        if (playerCombat != null)
+        {
+            playerCombat.OnDamageReceived -= HandleDamage;
+        }
+        if (crimsonAmber != null)
+        {
+            crimsonAmber.OnConsume -= HandleConsume;
+        }
+        if (playerTool != null)
+        {
+            playerTool.OnConsume -= HandleConsume;
         }
     }
 }

@@ -7,13 +7,8 @@ public enum RoomNodeType
 {
     Start,
     Normal,
-    Statue,
-    Buff,
-    Reward,
-    Elite,
-    Goal,
     DeadEnd,
-    Teleport
+    Goal
 }
 
 public class GraphLevelGenerator : BaseLevelGenerator
@@ -58,6 +53,11 @@ public class GraphLevelGenerator : BaseLevelGenerator
         
         int index = Mathf.Clamp(levelNumber - 1, 0, levelBlueprints.Count - 1);
         _currentLevelData = levelBlueprints[index];
+
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.currentLevelName = _currentLevelData.name.Replace(" Blueprint", "").Replace(" (Level Blueprint)", "").Trim();
+        }
 
         ClearGraphState();
         if (_currentLevelData.nodes == null || _currentLevelData.nodes.Count == 0) return;
@@ -121,7 +121,7 @@ public class GraphLevelGenerator : BaseLevelGenerator
 
                 List<GameObject> pool = GetPoolForEffectiveType(effectiveRoomType, effectiveEventType);
                 
-                // --- LOG QUAN TRỌNG 1: RỔ PREFAB TRỐNG ---
+                // LOG 1
                 if (pool == null || pool.Count == 0) 
                 {
                     Debug.Log($"[GraphLevelGenerator] MISSING PREFAB: Rổ chứa cho phòng '{effectiveRoomType}' (Event: {effectiveEventType}) đang trống! Nhánh bị cắt đứt tại Node '{childBlueprint.nodeName}'.");
@@ -130,9 +130,9 @@ public class GraphLevelGenerator : BaseLevelGenerator
 
                 List<int> futureActiveChildren = _activeGraph.ContainsKey(childIndex) ? _activeGraph[childIndex] : new List<int>();
 
-                Room nextRoom = TrySnapRoom(currentRoom, pool, childBlueprint, futureActiveChildren, effectiveRoomType);                
+                Room nextRoom = TrySnapRoom(currentRoom, pool, childBlueprint, futureActiveChildren, effectiveRoomType, effectiveEventType);                
                 
-                // --- LOG QUAN TRỌNG 2: SẬP NHÁNH ---
+                // LOG 2
                 if (nextRoom == null) 
                 {
                     int requiredDoors = futureActiveChildren.Count + 1;
@@ -215,7 +215,7 @@ public class GraphLevelGenerator : BaseLevelGenerator
         return room;
     }
 
-    private Room TrySnapRoom(Room previousRoom, List<GameObject> pool, NodeBlueprint candidateBlueprint, List<int> futureActiveChildren, RoomNodeType effectiveRoomType)
+    private Room TrySnapRoom(Room previousRoom, List<GameObject> pool, NodeBlueprint candidateBlueprint, List<int> futureActiveChildren, RoomNodeType effectiveRoomType, RoomEventType effectiveEventType)
     {
         bool forceDirection = candidateBlueprint.forceDirection;
         ExitDirection requiredDirFromParent = candidateBlueprint.requiredDir;
@@ -239,7 +239,9 @@ public class GraphLevelGenerator : BaseLevelGenerator
 
         if (requiredChildrenCount == 0 && effectiveRoomType != RoomNodeType.Start)
         {
-            pool = GetPoolForEffectiveType(RoomNodeType.DeadEnd, RoomEventType.None);
+            // IMPORTANT: Pass effectiveEventType instead of RoomEventType.None, 
+            // so if this dead end is meant to be a Shop/Reward, it will pull from those prefabs!
+            pool = GetPoolForEffectiveType(RoomNodeType.DeadEnd, effectiveEventType);
         }
 
         List<int> prefabIndices = new List<int>();
@@ -369,21 +371,20 @@ public class GraphLevelGenerator : BaseLevelGenerator
     {
         switch (eventType)
         {
-            case RoomEventType.Statue: return _currentLevelData.statueRoomPrefabs;
+            case RoomEventType.Rune: return _currentLevelData.runeRoomPrefabs;
             case RoomEventType.Reward: return _currentLevelData.rewardRoomPrefabs;
             case RoomEventType.Elite: return _currentLevelData.eliteRoomPrefabs;
             case RoomEventType.Story: return _currentLevelData.storyRoomPrefabs;
             case RoomEventType.EchoRoom: return _currentLevelData.echoRoomPrefabs;
+            case RoomEventType.CursedChest: return _currentLevelData.cursedChestRoomPrefabs;
+            case RoomEventType.HighMagicFactor: return _currentLevelData.highMagicFactorRoomPrefabs;
+            case RoomEventType.Shop: return _currentLevelData.shopRoomPrefabs;
         }
 
         return roomType switch
         {
             RoomNodeType.Start   => _currentLevelData.startRoomPrefabs,
             RoomNodeType.Normal  => _currentLevelData.normalRoomPrefabs,
-            RoomNodeType.Statue  => _currentLevelData.statueRoomPrefabs,
-            RoomNodeType.Reward  => _currentLevelData.rewardRoomPrefabs,
-            RoomNodeType.Elite   => _currentLevelData.eliteRoomPrefabs,
-            RoomNodeType.Buff    => _currentLevelData.buffRoomPrefabs,
             RoomNodeType.DeadEnd => _currentLevelData.deadEndRoomPrefabs,
             RoomNodeType.Goal    => _currentLevelData.goalRoomPrefabs,
             _ => null

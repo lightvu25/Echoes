@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
+using DG.Tweening;
 
 [System.Serializable]
 public struct MusicTrack
@@ -13,35 +15,60 @@ public class MusicManager : MonoBehaviour
 {
     public static MusicManager Instance { get; private set; }
 
+    [Header("Audio Sources")]
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource ambientSource;
+    
     private const int MUSIC_VOLUME_MAX = 10;
 
     private static float musicTime;
     private static int musicVolume = 4;
+    private const string PREF_KEY = "MusicVolume";
 
     public event EventHandler OnMusicVolumeChanged;
 
+    [Header("Mixer Routing")]
+    public AudioMixer audioMixer;
+    public AudioMixerGroup musicMixerGroup;
+    public string musicVolumeParam = "MusicVolume";
+
+    [Header("Tracks")]
     [SerializeField] private MusicTrack[] tracks;
 
-    private AudioSource musicAudioSource;
-    private Coroutine crossfadeCoroutine;
+    private Coroutine musicCrossfadeCoroutine;
+    private Coroutine ambientCrossfadeCoroutine;
 
     private void Awake()
     {
         Instance = this;
 
-        musicAudioSource = GetComponent<AudioSource>();
-        musicAudioSource.time = musicTime;
+        // Load volume from PlayerPrefs
+        musicVolume = PlayerPrefs.GetInt(PREF_KEY, 4);
+
+        if (musicMixerGroup != null)
+        {
+            if (musicSource != null) musicSource.outputAudioMixerGroup = musicMixerGroup;
+            if (ambientSource != null) ambientSource.outputAudioMixerGroup = musicMixerGroup;
+        }
+
+        if (musicSource != null) musicSource.time = musicTime;
     }
 
     private void Start()
     {
-        musicAudioSource.volume = GetMusicVolumeNormalized();
+        ApplyMixerVolume();
+        
+        if (musicCrossfadeCoroutine == null && musicSource != null)
+            musicSource.volume = 1f;
+            
+        if (ambientCrossfadeCoroutine == null && ambientSource != null)
+            ambientSource.volume = 1f;
     }
 
     private void Update()
     {
-        if (musicAudioSource.isPlaying)
-            musicTime = musicAudioSource.time;
+        if (musicSource != null && musicSource.isPlaying)
+            musicTime = musicSource.time;
     }
 
     public AudioClip GetClipFromName(string trackName)
@@ -63,54 +90,88 @@ public class MusicManager : MonoBehaviour
             return;
         }
 
-        if (musicAudioSource.clip == clip) return;
+        if (musicSource.clip == clip) return;
 
-        if (crossfadeCoroutine != null)
-            StopCoroutine(crossfadeCoroutine);
+        if (musicCrossfadeCoroutine != null)
+            StopCoroutine(musicCrossfadeCoroutine);
 
-        crossfadeCoroutine = StartCoroutine(AnimateMusicCrossfade(clip, fadeDuration));
+        musicCrossfadeCoroutine = StartCoroutine(AnimateCrossfade(musicSource, clip, fadeDuration, isMusic: true));
     }
 
-    private IEnumerator AnimateMusicCrossfade(AudioClip nextTrack, float fadeDuration)
+    public void PlayAmbient(string trackName, float fadeDuration = 0.5f)
+    {
+        AudioClip clip = GetClipFromName(trackName);
+        if (clip == null)
+        {
+            Debug.LogWarning($"MusicManager: Ambient Track '{trackName}' not found.");
+            return;
+        }
+
+        if (ambientSource.clip == clip) return;
+
+        if (ambientCrossfadeCoroutine != null)
+            StopCoroutine(ambientCrossfadeCoroutine);
+
+        ambientCrossfadeCoroutine = StartCoroutine(AnimateCrossfade(ambientSource, clip, fadeDuration, isMusic: false));
+    }
+
+    private IEnumerator AnimateCrossfade(AudioSource source, AudioClip nextTrack, float fadeDuration, bool isMusic)
     {
         float halfDuration = fadeDuration / 2f;
-
-        float startVolume = musicAudioSource.volume;
+        float startVolume = source.volume;
         float elapsed = 0f;
+
+        // Fade out
         while (elapsed < halfDuration)
         {
             elapsed += Time.deltaTime;
-            musicAudioSource.volume = Mathf.Lerp(startVolume, 0f, elapsed / halfDuration);
+            source.volume = Mathf.Lerp(startVolume, 0f, elapsed / halfDuration);
             yield return null;
         }
-        musicAudioSource.volume = 0f;
+        source.volume = 0f;
 
-        musicAudioSource.clip = nextTrack;
-        musicTime = 0f;
-        musicAudioSource.Play();
+        // Đổi nhạc
+        source.clip = nextTrack;
+        if (isMusic) musicTime = 0f;
+        source.Play();
 
+        // Fade in
         elapsed = 0f;
-        float targetVolume = GetMusicVolumeNormalized();
         while (elapsed < halfDuration)
         {
             elapsed += Time.deltaTime;
-            musicAudioSource.volume = Mathf.Lerp(0f, targetVolume, elapsed / halfDuration);
+            source.volume = Mathf.Lerp(0f, 1f, elapsed / halfDuration);
             yield return null;
         }
-        musicAudioSource.volume = targetVolume;
+        source.volume = 1f;
 
-        crossfadeCoroutine = null;
+        if (isMusic) musicCrossfadeCoroutine = null;
+        else ambientCrossfadeCoroutine = null;
     }
 
-    public void ChangeMusicVolume()
+    public void ChangeMusicVolume() { SetMusicVolume((musicVolume + 1) % MUSIC_VOLUME_MAX); }
+    public void SetMusicVolume(int newVolume)
     {
-        musicVolume = (musicVolume + 1) % MUSIC_VOLUME_MAX;
-        if (crossfadeCoroutine == null)
-            musicAudioSource.volume = GetMusicVolumeNormalized();
+        musicVolume = Mathf.Clamp(newVolume, 0, MUSIC_VOLUME_MAX);
+        ApplyMixerVolume();
         OnMusicVolumeChanged?.Invoke(this, EventArgs.Empty);
     }
-
+    public void SaveVolume() { PlayerPrefs.SetInt(PREF_KEY, musicVolume); PlayerPrefs.Save(); }
+    private void ApplyMixerVolume()
+    {
+        if (audioMixer != null)
+        {
+            float normalizedVolume = GetMusicVolumeNormalized();
+            float dbValue = Mathf.Log10(Mathf.Max(0.0001f, normalizedVolume)) * 20f;
+            audioMixer.SetFloat(musicVolumeParam, dbValue);
+        }
+    }
     public int GetMusicVolume() => musicVolume;
-
     public float GetMusicVolumeNormalized() => (float)musicVolume / MUSIC_VOLUME_MAX;
+
+    public void DuckMusic(bool isDucking)
+    {
+        float targetVolume = isDucking ? 0.3f : 1f;
+        musicSource.DOFade(targetVolume, 0.5f).SetUpdate(true);
+    }
 }

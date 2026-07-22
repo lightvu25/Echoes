@@ -129,13 +129,24 @@ public class BombProjectile : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (isFlying) return;
-        HandleImpact(collision.gameObject);
+        
+        bool hitFloor = false;
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            if (contact.normal.y > 0.5f)
+            {
+                hitFloor = true;
+                break;
+            }
+        }
+        
+        HandleImpact(collision.gameObject, hitFloor);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (isFlying) return;
-        HandleImpact(collision.gameObject);
+        HandleImpact(collision.gameObject, false);
     }
 
     private void FixedUpdate()
@@ -163,16 +174,18 @@ public class BombProjectile : MonoBehaviour
                     flightCoroutine = null;
                 }
                 
-                // Manually snap to the exact hit position and trigger impact.
-                // This prevents the bomb from falling through OneWayPlatforms due to physics engine quirks
-                // when the bomb is already slightly overlapping the platform when it becomes solid.
-                transform.position = hit.centroid;
-                HandleImpact(hit.collider.gameObject);
+                // If we hit a floor, snap and stick to it.
+                if (hit.normal.y > 0.5f)
+                {
+                    transform.position = hit.centroid;
+                    HandleImpact(hit.collider.gameObject, true);
+                }
+                // If we hit a wall, we just become solid and let physics bounce it!
             }
         }
     }
 
-    private void HandleImpact(GameObject hitObj)
+    private void HandleImpact(GameObject hitObj, bool isFloorHit)
     {
         Debug.Log($"[BombProjectile] HandleImpact with {hitObj.name} (Layer {hitObj.layer})");
         if (hasExploded) return;
@@ -196,7 +209,7 @@ public class BombProjectile : MonoBehaviour
             // Do not explode on impact, wait for the fuse timer!
             
             // Stop the bomb dead in its tracks when it hits the ground so it doesn't roll or chase the player
-            if (hitGround && rb != null)
+            if (hitGround && rb != null && isFloorHit)
             {
                 rb.linearVelocity = Vector2.zero;
                 rb.angularVelocity = 0f;

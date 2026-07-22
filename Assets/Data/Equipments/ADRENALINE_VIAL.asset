@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1257edd8fa7f9ec41a923497825bc076, type: 3}
+  m_Name: ADRENALINE_VIAL
+  m_EditorClassIdentifier: Assembly-CSharp::ToolData
+  itemID: ADRENALINE_VIAL
+  itemName: Adrenaline Vial
+  itemIcon: {fileID: -2753682860013124491, guid: 51caefde5377f4145bf9d4ec4e70f37a, type: 3}
+  description: +50% move/attack speed for 5s.
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+  itemTier: 1
+  basePrice: 50
+  durability: 0
+  maxUses: 1
+  cooldown: 10

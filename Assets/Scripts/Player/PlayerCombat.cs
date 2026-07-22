@@ -19,6 +19,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private HealthSystem healthSystem;
     private PlayerAttack playerAttack;
+    private PlayerMovement playerMovement;
     private Rigidbody2D rb;
     private Coroutine _knockbackCoroutine;
     private bool isKnockedBack = false;
@@ -31,6 +32,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     {
         healthSystem = GetComponent<HealthSystem>();
         playerAttack = GetComponent<PlayerAttack>();
+        playerMovement = GetComponent<PlayerMovement>();
         rb = GetComponent<Rigidbody2D>();
     }
 
@@ -62,9 +64,16 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             GameSession.Instance.currentRun.currentLevelNoHitKills = 0;
         }
 
-        if (damageInfo.knockbackForce > 0f && rb != null)
+        // Always apply knockback/stagger to cancel attacks and briefly stop movement, 
+        // even if the incoming knockback force is 0.
+        if (rb != null)
         {
             ApplyKnockback(damageInfo.knockbackDirection, damageInfo.knockbackForce);
+        }
+
+        if (playerMovement != null)
+        {
+            playerMovement.ApplyStun(0.3f);
         }
 
         GameFeelManager.Instance?.ProcessPlayerHit();

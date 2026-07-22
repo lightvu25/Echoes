@@ -13,6 +13,11 @@ public class BurdenManager : MonoBehaviour
     [SerializeField] private float speedScalePerCore = 0.02f;
     [SerializeField] private float dropRateScalePerCore = 0.05f;
 
+    [Header("Scaling Limits")]
+    [SerializeField] private int maxBurdenLevel = 10;
+    [SerializeField] private int goldPerBurden = 500;
+    [SerializeField] private int shardsPerBurden = 50;
+
     public float CurrentDamageMultiplier { get; private set; } = 1f;
     public float CurrentHealthMultiplier { get; private set; } = 1f;
     public float CurrentSpeedMultiplier { get; private set; } = 1f;
@@ -35,8 +40,9 @@ public class BurdenManager : MonoBehaviour
     {
         if (PlayerStats.Instance != null)
         {
-            PlayerStats.Instance.OnAstralShardsChanged += HandleAstralShardsChanged;
-            UpdateMultipliers(PlayerStats.Instance.CurrentAstralShards);
+            PlayerStats.Instance.OnAstralShardsChanged += HandleCurrencyChanged;
+            PlayerStats.Instance.OnGoldChanged += HandleCurrencyChanged;
+            UpdateMultipliers();
         }
     }
 
@@ -44,21 +50,30 @@ public class BurdenManager : MonoBehaviour
     {
         if (PlayerStats.Instance != null)
         {
-            PlayerStats.Instance.OnAstralShardsChanged -= HandleAstralShardsChanged;
+            PlayerStats.Instance.OnAstralShardsChanged -= HandleCurrencyChanged;
+            PlayerStats.Instance.OnGoldChanged -= HandleCurrencyChanged;
         }
     }
 
-    private void HandleAstralShardsChanged(int newShards)
+    private void HandleCurrencyChanged(int newValue)
     {
-        UpdateMultipliers(newShards);
+        UpdateMultipliers();
     }
 
-    private void UpdateMultipliers(int cores)
+    private void UpdateMultipliers()
     {
-        CurrentDamageMultiplier = 1f + (cores * damageScalePerCore);
-        CurrentHealthMultiplier = 1f + (cores * healthScalePerCore);
-        CurrentSpeedMultiplier = 1f + (cores * speedScalePerCore);
-        CurrentDropRateMultiplier = 1f + (cores * dropRateScalePerCore);
+        if (PlayerStats.Instance == null) return;
+
+        // Calculate burden level from currency, protecting against divide-by-zero
+        int goldBurden = goldPerBurden > 0 ? PlayerStats.Instance.CurrentGold / goldPerBurden : 0;
+        int shardBurden = shardsPerBurden > 0 ? PlayerStats.Instance.CurrentAstralShards / shardsPerBurden : 0;
+        
+        int totalBurden = Mathf.Min(maxBurdenLevel, goldBurden + shardBurden);
+
+        CurrentDamageMultiplier = 1f + (totalBurden * damageScalePerCore);
+        CurrentHealthMultiplier = 1f + (totalBurden * healthScalePerCore);
+        CurrentSpeedMultiplier = 1f + (totalBurden * speedScalePerCore);
+        CurrentDropRateMultiplier = 1f + (totalBurden * dropRateScalePerCore);
 
         OnBurdenChanged?.Invoke(this, EventArgs.Empty);
     }

@@ -1,4 +1,0 @@
-{
-  "csharpCode": "var gen = UnityEngine.Object.FindObjectOfType<GraphLevelGenerator>();\nif (gen != null) {\n    var report = new System.Text.StringBuilder();\n    report.AppendLine(\"Normal: \" + gen.normalRoomPrefabs.Length);\n    foreach(var p in gen.normalRoomPrefabs) report.AppendLine(p.name);\n    report.AppendLine(\"Reward: \" + gen.rewardRoomPrefabs.Length);\n    foreach(var p in gen.rewardRoomPrefabs) report.AppendLine(p.name);\n    report.AppendLine(\"DeadEnd: \" + gen.deadEndRoomPrefabs.Length);\n    foreach(var p in gen.deadEndRoomPrefabs) report.AppendLine(p.name);\n    System.IO.File.WriteAllText(\"GeneratorPools.txt\", report.ToString());\n}",
-  "isMethodBody": true
-}

@@ -32,6 +32,9 @@ public class StatsUI : MonoBehaviour, IUIPanel
     [SerializeField] private TextMeshProUGUI coinsTextMesh;
     [SerializeField] private TextMeshProUGUI astralShardsTextMesh;
 
+    [Header("Crimson Amber")]
+    [SerializeField] private CrimsonAmberUI crimsonAmberUI;
+
     // -----------------------------------------------------------------------
     // State Tracking
     // Tracks how many items were active on the PREVIOUS event fire so we can
@@ -67,7 +70,7 @@ public class StatsUI : MonoBehaviour, IUIPanel
         // --- Currency events (PlayerStats) ---
         if (PlayerStats.Instance != null)
         {
-            PlayerStats.Instance.OnGoldChanged         += UpdateCoins;
+            PlayerStats.Instance.OnGoldChanged += UpdateCoins;
             PlayerStats.Instance.OnAstralShardsChanged += UpdateAstralShards;
 
             UpdateCoins(PlayerStats.Instance.CurrentGold);
@@ -100,13 +103,23 @@ public class StatsUI : MonoBehaviour, IUIPanel
         {
             PlayerInteract.Instance.OnDead += HandlePlayerDead;
         }
+
+        if (PlayerStats.Instance != null)
+        {
+            var amberController = PlayerStats.Instance.GetComponent<CrimsonAmber>();
+            if (amberController != null)
+            {
+                amberController.OnAmberStateChanged += UpdateCrimsonAmberUI;
+                UpdateCrimsonAmberUI(amberController.CurrentAmbers, amberController.MaxAmbers, amberController.CurrentOrbs);
+            }
+        }
     }
 
     private void OnDestroy()
     {
         if (PlayerStats.Instance != null)
         {
-            PlayerStats.Instance.OnGoldChanged         -= UpdateCoins;
+            PlayerStats.Instance.OnGoldChanged -= UpdateCoins;
             PlayerStats.Instance.OnAstralShardsChanged -= UpdateAstralShards;
         }
 
@@ -128,21 +141,35 @@ public class StatsUI : MonoBehaviour, IUIPanel
         {
             PlayerInteract.Instance.OnDead -= HandlePlayerDead;
         }
+
+        if (PlayerStats.Instance != null)
+        {
+            var amberController = PlayerStats.Instance.GetComponent<CrimsonAmber>();
+            if (amberController != null)
+            {
+                amberController.OnAmberStateChanged -= UpdateCrimsonAmberUI;
+            }
+        }
     }
 
     private void HandlePlayerDead(object sender, System.EventArgs e)
     {
         Hide();
     }
-    
+
     private void HandleInventoryChanged()
     {
         if (PlayerInventoryCore.Instance != null)
         {
-            UpdateHealthSlots(PlayerInventoryCore.Instance.EquippedEchoes);
+            var activeItems = new System.Collections.Generic.List<ItemBaseData>();
+            foreach (var item in PlayerInventoryCore.Instance.EquippedEchoes)
+            {
+                if (item != null) activeItems.Add(item);
+            }
+            UpdateHealthSlots(activeItems);
         }
     }
-    
+
     private void UpdateHealthSlots(IReadOnlyList<ItemBaseData> activeSlots)
     {
         int currentCount = activeSlots.Count;
@@ -194,9 +221,17 @@ public class StatsUI : MonoBehaviour, IUIPanel
         for (int i = 0; i < fragmentSlots.Length; i++)
         {
             bool shouldBeActive = i < maxFragments;
-            if (fragmentSlots[i] != null && fragmentSlots[i].gameObject.activeSelf != shouldBeActive)
+            if (fragmentSlots[i] != null)
             {
-                fragmentSlots[i].gameObject.SetActive(shouldBeActive);
+                if (shouldBeActive && !fragmentSlots[i].gameObject.activeSelf)
+                {
+                    fragmentSlots[i].gameObject.SetActive(true);
+                    fragmentSlots[i].PlayShellFormed(); // Play the form animation when recovering!
+                }
+                else if (!shouldBeActive && fragmentSlots[i].gameObject.activeSelf)
+                {
+                    fragmentSlots[i].gameObject.SetActive(false);
+                }
             }
         }
     }
@@ -213,14 +248,11 @@ public class StatsUI : MonoBehaviour, IUIPanel
             astralShardsTextMesh.text = amount.ToString();
     }
 
-    /* 
-    ========================================================================
-    ARCHITECTURAL NOTE: SKILLS UI (Upcoming Feature)
-    ========================================================================
-    When implementing the Skills UI, do NOT poll in Update().
-    Create a new `SkillUIController` and subscribe to events, e.g.:
-        PlayerSkills.Instance.OnSkillCooldownChanged += UpdateSkillCooldownOverlay;
-    Always unsubscribe in OnDestroy() to prevent memory leaks.
-    ======================================================================== 
-    */
+    private void UpdateCrimsonAmberUI(int currentAmbers, int maxAmbers, int currentOrbs)
+    {
+        if (crimsonAmberUI != null)
+        {
+            crimsonAmberUI.UpdateVisuals(currentAmbers, maxAmbers, currentOrbs);
+        }
+    }
 }

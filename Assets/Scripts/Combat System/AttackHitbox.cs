@@ -188,7 +188,22 @@ public class AttackHitbox : MonoBehaviour
         // camera shake when two enemies hit each other.
         GameFeelManager.Instance?.ProcessHit(owner, target.Transform.gameObject, finalDamage, damageInfo.isCritical);
 
-        OnHitTarget?.Invoke(this, new HitEventArgs { target = target, damageInfo = damageInfo, finalDamage = finalDamage });
+        InvokeOnHitTarget(target, damageInfo, finalDamage);
+    }
+
+    public void InvokeBeforeDamageApplied(IDamageable target, ref DamageInfo info)
+    {
+        OnBeforeDamageApplied?.Invoke(target, ref info);
+    }
+
+    public void InvokeOnHitTarget(IDamageable target, DamageInfo info, int finalDamage)
+    {
+        if (info.activeEcho != null && info.activeEcho.hitImpactPrefab != null && target != null)
+        {
+            ObjectPoolManager.SpawnObject(info.activeEcho.hitImpactPrefab, target.Transform.position, Quaternion.identity, ObjectPoolManager.PoolType.ParticleSystem);
+        }
+
+        OnHitTarget?.Invoke(this, new HitEventArgs { target = target, damageInfo = info, finalDamage = finalDamage });
     }
 
     private void OnDrawGizmos()

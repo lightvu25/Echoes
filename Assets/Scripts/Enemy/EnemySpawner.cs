@@ -21,6 +21,9 @@ public class EnemySpawner : MonoBehaviour
 
     public void Init(int currentTier)
     {
+        // Fallback for older prefabs that serialized spawnChance to 0
+        if (spawnChance <= 0f) spawnChance = 0.7f;
+
         float finalSpawnChance = Mathf.Clamp01(spawnChance + ((currentTier - 1) * 0.05f));
 
         if (Random.value > finalSpawnChance)

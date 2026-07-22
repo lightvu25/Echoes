@@ -109,7 +109,7 @@ public class LootSpawner : MonoBehaviour
         Vector3 spawnPos = transform.position + Vector3.up * 0.5f;
         GameObject collectibleObj = ObjectPoolManager.SpawnObject(prefab, spawnPos, Quaternion.identity, ObjectPoolManager.PoolType.Loot);
 
-        if (collectibleObj.TryGetComponent(out Collectible collectible))
+        if (collectibleObj.TryGetComponent(out ResourceDrop resourceDrop))
         {
             float dirX = 1f;
             PlayerStats playerStats = FindFirstObjectByType<PlayerStats>();
@@ -125,7 +125,7 @@ public class LootSpawner : MonoBehaviour
 
             Vector2 popForce = new Vector2(randomX, randomY);
 
-            collectible.Initialize(amount, popForce);
+            resourceDrop.Initialize(amount, popForce);
         }
     }
 }

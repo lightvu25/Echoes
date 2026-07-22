@@ -1,6 +1,0 @@
-StartBounds: (0.00, 0.50, 0.00), Size: (38.00, 25.00, 0.00)
-Room1Bounds (moved): (32.50, 3.50, 0.00), Size: (29.00, 21.00, 0.00)
-Shrunk Intersects: False
-Spacing Intersects: True
-Start Right Edge: 19
-Room1 Left Edge: 18

@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: RustyHeavyChain
   itemName: Rusty Heavy Chain
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 6681545623831346936, guid: 9ef9e3ebe28c7d04d838c25262f67812, type: 3}
   description: Plunge Attack shockwave radius and damage are increased by 50%.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 2
   basePrice: 50
-  RelicID: RustyHeavyChain
-  RelicNameEN: Rusty Heavy Chain
   Rarity: 1
   FactionBonus: +2 Random Stats
-  CoreEffect: Plunge Attack shockwave radius and damage are increased by 50%.
-  RelicIcon: {fileID: 0}

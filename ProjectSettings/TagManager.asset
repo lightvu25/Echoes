@@ -25,9 +25,9 @@ TagManager:
   - Foreground
   - Interactable
   - Particle
-  - Item
-  - VFX
   - NPC
+  - VFX
+  - Tool
   - 
   - 
   - 
@@ -76,6 +76,9 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 195113763
+    locked: 0
+  - name: Tool
+    uniqueID: 1817484441
     locked: 0
   m_RenderingLayers:
   - Default

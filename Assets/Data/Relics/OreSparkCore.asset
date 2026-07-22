@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: OreSparkCore
   itemName: Ore Spark Core
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -4108039252454196310, guid: 9ef9e3ebe28c7d04d838c25262f67812, type: 3}
   description: Every 3rd basic attack unleashes Chain Lightning that strikes 3 nearby
     enemies.
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 3
   basePrice: 50
-  RelicID: OreSparkCore
-  RelicNameEN: Ore Spark Core
   Rarity: 2
   FactionBonus: +3 Stats (All)
-  CoreEffect: Every 3rd basic attack unleashes Chain Lightning that strikes 3 nearby
-    enemies.
-  RelicIcon: {fileID: 0}

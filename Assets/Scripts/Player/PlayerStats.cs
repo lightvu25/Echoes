@@ -10,16 +10,25 @@ public class PlayerStats : MonoBehaviour
 
     [SerializeField] public Transform collectPoint;
 
+    // Bonus stats from meta progression
+    public int BonusFlaskCount { get; set; } = 0;
+    public float BonusFlaskHealPercentage { get; set; } = 0f;
+
     // Events
     public event Action<int> OnLevelUp;
     public event Action<int> OnGoldChanged;
     public event Action<int> OnAstralShardsChanged;
     public event Action<int, int> OnExpChanged;
 
-    public int CurrentLevel => GameSession.Instance.currentRun.currentLevel;
-    public int CurrentExp => GameSession.Instance.currentRun.currentExp;
-    public int CurrentGold => GameSession.Instance.currentRun.runGold;
-    public int CurrentAstralShards => GameSession.Instance.currentRun.currentAstralShards;
+    private int testGold = 0;
+    private int testAstralShards = 0;
+    private int testExp = 0;
+    private int testLevel = 1;
+
+    public int CurrentLevel => GameSession.Instance != null && GameSession.Instance.currentRun != null ? GameSession.Instance.currentRun.currentLevel : testLevel;
+    public int CurrentExp => GameSession.Instance != null && GameSession.Instance.currentRun != null ? GameSession.Instance.currentRun.currentExp : testExp;
+    public int CurrentGold => GameSession.Instance != null && GameSession.Instance.currentRun != null ? GameSession.Instance.currentRun.runGold : testGold;
+    public int CurrentAstralShards => GameSession.Instance != null && GameSession.Instance.currentRun != null ? GameSession.Instance.currentRun.currentAstralShards : testAstralShards;
 
     private void Awake()
     {
@@ -42,27 +51,51 @@ public class PlayerStats : MonoBehaviour
     {
         if (amount <= 0) return;
 
-        GameSession.Instance.currentRun.runGold += amount;
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.runGold += amount;
+            GameSession.Instance.SaveCurrentRun();
+        }
+        else
+        {
+            testGold += amount;
+        }
+        
         OnGoldChanged?.Invoke(CurrentGold);
-        GameSession.Instance.SaveCurrentRun();
     }
 
     public void AddAstralShards(int amount)
     {
         if (amount <= 0) return;
 
-        GameSession.Instance.currentRun.currentAstralShards += amount;
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.currentAstralShards += amount;
+            GameSession.Instance.SaveCurrentRun();
+        }
+        else
+        {
+            testAstralShards += amount;
+        }
+
         OnAstralShardsChanged?.Invoke(CurrentAstralShards);
-        GameSession.Instance.SaveCurrentRun();
     }
 
     public bool SpendGold(int amount)
     {
         if (amount <= 0 || CurrentGold < amount) return false;
 
-        GameSession.Instance.currentRun.runGold -= amount;
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.runGold -= amount;
+            GameSession.Instance.SaveCurrentRun();
+        }
+        else
+        {
+            testGold -= amount;
+        }
+
         OnGoldChanged?.Invoke(CurrentGold);
-        GameSession.Instance.SaveCurrentRun();
         return true;
     }
 
@@ -70,21 +103,36 @@ public class PlayerStats : MonoBehaviour
     {
         if (amount <= 0 || CurrentAstralShards < amount) return false;
 
-        GameSession.Instance.currentRun.currentAstralShards -= amount;
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.currentAstralShards -= amount;
+            GameSession.Instance.SaveCurrentRun();
+        }
+        else
+        {
+            testAstralShards -= amount;
+        }
+
         OnAstralShardsChanged?.Invoke(CurrentAstralShards);
-        GameSession.Instance.SaveCurrentRun();
         return true;
     }
 
     public void ResetRunCurrencies()
     {
-        GameSession.Instance.currentRun.runGold = 0;
-        GameSession.Instance.currentRun.currentAstralShards = 0;
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        {
+            GameSession.Instance.currentRun.runGold = 0;
+            GameSession.Instance.currentRun.currentAstralShards = 0;
+            GameSession.Instance.SaveCurrentRun();
+        }
+        else
+        {
+            testGold = 0;
+            testAstralShards = 0;
+        }
         
         OnGoldChanged?.Invoke(0);
         OnAstralShardsChanged?.Invoke(0);
-        
-        GameSession.Instance.SaveCurrentRun();
     }
 
     public void AddExp(int amount)
@@ -93,7 +141,14 @@ public class PlayerStats : MonoBehaviour
 
         if (GameSession.Instance == null || GameSession.Instance.currentRun == null)
         {
-            Debug.LogError("PlayerStats.AddExp NullReference detected! You likely forgot to add the 'GameSession' Manager object to your scene, or there is no active run initialized.");
+            testExp += amount;
+            while (testExp >= GetRequiredExpForNextLevel())
+            {
+                testExp -= GetRequiredExpForNextLevel();
+                testLevel++;
+                OnLevelUp?.Invoke(CurrentLevel);
+            }
+            OnExpChanged?.Invoke(CurrentExp, GetRequiredExpForNextLevel());
             return;
         }
 

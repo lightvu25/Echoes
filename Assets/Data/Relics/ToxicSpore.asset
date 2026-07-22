@@ -14,16 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RelicData
   itemID: ToxicSpore
   itemName: Toxic Spore
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 6515151354693869261, guid: 2722ed23e2188ea4290ac1b22fb6943f, type: 3}
   description: The 3rd hit of your basic combo always inflicts Poison (Damage over
     time).
-  dropPrefab: {fileID: 0}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50
-  RelicID: ToxicSpore
-  RelicNameEN: Toxic Spore
   Rarity: 0
   FactionBonus: +1 Random Stat
-  CoreEffect: The 3rd hit of your basic combo always inflicts Poison (Damage over
-    time).
-  RelicIcon: {fileID: 0}

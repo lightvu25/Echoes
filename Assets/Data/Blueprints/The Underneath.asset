@@ -1,0 +1,357 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7adf065c4622b54d86f5d6d77ca446f, type: 3}
+  m_Name: The Underneath
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBlueprint
+  nodes:
+  - nodeName: 0
+    roomType: 0
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 3
+    childrenIndices: 01000000
+    eventType: 0
+    eventChance: 0
+    position: {x: 0, y: 0}
+  - nodeName: 1
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 3
+    childrenIndices: 020000000300000004000000
+    eventType: 0
+    eventChance: 0
+    position: {x: 0, y: 0}
+  - nodeName: 2
+    roomType: 2
+    spawnChance: 0.5
+    forceDirection: 1
+    requiredDir: 0
+    childrenIndices: 
+    eventType: 9
+    eventChance: 0.2
+    position: {x: 0, y: 0}
+  - nodeName: 3
+    roomType: 2
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 1
+    childrenIndices: 
+    eventType: 2
+    eventChance: 1
+    position: {x: 0, y: 0}
+  - nodeName: 4
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 3
+    childrenIndices: 0500000006000000
+    eventType: 8
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 5
+    roomType: 2
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 3
+    childrenIndices: 
+    eventType: 2
+    eventChance: 1
+    position: {x: 0, y: 0}
+  - nodeName: 6
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 1
+    childrenIndices: 07000000
+    eventType: 8
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 7
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 1
+    childrenIndices: 0800000009000000
+    eventType: 8
+    eventChance: 0.3
+    position: {x: 0, y: 0}
+  - nodeName: 8
+    roomType: 2
+    spawnChance: 0.5
+    forceDirection: 0
+    requiredDir: 3
+    childrenIndices: 
+    eventType: 5
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 9
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 1
+    childrenIndices: 0a0000000b000000
+    eventType: 9
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 10
+    roomType: 2
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 2
+    childrenIndices: 
+    eventType: 2
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 11
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 3
+    childrenIndices: 0c0000000d000000
+    eventType: 9
+    eventChance: 0.4
+    position: {x: 0, y: 0}
+  - nodeName: 12
+    roomType: 4
+    spawnChance: 0.7
+    forceDirection: 1
+    requiredDir: 3
+    childrenIndices: 
+    eventType: 2
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 13
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 1
+    childrenIndices: 0e000000
+    eventType: 4
+    eventChance: 0
+    position: {x: 0, y: 0}
+  - nodeName: 14
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 3
+    childrenIndices: 0f000000
+    eventType: 8
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 15
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 3
+    childrenIndices: 100000001100000012000000
+    eventType: 9
+    eventChance: 0.4
+    position: {x: 0, y: 0}
+  - nodeName: 16
+    roomType: 2
+    spawnChance: 0.7
+    forceDirection: 1
+    requiredDir: 0
+    childrenIndices: 
+    eventType: 7
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 17
+    roomType: 2
+    spawnChance: 0.7
+    forceDirection: 1
+    requiredDir: 1
+    childrenIndices: 
+    eventType: 5
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 18
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 3
+    childrenIndices: 1300000014000000
+    eventType: 8
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 19
+    roomType: 2
+    spawnChance: 0.7
+    forceDirection: 0
+    requiredDir: 3
+    childrenIndices: 
+    eventType: 6
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 20
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 0
+    childrenIndices: 15000000
+    eventType: 9
+    eventChance: 0.4
+    position: {x: 0, y: 0}
+  - nodeName: 21
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 1
+    requiredDir: 0
+    childrenIndices: 1600000017000000
+    eventType: 8
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 22
+    roomType: 2
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 2
+    childrenIndices: 
+    eventType: 5
+    eventChance: 0.5
+    position: {x: 0, y: 0}
+  - nodeName: 23
+    roomType: 1
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 3
+    childrenIndices: 18000000
+    eventType: 0
+    eventChance: 0
+    position: {x: 0, y: 0}
+  - nodeName: 24
+    roomType: 3
+    spawnChance: 1
+    forceDirection: 0
+    requiredDir: 0
+    childrenIndices: 
+    eventType: 0
+    eventChance: 0
+    position: {x: 0, y: 0}
+  startRoomPrefabs:
+  - {fileID: 4300262421782183009, guid: 8f50fd485e0a6cf41bb9c22cdddb06f8, type: 3}
+  normalRoomPrefabs:
+  - {fileID: 8875035170029933033, guid: 3aa08c7287f243641b80c231601e9db6, type: 3}
+  - {fileID: 4732715494245023263, guid: 8885add883876064bb54c3e213bfe484, type: 3}
+  - {fileID: 6753720205058382146, guid: c589b944c7c58504b938eb7af356395f, type: 3}
+  - {fileID: 7941190204101069400, guid: 1547ecf949dab7744a0735ba8c7d2475, type: 3}
+  - {fileID: 6694753683276961700, guid: 75f5f75e9ad884b4e8ed02c6cee932ef, type: 3}
+  - {fileID: 7042615904589260532, guid: e4a5dfba5f3841d45a3af7478c99626e, type: 3}
+  - {fileID: 5035022089927105487, guid: 1b0955eaff56d4c4c85dd1b3b880e3df, type: 3}
+  - {fileID: 4732715494245023263, guid: c390ea059c68d78498f9c89a60ee210c, type: 3}
+  - {fileID: 2747008558483431671, guid: 3792048305e7acb45a19bcbadbe1388f, type: 3}
+  - {fileID: 4732715494245023263, guid: c2e75c737745bf040af8d23f9152e287, type: 3}
+  - {fileID: 4732715494245023263, guid: ecd8c28713039d74199e068cefb743c5, type: 3}
+  - {fileID: 4732715494245023263, guid: 078a01616e4af114f8196e062b5d69fd, type: 3}
+  - {fileID: 4732715494245023263, guid: cb9ac9f54ffa5044c884696d0eb16da7, type: 3}
+  - {fileID: 4732715494245023263, guid: 7246dcd690344e5479038e28340432cc, type: 3}
+  - {fileID: 4732715494245023263, guid: a7b0fe7bf0b52684f96dd5d1aef2e593, type: 3}
+  - {fileID: 4732715494245023263, guid: b93d42d25f62bde48bb9a1dbdb9fa17b, type: 3}
+  - {fileID: 5035022089927105487, guid: 9b0a5996ed4b17647ade512760d71ab5, type: 3}
+  - {fileID: 5035022089927105487, guid: 55835b3283f3e7141896de72fcb2e99e, type: 3}
+  - {fileID: 4732715494245023263, guid: 3af3e5c07ceb88542b0020541581e31e, type: 3}
+  goalRoomPrefabs:
+  - {fileID: 4300262421782183009, guid: 629557783e1fbaf4a905a6afff8194b5, type: 3}
+  - {fileID: 4300262421782183009, guid: 4c91ee2c400873f4cbf40ccced009d32, type: 3}
+  - {fileID: 4300262421782183009, guid: e94964982837b844a8da2f500360b13f, type: 3}
+  - {fileID: 4300262421782183009, guid: 92b64956a0cb0d6409fbc8fbda762234, type: 3}
+  deadEndRoomPrefabs:
+  - {fileID: 3204592522672744526, guid: 04b3765f7abc0ec4d84ba784b7c07923, type: 3}
+  - {fileID: 3204592522672744526, guid: 7fe72b106c92dba48a8c8e904a8577f4, type: 3}
+  - {fileID: 3204592522672744526, guid: 1fad8cddc35674d4bbf3ebb39d7f78f6, type: 3}
+  - {fileID: 3204592522672744526, guid: 2dbb5fa555edd204e85d31afc617535f, type: 3}
+  - {fileID: 3204592522672744526, guid: 1799b5d1362ccc340b9040c0af0d48b1, type: 3}
+  runeRoomPrefabs:
+  - {fileID: 3204592522672744526, guid: cbc91db27c8deb243b35a37342361589, type: 3}
+  - {fileID: 3204592522672744526, guid: f861ae2628a681f46a4b660b60c8dc0a, type: 3}
+  - {fileID: 3204592522672744526, guid: 0ab8ffae19089344282b3a7f96b5a27b, type: 3}
+  - {fileID: 3204592522672744526, guid: f3515f870ba02c448898a6ff4df8a5a7, type: 3}
+  - {fileID: 3204592522672744526, guid: 17b76c1750f9c1642a0f21ad5c36b13a, type: 3}
+  - {fileID: 3204592522672744526, guid: 62858f4fa97ae2448833957f6af8947c, type: 3}
+  rewardRoomPrefabs:
+  - {fileID: 3204592522672744526, guid: 8406435077a98474b905cd546f21468b, type: 3}
+  - {fileID: 3204592522672744526, guid: be95aacc9de6b8146a55e73f172ffb8d, type: 3}
+  - {fileID: 3204592522672744526, guid: 12182ac5f5e43a14db4bbb6eab11d134, type: 3}
+  - {fileID: 3204592522672744526, guid: 508fcd1faa58bc04582fc4a3153fb26e, type: 3}
+  eliteRoomPrefabs: []
+  storyRoomPrefabs:
+  - {fileID: 3204592522672744526, guid: bbe52c1c91f3f3c4aafbb6bb996f56e2, type: 3}
+  echoRoomPrefabs:
+  - {fileID: 3204592522672744526, guid: 071743a2dacfc164295c37bdd75b3cfd, type: 3}
+  cursedChestRoomPrefabs: []
+  highMagicFactorRoomPrefabs: []
+  shopRoomPrefabs:
+  - {fileID: 3204592522672744526, guid: 17dc82f7222bb05469d8ce9f6827bc4d, type: 3}
+  - {fileID: 3204592522672744526, guid: 2a91685aabe750d4d832de9802a729b8, type: 3}
+  - {fileID: 3204592522672744526, guid: 48371eb1a2d5f8545ab2fe7290b62579, type: 3}
+  - {fileID: 3204592522672744526, guid: f9b49bb73b191cf4cb975beaacacffeb, type: 3}
+  eventTypeLimits:
+  - eventType: 1
+    minRequired: 0
+    maxAllowed: 1
+    currentCount: 0
+    remainingCandidates: 0
+  - eventType: 3
+    minRequired: 0
+    maxAllowed: 1
+    currentCount: 0
+    remainingCandidates: 0
+  - eventType: 4
+    minRequired: 3
+    maxAllowed: 4
+    currentCount: 0
+    remainingCandidates: 1
+  - eventType: 5
+    minRequired: 0
+    maxAllowed: 1
+    currentCount: 1
+    remainingCandidates: 2
+  - eventType: 6
+    minRequired: 0
+    maxAllowed: 1
+    currentCount: 0
+    remainingCandidates: 1
+  - eventType: 7
+    minRequired: 0
+    maxAllowed: 2
+    currentCount: 0
+    remainingCandidates: 1
+  - eventType: 9
+    minRequired: 4
+    maxAllowed: 6
+    currentCount: 0
+    remainingCandidates: 3
+  - eventType: 9
+    minRequired: 4
+    maxAllowed: 6
+    currentCount: 0
+    remainingCandidates: 0
+  - eventType: 2
+    minRequired: 1
+    maxAllowed: 2
+    currentCount: 2
+    remainingCandidates: 2
+  anchorSpawnChance: 0.3
+  echoNodePool:
+  - nodePrefab: {fileID: 7639742590146618916, guid: ea5483971fd5bc04db90d37d9916a1e3, type: 3}
+    weight: 33.3
+  - nodePrefab: {fileID: 7639742590146618916, guid: 8f5c8a76d7abbb244aaa018add724218, type: 3}
+    weight: 33.3
+  - nodePrefab: {fileID: 7639742590146618916, guid: 988a250aecf345b49baac2cc002c104a, type: 3}
+    weight: 33.3
+  groundEnemySpawnChance: 0.5
+  groundEnemyPool:
+  - enemyPrefab: {fileID: 0}
+    weight: 0
+  airEnemySpawnChance: 0.4
+  airEnemyPool: []

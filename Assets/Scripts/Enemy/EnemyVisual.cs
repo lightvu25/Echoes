@@ -168,7 +168,7 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
 
         yield return new WaitForSecondsRealtime(hitFreezeDuration + 0.05f);
         
-        Destroy(gameObject);
+        ObjectPoolManager.ReturnObjectToPool(gameObject);
     }
 
     private void EnemyCombat_OnDamageReceived(object sender, EnemyCombat.DamageReceivedArgs e)
