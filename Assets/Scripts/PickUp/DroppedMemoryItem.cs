@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class DroppedMemoryItem : MonoBehaviour
 {
-    [Tooltip("The element data this dropped item represents.")]
+    [Tooltip("The echo data this dropped item represents.")]
     public EchoData itemData;
     
     [Tooltip("UI Prompt to show when the player is in range (e.g., 'Press J to swap').")]

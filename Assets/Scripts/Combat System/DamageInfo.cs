@@ -1,6 +1,30 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+public enum DamageSourceType
+{
+    Unknown,
+    Attack,
+    ArcChain,
+    BlackHole,
+    OblivionSelfDamage,
+    VoidDetonate,
+    Burn,
+    BombAttack,
+    Suicide,
+    DashAttack,
+    EnemyAttack,
+    MeleeAttack,
+    Projectile,
+    Environment_Thorns,
+    ElectrifiedWater,
+    FallDamage,
+    PlayerProjectile,
+    PlungeAttack,
+    PlungeSelfDamage,
+    PlungeFall
+}
+
 /// <summary>
 /// Contains all data needed for damage calculation.
 /// Used in the two-stage damage pipeline.
@@ -65,7 +89,7 @@ public struct DamageInfo
     /// <summary>
     /// Source identifier for item triggers (e.g., "BasicAttack", "Skill1").
     /// </summary>
-    public string damageSource;
+    public DamageSourceType damageSource;
 
     /// <summary>
     /// Is this a critical hit?
@@ -73,7 +97,7 @@ public struct DamageInfo
     public bool isCritical;
 
     /// <summary>
-    /// Nguyên tố hiện tại đang sử dụng (Dành cho hệ thống Element)
+    /// Nguyên tố hiện tại đang sử dụng (Dành cho hệ thống Echo)
     /// </summary>
     public EchoData activeEcho;
 
@@ -102,7 +126,7 @@ public struct DamageInfo
             knockbackForce = 0f,
             hitFreezeTime = 0f,
             attacker = attacker,
-            damageSource = "Unknown",
+            damageSource = DamageSourceType.Unknown,
             isCritical = false,
             isTrueDamage = false,
             isPiercing = false

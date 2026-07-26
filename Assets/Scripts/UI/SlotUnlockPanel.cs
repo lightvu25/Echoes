@@ -12,12 +12,14 @@ using DG.Tweening;
 public class SlotUnlockPanel : MonoBehaviour
 {
     [Header("Category Buttons")]
-    [SerializeField] private Button elementButton;
+    [UnityEngine.Serialization.FormerlySerializedAs("elementButton")]
+    [SerializeField] private Button echoButton;
     [SerializeField] private Button relicButton;
     [SerializeField] private Button toolButton;
 
     [Header("Slot Labels (optional)")]
-    [SerializeField] private TMPro.TextMeshProUGUI elementLabel;
+    [UnityEngine.Serialization.FormerlySerializedAs("elementLabel")]
+    [SerializeField] private TMPro.TextMeshProUGUI echoLabel;
     [SerializeField] private TMPro.TextMeshProUGUI relicLabel;
     [SerializeField] private TMPro.TextMeshProUGUI toolLabel;
 
@@ -31,7 +33,7 @@ public class SlotUnlockPanel : MonoBehaviour
 
     private void Awake()
     {
-        elementButton?.onClick.AddListener(() => Choose(ItemCategory.Echo));
+        echoButton?.onClick.AddListener(() => Choose(ItemCategory.Echo));
         relicButton  ?.onClick.AddListener(() => Choose(ItemCategory.Relic));
         toolButton   ?.onClick.AddListener(() => Choose(ItemCategory.Tool));
 
@@ -46,14 +48,14 @@ public class SlotUnlockPanel : MonoBehaviour
     /// Shows the panel and updates button states to reflect current slot counts.
     /// Buttons for maxed-out categories are hidden.
     /// </summary>
-    /// <param name="elementSlots">Current unlocked Element slot count.</param>
+    /// <param name="echoSlots">Current unlocked Echo slot count.</param>
     /// <param name="relicSlots">Current unlocked Relic slot count.</param>
     /// <param name="toolSlots">Current unlocked Tool slot count.</param>
-    public void Display(int elementSlots, int relicSlots, int toolSlots)
+    public void Display(int echoSlots, int relicSlots, int toolSlots)
     {
         gameObject.SetActive(true);
 
-        RefreshButton(elementButton, elementLabel, elementSlots, "Echo", ItemCategory.Echo);
+        RefreshButton(echoButton, echoLabel, echoSlots, "Echo", ItemCategory.Echo);
         RefreshButton(relicButton,   relicLabel,   relicSlots,   "Relic",   ItemCategory.Relic);
         RefreshButton(toolButton,    toolLabel,     toolSlots,    "Tool",    ItemCategory.Tool);
 
@@ -86,7 +88,7 @@ public class SlotUnlockPanel : MonoBehaviour
     private void PlayGlowPulse()
     {
         // Pulse each visible button with a DOTween scale loop.
-        PulseButton(elementButton);
+        PulseButton(echoButton);
         PulseButton(relicButton);
         PulseButton(toolButton);
     }

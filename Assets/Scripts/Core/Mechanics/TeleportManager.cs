@@ -53,6 +53,7 @@ public class TeleportManager : MonoBehaviour
         Physics2D.SyncTransforms();
 
         Debug.Log($"[TeleportManager] Teleported player to {targetNode.nodeName} at {safePosition}");
-        Time.timeScale = 1f;
+        if (TimeManager.Instance != null) TimeManager.Instance.ClearAllPauses();
+        else Time.timeScale = 1f;
     }
 }

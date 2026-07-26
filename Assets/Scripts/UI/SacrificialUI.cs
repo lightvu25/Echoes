@@ -6,7 +6,8 @@ public class SacrificialUI : MonoBehaviour, IUIPanel
 {
     [Header("Inventory Display")]
     [SerializeField] private Transform inventoryGrid;
-    [SerializeField] private GameObject draggableElement;
+    [UnityEngine.Serialization.FormerlySerializedAs("draggableElement")]
+    [SerializeField] private GameObject draggableEchoPrefab;
 
     [Header("Fusion Slots")]
     [SerializeField] private FusionSlot slotA;
@@ -74,31 +75,31 @@ public class SacrificialUI : MonoBehaviour, IUIPanel
 
     private void PopulateInventory()
     {
-        if (inventoryGrid == null || draggableElement == null || PlayerInventoryCore.Instance == null) return;
+        if (inventoryGrid == null || draggableEchoPrefab == null || PlayerInventoryCore.Instance == null) return;
 
         foreach (Transform child in inventoryGrid)
         {
             Destroy(child.gameObject);
         }
 
-        IReadOnlyList<ItemBaseData> elements = PlayerInventoryCore.Instance.GetEquippedList(ItemCategory.Echo);
+        IReadOnlyList<ItemBaseData> echoes = PlayerInventoryCore.Instance.GetEquippedList(ItemCategory.Echo);
         int maxSlots = PlayerInventoryCore.Instance.UnlockedEchoSlots;
 
         for (int i = 0; i < maxSlots; i++)
         {
-            GameObject go = Instantiate(draggableElement, inventoryGrid);
-            DraggableElement dragElement = go.GetComponent<DraggableElement>();
+            GameObject go = Instantiate(draggableEchoPrefab, inventoryGrid);
+            DraggableEcho dragEcho = go.GetComponent<DraggableEcho>();
             
-            if (dragElement != null)
+            if (dragEcho != null)
             {
-                if (elements != null && i < elements.Count)
+                if (echoes != null && i < echoes.Count)
                 {
-                    EchoData echoData = elements[i] as EchoData;
-                    dragElement.Setup(echoData);
+                    EchoData echoData = echoes[i] as EchoData;
+                    dragEcho.Setup(echoData);
                 }
                 else
                 {
-                    dragElement.Setup(null);
+                    dragEcho.Setup(null);
                 }
             }
         }
@@ -121,7 +122,7 @@ public class SacrificialUI : MonoBehaviour, IUIPanel
         currentValidRecipe = null;
         if (forgeButton != null) forgeButton.interactable = false;
 
-        if (slotA.SlottedElement == null || slotB.SlottedElement == null)
+        if (slotA.SlottedEcho == null || slotB.SlottedEcho == null)
         {
             if (result != null) result.enabled = false;
             return;
@@ -129,8 +130,8 @@ public class SacrificialUI : MonoBehaviour, IUIPanel
 
         foreach (var recipe in recipes)
         {
-            if ((recipe.elementA.itemID == slotA.SlottedElement.itemID && recipe.elementB.itemID == slotB.SlottedElement.itemID) ||
-                (recipe.elementA.itemID == slotB.SlottedElement.itemID && recipe.elementB.itemID == slotA.SlottedElement.itemID))
+            if ((recipe.echoA.itemID == slotA.SlottedEcho.itemID && recipe.echoB.itemID == slotB.SlottedEcho.itemID) ||
+                (recipe.echoA.itemID == slotB.SlottedEcho.itemID && recipe.echoB.itemID == slotA.SlottedEcho.itemID))
             {
                 currentValidRecipe = recipe;
                 break;
@@ -141,7 +142,7 @@ public class SacrificialUI : MonoBehaviour, IUIPanel
         {
             if (result != null)
             {
-                result.sprite = currentValidRecipe.resultElement.itemIcon;
+                result.sprite = currentValidRecipe.resultEcho.itemIcon;
                 result.enabled = true;
             }
 
@@ -160,12 +161,12 @@ public class SacrificialUI : MonoBehaviour, IUIPanel
     {
         if (currentValidRecipe == null || PlayerInventoryCore.Instance == null) return;
 
-        PlayerInventoryCore.Instance.RemoveEquippedItem(slotA.SlottedElement);
-        PlayerInventoryCore.Instance.RemoveEquippedItem(slotB.SlottedElement);
+        PlayerInventoryCore.Instance.RemoveEquippedItem(slotA.SlottedEcho);
+        PlayerInventoryCore.Instance.RemoveEquippedItem(slotB.SlottedEcho);
 
-        EchoData newElement = Instantiate(currentValidRecipe.resultElement);
-        newElement.InitRuntime();
-        PlayerInventoryCore.Instance.TryEquip(newElement);
+        EchoData newEcho = Instantiate(currentValidRecipe.resultEcho);
+        newEcho.InitRuntime();
+        PlayerInventoryCore.Instance.TryEquip(newEcho);
 
         slotA.ClearSlot();
         slotB.ClearSlot();

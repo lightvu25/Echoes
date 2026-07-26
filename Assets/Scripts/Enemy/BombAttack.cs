@@ -67,7 +67,7 @@ public class BombAttack : MonoBehaviour, IEnemyAttack
                 knockbackForce = data != null ? data.knockbackForce * 2f : 8f,
                 hitFreezeTime = 0f,
                 attacker = gameObject,
-                damageSource = "BombAttack",
+                damageSource = DamageSourceType.BombAttack,
                 isCritical = false
             };
 
@@ -81,7 +81,7 @@ public class BombAttack : MonoBehaviour, IEnemyAttack
             HealthSystem hs = combat.GetComponent<HealthSystem>();
             if (hs != null) hs.SetInvincible(false);
 
-            combat.TakeDamage(new DamageInfo { baseDamage = 9999, attacker = gameObject, damageSource = "Suicide" });
+            combat.TakeDamage(new DamageInfo { baseDamage = 9999, attacker = gameObject, damageSource = DamageSourceType.Suicide });
         }
     }
 

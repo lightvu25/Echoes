@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// Central inventory manager for Project Echoes.
-/// Manages three independent slot lists (Elements, Relics, Items) whose
+/// Manages three independent slot lists (Echoes, Relics, Items) whose
 /// capacities are persisted in <see cref="RunData"/> and unlocked by gaining Max HP.
 ///
 /// Design contract
@@ -62,7 +62,7 @@ public class PlayerInventoryCore : MonoBehaviour
 
     private HealthSystem healthSystem;
 
-    /// <summary>Index of the currently active Element slot (used by HotbarController).</summary>
+    /// <summary>Index of the currently active Echo slot (used by HotbarController).</summary>
     private int activeEchoIndex = 0;
     
     /// <summary>The currently active slot index (0 to 3). Useful for checking combat styles.</summary>
@@ -72,7 +72,7 @@ public class PlayerInventoryCore : MonoBehaviour
     //  Public accessors                                                    //
     // ------------------------------------------------------------------ //
 
-    /// <summary>Read-only view of equipped Elements.</summary>
+    /// <summary>Read-only view of equipped Echoes.</summary>
     public IReadOnlyList<ItemBaseData> EquippedEchoes => equippedEchoes;
 
     /// <summary>Read-only view of equipped Relics.</summary>
@@ -81,7 +81,7 @@ public class PlayerInventoryCore : MonoBehaviour
     /// <summary>Read-only view of equipped Tools.</summary>
     public IReadOnlyList<ItemBaseData> EquippedTools => equippedTools;
 
-    /// <summary>Element at the active hotbar index, or null if the slot is empty.</summary>
+    /// <summary>Echo at the active hotbar index, or null if the slot is empty.</summary>
     public EchoData ActiveEcho =>
         activeEchoIndex < RunData.MAX_SLOTS
             ? equippedEchoes[activeEchoIndex] as EchoData
@@ -93,7 +93,7 @@ public class PlayerInventoryCore : MonoBehaviour
 
     private static RunData Run => GameSession.Instance?.currentRun;
 
-    /// <summary>Number of unlocked Element slots (strictly 4).</summary>
+    /// <summary>Number of unlocked Echo slots (strictly 4).</summary>
     public int UnlockedEchoSlots => 4;
 
     /// <summary>Number of unlocked Relic slots.</summary>
@@ -332,8 +332,8 @@ public class PlayerInventoryCore : MonoBehaviour
     // ------------------------------------------------------------------ //
 
     /// <summary>
-    /// Sets the active hotbar index for Elements.
-    /// Clamps to the current number of unlocked Element slots.
+    /// Sets the active hotbar index for Echoes.
+    /// Clamps to the current number of unlocked Echo slots.
     /// </summary>
     /// <param name="index">0-based slot index.</param>
     public void SetActiveEchoIndex(int index)
@@ -343,7 +343,7 @@ public class PlayerInventoryCore : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the currently active EchoData based on the activeElementIndex.
+    /// Returns the currently active EchoData based on the activeEchoIndex.
     /// Used by combat scripts (e.g. AttackHitbox) to determine damage types.
     /// </summary>
     public EchoData GetActiveEcho()
@@ -355,7 +355,7 @@ public class PlayerInventoryCore : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns all active ElementTypes across equipped Elements (for combat use).
+    /// Returns all active EchoTypes across equipped Echoes (for combat use).
     /// </summary>
     public List<EchoType> GetAllActiveEchoTypes()
     {

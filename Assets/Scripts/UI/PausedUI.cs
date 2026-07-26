@@ -60,7 +60,8 @@ public class PausedUI : MonoBehaviour, IUIPanel
         {
             mainMenuButton.onClick.AddListener(() =>
             {
-                Time.timeScale = 1f;
+                if (TimeManager.Instance != null) TimeManager.Instance.ClearAllPauses();
+                else Time.timeScale = 1f;
                 SceneLoader.LoadScene(SceneLoader.Scene.MainMenuScene);
             });
         }

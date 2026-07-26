@@ -25,7 +25,7 @@ public class ArcModifier : IEchoModifier
     private void HandleOnHitTarget(object sender, AttackHitbox.HitEventArgs e)
     {
         if (e.damageInfo.activeEcho == null || e.damageInfo.activeEcho.uniqueModifierID != "CHAIN_ARC") return;
-        if (e.damageInfo.damageSource == "ArcChain" || e.damageInfo.damageSource == "BlackHole") return;
+        if (e.damageInfo.damageSource == DamageSourceType.ArcChain || e.damageInfo.damageSource == DamageSourceType.BlackHole) return;
 
         EchoStatusReceiver status = e.target.Transform.GetComponent<EchoStatusReceiver>();
         if (status == null) status = e.target.Transform.gameObject.AddComponent<EchoStatusReceiver>();
@@ -55,7 +55,7 @@ public class ArcModifier : IEchoModifier
             if (nextTarget != null && nextTarget.Transform != originalTarget.Transform) 
             {
                 DamageInfo chainInfo = DamageInfo.Create(Mathf.RoundToInt(originalInfo.baseDamage * 0.5f), ctx.PlayerGameObject);
-                chainInfo.damageSource = "ArcChain";
+                chainInfo.damageSource = DamageSourceType.ArcChain;
                 chainInfo.activeEcho = originalInfo.activeEcho;
 
                 nextTarget.TakeDamage(chainInfo);

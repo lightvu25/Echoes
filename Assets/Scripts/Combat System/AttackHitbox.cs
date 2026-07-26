@@ -42,6 +42,7 @@ public class AttackHitbox : MonoBehaviour
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
     private Dictionary<IDamageable, float> multiHitTimers = new Dictionary<IDamageable, float>();
     private GameObject owner;
+    private Collider2D[] hitResults = new Collider2D[20];
 
     private void Awake()
     {
@@ -110,10 +111,11 @@ public class AttackHitbox : MonoBehaviour
         Vector2 direction = owner.transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
         Vector2 center = (Vector2)transform.position + new Vector2(hitboxOffset.x * direction.x, hitboxOffset.y);
 
-        Collider2D[] hits = Physics2D.OverlapBoxAll(center, hitboxSize, 0f, targetLayers);
+        int hitCount = Physics2D.OverlapBoxNonAlloc(center, hitboxSize, 0f, hitResults, targetLayers);
 
-        foreach (var hit in hits)
+        for (int i = 0; i < hitCount; i++)
         {
+            var hit = hitResults[i];
             IDamageable target = hit.GetComponentInParent<IDamageable>();
             if (target == null || target.IsDead) continue;
 
@@ -149,11 +151,11 @@ public class AttackHitbox : MonoBehaviour
             knockbackForce = knockbackForce,
             hitFreezeTime = hitFreezeTime,
             attacker = owner,
-            damageSource = "Attack",
+            damageSource = DamageSourceType.Attack,
             isCritical = false
         };
 
-        // Populate elemental and level data if the attacker is the player
+        // Populate echo and level data if the attacker is the player
         if (owner.CompareTag("Player"))
         {
             if (PlayerInventoryCore.Instance != null)
@@ -178,7 +180,7 @@ public class AttackHitbox : MonoBehaviour
         {
             Debug.Log($"[Damage Test] Hit {target.Transform.name} | " +
                       $"Base: {baseDamage} | " +
-                      $"Element: {damageInfo.activeEcho.itemName} (Lvl {damageInfo.playerLevel}) | " +
+                      $"Echo: {damageInfo.activeEcho.itemName} (Lvl {damageInfo.playerLevel}) | " +
                       $"Final: {finalDamage}");
         }
 

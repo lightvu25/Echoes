@@ -73,7 +73,7 @@ public class FallDamageHandler : MonoBehaviour
                         baseDamage = finalDamage,
                         knockbackForce = 0f,
                         knockbackDirection = Vector2.zero,
-                        damageSource = "FallDamage",
+                        damageSource = DamageSourceType.FallDamage,
                         attacker = gameObject
                     };
                     damageable.TakeDamage(damageInfo);

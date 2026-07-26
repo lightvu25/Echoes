@@ -72,7 +72,7 @@ public class VoidModifier : IEchoModifier
     private void HandleOnHitTarget(object sender, AttackHitbox.HitEventArgs e)
     {
         if (e.damageInfo.activeEcho == null || e.damageInfo.activeEcho.uniqueModifierID != "VOID_MARK") return;
-        if (e.damageInfo.damageSource == "VoidDetonate") return;
+        if (e.damageInfo.damageSource == DamageSourceType.VoidDetonate) return;
         if (e.target == null || e.target.IsDead) return;
 
         EchoStatusReceiver status = e.target.Transform.GetComponent<EchoStatusReceiver>();
@@ -108,7 +108,7 @@ public class VoidModifier : IEchoModifier
             int detonateDamage = Mathf.RoundToInt(baseAttack * 1.2f);
             DamageInfo detonation = DamageInfo.Create(detonateDamage, ctx.PlayerGameObject);
             detonation.isTrueDamage = true;
-            detonation.damageSource = "VoidDetonate";
+            detonation.damageSource = DamageSourceType.VoidDetonate;
             
             e.target.TakeDamage(detonation);
         }

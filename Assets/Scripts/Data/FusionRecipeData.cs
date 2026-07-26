@@ -7,9 +7,9 @@ public class FusionRecipeData : ScriptableObject
     public string recipeID;
 
     [Header("Ingredients & Result")]
-    public EchoData elementA;
-    public EchoData elementB;
-    public EchoData resultElement;
+    public EchoData echoA;
+    public EchoData echoB;
+    public EchoData resultEcho;
     
     [Header("Requirements")]
     public int recipeTier = 1;

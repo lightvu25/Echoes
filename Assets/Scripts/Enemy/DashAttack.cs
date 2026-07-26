@@ -94,7 +94,7 @@ public class DashAttack : MonoBehaviour, IEnemyAttack
                 knockbackForce = data != null ? data.knockbackForce * 1.5f : 5f,
                 hitFreezeTime = 0f,
                 attacker = gameObject,
-                damageSource = "DashAttack",
+                damageSource = DamageSourceType.DashAttack,
                 isCritical = false
             };
 

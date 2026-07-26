@@ -61,7 +61,7 @@ public class GroundMovement : MonoBehaviour, IEnemyMovement
         if (_ledgeCheck != null)
         {
             Collider2D hit = Physics2D.OverlapBox(_ledgeCheck.position, _ledgeCheckSize, 0f, data.groundLayer);
-            IsGroundedAhead = hit != null; // Nếu hộp còn chạm đất -> True, hụt đất (vực) -> False
+            IsGroundedAhead = hit != null;
         }
         else
         {

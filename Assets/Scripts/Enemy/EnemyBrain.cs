@@ -35,6 +35,7 @@ public class EnemyBrain : MonoBehaviour
     private Vector2 startPos;
     private Vector2 patrolTarget;
     private bool hasNoticeFired;
+    private bool hasTriggeredGlobalAggro = false;
 
     public State CurrentState => currentState;
 
@@ -95,6 +96,7 @@ public class EnemyBrain : MonoBehaviour
         if (attack != null) attack.CancelAttack();
         if (movement != null) movement.Stop();
         ChangeState(State.Idle);
+        hasTriggeredGlobalAggro = false;
     }
 
     private void HandleAttackFinished(object sender, EventArgs e)
@@ -268,8 +270,12 @@ public class EnemyBrain : MonoBehaviour
             hasNoticeFired = true;
             OnNotice?.Invoke(this, EventArgs.Empty);
 
-            // Shared vision: notify all enemies that the player has been spotted
-            EvolutionManager.Instance?.ReportPlayerSpotted(transform.position);
+            if (!hasTriggeredGlobalAggro)
+            {
+                hasTriggeredGlobalAggro = true;
+                // Shared vision: notify all enemies that the player has been spotted
+                EvolutionManager.Instance?.ReportPlayerSpotted(transform.position);
+            }
         }
 
         if (stateTimer >= data.noticeDuration)
@@ -339,7 +345,7 @@ public class EnemyBrain : MonoBehaviour
 
     private void TickBackstep()
     {
-        if (stateTimer >= 0.3f) // Fixed 0.3s backstep duration
+        if (stateTimer >= 0.3f)
         {
             movement?.Stop();
             ChangeState(State.Telegraph);

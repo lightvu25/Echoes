@@ -60,7 +60,7 @@ public class BlackHoleEffect : MonoBehaviour
             {
                 DamageInfo tickDamage = DamageInfo.Create(damagePerTick, owner);
                 tickDamage.isTrueDamage = true;
-                tickDamage.damageSource = "BlackHole";
+                tickDamage.damageSource = DamageSourceType.BlackHole;
                 target.TakeDamage(tickDamage);
             }
         }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlayerEchoVFX : MonoBehaviour
 {
     [Header("VFX Configuration")]
-    [Tooltip("List all the different elements to pre-instantiate VFX for.")]
+    [Tooltip("List all the different echoes to pre-instantiate VFX for.")]
     public List<EchoData> availableEchoes;
 
     [Tooltip("Where should the VFX spawn? (If left blank, it spawns directly on the player)")]

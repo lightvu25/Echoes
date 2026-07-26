@@ -24,10 +24,7 @@ public class RunManager : MonoBehaviour
     [Tooltip("If true, blessings will always give the maximum value instead of diminishing over time.")]
     public bool consistentBlessings = true;
 
-    // Diminishing Returns Curves
-    // Each index = how many shrines of that path have already been taken
-    private readonly int[] vitalityHPCurve = { 50, 50, 50, 30, 30, 30, 15, 15, 15, 15 };
-    private readonly int[] damageHPCurve   = { 15, 15, 15,  5,  5,  5,  2,  2,  2,  2 };
+    // Removed hardcoded diminishing returns curves; using Harmonic Decay algorithm.
 
     private void Awake()
     {
@@ -52,20 +49,20 @@ public class RunManager : MonoBehaviour
         int hpToGain = 0;
         if (blessing.path == BlessingPath.Vitality)
         {
-            hpToGain = consistentBlessings ? vitalityHPCurve[0] : 
-                (run.vitalityShrinesTaken < vitalityHPCurve.Length ? vitalityHPCurve[run.vitalityShrinesTaken] : 5);
+            hpToGain = consistentBlessings ? 50 : 
+                Mathf.Max(BlessingCalculator.CalculateStackBonus(50, run.vitalityShrinesTaken + 1), 5);
             run.vitalityShrinesTaken++;
         }
         else if (blessing.path == BlessingPath.Sorcery)
         {
-            hpToGain = consistentBlessings ? damageHPCurve[0] : 
-                (run.sorceryShrinesTaken < damageHPCurve.Length ? damageHPCurve[run.sorceryShrinesTaken] : 2);
+            hpToGain = consistentBlessings ? 15 : 
+                Mathf.Max(BlessingCalculator.CalculateStackBonus(15, run.sorceryShrinesTaken + 1), 2);
             run.sorceryShrinesTaken++;
         }
         else if (blessing.path == BlessingPath.Resonance)
         {
-            hpToGain = consistentBlessings ? damageHPCurve[0] : 
-                (run.resonanceShrinesTaken < damageHPCurve.Length ? damageHPCurve[run.resonanceShrinesTaken] : 2);
+            hpToGain = consistentBlessings ? 15 : 
+                Mathf.Max(BlessingCalculator.CalculateStackBonus(15, run.resonanceShrinesTaken + 1), 2);
             run.resonanceShrinesTaken++;
         }
 

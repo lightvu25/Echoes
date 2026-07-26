@@ -32,7 +32,7 @@ public class Thorns : MonoBehaviour
             knockbackDir,
             knockbackForce
         );
-        damageInfo.damageSource = "Environment_Thorns";
+        damageInfo.damageSource = DamageSourceType.Environment_Thorns;
         
         playerCombat.TakeDamage(damageInfo);
         _nextDamageTime = Time.time + damageCooldown;

@@ -491,7 +491,7 @@ public class PlayerAttack : MonoBehaviour
                     multiplicativeStack = 1f,
                     procCoefficient = pendingProcCoef,
                     attacker = gameObject,
-                    damageSource = "PlayerProjectile",
+                    damageSource = DamageSourceType.PlayerProjectile,
                     isCritical = false
                 };
                 
@@ -536,7 +536,7 @@ public class PlayerAttack : MonoBehaviour
 
         if (pData.comboVFXPrefabs != null && pData.comboVFXPrefabs.Length > 0)
         {
-            // Fallback to Element 0 if the current combo step doesn't have a specific prefab assigned
+            // Fallback to Echo 0 if the current combo step doesn't have a specific prefab assigned
             GameObject vfxPrefab = null;
             Vector2 vfxOffset = Vector2.zero;
 
@@ -604,13 +604,13 @@ public class PlayerAttack : MonoBehaviour
     {
         int baseDamage = healthSystem != null && healthSystem.CombatStats != null ? healthSystem.CombatStats.baseAttack : 10;
 
-        float elementDamageMult = 1f;
+        float echoDamageMult = 1f;
         if (PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveEcho != null)
         {
-            elementDamageMult = PlayerInventoryCore.Instance.ActiveEcho.baseDamageMultiplier;
+            echoDamageMult = PlayerInventoryCore.Instance.ActiveEcho.baseDamageMultiplier;
         }
 
-        int finalDamage = Mathf.RoundToInt(baseDamage * plungeDamageMultiplier * elementDamageMult);
+        int finalDamage = Mathf.RoundToInt(baseDamage * plungeDamageMultiplier * echoDamageMult);
 
         LayerMask targetMask = attackHitbox != null ? attackHitbox.TargetLayers : LayerMask.GetMask("Enemy");
         Vector2 direction = transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
@@ -631,7 +631,7 @@ public class PlayerAttack : MonoBehaviour
                     attacker         = gameObject,
                     knockbackForce   = 0f,
                     knockbackDirection = Vector2.zero,
-                    damageSource     = "PlungeAttack"
+                    damageSource     = DamageSourceType.PlungeAttack,
                 });
                 
                 EchoStatusReceiver status = col.GetComponentInParent<EchoStatusReceiver>();
@@ -659,7 +659,7 @@ public class PlayerAttack : MonoBehaviour
                 {
                     baseDamage = selfDamage,
                     attacker = gameObject,
-                    damageSource = "PlungeSelfDamage",
+                    damageSource = DamageSourceType.PlungeSelfDamage,
                     knockbackForce = 0f,
                     knockbackDirection = Vector2.zero
                 });
@@ -684,13 +684,13 @@ public class PlayerAttack : MonoBehaviour
                     hitDuringPlunge.Add(damageable);
 
                     int baseDamage = healthSystem != null && healthSystem.CombatStats != null ? healthSystem.CombatStats.baseAttack : 10;
-                    float elementDamageMult = 1f;
+                    float echoDamageMult = 1f;
                     if (PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveEcho != null)
                     {
-                        elementDamageMult = PlayerInventoryCore.Instance.ActiveEcho.baseDamageMultiplier;
+                        echoDamageMult = PlayerInventoryCore.Instance.ActiveEcho.baseDamageMultiplier;
                     }
 
-                    int finalDamage = Mathf.RoundToInt(baseDamage * plungeDamageMultiplier * elementDamageMult);
+                    int finalDamage = Mathf.RoundToInt(baseDamage * plungeDamageMultiplier * echoDamageMult);
 
                     damageable.TakeDamage(new DamageInfo
                     {
@@ -700,7 +700,7 @@ public class PlayerAttack : MonoBehaviour
                         attacker = gameObject,
                         knockbackForce = 0f,
                         knockbackDirection = Vector2.zero,
-                        damageSource = "PlungeFall"
+                        damageSource = DamageSourceType.PlungeFall
                     });
                 }
             }

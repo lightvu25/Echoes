@@ -29,7 +29,7 @@ public class CurseModifier : IEchoModifier
         int selfDamage = Mathf.Max(1, Mathf.RoundToInt(ctx.PlayerHealth.MaxHP * 0.02f));
         DamageInfo curseDamage = DamageInfo.Create(selfDamage, ctx.PlayerGameObject);
         curseDamage.isTrueDamage = true;
-        curseDamage.damageSource = "OblivionSelfDamage";
+        curseDamage.damageSource = DamageSourceType.OblivionSelfDamage;
         ctx.PlayerHealth.TakeDamage(curseDamage);
     }
 }

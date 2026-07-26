@@ -46,7 +46,7 @@ public class CombatStats : ScriptableObject
     /// <summary>
     /// Create a DamageInfo from these stats.
     /// </summary>
-    public DamageInfo CreateBaseDamageInfo(GameObject attacker, string source = "BasicAttack", RunData runData = null)
+    public DamageInfo CreateBaseDamageInfo(GameObject attacker, DamageSourceType source = DamageSourceType.Attack, RunData runData = null)
     {
         bool isCrit = Random.value < critChance;
         float multiplier = isCrit ? critMultiplier : 1f;

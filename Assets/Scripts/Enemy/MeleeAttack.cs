@@ -110,7 +110,7 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
             knockbackForce = data.knockbackForce,
             hitFreezeTime = 0f,
             attacker = gameObject,
-            damageSource = "MeleeAttack",
+            damageSource = DamageSourceType.MeleeAttack,
             isCritical = false
         };
 

@@ -55,7 +55,8 @@ public class GameManager : MonoBehaviour
         
         // FIX: Ensure time is unpaused before initializing a new scene!
         // This prevents the player from being frozen if they transitioned while timeScale was 0.
-        Time.timeScale = 1f;
+        if (TimeManager.Instance != null) TimeManager.Instance.ClearAllPauses();
+        else Time.timeScale = 1f;
         
         currentGenerator = FindFirstObjectByType<BaseLevelGenerator>();
         cinemachineCamera = FindFirstObjectByType<CinemachineCamera>();
@@ -263,13 +264,15 @@ public class GameManager : MonoBehaviour
 
     public void PauseGame()
     {
-        Time.timeScale = 0f;
+        if (TimeManager.Instance != null) TimeManager.Instance.PauseTime("GameManager");
+        else Time.timeScale = 0f;
         OnGamePaused?.Invoke(this, EventArgs.Empty);
     }
 
     public void ResumeGame()
     {
-        Time.timeScale = 1f;
+        if (TimeManager.Instance != null) TimeManager.Instance.ResumeTime("GameManager");
+        else Time.timeScale = 1f;
         OnGameResume?.Invoke(this, EventArgs.Empty);
     }
 

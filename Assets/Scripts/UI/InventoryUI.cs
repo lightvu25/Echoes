@@ -115,7 +115,8 @@ public class InventoryUI : MonoBehaviour, IUIPanel
         // Otherwise let UIManager or GameManager handle time scale.
         if (wasInUnlockMode)
         {
-            Time.timeScale = 1f;
+            if (TimeManager.Instance != null) TimeManager.Instance.ResumeTime("InventoryUnlock");
+            else Time.timeScale = 1f;
         }
     }
 
@@ -128,7 +129,8 @@ public class InventoryUI : MonoBehaviour, IUIPanel
     private void EnterUnlockMode()
     {
         isInUnlockMode = true;
-        Time.timeScale = 0f;
+        if (TimeManager.Instance != null) TimeManager.Instance.PauseTime("InventoryUnlock");
+        else Time.timeScale = 0f;
         Show();
         slotUnlockPanel?.Display(
             PlayerInventoryCore.Instance.UnlockedEchoSlots,

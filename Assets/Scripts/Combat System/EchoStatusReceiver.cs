@@ -72,7 +72,7 @@ public class EchoStatusReceiver : MonoBehaviour
                 if (dmg != null) 
                 { 
                     DamageInfo tick = DamageInfo.Create(5, gameObject); 
-                    tick.damageSource = "Burn"; 
+                    tick.damageSource = DamageSourceType.Burn; 
                     dmg.TakeDamage(tick); 
                 }
                 burnTickTimer = 0.5f;

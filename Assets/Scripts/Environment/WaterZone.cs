@@ -61,7 +61,7 @@ public class WaterZone : MonoBehaviour
         _entitiesInWater.RemoveWhere(e => e == null || e.IsDead);
 
         DamageInfo shockInfo = DamageInfo.Create(damage, attacker);
-        shockInfo.damageSource = "ElectrifiedWater";
+        shockInfo.damageSource = DamageSourceType.ElectrifiedWater;
         shockInfo.knockbackForce = 0f;
         shockInfo.hitFreezeTime = stunDuration;
 

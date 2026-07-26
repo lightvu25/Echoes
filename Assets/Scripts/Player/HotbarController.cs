@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// Ultra-thin input bridge for hotbar Element cycling.
+/// Ultra-thin input bridge for hotbar Echo cycling.
 /// Listens for keyboard and scroll-wheel input from <see cref="GameInput"/>
 /// and delegates to <see cref="PlayerInventoryCore.SetActiveEchoIndex"/>.
 ///

@@ -128,7 +128,7 @@ public class Projectile : MonoBehaviour
                 else
                 {
                     info = DamageInfo.CreateWithKnockback(damage, owner, knockDir, knockbackForce);
-                    info.damageSource = "Projectile";
+                    info.damageSource = DamageSourceType.Projectile;
                 }
                 
                 if (scaleDamageWithSpeed && rb != null)

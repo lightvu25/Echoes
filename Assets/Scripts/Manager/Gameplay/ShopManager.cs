@@ -100,14 +100,20 @@ public class ShopManager : MonoBehaviour
         // If we have custom tier chances, try to pick an item of a specific tier
         if (tierChances != null && tierChances.Count > 0)
         {
-            int targetTier = RollForTier(tierChances);
-            
-            // Try to find items of exactly the target tier
-            var tierSpecificItems = validItems.Where(item => GetItemTier(item) == targetTier).ToList();
-            
-            if (tierSpecificItems.Count > 0)
+            var availableTiers = validItems.Select(item => GetItemTier(item)).Distinct().ToList();
+            var validChances = tierChances.Where(c => availableTiers.Contains(c.tier)).ToList();
+
+            if (validChances.Count > 0)
             {
-                selected = tierSpecificItems[Random.Range(0, tierSpecificItems.Count)];
+                int targetTier = RollForTier(validChances);
+                
+                // Try to find items of exactly the target tier
+                var tierSpecificItems = validItems.Where(item => GetItemTier(item) == targetTier).ToList();
+                
+                if (tierSpecificItems.Count > 0)
+                {
+                    selected = tierSpecificItems[Random.Range(0, tierSpecificItems.Count)];
+                }
             }
         }
 

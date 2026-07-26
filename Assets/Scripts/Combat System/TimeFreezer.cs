@@ -19,8 +19,15 @@ public class TimeFreezer : MonoBehaviour
 
     public void FreezeTime(float duration)
     {
-        StopAllCoroutines();
-        StartCoroutine(DoTimeFreeze(duration));
+        if (TimeManager.Instance != null)
+        {
+            TimeManager.Instance.DoTemporaryPause(duration, "TimeFreezer");
+        }
+        else
+        {
+            StopAllCoroutines();
+            StartCoroutine(DoTimeFreeze(duration));
+        }
     }
 
     private IEnumerator DoTimeFreeze(float duration)

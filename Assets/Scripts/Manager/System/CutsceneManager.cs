@@ -114,7 +114,8 @@ public class CutsceneManager : MonoBehaviour
 
         yield return new WaitUntil(() => Input.anyKeyDown);
 
-        Time.timeScale = 1f;
+        if (TimeManager.Instance != null) TimeManager.Instance.ClearAllPauses();
+        else Time.timeScale = 1f;
         LockPlayer(false);
 
         deathDirector.gameObject.SetActive(false);

@@ -3,26 +3,26 @@ using UnityEngine.EventSystems;
 
 public class FusionSlot : MonoBehaviour, IDropHandler
 {
-    public EchoData SlottedElement { get; private set; }
-    private DraggableElement slottedItemUI;
+    public EchoData SlottedEcho { get; private set; }
+    private DraggableEcho slottedItemUI;
 
     public void OnDrop(PointerEventData eventData)
     {
         if (eventData.pointerDrag != null)
         {
-            DraggableElement droppedElement = eventData.pointerDrag.GetComponent<DraggableElement>();
-            if (droppedElement != null && droppedElement.elementData != null)
+            DraggableEcho droppedEcho = eventData.pointerDrag.GetComponent<DraggableEcho>();
+            if (droppedEcho != null && droppedEcho.echoData != null)
             {
                 if (slottedItemUI != null)
                 {
                     slottedItemUI.ReturnToInventory();
                 }
 
-                droppedElement.transform.SetParent(transform);
-                droppedElement.transform.localPosition = Vector3.zero;
+                droppedEcho.transform.SetParent(transform);
+                droppedEcho.transform.localPosition = Vector3.zero;
                 
-                SlottedElement = droppedElement.elementData;
-                slottedItemUI = droppedElement;
+                SlottedEcho = droppedEcho.echoData;
+                slottedItemUI = droppedEcho;
 
                 var ui = UIManager.Instance?.GetPanel<SacrificialUI>(UIPanelType.SacrificialFusion);
                 if (ui != null)
@@ -39,13 +39,13 @@ public class FusionSlot : MonoBehaviour, IDropHandler
         {
             Destroy(slottedItemUI.gameObject);
         }
-        SlottedElement = null;
+        SlottedEcho = null;
         slottedItemUI = null;
     }
 
     public void RemoveItemReference()
     {
-        SlottedElement = null;
+        SlottedEcho = null;
         slottedItemUI = null;
     }
     
@@ -55,7 +55,7 @@ public class FusionSlot : MonoBehaviour, IDropHandler
         {
             slottedItemUI.ReturnToInventory();
         }
-        SlottedElement = null;
+        SlottedEcho = null;
         slottedItemUI = null;
     }
 }

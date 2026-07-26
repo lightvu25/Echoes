@@ -39,7 +39,7 @@ public class BlazeModifier : IEchoModifier
     private void HandleOnHitTarget(object sender, AttackHitbox.HitEventArgs e)
     {
         if (e.damageInfo.activeEcho == null || e.damageInfo.activeEcho.uniqueModifierID != "IGNITION") return;
-        if (e.damageInfo.damageSource == "ArcChain" || e.damageInfo.damageSource == "BlackHole") return;
+        if (e.damageInfo.damageSource == DamageSourceType.ArcChain || e.damageInfo.damageSource == DamageSourceType.BlackHole) return;
 
         EchoStatusReceiver status = e.target.Transform.GetComponent<EchoStatusReceiver>();
         if (status == null) status = e.target.Transform.gameObject.AddComponent<EchoStatusReceiver>();

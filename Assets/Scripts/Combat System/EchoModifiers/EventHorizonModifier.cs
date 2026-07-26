@@ -28,7 +28,7 @@ public class EventHorizonModifier : IEchoModifier
     private void HandleOnHitTarget(object sender, AttackHitbox.HitEventArgs e)
     {
         if (e.damageInfo.activeEcho == null || e.damageInfo.activeEcho.uniqueModifierID != "FUS_EVENT_HORIZON") return;
-        if (e.damageInfo.damageSource == "ArcChain" || e.damageInfo.damageSource == "BlackHole") return;
+        if (e.damageInfo.damageSource == DamageSourceType.ArcChain || e.damageInfo.damageSource == DamageSourceType.BlackHole) return;
 
         if (Time.time >= eventHorizonTimer + eventHorizonCooldown)
         {

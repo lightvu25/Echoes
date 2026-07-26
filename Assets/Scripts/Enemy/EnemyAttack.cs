@@ -135,7 +135,7 @@ public class EnemyAttack : MonoBehaviour, IEnemyAttack
             knockbackForce = data.knockbackForce,
             hitFreezeTime = 0f, // No hit freeze for enemy attacks
             attacker = gameObject,
-            damageSource = "EnemyAttack",
+            damageSource = DamageSourceType.EnemyAttack,
             isCritical = false // Crits are player-only
         };
 

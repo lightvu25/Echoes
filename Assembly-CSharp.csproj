@@ -69,6 +69,7 @@
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
     <Compile Include="Assets\Scripts\Manager\Gameplay\MindPathManager.cs" />
     <Compile Include="Assets\Scripts\Enemy\RangedAttack.cs" />
+    <Compile Include="Assets\Scripts\Manager\Gameplay\BlessingCalculator.cs" />
     <Compile Include="Assets\Scripts\UI\SacrificialUI.cs" />
     <Compile Include="Assets\Scripts\UI\EnemyStatusUI.cs" />
     <Compile Include="Assets\Scripts\Enemy\BombProjectile.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
     <Compile Include="Assets\Scripts\UI\MenuInteractable.cs" />
+    <Compile Include="Assets\Scripts\UI\DraggableEcho.cs" />
     <Compile Include="Assets\Scripts\Environment\Map\GraphLevelGenerator.cs" />
     <Compile Include="Assets\Scripts\Interactables\TeleporterNode.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
@@ -157,7 +159,6 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerVisual.cs" />
-    <Compile Include="Assets\Scripts\UI\DraggableElement.cs" />
     <Compile Include="Assets\Scripts\Core\Mechanics\TeleportManager.cs" />
     <Compile Include="Assets\Scripts\UI\UIDragHandler.cs" />
     <Compile Include="Assets\Scripts\Core Gameplay\TimeRewind.cs" />
@@ -273,8 +274,8 @@
     <Compile Include="Assets\Scripts\Manager\System\GameManagerVisual.cs" />
     <Compile Include="Assets\Scripts\Enemy\MeleeAttack.cs" />
     <Compile Include="Assets\Scripts\Data\ItemCategory.cs" />
-    <Compile Include="Assets\Scripts\Enemy\DashAttack.cs" />
     <Compile Include="Assets\Scripts\Equipments\ToxicCloud.cs" />
+    <Compile Include="Assets\Scripts\Enemy\DashAttack.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModulePhysics.cs" />
     <Compile Include="Assets\Scripts\UI\FeedbackUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
@@ -332,7 +333,6 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Roboto-Bold - License.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile-2-Pass.shader" />
-    <None Include="Assets\Audio\Musics\music-loop-bundle-2026-q2\_LICENSE.txt" />
     <None Include="Assets\Sprites\Enemy\EVil Wizard 2\EVil Wizard 2\License.txt" />
     <None Include="Assets\DOTween\DOTween.XML" />
     <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Unity - OFL.txt" />
@@ -360,7 +360,6 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
-    <None Include="Assets\Audio\Musics\music-loop-bundle-2026-q2\_README.txt" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\Sprites\VFX\PixelArtRPGVFXLite\ReadMe.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />

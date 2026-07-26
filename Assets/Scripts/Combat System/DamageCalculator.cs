@@ -24,12 +24,12 @@ public static class DamageCalculator
     /// <param name="info">Damage info with all modifiers</param>
     /// <param name="targetDefense">Target's defense stat</param>
     /// <returns>Final damage as integer</returns>
-    public static int CalculateFinalDamage(DamageInfo info, float targetDefense)
+    public static int CalculateFinalDamage(DamageInfo info, float targetDefense, float echoMultiplier = 1f)
     {
         // Stage 1: Apply modifiers
         float baseDamage = info.baseDamage + info.flatBonus;
         float linearMultiplier = 1f + info.linearModifierSum;
-        float modifiedDamage = baseDamage * linearMultiplier * info.multiplicativeStack;
+        float modifiedDamage = baseDamage * linearMultiplier * info.multiplicativeStack * echoMultiplier;
 
         // Apply defense reduction (armor formula with diminishing returns)
         float defenseReduction = info.isTrueDamage ? 0f : CalculateDefenseReduction(targetDefense);

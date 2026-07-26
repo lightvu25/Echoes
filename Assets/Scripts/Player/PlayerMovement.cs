@@ -784,16 +784,25 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator PerformSleep(float duration)
     {
-        Time.timeScale = 0f;
-        yield return new WaitForSecondsRealtime(duration);
-        
-        // Do not force time back to 1 if a UI panel is open
-        if (UIManager.Instance != null && UIManager.Instance.IsAnyPanelOpen)
+        if (TimeManager.Instance != null)
         {
-            yield break;
+            TimeManager.Instance.PauseTime("PlayerDash");
+            yield return new WaitForSecondsRealtime(duration);
+            TimeManager.Instance.ResumeTime("PlayerDash");
         }
-        
-        Time.timeScale = 1;
+        else
+        {
+            Time.timeScale = 0f;
+            yield return new WaitForSecondsRealtime(duration);
+            
+            // Do not force time back to 1 if a UI panel is open
+            if (UIManager.Instance != null && UIManager.Instance.IsAnyPanelOpen)
+            {
+                yield break;
+            }
+            
+            Time.timeScale = 1f;
+        }
     }
 
     private IEnumerator StartDash(Vector2 dir)
