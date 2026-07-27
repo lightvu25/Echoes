@@ -61,6 +61,7 @@ public class PlayerInventoryCore : MonoBehaviour
     // ------------------------------------------------------------------ //
 
     private HealthSystem healthSystem;
+    private PlaystyleManager playstyleManager;
 
     /// <summary>Index of the currently active Echo slot (used by HotbarController).</summary>
     private int activeEchoIndex = 0;
@@ -119,6 +120,7 @@ public class PlayerInventoryCore : MonoBehaviour
         }
 
         healthSystem = GetComponent<HealthSystem>();
+        playstyleManager = GetComponent<PlaystyleManager>();
 
         // Migration guard: if an old save has 0 for any slot count, reset to 1.
         if (Run != null)
@@ -134,7 +136,10 @@ public class PlayerInventoryCore : MonoBehaviour
         if (healthSystem != null)
         {
             healthSystem.OnMaxHPGained       += HandleMaxHPGained;
-            healthSystem.OnUnlockedSlotsDecreased += HandleSlotsDecreased;
+        }
+        if (playstyleManager != null)
+        {
+            playstyleManager.OnPlaystyleLocked += HandlePlaystyleLocked;
         }
     }
 
@@ -143,7 +148,10 @@ public class PlayerInventoryCore : MonoBehaviour
         if (healthSystem != null)
         {
             healthSystem.OnMaxHPGained       -= HandleMaxHPGained;
-            healthSystem.OnUnlockedSlotsDecreased -= HandleSlotsDecreased;
+        }
+        if (playstyleManager != null)
+        {
+            playstyleManager.OnPlaystyleLocked -= HandlePlaystyleLocked;
         }
     }
 
@@ -386,15 +394,21 @@ public class PlayerInventoryCore : MonoBehaviour
     }
 
     /// <summary>
-    /// When the player loses a slot (takes damage that crosses a threshold),
-    /// drop excess items until all lists fit within their new capacities.
+    /// When a playstyle is locked (due to taking damage),
+    /// forcibly unequip any Echo associated with that playstyle's slot.
     /// </summary>
-    private void HandleSlotsDecreased(int _)
+    private void HandlePlaystyleLocked(PlaystyleType lockedType)
     {
-        TrimArray(equippedEchoes, UnlockedEchoSlots);
-        TrimArray(equippedRelics,   UnlockedRelicSlots);
-        TrimArray(equippedTools,    UnlockedEquipmentSlots);
-        OnInventoryChanged?.Invoke();
+        int slotIndex = (int)lockedType;
+        if (slotIndex >= 0 && slotIndex < equippedEchoes.Length)
+        {
+            if (equippedEchoes[slotIndex] != null)
+            {
+                SpawnDroppedItem(equippedEchoes[slotIndex]);
+                equippedEchoes[slotIndex] = null;
+                OnInventoryChanged?.Invoke();
+            }
+        }
     }
 
 

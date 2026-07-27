@@ -24,7 +24,8 @@ public class PlaystyleManager : MonoBehaviour
     {
         if (healthSystem != null)
         {
-            healthSystem.OnUnlockedSlotsDecreased += HandleSlotsDecreased;
+            lastKnownSlots = healthSystem.UnlockedSlots;
+            healthSystem.OnSlotsChanged += HandleSlotsChanged;
         }
     }
 
@@ -32,16 +33,12 @@ public class PlaystyleManager : MonoBehaviour
     {
         if (healthSystem != null)
         {
-            healthSystem.OnUnlockedSlotsDecreased -= HandleSlotsDecreased;
+            healthSystem.OnSlotsChanged -= HandleSlotsChanged;
         }
     }
 
     public bool IsPlaystyleUnlocked(PlaystyleType type)
     {
-        // Bypass the slot requirement so you can test all weapons immediately!
-        return true;
-        
-        /*
         if (healthSystem == null) return false;
 
         // Slot 0 (1 slot) = Melee
@@ -58,7 +55,6 @@ public class PlaystyleManager : MonoBehaviour
             PlaystyleType.Magic => unlockedSlots >= 4,
             _ => false
         };
-        */
     }
 
     public PlaystyleData GetPlaystyleData(PlaystyleType type)
@@ -81,12 +77,22 @@ public class PlaystyleManager : MonoBehaviour
         return PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.GetActiveEcho() != null;
     }
 
-    private void HandleSlotsDecreased(int newSlots)
+    private int lastKnownSlots = 4;
+
+    private void HandleSlotsChanged(int newSlots)
     {
-        // When taking damage, slots decrease, making higher-tier playstyles locked.
-        if (newSlots < 4) OnPlaystyleLocked?.Invoke(PlaystyleType.Magic);
-        if (newSlots < 3) OnPlaystyleLocked?.Invoke(PlaystyleType.LongRange);
-        if (newSlots < 2) OnPlaystyleLocked?.Invoke(PlaystyleType.MidRange);
-        if (newSlots < 1) OnPlaystyleLocked?.Invoke(PlaystyleType.Melee);
+        // Check what got locked (lost health)
+        if (lastKnownSlots >= 4 && newSlots < 4) OnPlaystyleLocked?.Invoke(PlaystyleType.Magic);
+        if (lastKnownSlots >= 3 && newSlots < 3) OnPlaystyleLocked?.Invoke(PlaystyleType.LongRange);
+        if (lastKnownSlots >= 2 && newSlots < 2) OnPlaystyleLocked?.Invoke(PlaystyleType.MidRange);
+        if (lastKnownSlots >= 1 && newSlots < 1) OnPlaystyleLocked?.Invoke(PlaystyleType.Melee);
+
+        // Check what got unlocked (gained/healed health)
+        if (lastKnownSlots < 4 && newSlots >= 4) OnPlaystyleUnlocked?.Invoke(PlaystyleType.Magic);
+        if (lastKnownSlots < 3 && newSlots >= 3) OnPlaystyleUnlocked?.Invoke(PlaystyleType.LongRange);
+        if (lastKnownSlots < 2 && newSlots >= 2) OnPlaystyleUnlocked?.Invoke(PlaystyleType.MidRange);
+        if (lastKnownSlots < 1 && newSlots >= 1) OnPlaystyleUnlocked?.Invoke(PlaystyleType.Melee);
+
+        lastKnownSlots = newSlots;
     }
 }

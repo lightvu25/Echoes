@@ -20,16 +20,15 @@ public class RunManager : MonoBehaviour
         }
     }
 
-    [Header("Testing")]
-    [Tooltip("If true, blessings will always give the maximum value instead of diminishing over time.")]
-    public bool consistentBlessings = true;
+
 
     // Removed hardcoded diminishing returns curves; using Harmonic Decay algorithm.
 
     private void Awake()
     {
-        if (_instance != null && _instance != this) { Destroy(gameObject); return; }
+        if (_instance != null && _instance != this) { Destroy(this); return; }
         _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Update()
@@ -49,20 +48,17 @@ public class RunManager : MonoBehaviour
         int hpToGain = 0;
         if (blessing.path == BlessingPath.Vitality)
         {
-            hpToGain = consistentBlessings ? 50 : 
-                Mathf.Max(BlessingCalculator.CalculateStackBonus(50, run.vitalityShrinesTaken + 1), 5);
+            hpToGain = Mathf.Max(BlessingCalculator.CalculateStackBonus(50, run.vitalityShrinesTaken + 1), 5);
             run.vitalityShrinesTaken++;
         }
         else if (blessing.path == BlessingPath.Sorcery)
         {
-            hpToGain = consistentBlessings ? 15 : 
-                Mathf.Max(BlessingCalculator.CalculateStackBonus(15, run.sorceryShrinesTaken + 1), 2);
+            hpToGain = Mathf.Max(BlessingCalculator.CalculateStackBonus(15, run.sorceryShrinesTaken + 1), 2);
             run.sorceryShrinesTaken++;
         }
         else if (blessing.path == BlessingPath.Resonance)
         {
-            hpToGain = consistentBlessings ? 15 : 
-                Mathf.Max(BlessingCalculator.CalculateStackBonus(15, run.resonanceShrinesTaken + 1), 2);
+            hpToGain = Mathf.Max(BlessingCalculator.CalculateStackBonus(15, run.resonanceShrinesTaken + 1), 2);
             run.resonanceShrinesTaken++;
         }
 

@@ -26,7 +26,7 @@ public class AnomalyModifier : IEchoModifier
     {
         if (damageInfo.activeEcho == null || damageInfo.activeEcho.uniqueModifierID != "DISTORTION") return;
 
-        if (true /*UnityEngine.Random.value <= 0.25f*/)
+        if (UnityEngine.Random.value <= 0.25f)
         {
             damageInfo.isTrueDamage = true;
         }

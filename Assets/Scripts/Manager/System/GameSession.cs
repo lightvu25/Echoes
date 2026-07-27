@@ -17,7 +17,7 @@ public class GameSession : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
 
@@ -102,5 +102,32 @@ public class GameSession : MonoBehaviour
     public void SaveCurrentRun()
     {
         SaveManager.saveRun(currentRun);
+    }
+
+    public void AbandonRun()
+    {
+        if (currentProfile != null && currentRun != null)
+        {
+            currentProfile.totalGold += currentRun.runGold;
+            SaveManager.saveProfile(currentProfile);
+        }
+        
+        SaveManager.deleteRun();
+        StartNewRun();
+        SceneManager.LoadScene(hubWorldSceneName);
+    }
+
+    public void CompleteRun()
+    {
+        if (currentProfile != null && currentRun != null)
+        {
+            currentProfile.totalGold += currentRun.runGold;
+            // Additional completion rewards can be added here
+            SaveManager.saveProfile(currentProfile);
+        }
+
+        SaveManager.deleteRun();
+        StartNewRun();
+        SceneManager.LoadScene(hubWorldSceneName);
     }
 }
