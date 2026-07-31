@@ -12,7 +12,7 @@ public class LevelBlueprintEditorWindow : EditorWindow
     private LevelBlueprint _currentBlueprint;
     private ObjectField _blueprintField;
 
-    [MenuItem("Window/Map Generator/Blueprint Editor")]
+    [MenuItem("Tools/Echoes/Map Generator/Blueprint Editor")]
     public static void OpenWindow()
     {
         var window = GetWindow<LevelBlueprintEditorWindow>("Blueprint Editor");

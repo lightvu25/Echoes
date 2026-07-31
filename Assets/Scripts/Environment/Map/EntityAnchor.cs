@@ -6,7 +6,9 @@ public enum AnchorType
     Teleporter,
     Enemy_Ground,
     Enemy_Air,
-    Echo_Common
+    Echo_Common,
+    Altar,
+    Shrine
 }
 
 public class EntityAnchor : MonoBehaviour
@@ -33,6 +35,8 @@ public class EntityAnchor : MonoBehaviour
             case AnchorType.Enemy_Ground: return Color.red;
             case AnchorType.Enemy_Air: return new Color(1f, 0.5f, 0f); // Orange
             case AnchorType.Echo_Common: return Color.cyan;
+            case AnchorType.Altar: return Color.yellow;
+            case AnchorType.Shrine: return Color.green;
             default: return Color.gray;
         }
     }

@@ -10,6 +10,15 @@ public class AnomalousShrine : MonoBehaviour, IInteractable, IDamageable
 
     private bool isUsed = false;
 
+    private void Awake()
+    {
+        InteractableTrigger trigger = GetComponent<InteractableTrigger>();
+        if (trigger != null)
+        {
+            trigger.maxInteractions = 1;
+        }
+    }
+
     // =============================================
     // IDamageable implementation
     // =============================================

@@ -774,7 +774,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -8994043574652506621, guid: 274542ef01ac95a4fa95cc0624259729, type: 3}
+  m_Sprite: {fileID: -523253263404603635, guid: ab9d20bf04f71e14698c3137fe95b7c2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6208,7 +6208,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 1.88
+  orthographic size: 2.45
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -7553,46 +7553,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 912333987520412502, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
-      propertyPath: audioMixer
-      value: 
-      objectReference: {fileID: 24100000, guid: 9b4754405d6970d4d971880af937288c, type: 2}
-    - target: {fileID: 912333987520412502, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
-      propertyPath: musicMixerGroup
-      value: 
-      objectReference: {fileID: 6530104695860849351, guid: 9b4754405d6970d4d971880af937288c, type: 2}
-    - target: {fileID: 912333987520412502, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
-      propertyPath: tracks.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 912333987520412502, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
-      propertyPath: tracks.Array.data[1].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 3325b1db4e1420c4e94c7454dd7871e0, type: 3}
-    - target: {fileID: 912333987520412502, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
-      propertyPath: tracks.Array.data[2].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 3325b1db4e1420c4e94c7454dd7871e0, type: 3}
-    - target: {fileID: 912333987520412502, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
-      propertyPath: tracks.Array.data[3].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 3325b1db4e1420c4e94c7454dd7871e0, type: 3}
-    - target: {fileID: 912333987520412502, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
-      propertyPath: tracks.Array.data[0].trackName
-      value: The Abyss
-      objectReference: {fileID: 0}
-    - target: {fileID: 912333987520412502, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
-      propertyPath: tracks.Array.data[1].trackName
-      value: Mind World
-      objectReference: {fileID: 0}
-    - target: {fileID: 912333987520412502, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
-      propertyPath: tracks.Array.data[2].trackName
-      value: Mind Garden
-      objectReference: {fileID: 0}
-    - target: {fileID: 912333987520412502, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
-      propertyPath: tracks.Array.data[3].trackName
-      value: Reward
-      objectReference: {fileID: 0}
     - target: {fileID: 3137997222745108286, guid: 97c1cfbfad7a73b41b4a5f525b53d962, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -15149,7 +15109,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 101.264435, y: 300}
-  m_SizeDelta: {x: 48.4375, y: 50}
+  m_SizeDelta: {x: 51.5625, y: 53.125}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1374643596
 MonoBehaviour:
@@ -15171,7 +15131,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -8994043574652506621, guid: 274542ef01ac95a4fa95cc0624259729, type: 3}
+  m_Sprite: {fileID: -523253263404603635, guid: ab9d20bf04f71e14698c3137fe95b7c2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -22167,7 +22127,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e417e85b685422438f55d4db98546bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RunManager
-  consistentBlessings: 1
 --- !u!4 &1653918154
 Transform:
   m_ObjectHideFlags: 0
@@ -22224,7 +22183,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e417e85b685422438f55d4db98546bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RunManager
-  consistentBlessings: 1
 --- !u!114 &1653918158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22238,6 +22196,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSession
   hubWorldSceneName: GameScene
+  currentRun:
+    currentHealth: 0
+    maxHealth: 0
+    currentSceneName: 
+    currentLevelName: The Abyss
+    runGold: 0
+    currentLevel: 1
+    availableCuts: 1
+    currentExp: 0
+    currentAstralShards: 0
+    currentRelics: []
+    mapSeed: 0
+    levelNumber: 1
+    currentLevelTime: 0
+    currentLevelNoHitKills: 0
+    magicToxicity: 0
+    relicBonusModifier: 1
+    bonusEquipmentChance: 0
+    bonusEchoChance: 0
+    bonusRelicChance: 0
+    currentLevelRelicMultiplier: 1
+    currentLevelEchoMultiplier: 1
+    currentLevelEquipmentMultiplier: 1
+    minGuaranteedRelics: 0
+    minGuaranteedEchoes: 0
+    minGuaranteedEquipment: 0
+    enemyDensityMultiplier: 1
+    addedEliteEnemyTypes: []
+    bonusSorcery: 0
+    bonusResonance: 0
+    bonusVitality: 0
+    vitalityShrinesTaken: 0
+    sorceryShrinesTaken: 0
+    resonanceShrinesTaken: 0
+    unlockedEchoSlots: 1
+    unlockedRelicSlots: 1
+    unlockedEquipmentSlots: 1
+    availableUnlockPoints: 0
+    unlockedEchoIndices: 00000000
+    unlockedRelicIndices: 00000000
+    unlockedToolIndices: 00000000
+    exploredRooms: []
+    activeBlessingEffects: []
+    currentLevelBurdens: []
   pendingNextNode: {fileID: 0}
 --- !u!1 &1658506082
 GameObject:
@@ -29263,6 +29265,63 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!1001 &2048326278
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6178162552395401953, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_Name
+      value: MindWorldBackground
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951208283998900602, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951208283998900602, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951208283998900602, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951208283998900602, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951208283998900602, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951208283998900602, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951208283998900602, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951208283998900602, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951208283998900602, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951208283998900602, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1a286e1a9b7cdc3409cae3d68caa639a, type: 3}
 --- !u!1 &2058230048
 GameObject:
   m_ObjectHideFlags: 0
@@ -30413,3 +30472,4 @@ SceneRoots:
   - {fileID: 1308429435}
   - {fileID: 957000338}
   - {fileID: 596562642}
+  - {fileID: 2048326278}

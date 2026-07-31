@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoData
   itemID: ECHO_ANOMALY
   itemName: Anomaly
-  itemIcon: {fileID: -1596752464106490052, guid: 044583d915cf4524baf811b35b9aee9a, type: 3}
+  itemIcon: {fileID: 7334560055034668781, guid: c076f7095b23fff43bb028e863e22ca5, type: 3}
   description: Attacks have a 25% chance to bypass all armor and deal True Damage
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+  itemTier: 1
+  basePrice: 50
   echoType: 5
-  echoTier: 1
   isFusionResult: 0
   baseDamageMultiplier: 1
   attacksPerSecond: 1.2
@@ -29,7 +30,7 @@ MonoBehaviour:
   trailColor: {r: 1, g: 1, b: 1, a: 1}
   stateVFXPrefab: {fileID: 0}
   hitImpactPrefab: {fileID: 0}
-  comboVFXPrefabs:
-  - {fileID: 0}
+  voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

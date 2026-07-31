@@ -20,3 +20,4 @@ MonoBehaviour:
   canBackstep: 1
   isGlobalAggro: 1
   canShareVision: 1
+  sharedVisionIcon: {fileID: 1737981779093564301, guid: 0c85a9237656c6b41aa6b2ef9ed22820, type: 3}

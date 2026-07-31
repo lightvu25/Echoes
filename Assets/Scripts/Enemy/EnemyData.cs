@@ -79,16 +79,7 @@ public class EnemyData : ScriptableObject
 
     private void OnValidate()
     {
-        patrolAccelAmount = (50 * patrolAcceleration) / patrolMaxSpeed;
-        patrolDeccelAmount = (50 * patrolDecceleration) / patrolMaxSpeed;
-
-        patrolAcceleration = Mathf.Clamp(patrolAcceleration, 0.01f, patrolMaxSpeed);
-        patrolDecceleration = Mathf.Clamp(patrolDecceleration, 0.01f, patrolMaxSpeed);
-
-        chaseAccelAmount = (50 * chaseAcceleration) / chaseMaxSpeed;
-        chaseDeccelAmount = (50 * chaseDecceleration) / chaseMaxSpeed;
-
-        chaseAcceleration = Mathf.Clamp(chaseAcceleration, 0.01f, chaseMaxSpeed);
-        chaseDecceleration = Mathf.Clamp(chaseDecceleration, 0.01f, chaseMaxSpeed);
+        // Ensure the default target layer includes the Player layer for enemy hit detection
+        targetLayer = LayerMask.GetMask("Player");
     }
 }

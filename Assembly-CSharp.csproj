@@ -72,6 +72,7 @@
     <Compile Include="Assets\Scripts\Manager\Gameplay\BlessingCalculator.cs" />
     <Compile Include="Assets\Scripts\UI\SacrificialUI.cs" />
     <Compile Include="Assets\Scripts\UI\EnemyStatusUI.cs" />
+    <Compile Include="Assets\Scripts\VFX\ChainLightningVFX.cs" />
     <Compile Include="Assets\Scripts\Enemy\BombProjectile.cs" />
     <Compile Include="Assets\Scripts\UI\Tooltip\UITooltipManager.cs" />
     <Compile Include="Assets\Scripts\Manager\System\ReturnToPool.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerRelicManager.cs" />
     <Compile Include="Assets\Scripts\Manager\System\ObjectPoolManager.cs" />
+    <Compile Include="Assets\Scripts\VFX\KineticShockwaveVFX.cs" />
     <Compile Include="Assets\Scripts\Interactables\ShopInteractableBase.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
@@ -242,6 +244,7 @@
     <Compile Include="Assets\Scripts\Player\PlayerInteract.cs" />
     <Compile Include="Assets\Scripts\UI\ModifierNodeUIController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
+    <Compile Include="Assets\Scripts\Enemy\MeleeDualAttack.cs" />
     <Compile Include="Assets\Scripts\Audio\SceneMusicManager.cs" />
     <Compile Include="Assets\Scripts\Enemy\EvolutionTierData.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleEPOOutline.cs" />
@@ -317,6 +320,7 @@
     <Compile Include="Assets\Scripts\Enemy\BomberDualAttack.cs" />
     <Compile Include="Assets\Scripts\Camera\CinemachineCameraShake2D.cs" />
     <Compile Include="Assets\Scripts\PickUp\PickupVisual.cs" />
+    <Compile Include="Assets\Scripts\Camera\CinemachineCameraConfiner2D.cs" />
     <Compile Include="Assets\Scripts\Data\MindGardenData.cs" />
     <Compile Include="Assets\Scripts\UI\PassUI.cs" />
     <Compile Include="Assets\Scripts\Debug\DebugAddCurrency.cs" />

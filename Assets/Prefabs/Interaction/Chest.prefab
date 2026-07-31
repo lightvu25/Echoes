@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 4555390895905386823}
   - component: {fileID: 4651936376559543941}
   - component: {fileID: 3292319335770998151}
-  m_Layer: 0
+  - component: {fileID: 1112306496273982016}
+  m_Layer: 3
   m_Name: Chest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,8 +82,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1102808999
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 8775640325697020665, guid: 6c6e00488e5a7a8429d7b5357e6195b0, type: 3}
@@ -149,7 +150,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7883561012257174218}
-  m_BodyType: 0
+  m_BodyType: 2
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -188,6 +189,40 @@ MonoBehaviour:
   chestAnimator: {fileID: 0}
   openTrigger: Open
   promptOffset: {x: 0, y: 1.5, z: 0}
+--- !u!114 &1112306496273982016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883561012257174218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d62f147dda3ca248916fe71342c0a88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableTrigger
+  onInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3292319335770998151}
+        m_TargetAssemblyTypeName: Chest, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  iconPrefab: {fileID: 8270603724649358730, guid: 563f43968a07b104a9fb7b5918ec3976, type: 3}
+  iconOffset: {x: 0, y: 1.5, z: 0}
+  targetSpriteRenderer: {fileID: 0}
+  outlineThickness: 0.02
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  maxInteractions: 0
+  canInteractWithF: 1
 --- !u!1 &8834382048062452985
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,8 +300,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 195113763
-  m_SortingLayer: 8
+  m_SortingLayerID: -1381943129
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7631889286582480796, guid: fa5ab1ee79322864f847ddcec6c923ab, type: 3}

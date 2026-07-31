@@ -6,6 +6,11 @@ public class DamagePopup : MonoBehaviour
     [SerializeField] private string sortingLayerName = "UI";
     [SerializeField] private int sortingOrder = 10;
 
+    [Header("Colors")]
+    [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private Color criticalColor = new Color(1f, 0.8f, 0.2f, 1f); // Yellow
+    [SerializeField] private Color trueDamageColor = new Color(0.2f, 0.8f, 1f, 1f); // Blue
+
     private TextMeshPro textMesh;
     private float disappearTimer;
     private Color textColor;
@@ -27,14 +32,26 @@ public class DamagePopup : MonoBehaviour
         textMesh.sortingOrder   = sortingOrder;
     }
 
-    public void Setup(int damageAmount)
+    public void Setup(int damageAmount, bool isCritical = false, bool isTrueDamage = false)
     {
         if (textMesh == null) return;
-        transform.localScale = Vector3.one;
+        transform.localScale = isCritical ? Vector3.one * 1.5f : Vector3.one;
 
         textMesh.SetText(damageAmount.ToString());
-        textColor   = textMesh.color;
-        textColor.a = 1f;
+        
+        if (isTrueDamage)
+        {
+            textColor = trueDamageColor;
+        }
+        else if (isCritical)
+        {
+            textColor = criticalColor;
+        }
+        else
+        {
+            textColor = normalColor;
+        }
+        
         textMesh.color = textColor;
 
         disappearTimer = 1f;

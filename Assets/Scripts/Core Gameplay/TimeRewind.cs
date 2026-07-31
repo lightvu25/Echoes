@@ -42,7 +42,8 @@ public class TimeRewind : MonoBehaviour
             transform.position = pointInTime.position;
             transform.rotation = pointInTime.rotation;
 
-            PlayerInteract.Instance.SetTime(pointInTime.gameTime);
+            if (PlayerInteract.Instance != null)
+                PlayerInteract.Instance.SetTime(pointInTime.gameTime);
 
             pointsInTime.RemoveAt(0);
         }
@@ -54,7 +55,14 @@ public class TimeRewind : MonoBehaviour
 
     void Record()
     {
-        pointsInTime.Insert(0, new PointInTime(transform.position, transform.rotation, PlayerInteract.Instance.GetExactTime()));
+        if (PlayerInteract.Instance != null)
+        {
+            pointsInTime.Insert(0, new PointInTime(transform.position, transform.rotation, PlayerInteract.Instance.GetExactTime()));
+        }
+        else
+        {
+            pointsInTime.Insert(0, new PointInTime(transform.position, transform.rotation, 0f));
+        }
 
         if (pointsInTime.Count > Mathf.Round(recordTime / Time.fixedDeltaTime))
         {

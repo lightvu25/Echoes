@@ -14,6 +14,15 @@ public class MemoryExtractorTarget : MonoBehaviour, IExtractable, IFeedbackProvi
 
     public bool IsAvailable => extractionUses > 0 && memoryToExtract != null;
 
+    private void Awake()
+    {
+        InteractableTrigger trigger = GetComponent<InteractableTrigger>();
+        if (trigger != null)
+        {
+            trigger.canInteractWithF = false;
+        }
+    }
+
     public void Extract()
     {
         if (!IsAvailable) return;

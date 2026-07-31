@@ -9,6 +9,26 @@ public class EchoStatusReceiver : MonoBehaviour
     public bool IsStunned { get; private set; }
     public bool IsVoidMarked { get; set; }
     
+    public float SpeedMultiplier 
+    {
+        get 
+        {
+            if (IsFrozen || IsStunned) return 0f;
+            if (IsSlowed) return 0.5f;
+            return 1f;
+        }
+    }
+
+    public Color CurrentTargetColor
+    {
+        get
+        {
+            if (IsFrozen) return new Color(0.2f, 0.5f, 1f);
+            if (IsSlowed) return new Color(0.5f, 0.8f, 1f);
+            return originalColor;
+        }
+    }
+    
     private float slowTimer = 0f;
     private float freezeTimer = 0f;
     private float burnTimer = 0f;
@@ -23,6 +43,7 @@ public class EchoStatusReceiver : MonoBehaviour
     [Header("VFX Prefabs")]
     public GameObject iceBlockPrefab;
     private GameObject currentIceBlock;
+    private ParticleSystem currentBurnVFX;
 
     private void Awake()
     {
@@ -40,7 +61,7 @@ public class EchoStatusReceiver : MonoBehaviour
             if (slowTimer <= 0) 
             {
                 IsSlowed = false;
-                if (targetSprite != null) targetSprite.color = originalColor;
+                if (targetSprite != null && !IsFrozen) targetSprite.color = originalColor;
                 if (targetAnimator != null && !IsFrozen) targetAnimator.speed = 1f;
             } 
         }
@@ -52,6 +73,11 @@ public class EchoStatusReceiver : MonoBehaviour
             if (freezeTimer <= 0) 
             {
                 IsFrozen = false;
+                if (targetSprite != null) 
+                {
+                    targetSprite.color = IsSlowed ? new Color(0.5f, 0.8f, 1f) : originalColor;
+                }
+                
                 if (targetAnimator != null && !IsSlowed) targetAnimator.speed = 1f;
                 else if (targetAnimator != null && IsSlowed) targetAnimator.speed = 0.5f;
 
@@ -77,7 +103,11 @@ public class EchoStatusReceiver : MonoBehaviour
                 }
                 burnTickTimer = 0.5f;
             }
-            if (burnTimer <= 0) IsBurning = false;
+            if (burnTimer <= 0)
+            {
+                IsBurning = false;
+                if (currentBurnVFX != null) Destroy(currentBurnVFX.gameObject);
+            }
         }
 
         if (IsSilenced) 
@@ -102,7 +132,7 @@ public class EchoStatusReceiver : MonoBehaviour
         IsSlowed = true; 
         slowTimer = Mathf.Max(slowTimer, duration);
         
-        if (targetSprite != null) targetSprite.color = new Color(0.5f, 0.8f, 1f); 
+        if (targetSprite != null && !IsFrozen) targetSprite.color = new Color(0.5f, 0.8f, 1f); 
         if (targetAnimator != null && !IsFrozen) targetAnimator.speed = 0.5f;
     }
 
@@ -112,6 +142,7 @@ public class EchoStatusReceiver : MonoBehaviour
         freezeTimer = Mathf.Max(freezeTimer, duration); 
 
         if (targetAnimator != null) targetAnimator.speed = 0f;
+        if (targetSprite != null) targetSprite.color = new Color(0.2f, 0.5f, 1f); // Colder, deeper blue
 
         if (currentIceBlock == null && iceBlockPrefab != null)
         {
@@ -123,13 +154,22 @@ public class EchoStatusReceiver : MonoBehaviour
     {
         IsFrozen = false;
         freezeTimer = 0f;
+        if (targetSprite != null) 
+        {
+            targetSprite.color = IsSlowed ? new Color(0.5f, 0.8f, 1f) : originalColor;
+        }
         if (currentIceBlock != null) Destroy(currentIceBlock);
     }
 
-    public void ApplyBurn(float duration) 
+    public void ApplyBurn(float duration, ParticleSystem vfxPrefab = null) 
     { 
         IsBurning = true; 
         burnTimer = Mathf.Max(burnTimer, duration); 
+
+        if (currentBurnVFX == null && vfxPrefab != null)
+        {
+            currentBurnVFX = Instantiate(vfxPrefab, transform.position, Quaternion.identity, transform);
+        }
     }
     
     public void ApplySilence(float duration) 

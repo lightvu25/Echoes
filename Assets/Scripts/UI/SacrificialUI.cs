@@ -130,6 +130,8 @@ public class SacrificialUI : MonoBehaviour, IUIPanel
 
         foreach (var recipe in recipes)
         {
+            if (recipe == null || recipe.echoA == null || recipe.echoB == null) continue;
+
             if ((recipe.echoA.itemID == slotA.SlottedEcho.itemID && recipe.echoB.itemID == slotB.SlottedEcho.itemID) ||
                 (recipe.echoA.itemID == slotB.SlottedEcho.itemID && recipe.echoB.itemID == slotA.SlottedEcho.itemID))
             {
@@ -142,8 +144,15 @@ public class SacrificialUI : MonoBehaviour, IUIPanel
         {
             if (result != null)
             {
-                result.sprite = currentValidRecipe.resultEcho.itemIcon;
-                result.enabled = true;
+                if (currentValidRecipe.resultEcho != null)
+                {
+                    result.sprite = currentValidRecipe.resultEcho.itemIcon;
+                    result.enabled = true;
+                }
+                else
+                {
+                    result.enabled = false;
+                }
             }
 
             bool hasNode = string.IsNullOrEmpty(currentValidRecipe.requiredConstellationNode) || 

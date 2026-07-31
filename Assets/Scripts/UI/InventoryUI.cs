@@ -7,14 +7,15 @@ public class InventoryUI : MonoBehaviour, IUIPanel
 {
     [Header("Panels")]
     [SerializeField] private GameObject uiRoot;
-    [SerializeField] private SlotUnlockPanel slotUnlockPanel;
 
     [Header("Blur Effect")]
     [SerializeField] private Volume blurVolume;
     [SerializeField] private float blurDuration = 0.3f;
 
+    public static event Action<bool> OnInventoryToggled;
+
     public bool IsOpen { get; private set; } = false;
-    private bool isInUnlockMode = false;
+    public bool IsInUnlockMode { get; private set; } = false;
 
     private void Start()
     {
@@ -58,7 +59,7 @@ public class InventoryUI : MonoBehaviour, IUIPanel
 
     private void HandleInventoryToggle()
     {
-        if (IsOpen && !isInUnlockMode) 
+        if (IsOpen) 
         {
             UIManager.Instance.ClosePanelIfOpen(UIPanelType.Inventory);
         }
@@ -70,7 +71,7 @@ public class InventoryUI : MonoBehaviour, IUIPanel
 
     private void HandleCancelPressed()
     {
-        if (IsOpen && !isInUnlockMode) 
+        if (IsOpen) 
         {
             UIManager.Instance.ClosePanelIfOpen(UIPanelType.Inventory);
         }
@@ -78,7 +79,7 @@ public class InventoryUI : MonoBehaviour, IUIPanel
 
     private void GameManager_OnGamePaused(object sender, EventArgs e)
     {
-        if (IsOpen && !isInUnlockMode) 
+        if (IsOpen) 
         {
             UIManager.Instance.ClosePanelIfOpen(UIPanelType.Inventory);
         }
@@ -86,13 +87,19 @@ public class InventoryUI : MonoBehaviour, IUIPanel
 
     private void HandleSlotUnlockRequired()
     {
-        EnterUnlockMode();
+        // Gaining max HP auto-opens the inventory so they can spend their point
+        if (!IsOpen) Show();
+        else CheckUnlockMode();
     }
 
     private void HandleInventoryChanged()
     {
         // Refresh slot visuals if the panel is currently open.
-        if (IsOpen) RefreshSlots();
+        if (IsOpen) 
+        {
+            RefreshSlots();
+            CheckUnlockMode();
+        }
     }
 
 
@@ -101,15 +108,20 @@ public class InventoryUI : MonoBehaviour, IUIPanel
         IsOpen = true;
         if (uiRoot != null) uiRoot.SetActive(true);
         AnimateBlur(1f);
+        
+        CheckUnlockMode();
+        
+        OnInventoryToggled?.Invoke(true);
     }
 
     public void Hide()
     {
-        bool wasInUnlockMode = isInUnlockMode;
-        isInUnlockMode = false;
+        bool wasInUnlockMode = IsInUnlockMode;
+        IsInUnlockMode = false;
         IsOpen = false;
         if (uiRoot != null) uiRoot.SetActive(false);
         AnimateBlur(0f);
+        OnInventoryToggled?.Invoke(false);
         
         // Only force time back to 1 if we were the ones who froze it via Unlock Mode
         // Otherwise let UIManager or GameManager handle time scale.
@@ -120,22 +132,56 @@ public class InventoryUI : MonoBehaviour, IUIPanel
         }
     }
 
-    public void OnSlotChosen(ItemCategory chosenCategory)
+    public static InventoryUI Instance { get; private set; } // Added singleton for easy access from slots
+
+    private void Awake()
     {
-        PlayerInventoryCore.Instance.UnlockSlot(chosenCategory);
-        Hide();
+        if (Instance == null) Instance = this;
     }
 
-    private void EnterUnlockMode()
+    public void TryConsumeUnlockPoint(ItemCategory category, int slotIndex)
     {
-        isInUnlockMode = true;
-        if (TimeManager.Instance != null) TimeManager.Instance.PauseTime("InventoryUnlock");
-        else Time.timeScale = 0f;
-        Show();
-        slotUnlockPanel?.Display(
-            PlayerInventoryCore.Instance.UnlockedEchoSlots,
-            PlayerInventoryCore.Instance.UnlockedRelicSlots,
-            PlayerInventoryCore.Instance.UnlockedEquipmentSlots);
+        if (IsInUnlockMode && PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.AvailableUnlockPoints > 0)
+        {
+            PlayerInventoryCore.Instance.UnlockSlot(category, slotIndex);
+            
+            if (PlayerInventoryCore.Instance.AvailableUnlockPoints <= 0)
+            {
+                Hide();
+            }
+            else
+            {
+                CheckUnlockMode();
+            }
+        }
+    }
+
+    private void CheckUnlockMode()
+    {
+        if (PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.AvailableUnlockPoints > 0)
+        {
+            IsInUnlockMode = true;
+            if (TimeManager.Instance != null) TimeManager.Instance.PauseTime("InventoryUnlock");
+            else Time.timeScale = 0f;
+
+            var allSlots = GetComponentsInChildren<InventorySlot>(true);
+            foreach (var slot in allSlots)
+            {
+                if (!PlayerInventoryCore.Instance.IsSlotUnlocked(slot.Category, slot.SlotIndex))
+                    slot.SetGlowing(true);
+                else
+                    slot.SetGlowing(false);
+            }
+        }
+        else
+        {
+            IsInUnlockMode = false;
+            var allSlots = GetComponentsInChildren<InventorySlot>(true);
+            foreach (var slot in allSlots)
+            {
+                slot.SetGlowing(false);
+            }
+        }
     }
 
     private void RefreshSlots()

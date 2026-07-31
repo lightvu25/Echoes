@@ -19,6 +19,7 @@ public class UITooltipManager : MonoBehaviour
     
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
+    private int frameShown = -1;
     
     private void Awake()
     {
@@ -43,6 +44,26 @@ public class UITooltipManager : MonoBehaviour
 
         // Instantly hide
         if (canvasGroup != null) canvasGroup.alpha = 0f;
+    }
+
+    private void Update()
+    {
+        // If the tooltip is visible and the user clicks anywhere, hide it.
+        // We check frameShown to prevent hiding it in the exact same frame it was shown
+        // (in case the UI event system processes the click before or after this Update).
+        if (IsTooltipVisible() && (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2)))
+        {
+            if (Time.frameCount != frameShown)
+            {
+                HideTooltip();
+            }
+        }
+    }
+
+    private bool IsTooltipVisible()
+    {
+        if (panelAnimator != null) return panelAnimator.IsShowing;
+        return canvasGroup != null && canvasGroup.alpha > 0f;
     }
 
     /// <summary>
@@ -96,6 +117,8 @@ public class UITooltipManager : MonoBehaviour
             canvasGroup.blocksRaycasts = false; 
             canvasGroup.interactable = false;
         }
+
+        frameShown = Time.frameCount;
     }
 
     /// <summary>

@@ -22,6 +22,13 @@ public class InteractableTrigger : MonoBehaviour, IInteractable
     private GameObject currentIcon;
     private bool canInteract = false;
 
+    [Header("Behavior")]
+    [Tooltip("0 = infinite")]
+    public int maxInteractions = 0;
+    public bool canInteractWithF = true;
+    
+    private int currentInteractions = 0;
+
     private MaterialPropertyBlock _propBlock;
     private static readonly int ThicknessProp = Shader.PropertyToID("_Thickness");
     private static readonly int OutlineColorProp = Shader.PropertyToID("_OutlineColor");
@@ -38,6 +45,11 @@ public class InteractableTrigger : MonoBehaviour, IInteractable
 
     public void Interact()
     {
+        if (!canInteractWithF) return;
+        if (maxInteractions > 0 && currentInteractions >= maxInteractions) return;
+        
+        currentInteractions++;
+
         onInteract?.Invoke();
         var interactables = GetComponents<IInteractable>();
         foreach (var interactable in interactables)
@@ -47,10 +59,38 @@ public class InteractableTrigger : MonoBehaviour, IInteractable
                 interactable.Interact();
             }
         }
+
+        if (maxInteractions > 0 && currentInteractions >= maxInteractions)
+        {
+            HideFeedback();
+            canInteract = false;
+        }
+    }
+
+    private void HideFeedback()
+    {
+        if (currentIcon != null)
+        {
+            InteractiveIconAnimation anim = currentIcon.GetComponentInChildren<InteractiveIconAnimation>(true);
+            if (anim != null) anim.HideIcon(currentIcon);
+            else currentIcon.SetActive(false); 
+            
+            currentIcon = null;
+        }
+
+        if (targetSpriteRenderer != null)
+        {
+            if (_propBlock == null) _propBlock = new MaterialPropertyBlock();
+            targetSpriteRenderer.GetPropertyBlock(_propBlock);
+            _propBlock.SetFloat(ThicknessProp, 0f); // Tắt viền
+            targetSpriteRenderer.SetPropertyBlock(_propBlock);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (maxInteractions > 0 && currentInteractions >= maxInteractions) return;
+
         if (collision.CompareTag("Player"))
         {
             canInteract = true;
@@ -65,6 +105,7 @@ public class InteractableTrigger : MonoBehaviour, IInteractable
 
             if (targetSpriteRenderer != null)
             {
+                if (_propBlock == null) _propBlock = new MaterialPropertyBlock();
                 targetSpriteRenderer.GetPropertyBlock(_propBlock);
                 _propBlock.SetFloat(ThicknessProp, outlineThickness);
                 _propBlock.SetColor(OutlineColorProp, outlineColor);
@@ -78,22 +119,7 @@ public class InteractableTrigger : MonoBehaviour, IInteractable
         if (collision.CompareTag("Player"))
         {
             canInteract = false;
-            
-            if (currentIcon != null)
-            {
-                InteractiveIconAnimation anim = currentIcon.GetComponentInChildren<InteractiveIconAnimation>(true);
-                if (anim != null) anim.HideIcon(currentIcon);
-                else currentIcon.SetActive(false); 
-                
-                currentIcon = null;
-            }
-
-            if (targetSpriteRenderer != null)
-            {
-                targetSpriteRenderer.GetPropertyBlock(_propBlock);
-                _propBlock.SetFloat(ThicknessProp, 0f); // Tắt viền
-                targetSpriteRenderer.SetPropertyBlock(_propBlock);
-            }
+            HideFeedback();
         }
     }
 }

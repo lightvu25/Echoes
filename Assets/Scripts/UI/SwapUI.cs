@@ -29,14 +29,16 @@ public class SwapUI : MonoBehaviour, IUIPanel
 
     private void Awake()
     {
-
         panelRoot.localScale = Vector3.zero;
-        gameObject.SetActive(false);
+        // Do not disable gameObject here, otherwise Start() will never run!
     }
 
     private void Start()
     {
         PlayerInventoryCore.Instance.OnSwapRequired += HandleSwapRequired;
+        
+        // Disable after subscribing
+        gameObject.SetActive(false);
     }
 
     private void OnDestroy()
@@ -78,12 +80,18 @@ public class SwapUI : MonoBehaviour, IUIPanel
         spawnedSlots.Clear();
 
         // Populate incoming item preview.
-        if (incomingItemIcon != null) incomingItemIcon.sprite = pendingIncoming.itemIcon;
+        if (incomingItemIcon != null) 
+        {
+            incomingItemIcon.sprite = pendingIncoming.itemIcon;
+            incomingItemIcon.preserveAspect = true;
+        }
         if (incomingItemName != null) incomingItemName.text   = pendingIncoming.itemName;
 
         // Spawn one button per currently equipped item.
         foreach (var equippedItem in equipped)
         {
+            if (equippedItem == null) continue;
+
             ItemBaseData captured = equippedItem; // capture for lambda
 
             GameObject slotGO = Instantiate(slotButtonPrefab, slotContainer);

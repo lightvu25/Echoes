@@ -28,11 +28,40 @@ public class Room : MonoBehaviour
 
     public bool isExplored = false;
     public static event Action<Room> OnRoomExplored;
+    public static event Action<Room> OnRoomEntered;
 
     public string RoomId { get; private set; }
     public RoomExitsMask ExitsMask { get; private set; }
-    public RoomEventType AssignedEvent { get; set; }
+    public List<RoomEventType> AssignedEvents { get; private set; } = new List<RoomEventType>();
+    public List<DynamicInjectionType> AssignedInjections { get; private set; } = new List<DynamicInjectionType>();
 
+    public void AddEvent(RoomEventType type)
+    {
+        if (!AssignedEvents.Contains(type))
+        {
+            AssignedEvents.Add(type);
+        }
+    }
+
+    public bool HasEvent(RoomEventType type)
+    {
+        return AssignedEvents.Contains(type);
+    }
+
+    public void AddInjection(DynamicInjectionType type)
+    {
+        if (!AssignedInjections.Contains(type))
+        {
+            AssignedInjections.Add(type);
+        }
+    }
+
+    public bool HasInjection(DynamicInjectionType type)
+    {
+        return AssignedInjections.Contains(type);
+    }
+
+    public PolygonCollider2D CameraBoundsCollider;
     [HideInInspector] public Bounds OriginalBounds;
 
     private void Awake()
@@ -66,10 +95,15 @@ public class Room : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!isExplored && collision.CompareTag("Player"))
+        if (collision.CompareTag("Player"))
         {
-            isExplored = true;
-            OnRoomExplored?.Invoke(this);
+            if (!isExplored)
+            {
+                isExplored = true;
+                OnRoomExplored?.Invoke(this);
+            }
+            
+            OnRoomEntered?.Invoke(this);
         }
     }
 

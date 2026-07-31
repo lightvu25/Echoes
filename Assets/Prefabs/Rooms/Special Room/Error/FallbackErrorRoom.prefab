@@ -635,7 +635,7 @@ TilemapRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -292518097
   m_SortingLayer: -1
-  m_SortingOrder: 0
+  m_SortingOrder: -50
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -2334,6 +2334,7 @@ MonoBehaviour:
   - direction: 1
     exitPoint: {fileID: 3153129815915760305}
   isExplored: 0
+  CameraBoundsCollider: {fileID: 0}
   OriginalBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}

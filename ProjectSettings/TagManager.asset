@@ -62,6 +62,9 @@ TagManager:
   - name: MinimapIcon
     uniqueID: 2913024167
     locked: 0
+  - name: MinimapFog
+    uniqueID: 3310743445
+    locked: 0
   - name: Cutscene
     uniqueID: 4195658985
     locked: 0

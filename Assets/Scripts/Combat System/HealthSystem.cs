@@ -34,7 +34,7 @@ public class HealthSystem : MonoBehaviour
     [Header("Health")]
     [SerializeField] private int maxHP = 100;
     [SerializeField] private int currentHP;
-    [SerializeField] private int maxSlots = 4;
+    // maxSlots is now dynamically calculated based on maxHP / 100
 
     [Header("Defense")]
     [SerializeField] private float defense = 0f;
@@ -59,13 +59,13 @@ public class HealthSystem : MonoBehaviour
     public CombatStats CombatStats => combatStatsAsset;
     public int CurrentHP => currentHP;
     public int MaxHP => maxHP;
-    public int MaxSlots => maxSlots;
+    public int MaxSlots => Mathf.Max(1, maxHP / 100);
     public int UnlockedSlots 
     {
         get 
         {
-            if (maxSlots <= 0 || maxHP <= 0) return 0;
-            float hpPerSlot = (float)maxHP / maxSlots;
+            if (MaxSlots <= 0 || maxHP <= 0) return 0;
+            float hpPerSlot = (float)maxHP / MaxSlots;
             return Mathf.CeilToInt(currentHP / hpPerSlot);
         }
     }
@@ -141,7 +141,7 @@ public class HealthSystem : MonoBehaviour
             DamagePopup damagePopup = popupObj.GetComponentInChildren<DamagePopup>();
             if (damagePopup != null)
             {
-                damagePopup.Setup(finalDamage);
+                damagePopup.Setup(finalDamage, damageInfo.isCritical, damageInfo.isTrueDamage);
             }
         }
 

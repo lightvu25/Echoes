@@ -41,7 +41,7 @@ public class BlackHoleEffect : MonoBehaviour
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, pullRadius, enemyLayer);
         foreach (Collider2D col in colliders)
         {
-            Rigidbody2D rb = col.GetComponent<Rigidbody2D>();
+            Rigidbody2D rb = col.GetComponentInParent<Rigidbody2D>();
             if (rb != null)
             {
                 Vector2 direction = (transform.position - col.transform.position).normalized;
@@ -55,7 +55,7 @@ public class BlackHoleEffect : MonoBehaviour
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, pullRadius, enemyLayer);
         foreach (Collider2D col in colliders)
         {
-            IDamageable target = col.GetComponent<IDamageable>();
+            IDamageable target = col.GetComponentInParent<IDamageable>();
             if (target != null)
             {
                 DamageInfo tickDamage = DamageInfo.Create(damagePerTick, owner);

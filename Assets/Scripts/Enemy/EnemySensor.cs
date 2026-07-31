@@ -19,6 +19,7 @@ public class EnemySensor : MonoBehaviour
     /// immediately reporting the player as visible.
     /// </summary>
     public void TriggerGlobalAggro() => isGlobalAggroActive = true;
+    public void ResetAggro() => isGlobalAggroActive = false;
 
     private void Awake()
     {
@@ -42,6 +43,12 @@ public class EnemySensor : MonoBehaviour
 
     private void OnTick()
     {
+        // Re-acquire the player reference if it was lost (e.g. after scene reload or delayed spawn)
+        if (targetPlayer == null)
+        {
+            targetPlayer = GameObject.FindGameObjectWithTag("Player")?.transform;
+        }
+
         if (targetPlayer == null)
         {
             IsPlayerVisible = false;
@@ -83,7 +90,7 @@ public class EnemySensor : MonoBehaviour
             if (angle < data.fovAngle / 2f)
             {
                 LayerMask mask = data.groundLayer | data.wallLayer | data.targetLayer;
-                Vector2 origin = eyes != null ? (Vector2)eyes.position : (Vector2)transform.position;
+                Vector2 origin = eyes != null ? (Vector2)eyes.position : (Vector2)transform.position + Vector2.up * 0.5f;
 
                 Collider2D playerCol = targetPlayer.GetComponent<Collider2D>();
                 Vector2 targetPoint = playerCol != null
@@ -128,7 +135,7 @@ public class EnemySensor : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, data.attackRange);
 
-        Vector3 eyePos = eyes != null ? eyes.position : transform.position;
+        Vector3 eyePos = eyes != null ? eyes.position : transform.position + Vector3.up * 0.5f;
         bool facingRight = movement != null ? movement.IsFacingRight : transform.localScale.x > 0;
         Gizmos.color = Color.cyan;
         Gizmos.DrawLine(eyePos, eyePos + DirFromAngle(-data.fovAngle / 2, facingRight) * data.visionRange);

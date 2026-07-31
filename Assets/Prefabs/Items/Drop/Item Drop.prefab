@@ -1,5 +1,83 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2370948675081310312
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3344501083403143752}
+  - component: {fileID: 7387655425922997689}
+  m_Layer: 0
+  m_Name: TriggerArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3344501083403143752
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2370948675081310312}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6500848788872012937}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &7387655425922997689
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2370948675081310312}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.516129, y: -0.5}
+    oldSize: {x: 0.484375, y: 0.5}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &5468054807357569772
 GameObject:
   m_ObjectHideFlags: 0
@@ -11,7 +89,7 @@ GameObject:
   - component: {fileID: 5410763059271343754}
   - component: {fileID: 3330109140375763895}
   - component: {fileID: 4611775316597991712}
-  m_Layer: 17
+  m_Layer: 9
   m_Name: AuraRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,7 +105,7 @@ Transform:
   m_GameObject: {fileID: 5468054807357569772}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.12, y: -0.37, z: 0}
+  m_LocalPosition: {x: 0.12, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -119,7 +197,8 @@ GameObject:
   - component: {fileID: 7208122770197104300}
   - component: {fileID: 6415046730903104015}
   - component: {fileID: -5524149462168211037}
-  m_Layer: 17
+  - component: {fileID: 2073647721360546687}
+  m_Layer: 9
   m_Name: Item Drop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,6 +220,7 @@ Transform:
   m_Children:
   - {fileID: 7325873748804802892}
   - {fileID: 5410763059271343754}
+  - {fileID: 3344501083403143752}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &7208122770197104300
@@ -214,7 +294,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.484375, y: 0.5}
+  m_Size: {x: 0.5, y: 0.5}
   m_EdgeRadius: 0
 --- !u!114 &-5524149462168211037
 MonoBehaviour:
@@ -235,6 +315,40 @@ MonoBehaviour:
   - {fileID: 4603076347710536886, guid: ea2c5b379f08e0941926ee2fb85828d0, type: 3}
   itemData: {fileID: 11400000, guid: e9601504b4757da48937092410bdaf0c, type: 2}
   itemSpriteRenderer: {fileID: 460266005602714887}
+--- !u!114 &2073647721360546687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5906014342740351065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d62f147dda3ca248916fe71342c0a88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableTrigger
+  onInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: -5524149462168211037}
+        m_TargetAssemblyTypeName: ItemDrop, Assembly-CSharp
+        m_MethodName: Interact
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  iconPrefab: {fileID: 8270603724649358730, guid: 563f43968a07b104a9fb7b5918ec3976, type: 3}
+  iconOffset: {x: 0, y: 1.5, z: 0}
+  targetSpriteRenderer: {fileID: 460266005602714887}
+  outlineThickness: 0.02
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  maxInteractions: 0
+  canInteractWithF: 1
 --- !u!1 &8555279673392773166
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,7 +359,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7325873748804802892}
   - component: {fileID: 460266005602714887}
-  m_Layer: 17
+  m_Layer: 9
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +375,7 @@ Transform:
   m_GameObject: {fileID: 8555279673392773166}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.01, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0.15, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -316,12 +430,12 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8994043574652506621, guid: 274542ef01ac95a4fa95cc0624259729, type: 3}
+  m_Sprite: {fileID: -523253263404603635, guid: ab9d20bf04f71e14698c3137fe95b7c2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.234375, y: 1.25}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

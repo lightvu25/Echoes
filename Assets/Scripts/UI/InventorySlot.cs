@@ -18,6 +18,10 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public ItemCategory Category => category;
     public int SlotIndex => slotIndex;
 
+    [Header("Playstyle Info (Echo Only)")]
+    [SerializeField] private PlaystyleData playstyleData;
+    [SerializeField] private Image playstyleIconImage;
+
     [Header("Glow")]
     [SerializeField] private float glowPulseAlpha = 0.8f;
     [SerializeField] private float glowPulseDuration = 0.5f;
@@ -34,6 +38,17 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private void Start()
     {
         PlayerInventoryCore.Instance.OnInventoryChanged += Refresh;
+        
+        if (category == ItemCategory.Echo && playstyleData != null && playstyleIconImage != null)
+        {
+            playstyleIconImage.sprite = playstyleData.playstyleIcon;
+            playstyleIconImage.gameObject.SetActive(playstyleData.playstyleIcon != null);
+        }
+        else if (playstyleIconImage != null)
+        {
+            playstyleIconImage.gameObject.SetActive(false);
+        }
+
         Refresh();
     }
 
@@ -72,8 +87,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public ItemBaseData GetTooltipData()
     {
         if (PlayerInventoryCore.Instance == null) return null;
-        int unlockedCount = GetUnlockedCount();
-        if (slotIndex >= unlockedCount) return null;
+        if (!PlayerInventoryCore.Instance.IsSlotUnlocked(category, slotIndex)) return null;
         
         IReadOnlyList<ItemBaseData> list = PlayerInventoryCore.Instance.GetEquippedList(category);
         return slotIndex < list.Count ? list[slotIndex] : null;
@@ -83,8 +97,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (PlayerInventoryCore.Instance == null) return;
 
-        int unlockedCount = GetUnlockedCount();
-        bool isUnlocked   = slotIndex < unlockedCount;
+        bool isUnlocked = PlayerInventoryCore.Instance.IsSlotUnlocked(category, slotIndex);
 
         IReadOnlyList<ItemBaseData> list = PlayerInventoryCore.Instance.GetEquippedList(category);
         ItemBaseData item = slotIndex < list.Count ? list[slotIndex] : null;
@@ -105,20 +118,15 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
     }
 
-    private int GetUnlockedCount()
-    {
-        if (PlayerInventoryCore.Instance == null) return 0;
-        return category switch
-        {
-            ItemCategory.Echo => PlayerInventoryCore.Instance.UnlockedEchoSlots,
-            ItemCategory.Relic   => PlayerInventoryCore.Instance.UnlockedRelicSlots,
-            _                    => PlayerInventoryCore.Instance.UnlockedEquipmentSlots,
-        };
-    }
-
     private void OnClicked()
     {
-        // Currently used by SlotUnlockPanel flow only
+        if (InventoryUI.Instance != null && InventoryUI.Instance.IsInUnlockMode)
+        {
+            if (PlayerInventoryCore.Instance != null && !PlayerInventoryCore.Instance.IsSlotUnlocked(category, slotIndex))
+            {
+                InventoryUI.Instance.TryConsumeUnlockPoint(category, slotIndex);
+            }
+        }
     }
 
     // ------------------------------------------------------------------ //
@@ -131,8 +139,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (PlayerInventoryCore.Instance == null) return;
         
-        int unlockedCount = GetUnlockedCount();
-        if (slotIndex >= unlockedCount) return; // Cannot drag locked slot
+        if (!PlayerInventoryCore.Instance.IsSlotUnlocked(category, slotIndex)) return; // Cannot drag locked slot
 
         IReadOnlyList<ItemBaseData> list = PlayerInventoryCore.Instance.GetEquippedList(category);
         if (slotIndex >= list.Count || list[slotIndex] == null) return; // Cannot drag empty slot
@@ -147,7 +154,11 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         RectTransform rt = ghostIcon.GetComponent<RectTransform>();
         rt.sizeDelta = itemIconImage.rectTransform.rect.size;
-        rt.position = eventData.position;
+        
+        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(rootCanvas.transform as RectTransform, eventData.position, eventData.pressEventCamera, out Vector3 worldPoint))
+        {
+            rt.position = worldPoint;
+        }
 
         // Visually fade the original
         if (itemIconImage != null)
@@ -160,7 +171,11 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         if (ghostIcon != null)
         {
-            ghostIcon.GetComponent<RectTransform>().position = eventData.position;
+            Canvas rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
+            if (RectTransformUtility.ScreenPointToWorldPointInRectangle(rootCanvas.transform as RectTransform, eventData.position, eventData.pressEventCamera, out Vector3 worldPoint))
+            {
+                ghostIcon.GetComponent<RectTransform>().position = worldPoint;
+            }
         }
     }
 

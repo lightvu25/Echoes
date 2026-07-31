@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlaystyleData
   playstyleType: 1
   displayName: MidRange
+  playstyleIcon: {fileID: 3690620582920558292, guid: 9563ae462d560794bb8fff75078bf61d, type: 3}
   requiresActiveEcho: 0
   comboSteps: 2
   comboWindow: 0.4

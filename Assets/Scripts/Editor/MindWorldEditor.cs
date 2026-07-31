@@ -4,7 +4,7 @@ using UnityEditor;
 
 public class MindWorldEditor : EditorWindow
 {
-    [MenuItem("Project Echoes/Mind World Auto-Connect")]
+    [MenuItem("Tools/Echoes/Mind World Auto-Connect")]
     public static void ShowWindow()
     {
         GetWindow<MindWorldEditor>("Mind World Setup");

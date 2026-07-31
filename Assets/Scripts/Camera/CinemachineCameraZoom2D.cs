@@ -8,6 +8,7 @@ public class CinemachineCameraZoom2D : MonoBehaviour
     [SerializeField] private float NORMAL_ORTHOGRAPHIC_SIZE;
     [SerializeField] private CinemachineCamera cinemachineCamera;
     [SerializeField] private float targetOrthographicSize;
+    public float zoomSpeed = 4f;
 
     private void Awake()
     {
@@ -16,7 +17,6 @@ public class CinemachineCameraZoom2D : MonoBehaviour
 
     private void Update()
     {
-        float zoomSpeed = 2f;
         cinemachineCamera.Lens.OrthographicSize = Mathf.Lerp(cinemachineCamera.Lens.OrthographicSize, targetOrthographicSize, Time.deltaTime * zoomSpeed);
     }
 

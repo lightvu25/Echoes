@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class KineticModifier : IEchoModifier
 {
+    private const float CameraShakeForce = 0.15f;
+
     public int Priority => 100;
     private EchoModifierContext ctx;
 
@@ -42,6 +44,13 @@ public class KineticModifier : IEchoModifier
         float baseChance = e.damageInfo.activeEcho.statusProcCoefficient;
         float currentProc = e.damageInfo.procCoefficient;
         bool procSuccessful = DamageCalculator.ShouldProc(baseChance, currentProc);
+
+        // Spawn procedural shockwave VFX
+        GameObject vfxObj = new GameObject("KineticShockwaveVFX");
+        KineticShockwaveVFX vfx = vfxObj.AddComponent<KineticShockwaveVFX>();
+        vfx.Initialize(e.target.Transform.position);
+
+        CinemachineCameraShake2D.Instance?.ShakeCamera(CameraShakeForce);
 
         if (procSuccessful) status.ApplyStun(1.5f);
     }

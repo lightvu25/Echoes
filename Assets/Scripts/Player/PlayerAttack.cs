@@ -480,7 +480,6 @@ public class PlayerAttack : MonoBehaviour
             Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position + (Vector3)facingDir * 0.5f + Vector3.up * 1.0f;
             
             GameObject proj = ObjectPoolManager.SpawnObject(pendingProjectilePrefab, spawnPos, Quaternion.identity, ObjectPoolManager.PoolType.Projectile);
-            proj.transform.localScale = transform.localScale;
 
             Projectile pScript = proj.GetComponent<Projectile>();
             if (pScript != null)

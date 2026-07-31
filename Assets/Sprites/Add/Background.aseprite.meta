@@ -102,7 +102,7 @@ ScriptedImporter:
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639190410996979531
+  platformSettingsDirtyTick: 639211388002411810
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -164,7 +164,7 @@ ScriptedImporter:
     blendMode: 0
     cells:
     - name: Background
-      frameIndex: 1
+      frameIndex: 0
       additiveSortOrder: 0
       cellRect:
         x: 0

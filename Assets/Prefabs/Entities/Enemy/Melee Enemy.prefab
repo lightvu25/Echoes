@@ -200,7 +200,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -437,6 +437,52 @@ MonoBehaviour:
     - rid: 8815296297902014592
       type: {class: ShadowShape2DProvider_Collider2D, ns: UnityEngine.Rendering.Universal, asm: Unity.RenderPipelines.Universal.2D.Runtime}
       data: 
+--- !u!1 &4919737359216790206
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 35309636415524898}
+  - component: {fileID: 3894154914514114375}
+  m_Layer: 8
+  m_Name: Melee Attack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &35309636415524898
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4919737359216790206}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5640882089561480607}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3894154914514114375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4919737359216790206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 054c5ca87e5d43e43b7ca80598872e7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeAttack
+  data: {fileID: 11400000, guid: f7aea8ea9d4101641a67826dcab109f1, type: 2}
+  activeTime: 0.1
 --- !u!1 &6698296401810805248
 GameObject:
   m_ObjectHideFlags: 0
@@ -468,6 +514,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5640882089561480607}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7505896716604877654
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1608139555213012407}
+  - component: {fileID: 2209104379685696855}
+  m_Layer: 8
+  m_Name: Dash Attack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1608139555213012407
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7505896716604877654}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5640882089561480607}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2209104379685696855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7505896716604877654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd6ada4910796434da0311d0ecdfb091, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DashAttack
+  data: {fileID: 11400000, guid: f7aea8ea9d4101641a67826dcab109f1, type: 2}
+  dashSpeed: 20
+  dashDuration: 0.3
+  damageableLayers:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &8247203597836570067
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,11 +581,11 @@ GameObject:
   - component: {fileID: 4917297075672921874}
   - component: {fileID: 4983165032818890787}
   - component: {fileID: 3642573737597159644}
-  - component: {fileID: 6824184076466527968}
   - component: {fileID: 7402941070533416229}
   - component: {fileID: 5744286393587405592}
   - component: {fileID: 5495738676859021622}
   - component: {fileID: 4189535825587343389}
+  - component: {fileID: 4642161814363640544}
   m_Layer: 8
   m_Name: Melee Enemy
   m_TagString: Enemy
@@ -520,6 +616,8 @@ Transform:
   - {fileID: 4503382128196253927}
   - {fileID: 6829750757954891040}
   - {fileID: 5891701086746242625}
+  - {fileID: 35309636415524898}
+  - {fileID: 1608139555213012407}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &3253495775269768501
@@ -665,20 +763,6 @@ MonoBehaviour:
   _wallCheckSize: {x: 0.3, y: 0.5}
   _ledgeCheck: {fileID: 5710020400054520358}
   _ledgeCheckSize: {x: 0.3, y: 0.3}
---- !u!114 &6824184076466527968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8247203597836570067}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 054c5ca87e5d43e43b7ca80598872e7a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MeleeAttack
-  data: {fileID: 11400000, guid: f7aea8ea9d4101641a67826dcab109f1, type: 2}
-  activeTime: 0.1
 --- !u!114 &7402941070533416229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -746,6 +830,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EchoStatusReceiver
   iceBlockPrefab: {fileID: 3112956029507099662, guid: 4047595db58ff084ea2c0133cb6a5956, type: 3}
+--- !u!114 &4642161814363640544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8247203597836570067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faf230411cca86049b56955365b2d716, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeDualAttack
+  meleeAttackScript: {fileID: 3894154914514114375}
+  dashAttackScript: {fileID: 2209104379685696855}
+  dashAttackRange: 5
+  forceBackstepCooldown: 2
 --- !u!1 &8688980427062806946
 GameObject:
   m_ObjectHideFlags: 0

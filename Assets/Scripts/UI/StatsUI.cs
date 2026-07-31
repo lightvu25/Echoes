@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
 
 /// <summary>
 /// Manager for the Health-as-Inventory HUD.
@@ -17,12 +18,16 @@ public class StatsUI : MonoBehaviour, IUIPanel
     // Inspector Fields — Slots
     // -----------------------------------------------------------------------
 
-    [Header("Core Slot (Index 0 — Immutable)")]
-    [SerializeField] private MemorySlot coreSlot;
+    [Header("Echo Slots (Health Shards)")]
+    [Tooltip("echoSlots[i] maps to active Echoes in Inventory. Index 0 is the Core.")]
+    [SerializeField] private MemorySlot[] echoSlots;
 
-    [Header("Fragment Slots (Index 1 … N)")]
-    [Tooltip("fragmentSlots[i] maps to activeSlots[i + 1] in Inventory.")]
-    [SerializeField] private MemorySlot[] fragmentSlots;
+    [Header("Equipment Slots")]
+    [SerializeField] private MemorySlot[] toolSlots;
+
+    [Header("Playstyle Icons")]
+    [Tooltip("Maps to slots: 0=Melee, 1=MidRange, 2=LongRange, 3=Magic.")]
+    [SerializeField] private PlaystyleData[] slotPlaystyles;
 
     // -----------------------------------------------------------------------
     // Inspector Fields — Currencies
@@ -35,14 +40,21 @@ public class StatsUI : MonoBehaviour, IUIPanel
     [Header("Crimson Amber")]
     [SerializeField] private CrimsonAmberUI crimsonAmberUI;
 
+    [Header("Low Health Visuals")]
+    [SerializeField] private CanvasGroup lowHealthOverlay;
+    [SerializeField] private float lowHealthThreshold = 0.35f;
+    [SerializeField] private float pulseSpeed = 2f;
+
     // -----------------------------------------------------------------------
     // State Tracking
     // Tracks how many items were active on the PREVIOUS event fire so we can
     // derive the delta (gained / lost) without polling Update().
     // -----------------------------------------------------------------------
 
-    /// <summary>Number of active slots (including core) from the last event.</summary>
-    private int previousActiveCount = 0;
+    /// <summary>Tracks the previously equipped item per slot index for shatter/form animations.</summary>
+    private ItemBaseData[] previousEchoes = new ItemBaseData[10];
+
+    private CanvasGroup canvasGroup;
 
     // -----------------------------------------------------------------------
     // IUIPanel Implementation
@@ -57,13 +69,29 @@ public class StatsUI : MonoBehaviour, IUIPanel
 
     private void Start()
     {
+        canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
+
+        InventoryUI.OnInventoryToggled += HandleInventoryToggled;
+
         // Clear editor mockups
-        if (coreSlot != null) coreSlot.InstantlyClear();
-        if (fragmentSlots != null)
+        if (echoSlots != null)
         {
-            foreach (var slot in fragmentSlots)
+            foreach (var slot in echoSlots)
             {
                 if (slot != null) slot.InstantlyClear();
+            }
+        }
+
+        // --- Initialize playstyle background icons ---
+        if (slotPlaystyles != null && echoSlots != null)
+        {
+            for (int i = 0; i < echoSlots.Length; i++)
+            {
+                if (echoSlots[i] != null && slotPlaystyles.Length > i && slotPlaystyles[i] != null)
+                {
+                    echoSlots[i].SetPlaystyleIcon(slotPlaystyles[i].playstyleIcon);
+                }
             }
         }
 
@@ -77,15 +105,7 @@ public class StatsUI : MonoBehaviour, IUIPanel
             UpdateAstralShards(PlayerStats.Instance.CurrentAstralShards);
         }
 
-        if (PlayerStats.Instance != null)
-        {
-            HealthSystem hs = PlayerStats.Instance.GetComponent<HealthSystem>();
-            if (hs != null)
-            {
-                hs.OnSlotsChanged += HandleSlotsChanged;
-                HandleSlotsChanged(hs.UnlockedSlots);
-            }
-        }
+        // HealthSystem.OnSlotsChanged is no longer used for Echo slots (they are uncoupled).
 
         if (PlayerInventoryCore.Instance != null)
         {
@@ -115,22 +135,44 @@ public class StatsUI : MonoBehaviour, IUIPanel
         }
     }
 
+    private void Update()
+    {
+        if (PlayerInventoryCore.Instance != null && lowHealthOverlay != null)
+        {
+            HealthSystem hs = PlayerInventoryCore.Instance.GetComponent<HealthSystem>();
+            if (hs != null)
+            {
+                if (hs.HPPercent <= lowHealthThreshold && hs.CurrentHP > 0 && !hs.IsDead)
+                {
+                    if (!lowHealthOverlay.gameObject.activeSelf)
+                        lowHealthOverlay.gameObject.SetActive(true);
+                        
+                    // Pulse alpha between 0.3 and 0.9
+                    lowHealthOverlay.alpha = 0.3f + Mathf.PingPong(Time.time * pulseSpeed, 0.6f);
+                }
+                else
+                {
+                    if (lowHealthOverlay.gameObject.activeSelf)
+                    {
+                        lowHealthOverlay.alpha = 0f;
+                        lowHealthOverlay.gameObject.SetActive(false);
+                    }
+                }
+            }
+        }
+    }
+
     private void OnDestroy()
     {
+        InventoryUI.OnInventoryToggled -= HandleInventoryToggled;
+
         if (PlayerStats.Instance != null)
         {
             PlayerStats.Instance.OnGoldChanged -= UpdateCoins;
             PlayerStats.Instance.OnAstralShardsChanged -= UpdateAstralShards;
         }
 
-        if (PlayerStats.Instance != null)
-        {
-            HealthSystem hs = PlayerStats.Instance.GetComponent<HealthSystem>();
-            if (hs != null)
-            {
-                hs.OnSlotsChanged -= HandleSlotsChanged;
-            }
-        }
+        // HealthSystem.OnSlotsChanged removed
 
         if (PlayerInventoryCore.Instance != null)
         {
@@ -152,6 +194,16 @@ public class StatsUI : MonoBehaviour, IUIPanel
         }
     }
 
+    private void HandleInventoryToggled(bool isOpen)
+    {
+        if (canvasGroup != null)
+        {
+            canvasGroup.DOKill();
+            float targetAlpha = isOpen ? 0.2f : 1f;
+            canvasGroup.DOFade(targetAlpha, 0.3f).SetUpdate(true);
+        }
+    }
+
     private void HandlePlayerDead(object sender, System.EventArgs e)
     {
         Hide();
@@ -161,78 +213,102 @@ public class StatsUI : MonoBehaviour, IUIPanel
     {
         if (PlayerInventoryCore.Instance != null)
         {
-            var activeItems = new System.Collections.Generic.List<ItemBaseData>();
-            foreach (var item in PlayerInventoryCore.Instance.EquippedEchoes)
+            UpdateHealthSlots(PlayerInventoryCore.Instance.EquippedEchoes);
+
+            var activeTools = new System.Collections.Generic.List<ItemBaseData>();
+            foreach (var item in PlayerInventoryCore.Instance.EquippedTools)
             {
-                if (item != null) activeItems.Add(item);
+                if (item != null) activeTools.Add(item);
             }
-            UpdateHealthSlots(activeItems);
+            UpdateEquipmentSlots(toolSlots, activeTools, PlayerInventoryCore.Instance.UnlockedEquipmentSlots);
         }
     }
 
-    private void UpdateHealthSlots(IReadOnlyList<ItemBaseData> activeSlots)
+    private void UpdateEquipmentSlots(MemorySlot[] slots, IReadOnlyList<ItemBaseData> activeItems, int unlockedSlots)
     {
-        int currentCount = activeSlots.Count;
-
-        // --- Core slot (activeSlots[0]) ---
-        // Core never shatters; it is set silently whenever there is at least one item.
-        if (coreSlot != null)
+        if (slots == null) return;
+        
+        for (int i = 0; i < slots.Length; i++)
         {
-            if (currentCount > 0)
-            {
-                coreSlot.SetCore(activeSlots[0].itemIcon);
-            }
-            else
-            {
-                coreSlot.InstantlyClear();
-            }
-        }
+            if (slots[i] == null) continue;
+            
+            bool shouldBeActive = i < unlockedSlots;
 
-        if (fragmentSlots != null)
-        {
-            if (currentCount < previousActiveCount)
+            if (shouldBeActive && !slots[i].gameObject.activeSelf)
             {
-                for (int i = currentCount; i < previousActiveCount; i++)
+                slots[i].gameObject.SetActive(true);
+            }
+            else if (!shouldBeActive && slots[i].gameObject.activeSelf)
+            {
+                slots[i].gameObject.SetActive(false);
+            }
+
+            if (shouldBeActive)
+            {
+                if (i < activeItems.Count)
                 {
-                    int fragmentIndex = i - 1;
-                    if (fragmentIndex >= 0 && fragmentIndex < fragmentSlots.Length)
-                        fragmentSlots[fragmentIndex].PlayShattered();
+                    slots[i].SetCore(activeItems[i].itemIcon);
                 }
-            }
-            else if (currentCount > previousActiveCount)
-            {
-                for (int i = previousActiveCount; i < currentCount; i++)
+                else
                 {
-                    int fragmentIndex = i - 1;
-                    if (fragmentIndex >= 0 && fragmentIndex < fragmentSlots.Length)
-                        fragmentSlots[fragmentIndex].PlayFormed(activeSlots[i].itemIcon);
+                    slots[i].InstantlyClear();
                 }
             }
         }
-
-        previousActiveCount = currentCount;
     }
 
-    private void HandleSlotsChanged(int unlockedSlots)
+    private void UpdateHealthSlots(IReadOnlyList<ItemBaseData> equippedEchoes)
     {
-        if (fragmentSlots == null) return;
-
-        int maxFragments = Mathf.Max(0, unlockedSlots - 1); // core is always 1, fragments are the rest
-        for (int i = 0; i < fragmentSlots.Length; i++)
+        if (echoSlots == null) return;
+        
+        for (int i = 0; i < echoSlots.Length; i++)
         {
-            bool shouldBeActive = i < maxFragments;
-            if (fragmentSlots[i] != null)
+            if (echoSlots[i] == null) continue;
+
+            bool isUnlocked = PlayerInventoryCore.Instance.IsSlotUnlocked(ItemCategory.Echo, i);
+            ItemBaseData currentItem = i < equippedEchoes.Count ? equippedEchoes[i] : null;
+            ItemBaseData prevItem = i < previousEchoes.Length ? previousEchoes[i] : null;
+
+            // 1. Handle Shell Visibility
+            if (isUnlocked && !echoSlots[i].gameObject.activeSelf)
             {
-                if (shouldBeActive && !fragmentSlots[i].gameObject.activeSelf)
+                echoSlots[i].gameObject.SetActive(true);
+                if (i > 0) echoSlots[i].PlayShellFormed(); 
+            }
+            else if (!isUnlocked && echoSlots[i].gameObject.activeSelf)
+            {
+                echoSlots[i].gameObject.SetActive(false);
+            }
+
+            // 2. Handle Core/Shatter Animations
+            if (isUnlocked)
+            {
+                if (currentItem != null && prevItem == null)
                 {
-                    fragmentSlots[i].gameObject.SetActive(true);
-                    fragmentSlots[i].PlayShellFormed(); // Play the form animation when recovering!
+                    // Item equipped
+                    if (i == 0) echoSlots[i].SetCore(currentItem.itemIcon);
+                    else echoSlots[i].PlayFormed(currentItem.itemIcon);
                 }
-                else if (!shouldBeActive && fragmentSlots[i].gameObject.activeSelf)
+                else if (currentItem == null && prevItem != null)
                 {
-                    fragmentSlots[i].gameObject.SetActive(false);
+                    // Item lost (shattered)
+                    if (i == 0) echoSlots[i].InstantlyClear();
+                    else echoSlots[i].PlayShattered();
+                }
+                else if (currentItem != null && prevItem != null && currentItem != prevItem)
+                {
+                    // Item swapped
+                    echoSlots[i].SetCore(currentItem.itemIcon);
+                }
+                else if (currentItem != null && prevItem == currentItem)
+                {
+                    // Ensure it stays set on full refresh
+                    echoSlots[i].SetCore(currentItem.itemIcon);
                 }
             }
+
+            // Save state
+            if (i < previousEchoes.Length) previousEchoes[i] = currentItem;
         }
     }
 

@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoData
   itemID: ECHO_FROSTBITE
   itemName: Frostbite
-  itemIcon: {fileID: 1859281791271331496, guid: af3091116cd5baf4eb6a2703a7b067a4, type: 3}
+  itemIcon: {fileID: -7017860822268930917, guid: f5675c434eca00146976851f8fc91c98, type: 3}
   description: Attacks apply a Slow effect and gain a 30% chance to Critically Strike
     slowed targets
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50
   echoType: 2
@@ -32,5 +32,6 @@ MonoBehaviour:
   stateVFXPrefab: {fileID: 0}
   hitImpactPrefab: {fileID: 7632582610512150109, guid: 930c378fcc9f99e46adbdf6b25e26b64, type: 3}
   voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

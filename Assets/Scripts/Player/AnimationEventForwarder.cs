@@ -42,4 +42,20 @@ public class AnimationEventForwarder : MonoBehaviour
             Debug.LogWarning("AnimationEventForwarder: No EntityAudioManager found to play " + soundId);
         }
     }
+
+    public void PlayLoopingSound(string soundId)
+    {
+        if (audioManager != null)
+        {
+            audioManager.PlayLoopingSound(soundId);
+        }
+    }
+
+    public void StopLoopingSound()
+    {
+        if (audioManager != null)
+        {
+            audioManager.StopLoopingSound();
+        }
+    }
 }

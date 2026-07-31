@@ -167,15 +167,15 @@ public class CutsceneManager : MonoBehaviour
     {
         if (director == null) yield break;
 
-        float duration = (float)director.duration;
-        float timer = 0f;
         float lastInputTime = -10f;
         float doubleTapThreshold = 0.5f;
 
-        while (timer < duration)
-        {
-            timer += Time.unscaledDeltaTime;
+        // Wait a frame in case Play() hasn't updated the state yet
+        yield return null;
 
+        // Wait strictly until the director finishes playing
+        while (director.state == PlayState.Playing)
+        {
             if (Input.anyKeyDown)
             {
                 if (Time.unscaledTime - lastInputTime < doubleTapThreshold)
@@ -183,7 +183,8 @@ public class CutsceneManager : MonoBehaviour
                     // Double tap detected! Fast-forward cutscene.
                     director.time = director.duration;
                     director.Evaluate();
-                    yield break;
+                    director.Stop(); // Force state to end
+                    break;
                 }
                 lastInputTime = Time.unscaledTime;
             }

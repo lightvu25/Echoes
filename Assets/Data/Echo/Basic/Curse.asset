@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoData
   itemID: ECHO_CURSE
   itemName: Curse
-  itemIcon: {fileID: -1965403935395334236, guid: 4bcd1e7702b9ad143a75d7a9778dac5f, type: 3}
+  itemIcon: {fileID: 637354081955073585, guid: edcb0d5703e985b4fa210fabee4a593b, type: 3}
   description: Grants immense base damage, but drains 2% of your Max HP with every
     successful hit
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+  itemTier: 1
+  basePrice: 50
   echoType: 7
-  echoTier: 1
   isFusionResult: 0
   baseDamageMultiplier: 2
   attacksPerSecond: 1.3
@@ -27,5 +28,10 @@ MonoBehaviour:
   hasStatusEffect: 0
   statusProcCoefficient: 0
   uniqueModifierID: OBLIVION
+  trailColor: {r: 1, g: 1, b: 1, a: 1}
+  stateVFXPrefab: {fileID: 0}
+  hitImpactPrefab: {fileID: 0}
+  voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

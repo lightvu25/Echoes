@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 
 public class TilemapBoundsCompressor
 {
-    [MenuItem("Window/Tools/Compress All Room Tilemaps")]
+    [MenuItem("Tools/Echoes/Compress All Room Tilemaps")]
     public static void CompressAllRoomTilemaps()
     {
         string[] guids = AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/Prefabs/Rooms" });

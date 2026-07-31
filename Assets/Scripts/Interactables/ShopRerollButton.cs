@@ -19,6 +19,11 @@ public class ShopRerollButton : ShopInteractableBase
 
     private void Start()
     {
+        if (roomManager == null)
+        {
+            roomManager = FindObjectOfType<ShopRoomManager>();
+        }
+
         currentCost = baseCost;
         
         if (costText == null && priceTextPrefab != null)

@@ -104,18 +104,18 @@ public class GraphLevelGenerator : BaseLevelGenerator
 
                         if ((forceSpawn || randomSpawn) && eLimit.currentCount < eLimit.maxAllowed)
                         {
-                            bool isParentTeleport = (currentRoom.AssignedEvent == RoomEventType.Teleport);
-                            if (childBlueprint.eventType == RoomEventType.Teleport && isParentTeleport)
-                            {
-                                effectiveEventType = RoomEventType.None;
-                                if (forceSpawn) eLimit.remainingCandidates++; 
-                            }
-                            else
-                            {
-                                effectiveEventType = childBlueprint.eventType; 
-                            }
+                            effectiveEventType = childBlueprint.eventType; 
                         }
                         eLimit.remainingCandidates--; 
+                    }
+                    else
+                    {
+                        // Fallback: If no global limit is defined, just use the node's individual chance
+                        bool randomSpawn = Random.value <= childBlueprint.eventChance;
+                        if (randomSpawn)
+                        {
+                            effectiveEventType = childBlueprint.eventType; 
+                        }
                     }
                 }
 
@@ -147,12 +147,42 @@ public class GraphLevelGenerator : BaseLevelGenerator
                     continue;
                 }
 
-                nextRoom.AssignedEvent = effectiveEventType;
-
                 if (effectiveEventType != RoomEventType.None)
                 {
+                    nextRoom.AddEvent(effectiveEventType);
                     EventTypeLimit eLimit = _currentLevelData.eventTypeLimits.Find(x => x.eventType == effectiveEventType);
                     if (eLimit != null) eLimit.currentCount++;
+                }
+
+                // Process dynamic injections ONLY if there's no primary event
+                if (effectiveEventType == RoomEventType.None && childBlueprint.dynamicInjections != null)
+                {
+                    foreach (var injection in childBlueprint.dynamicInjections)
+                    {
+                        if (Random.value <= injection.spawnChance)
+                        {
+                            InjectionTypeLimit iLimit = _currentLevelData.injectionLimits.Find(x => x.injectionType == injection.injectionType);
+                            bool canSpawn = true;
+
+                            // Global cap: don't exceed the maximum allowed count
+                            if (iLimit != null && iLimit.currentCount >= iLimit.maxAllowed)
+                            {
+                                canSpawn = false;
+                            }
+
+                            // Neighbor rule: don't place the same injection type in adjacent rooms
+                            if (canSpawn && currentRoom.HasInjection(injection.injectionType))
+                            {
+                                canSpawn = false;
+                            }
+
+                            if (canSpawn)
+                            {
+                                nextRoom.AddInjection(injection.injectionType);
+                                if (iLimit != null) iLimit.currentCount++;
+                            }
+                        }
+                    }
                 }
 
                 queue.Enqueue(new NodeTask { room = nextRoom, nodeIndex = childIndex, blueprint = childBlueprint });
@@ -371,7 +401,7 @@ public class GraphLevelGenerator : BaseLevelGenerator
     {
         switch (eventType)
         {
-            case RoomEventType.Rune: return _currentLevelData.runeRoomPrefabs;
+
             case RoomEventType.Reward: return _currentLevelData.rewardRoomPrefabs;
             case RoomEventType.Elite: return _currentLevelData.eliteRoomPrefabs;
             case RoomEventType.Story: return _currentLevelData.storyRoomPrefabs;
@@ -412,6 +442,11 @@ public class GraphLevelGenerator : BaseLevelGenerator
             {
                 e.currentCount = 0;
                 e.remainingCandidates = 0;
+            }
+            foreach (var i in _currentLevelData.injectionLimits)
+            {
+                i.currentCount = 0;
+                i.remainingCandidates = 0;
             }
         }
     }
@@ -469,6 +504,15 @@ public class GraphLevelGenerator : BaseLevelGenerator
         {
             var eLimit = _currentLevelData.eventTypeLimits.Find(x => x.eventType == bp.eventType);
             if (eLimit != null) eLimit.remainingCandidates++;
+        }
+
+        if (bp.dynamicInjections != null)
+        {
+            foreach (var injection in bp.dynamicInjections)
+            {
+                var iLimit = _currentLevelData.injectionLimits.Find(x => x.injectionType == injection.injectionType);
+                if (iLimit != null) iLimit.remainingCandidates++;
+            }
         }
     }
 

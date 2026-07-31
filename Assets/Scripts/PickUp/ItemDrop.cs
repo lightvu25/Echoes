@@ -1,6 +1,7 @@
 using UnityEngine;
 
-public class ItemDrop : MonoBehaviour
+[RequireComponent(typeof(InteractableTrigger))]
+public class ItemDrop : MonoBehaviour, IInteractable
 {
     [Header("Aura System (Items)")]
     [SerializeField] private SpriteRenderer auraRenderer;
@@ -104,12 +105,9 @@ public class ItemDrop : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void Interact()
     {
-        if (other.CompareTag("Player"))
-        {
-            Collect();
-        }
+        Collect();
     }
 
     private void Collect()

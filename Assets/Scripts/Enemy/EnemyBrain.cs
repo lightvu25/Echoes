@@ -19,6 +19,7 @@ public class EnemyBrain : MonoBehaviour
     private float _lastBackstepTime = -999f;
     private bool  _canBackstep;
     public bool CanBackstep { get => _canBackstep; set => _canBackstep = value; }
+    public float LastBackstepTime => _lastBackstepTime;
 
     // Cached original base values from the cloned EnemyData (prevents multiplier compounding)
     private float _baseTelegraphDuration;
@@ -60,18 +61,27 @@ public class EnemyBrain : MonoBehaviour
     {
         startPos = transform.position;
 
-        if (sensor.TargetPlayer != null)
-        {
-            var pHealth = sensor.TargetPlayer.GetComponentInParent<HealthSystem>();
-            if (pHealth == null) pHealth = sensor.TargetPlayer.GetComponentInChildren<HealthSystem>();
-            if (pHealth != null) pHealth.OnDeath += HandlePlayerDeath;
-        }
+        SubscribeToPlayerDeath();
 
         if (attack != null)
             attack.OnAttackFinished += HandleAttackFinished;
 
         PickNewPatrolTarget();
         ChangeState(State.Patrol);
+    }
+
+    private void SubscribeToPlayerDeath()
+    {
+        if (sensor.TargetPlayer != null)
+        {
+            var pHealth = sensor.TargetPlayer.GetComponentInParent<HealthSystem>();
+            if (pHealth == null) pHealth = sensor.TargetPlayer.GetComponentInChildren<HealthSystem>();
+            if (pHealth != null)
+            {
+                pHealth.OnDeath -= HandlePlayerDeath;
+                pHealth.OnDeath += HandlePlayerDeath;
+            }
+        }
     }
 
     private void OnDestroy()
@@ -93,6 +103,7 @@ public class EnemyBrain : MonoBehaviour
     private void HandlePlayerDeath(object sender, EventArgs e)
     {
         sensor.ClearTarget();
+        sensor.ResetAggro();
         if (attack != null) attack.CancelAttack();
         if (movement != null) movement.Stop();
         ChangeState(State.Idle);
@@ -139,11 +150,20 @@ public class EnemyBrain : MonoBehaviour
 
         if (attack != null && attack.IsAttacking)
         {
-            movement?.Stop();
+            // Do not call movement?.Stop() here. Let the attack script (e.g. DashAttack) control the Rigidbody.
             return;
         }
 
-        stateTimer += Time.deltaTime;
+        EchoStatusReceiver status = GetComponent<EchoStatusReceiver>();
+        float statusMult = status != null ? status.SpeedMultiplier : 1f;
+
+        if (statusMult <= 0f) 
+        {
+            movement?.Stop();
+            return; // Completely frozen/stunned! Brain paused!
+        }
+
+        stateTimer += Time.deltaTime * statusMult;
 
         switch (currentState)
         {
@@ -192,6 +212,16 @@ public class EnemyBrain : MonoBehaviour
     {
         if (attack != null && attack.IsAttacking) return;
         ChangeState(State.Chase);
+    }
+
+    public void ForceBackstep()
+    {
+        if (attack != null && attack.IsAttacking) return;
+        if (currentState == State.Idle || currentState == State.Chase || currentState == State.Telegraph)
+        {
+            _lastBackstepTime = Time.time;
+            ChangeState(State.Backstep);
+        }
     }
 
     public void ForceNotice()
@@ -443,6 +473,10 @@ public class EnemyBrain : MonoBehaviour
         }
         
         float mult = BurdenManager.Instance != null ? BurdenManager.Instance.CurrentSpeedMultiplier : 1f;
+        
+        EchoStatusReceiver status = GetComponent<EchoStatusReceiver>();
+        if (status != null) mult *= status.SpeedMultiplier;
+        
         movement.Move(direction, data.patrolMaxSpeed * mult, data.patrolAccelAmount * mult, data.patrolDeccelAmount * mult);
     }
 
@@ -473,6 +507,10 @@ public class EnemyBrain : MonoBehaviour
         }
 
         float mult = BurdenManager.Instance != null ? BurdenManager.Instance.CurrentSpeedMultiplier : 1f;
+        
+        EchoStatusReceiver status = GetComponent<EchoStatusReceiver>();
+        if (status != null) mult *= status.SpeedMultiplier;
+        
         movement.Move(direction, data.chaseMaxSpeed * mult, data.chaseAccelAmount * mult, data.chaseDeccelAmount * mult);
     }
 

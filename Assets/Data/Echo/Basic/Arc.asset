@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoData
   itemID: ECHO_ARC
   itemName: Arc
-  itemIcon: {fileID: -7592134121383505917, guid: 1fbb5f8fa1e5bc643a4d34fc993a5742, type: 3}
+  itemIcon: {fileID: 9002342960781530434, guid: f5675c434eca00146976851f8fc91c98, type: 3}
   description: Attacks trigger chain-lightning that bounces to 2 nearby enemies for
     50% damage
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+  itemTier: 1
+  basePrice: 50
   echoType: 3
-  echoTier: 1
   isFusionResult: 0
   baseDamageMultiplier: 0.7
   attacksPerSecond: 1.5
@@ -30,7 +31,7 @@ MonoBehaviour:
   trailColor: {r: 1, g: 1, b: 1, a: 1}
   stateVFXPrefab: {fileID: 0}
   hitImpactPrefab: {fileID: 0}
-  comboVFXPrefabs:
-  - {fileID: 0}
+  voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 4760034997992110397, guid: 0111d3558f25e914cb7c29ed15392f0a, type: 3}
   level: 1
   currentStatusProc: 0

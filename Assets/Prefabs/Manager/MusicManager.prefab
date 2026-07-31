@@ -313,12 +313,10 @@ MonoBehaviour:
   - trackName: The Abyss
     clip: {fileID: 8300000, guid: a6c7b2c755e415c4c8d5a1b95e33b7c7, type: 3}
   - trackName: Mind World
-    clip: {fileID: 8300000, guid: eb4871f4aa120834fb185804fb30b157, type: 3}
-  - trackName: Abyss Ambient
-    clip: {fileID: 8300000, guid: 757d1d0622f152540800fa4368bc88dd, type: 3}
-  - trackName: Horror Ambient
-    clip: {fileID: 8300000, guid: 8f152a7352004184eb507d77a0426868, type: 3}
-  - trackName: Boss Battle
-    clip: {fileID: 8300000, guid: c75b960872c4b144ca584803d25c2432, type: 3}
+    clip: {fileID: 8300000, guid: cf739f0db8a41d344807b0016b0084e7, type: 3}
   - trackName: Shop
     clip: {fileID: 8300000, guid: e1b22808723ce1d4db877acf511dfd12, type: 3}
+  - trackName: Reward
+    clip: {fileID: 8300000, guid: e3e8b52c66a0d9d48848d1068e26d389, type: 3}
+  - trackName: Main Menu
+    clip: {fileID: 8300000, guid: cf739f0db8a41d344807b0016b0084e7, type: 3}

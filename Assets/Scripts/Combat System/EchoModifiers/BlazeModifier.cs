@@ -48,6 +48,6 @@ public class BlazeModifier : IEchoModifier
         float currentProc = e.damageInfo.procCoefficient;
         bool procSuccessful = DamageCalculator.ShouldProc(baseChance, currentProc);
 
-        if (procSuccessful) status.ApplyBurn(3f);
+        if (procSuccessful) status.ApplyBurn(3f, e.damageInfo.activeEcho.stateVFXPrefab);
     }
 }

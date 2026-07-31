@@ -10,6 +10,9 @@ public class ShrineUI : MonoBehaviour, IUIPanel
     [Header("Panel")]
     [SerializeField] private UIPanelAnimator _panelAnimator;
     
+    [Header("Audio")]
+    [SerializeField] private AudioClip selectBlessingSound;
+    
     [Header("Reroll Feature")]
     [SerializeField] private UnityEngine.UI.Button rerollButton;
     private const int REROLL_COST = 50;
@@ -140,6 +143,11 @@ public class ShrineUI : MonoBehaviour, IUIPanel
     {
         if (RunManager.Instance != null)
         {
+            if (SoundManager.Instance != null && selectBlessingSound != null)
+            {
+                SoundManager.Instance.PlaySFX(selectBlessingSound);
+            }
+
             RunManager.Instance.GrantBlessing(blessing);
             if (UIManager.Instance != null)
                 UIManager.Instance.CloseCurrentPanel();

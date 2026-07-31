@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Afterburner Fusion
   m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
   recipeID: REC_AFTERBURNER
-  elementA: {fileID: 11400000, guid: 3cbf89ddb717ab64d8545a21c77a5bcf, type: 2}
-  elementB: {fileID: 11400000, guid: 3883cf7732150c74ba31ce91627cd776, type: 2}
-  resultElement: {fileID: 11400000, guid: 7497e8bd949c2ff47b5b37ea68e40a8b, type: 2}
+  echoA: {fileID: 11400000, guid: 3cbf89ddb717ab64d8545a21c77a5bcf, type: 2}
+  echoB: {fileID: 11400000, guid: 3883cf7732150c74ba31ce91627cd776, type: 2}
+  resultEcho: {fileID: 11400000, guid: 7497e8bd949c2ff47b5b37ea68e40a8b, type: 2}
   recipeTier: 1
   requiredConstellationNode: 

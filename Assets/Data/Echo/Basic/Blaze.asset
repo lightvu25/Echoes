@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EchoData
   itemID: ECHO_BLAZE
   itemName: Blaze
-  itemIcon: {fileID: 5162622354964165141, guid: 7bd114aa96acd044992f59f023cde7c2, type: 3}
+  itemIcon: {fileID: 3351925140559151684, guid: f5675c434eca00146976851f8fc91c98, type: 3}
   description: Attacks deal up to 10% additional damage based on the target's missing
     health
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50
   echoType: 1
@@ -29,7 +29,9 @@ MonoBehaviour:
   statusProcCoefficient: 0.25
   uniqueModifierID: IGNITION
   trailColor: {r: 1, g: 1, b: 1, a: 1}
-  stateVFXPrefab: {fileID: 0}
+  stateVFXPrefab: {fileID: 4936852842607984091, guid: b08b2912953b57a4da0b0a1e8e76dfb8, type: 3}
   hitImpactPrefab: {fileID: 0}
+  voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

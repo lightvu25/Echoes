@@ -83,10 +83,7 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
 
         _canvasGroup.blocksRaycasts = false;
         _canvasGroup.interactable = false;
-    }
 
-    private void OnEnable()
-    {
         if (GameInput.Instance != null)
         {
             GameInput.Instance.OnCancelPressed += HandleCancelPressed;
@@ -94,8 +91,11 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
         }
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
+        Room.OnRoomExplored -= RevealRoom;
+        if (_fogTexture != null) Destroy(_fogTexture);
+
         if (GameInput.Instance != null)
         {
             GameInput.Instance.OnCancelPressed -= HandleCancelPressed;
@@ -103,11 +103,7 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
         }
     }
 
-    private void OnDestroy()
-    {
-        Room.OnRoomExplored -= RevealRoom;
-        if (_fogTexture != null) Destroy(_fogTexture);
-    }
+
 
     private void HandleMapToggle()
     {

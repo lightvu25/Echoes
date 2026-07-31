@@ -12,7 +12,7 @@ public class PlayerTool : MonoBehaviour
     [SerializeField] private GameObject toxicCloudPrefab;
     [SerializeField] private GameObject kineticRootPrefab;
 
-    private float currentCooldown = 0f;
+    private float[] cooldowns = new float[3];
     private PlayerBuffManager buffManager;
 
     public event System.Action OnConsume;
@@ -26,7 +26,7 @@ public class PlayerTool : MonoBehaviour
     {
         if (GameInput.Instance != null)
         {
-            GameInput.Instance.OnToolPressed += HandleToolInput;
+            GameInput.Instance.OnToolKeyPressed += HandleToolInput;
         }
     }
 
@@ -34,39 +34,35 @@ public class PlayerTool : MonoBehaviour
     {
         if (GameInput.Instance != null)
         {
-            GameInput.Instance.OnToolPressed -= HandleToolInput;
+            GameInput.Instance.OnToolKeyPressed -= HandleToolInput;
         }
     }
 
     private void Update()
     {
-        if (currentCooldown > 0)
+        for (int i = 0; i < cooldowns.Length; i++)
         {
-            currentCooldown -= Time.deltaTime;
+            if (cooldowns[i] > 0)
+            {
+                cooldowns[i] -= Time.deltaTime;
+            }
         }
     }
 
-    private void HandleToolInput()
+    private void HandleToolInput(int slotIndex)
     {
-        if (currentCooldown > 0) return;
+        if (slotIndex < 0 || slotIndex >= cooldowns.Length) return;
+        if (cooldowns[slotIndex] > 0) return;
         if (PlayerInventoryCore.Instance == null) return;
 
         IReadOnlyList<ItemBaseData> equippedTools = PlayerInventoryCore.Instance.EquippedTools;
-        ToolData activeTool = null;
+        if (slotIndex >= equippedTools.Count) return;
 
-        foreach (var item in equippedTools)
-        {
-            if (item is ToolData tool)
-            {
-                activeTool = tool;
-                break;
-            }
-        }
-
+        ToolData activeTool = equippedTools[slotIndex] as ToolData;
         if (activeTool == null) return;
 
         ExecuteToolLogic(activeTool);
-        currentCooldown = activeTool.cooldown;
+        cooldowns[slotIndex] = activeTool.cooldown;
     }
 
     private void ExecuteToolLogic(ToolData tool)

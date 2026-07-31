@@ -6,6 +6,7 @@ public class PlaystyleData : ScriptableObject
     [Header("Basic Info")]
     public PlaystyleType playstyleType;
     public string displayName;
+    public Sprite playstyleIcon;
     [Tooltip("If true, VFX will only spawn if an Echo is equipped.")]
     public bool requiresActiveEcho = false;
     

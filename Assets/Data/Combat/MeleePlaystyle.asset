@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlaystyleData
   playstyleType: 0
   displayName: Melee
+  playstyleIcon: {fileID: 3690620582920558292, guid: 280aeb2996d5837499d17d34409968a5, type: 3}
   requiresActiveEcho: 1
   comboSteps: 3
   comboWindow: 0.4

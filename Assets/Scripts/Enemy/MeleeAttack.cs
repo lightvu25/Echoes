@@ -22,7 +22,9 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
         if (IsAttacking) return;
         IsAttacking = true;
         OnAttackStarted?.Invoke(this, EventArgs.Empty);
-        
+
+        // Animation events activate the hitbox and finish the attack.
+        // Keep a safety timeout so a missing/broken animation event cannot lock the enemy forever.
         StartCoroutine(SafetyTimeout());
     }
 
@@ -42,7 +44,7 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
 
     public void TriggerHitbox()
     {
-        if (isHitboxActive) return;
+        if (!IsAttacking || isHitboxActive) return;
         StartCoroutine(HitboxRoutine());
     }
 
@@ -74,7 +76,9 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
     {
         if (!isHitboxActive || data == null) return;
 
-        Vector2 direction = transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
+        // Use lossyScale (world space) to correctly detect the facing direction inherited from the parent root.
+        // localScale is always (1,1,1) on this child GO; the flip happens on the root via GroundMovement.Turn().
+        Vector2 direction = transform.lossyScale.x >= 0 ? Vector2.right : Vector2.left;
         Vector2 offset = new Vector2(data.attackHitboxOffset.x * direction.x, data.attackHitboxOffset.y);
         Vector2 center = (Vector2)transform.position + offset;
 
@@ -99,6 +103,11 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
         Vector2 knockbackDir = new Vector2(dirX >= 0 ? 1f : -1f, 0f);
         bool isFriendlyFire = targetGO.GetComponent<EnemyCombat>() != null;
 
+        if (isFriendlyFire && EvolutionManager.Instance != null && EvolutionManager.Instance.CurrentTierIndex >= 1)
+        {
+            return; // Friendly fire disabled for tier 1, 2, 3
+        }
+
         DamageInfo damageInfo = new DamageInfo
         {
             baseDamage = data.attackBase,
@@ -120,7 +129,7 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
     private void OnDrawGizmosSelected()
     {
         if (data == null) return;
-        Vector2 direction = transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
+        Vector2 direction = transform.lossyScale.x >= 0 ? Vector2.right : Vector2.left;
         Vector2 offset = new Vector2(data.attackHitboxOffset.x * direction.x, data.attackHitboxOffset.y);
         Vector2 center = (Vector2)transform.position + offset;
         Gizmos.color = isHitboxActive ? Color.red : Color.yellow;

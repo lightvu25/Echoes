@@ -25,7 +25,7 @@ public class SoundManager : MonoBehaviour
     private Transform poolContainer;
 
     [Header("Global Sounds")]
-    [SerializeField] private AudioClip evolutionSound;
+    [SerializeField] private List<AudioClip> evolutionSounds = new List<AudioClip>();
 
     private void Awake()
     {
@@ -55,6 +55,8 @@ public class SoundManager : MonoBehaviour
 
     private AudioSource CreateNewAudioSource()
     {
+        if (poolContainer == null) return null;
+        
         GameObject go = new GameObject("PooledAudioSource");
         go.transform.SetParent(poolContainer);
         AudioSource source = go.AddComponent<AudioSource>();
@@ -72,8 +74,14 @@ public class SoundManager : MonoBehaviour
 
     private AudioSource GetAvailableAudioSource()
     {
-        foreach (var source in sfxPool)
+        for (int i = sfxPool.Count - 1; i >= 0; i--)
         {
+            var source = sfxPool[i];
+            if (source == null)
+            {
+                sfxPool.RemoveAt(i);
+                continue;
+            }
             if (!source.isPlaying)
             {
                 return source;
@@ -90,8 +98,11 @@ public class SoundManager : MonoBehaviour
     public void PlaySFX(AudioClip clip, float volume = 1f, bool randomPitch = true)
     {
         if (clip == null) return;
+        if (this == null || !gameObject.activeInHierarchy) return;
 
         AudioSource source = GetAvailableAudioSource();
+        if (source == null) return;
+        
         source.clip = clip;
         source.volume = volume;
 
@@ -105,9 +116,13 @@ public class SoundManager : MonoBehaviour
 
     public void PlayEvolutionSound()
     {
-        if (evolutionSound != null)
+        if (evolutionSounds != null && evolutionSounds.Count > 0)
         {
-            PlaySFX(evolutionSound, 1f, false);
+            AudioClip clip = evolutionSounds[UnityEngine.Random.Range(0, evolutionSounds.Count)];
+            if (clip != null)
+            {
+                PlaySFX(clip, 1f, false);
+            }
         }
     }
 

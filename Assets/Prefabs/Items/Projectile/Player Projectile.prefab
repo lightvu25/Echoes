@@ -188,3 +188,4 @@ MonoBehaviour:
     m_Bits: 256
   scaleDamageWithSpeed: 1
   speedDamageMultiplier: 0.05
+  spriteRotationOffset: 0

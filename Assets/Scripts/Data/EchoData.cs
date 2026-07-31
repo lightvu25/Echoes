@@ -29,6 +29,7 @@ public class EchoData : ItemBaseData
     public ParticleSystem stateVFXPrefab;
     public GameObject hitImpactPrefab;
     public GameObject voidMarkVFXPrefab;
+    public GameObject chainLightningVFXPrefab;
 
     [HideInInspector] public int level = 1;
     [HideInInspector] public float currentStatusProc;

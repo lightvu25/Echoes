@@ -8,6 +8,8 @@ public class RuntimeLevelPopulator : MonoBehaviour
 
     [Header("Event Prefabs")]
     public GameObject teleporterPrefab;
+    public GameObject altarPrefab;
+    public GameObject shrinePrefab;
 
     private void Awake()
     {
@@ -30,16 +32,16 @@ public class RuntimeLevelPopulator : MonoBehaviour
 
             foreach (EntityAnchor anchor in anchors)
             {
-                ProcessEventAnchor(anchor, room.AssignedEvent, blueprint);
+                ProcessEventAnchor(anchor, room, blueprint);
             }
         }
         
         Debug.Log("[RuntimeLevelPopulator] Population complete.");
     }
 
-    private bool ProcessEventAnchor(EntityAnchor anchor, RoomEventType roomEvent, LevelBlueprint blueprint)
+    private bool ProcessEventAnchor(EntityAnchor anchor, Room room, LevelBlueprint blueprint)
     {
-        if (anchor.anchorType == AnchorType.Teleporter && roomEvent == RoomEventType.Teleport)
+        if (anchor.anchorType == AnchorType.Teleporter && room.HasInjection(DynamicInjectionType.Teleport))
         {
             if (teleporterPrefab != null)
             {
@@ -57,7 +59,7 @@ public class RuntimeLevelPopulator : MonoBehaviour
         else if (anchor.anchorType == AnchorType.Echo_Common)
         {
             // If the room itself was specifically flagged with the 'Echo' dynamic event, guarantee a spawn!
-            bool forceSpawn = (roomEvent == RoomEventType.Echo);
+            bool forceSpawn = room.HasInjection(DynamicInjectionType.Echo);
 
             // Independent roll for this anchor (if not forced)
             if (!forceSpawn && Random.value > blueprint.anchorSpawnChance)
@@ -74,6 +76,18 @@ public class RuntimeLevelPopulator : MonoBehaviour
             }
             Destroy(anchor.gameObject);
             return chosenPrefab != null;
+        }
+        else if (anchor.anchorType == AnchorType.Altar && room.HasInjection(DynamicInjectionType.Altar))
+        {
+            if (altarPrefab != null) Instantiate(altarPrefab, anchor.transform.position, Quaternion.identity, anchor.transform.parent);
+            Destroy(anchor.gameObject);
+            return true;
+        }
+        else if (anchor.anchorType == AnchorType.Shrine && room.HasInjection(DynamicInjectionType.Shrine))
+        {
+            if (shrinePrefab != null) Instantiate(shrinePrefab, anchor.transform.position, Quaternion.identity, anchor.transform.parent);
+            Destroy(anchor.gameObject);
+            return true;
         }
         else if (anchor.anchorType == AnchorType.Enemy_Ground || anchor.anchorType == AnchorType.Enemy_Air)
         {

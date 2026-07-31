@@ -50,9 +50,9 @@ public class PlayerInventoryCore : MonoBehaviour
     // ------------------------------------------------------------------ //
 
     [Header("Drop Settings")]
-    [SerializeField] private float popForceMin      = 5f;
-    [SerializeField] private float popForceMax      = 10f;
-    [SerializeField] private float sidewaysForceMod = 1.5f;
+    public float popForceMin      = 5f;
+    public float popForceMax      = 10f;
+    public float sidewaysForceMod = 1.5f;
 
 
 
@@ -89,21 +89,38 @@ public class PlayerInventoryCore : MonoBehaviour
             : null;
 
     // ------------------------------------------------------------------ //
-    //  Slot counts — sourced from RunData with migration guard             //
+    //  Slot counts & Unlock state                                          //
     // ------------------------------------------------------------------ //
 
-    private static RunData Run => GameSession.Instance?.currentRun;
+    public static RunData Run => GameSession.Instance?.currentRun;
 
-    /// <summary>Number of unlocked Echo slots (strictly 4).</summary>
-    public int UnlockedEchoSlots => 4;
+    public int AvailableUnlockPoints => Run != null ? Run.availableUnlockPoints : 0;
 
-    /// <summary>Number of unlocked Relic slots.</summary>
-    public int UnlockedRelicSlots => Mathf.Clamp(
-        Run != null ? Run.unlockedRelicSlots : 1, 1, RunData.MAX_SLOTS);
+    public bool IsSlotUnlocked(ItemCategory category, int index)
+    {
+        if (Run == null) return index == 0; // Default fallback: slot 0 is unlocked
+        return category switch
+        {
+            ItemCategory.Echo => Run.unlockedEchoIndices.Contains(index),
+            ItemCategory.Relic => Run.unlockedRelicIndices.Contains(index),
+            _ => Run.unlockedToolIndices.Contains(index),
+        };
+    }
 
-    /// <summary>Number of unlocked Tool slots.</summary>
-    public int UnlockedEquipmentSlots => Mathf.Clamp(
-        Run != null ? Run.unlockedEquipmentSlots : 1, 1, RunData.MAX_SLOTS);
+    public int GetUnlockedCount(ItemCategory category)
+    {
+        if (Run == null) return 1;
+        return category switch
+        {
+            ItemCategory.Echo => Run.unlockedEchoIndices.Count,
+            ItemCategory.Relic => Run.unlockedRelicIndices.Count,
+            _ => Run.unlockedToolIndices.Count,
+        };
+    }
+
+    public int UnlockedEchoSlots => GetUnlockedCount(ItemCategory.Echo);
+    public int UnlockedRelicSlots => GetUnlockedCount(ItemCategory.Relic);
+    public int UnlockedEquipmentSlots => GetUnlockedCount(ItemCategory.Tool);
 
     // ------------------------------------------------------------------ //
     //  Unity lifecycle                                                     //
@@ -122,12 +139,22 @@ public class PlayerInventoryCore : MonoBehaviour
         healthSystem = GetComponent<HealthSystem>();
         playstyleManager = GetComponent<PlaystyleManager>();
 
-        // Migration guard: if an old save has 0 for any slot count, reset to 1.
+        // Migration guard
         if (Run != null)
         {
-            if (Run.unlockedEchoSlots <= 0) Run.unlockedEchoSlots = 1;
-            if (Run.unlockedRelicSlots   <= 0) Run.unlockedRelicSlots   = 1;
-            if (Run.unlockedEquipmentSlots    <= 0) Run.unlockedEquipmentSlots    = 1;
+            // Migrate old int-based slot unlocks to the new list-based system
+            if (Run.unlockedEchoSlots > 1 && Run.unlockedEchoIndices.Count == 1)
+            {
+                for (int i = 1; i < Run.unlockedEchoSlots; i++) if (!Run.unlockedEchoIndices.Contains(i)) Run.unlockedEchoIndices.Add(i);
+            }
+            if (Run.unlockedRelicSlots > 1 && Run.unlockedRelicIndices.Count == 1)
+            {
+                for (int i = 1; i < Run.unlockedRelicSlots; i++) if (!Run.unlockedRelicIndices.Contains(i)) Run.unlockedRelicIndices.Add(i);
+            }
+            if (Run.unlockedEquipmentSlots > 1 && Run.unlockedToolIndices.Count == 1)
+            {
+                for (int i = 1; i < Run.unlockedEquipmentSlots; i++) if (!Run.unlockedToolIndices.Contains(i)) Run.unlockedToolIndices.Add(i);
+            }
         }
     }
 
@@ -137,10 +164,6 @@ public class PlayerInventoryCore : MonoBehaviour
         {
             healthSystem.OnMaxHPGained       += HandleMaxHPGained;
         }
-        if (playstyleManager != null)
-        {
-            playstyleManager.OnPlaystyleLocked += HandlePlaystyleLocked;
-        }
     }
 
     private void OnDestroy()
@@ -148,10 +171,6 @@ public class PlayerInventoryCore : MonoBehaviour
         if (healthSystem != null)
         {
             healthSystem.OnMaxHPGained       -= HandleMaxHPGained;
-        }
-        if (playstyleManager != null)
-        {
-            playstyleManager.OnPlaystyleLocked -= HandlePlaystyleLocked;
         }
     }
 
@@ -190,9 +209,9 @@ public class PlayerInventoryCore : MonoBehaviour
         }
 
         int emptyIndex = -1;
-        for (int i = 0; i < limit; i++)
+        for (int i = 0; i < RunData.MAX_SLOTS; i++)
         {
-            if (arr[i] == null)
+            if (IsSlotUnlocked(item.Category, i) && arr[i] == null)
             {
                 emptyIndex = i;
                 break;
@@ -207,14 +226,7 @@ public class PlayerInventoryCore : MonoBehaviour
         }
         else
         {
-            if (item.Category == ItemCategory.Echo)
-            {
-                SpawnDroppedItem(item);
-            }
-            else
-            {
-                OnSwapRequired?.Invoke(item, item.Category);
-            }
+            OnSwapRequired?.Invoke(item, item.Category);
         }
     }
 
@@ -295,8 +307,7 @@ public class PlayerInventoryCore : MonoBehaviour
         ItemBaseData[] arr = GetArray(category);
         if (fromIndex < 0 || fromIndex >= RunData.MAX_SLOTS || toIndex < 0 || toIndex >= RunData.MAX_SLOTS) return;
         
-        int limit = GetUnlockedCount(category);
-        if (fromIndex >= limit || toIndex >= limit) return;
+        if (!IsSlotUnlocked(category, fromIndex) || !IsSlotUnlocked(category, toIndex)) return;
         
         ItemBaseData temp = arr[fromIndex];
         arr[fromIndex] = arr[toIndex];
@@ -310,27 +321,27 @@ public class PlayerInventoryCore : MonoBehaviour
     // ------------------------------------------------------------------ //
 
     /// <summary>
-    /// Increments the unlocked slot count for the given <paramref name="category"/> by 1,
-    /// up to <see cref="RunData.MAX_SLOTS"/>.
+    /// Unlocks a specific slot index and consumes 1 available point.
     /// </summary>
-    /// <param name="category">The category whose slot count to increase.</param>
-    public void UnlockSlot(ItemCategory category)
+    public void UnlockSlot(ItemCategory category, int index)
     {
-        if (Run == null) return;
+        if (Run == null || Run.availableUnlockPoints <= 0) return;
+        if (IsSlotUnlocked(category, index)) return;
 
         switch (category)
         {
             case ItemCategory.Echo:
-                Run.unlockedEchoSlots = Mathf.Min(Run.unlockedEchoSlots + 1, RunData.MAX_SLOTS);
+                Run.unlockedEchoIndices.Add(index);
                 break;
             case ItemCategory.Relic:
-                Run.unlockedRelicSlots = Mathf.Min(Run.unlockedRelicSlots + 1, RunData.MAX_SLOTS);
+                Run.unlockedRelicIndices.Add(index);
                 break;
             case ItemCategory.Tool:
-                Run.unlockedEquipmentSlots = Mathf.Min(Run.unlockedEquipmentSlots + 1, RunData.MAX_SLOTS);
+                Run.unlockedToolIndices.Add(index);
                 break;
         }
 
+        Run.availableUnlockPoints--;
         GameSession.Instance?.SaveCurrentRun();
         OnInventoryChanged?.Invoke();
     }
@@ -346,8 +357,14 @@ public class PlayerInventoryCore : MonoBehaviour
     /// <param name="index">0-based slot index.</param>
     public void SetActiveEchoIndex(int index)
     {
-        int max = Mathf.Max(0, UnlockedEchoSlots - 1);
-        activeEchoIndex = Mathf.Clamp(index, 0, max);
+        if (IsSlotUnlocked(ItemCategory.Echo, index))
+        {
+            if (activeEchoIndex != index)
+            {
+                activeEchoIndex = index;
+                OnInventoryChanged?.Invoke();
+            }
+        }
     }
 
     /// <summary>
@@ -390,26 +407,16 @@ public class PlayerInventoryCore : MonoBehaviour
 
     private void HandleMaxHPGained()
     {
-        OnSlotUnlockRequired?.Invoke();
+        if (Run != null)
+        {
+            Run.availableUnlockPoints++;
+            GameSession.Instance?.SaveCurrentRun();
+            OnInventoryChanged?.Invoke();
+        }
+        OnSlotUnlockRequired?.Invoke(); // Kept for any listeners that still want this (e.g., sound effects)
     }
 
-    /// <summary>
-    /// When a playstyle is locked (due to taking damage),
-    /// forcibly unequip any Echo associated with that playstyle's slot.
-    /// </summary>
-    private void HandlePlaystyleLocked(PlaystyleType lockedType)
-    {
-        int slotIndex = (int)lockedType;
-        if (slotIndex >= 0 && slotIndex < equippedEchoes.Length)
-        {
-            if (equippedEchoes[slotIndex] != null)
-            {
-                SpawnDroppedItem(equippedEchoes[slotIndex]);
-                equippedEchoes[slotIndex] = null;
-                OnInventoryChanged?.Invoke();
-            }
-        }
-    }
+    // HandlePlaystyleLocked removed because playstyles are permanently unlocked.
 
 
 
@@ -424,12 +431,7 @@ public class PlayerInventoryCore : MonoBehaviour
         _                    => equippedTools
     };
 
-    private int GetUnlockedCount(ItemCategory category) => category switch
-    {
-        ItemCategory.Echo => UnlockedEchoSlots,
-        ItemCategory.Relic   => UnlockedRelicSlots,
-        _                    => UnlockedEquipmentSlots
-    };
+    // Removed GetUnlockedCount(ItemCategory category) helper since it is now public above
 
     private void TrimArray(ItemBaseData[] arr, int maxCount)
     {

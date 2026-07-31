@@ -25,7 +25,11 @@ public class SwapSlotButton : MonoBehaviour
     {
         if (item == null) return;
 
-        if (itemIcon  != null) itemIcon.sprite = item.itemIcon;
+        if (itemIcon  != null) 
+        {
+            itemIcon.sprite = item.itemIcon;
+            itemIcon.preserveAspect = true;
+        }
         if (itemLabel != null) itemLabel.text   = item.itemName;
 
         button.onClick.RemoveAllListeners();

@@ -4,17 +4,30 @@ using UnityEngine;
 
 public enum RoomEventType
 {
+    None = 0,
+    Elite = 1,
+    Shop = 2,
+    CursedChest = 3,
+    Reward = 5,
+    Story = 6,
+    HighMagicFactor = 7,
+    EchoRoom = 10
+}
+
+public enum DynamicInjectionType
+{
     None,
-    Elite,
-    Shop,
-    CursedChest,
-    Rune,
-    Reward,
-    Story,
-    HighMagicFactor,
     Teleport,
-    Echo,
-    EchoRoom
+    Altar,
+    Shrine,
+    Echo
+}
+
+[Serializable]
+public struct DynamicInjectionConfig
+{
+    public DynamicInjectionType injectionType;
+    [Range(0f, 1f)] public float spawnChance;
 }
 
 [Serializable]
@@ -30,9 +43,12 @@ public class NodeBlueprint
     public ExitDirection requiredDir;
     public List<int> childrenIndices = new List<int>();
 
-    [Header("Event Config")]
+    [Header("Event Config (Primary)")]
     public RoomEventType eventType = RoomEventType.None;
     [Range(0f, 1f)] public float eventChance = 0f;
+
+    [Header("Dynamic Injections")]
+    public List<DynamicInjectionConfig> dynamicInjections = new List<DynamicInjectionConfig>();
 
     [HideInInspector] public Vector2 position;
 }
@@ -61,6 +77,16 @@ public class EventTypeLimit
     [HideInInspector] public int remainingCandidates = 0;
 }
 
+[System.Serializable]
+public class InjectionTypeLimit
+{
+    public DynamicInjectionType injectionType;
+    public int minRequired = 0;
+    public int maxAllowed = 1;
+    [HideInInspector] public int currentCount = 0;
+    [HideInInspector] public int remainingCandidates = 0;
+}
+
 [CreateAssetMenu(fileName = "New Level Blueprint", menuName = "Echoes/Level Blueprint")]
 public class LevelBlueprint : ScriptableObject
 {
@@ -72,7 +98,6 @@ public class LevelBlueprint : ScriptableObject
     public List<GameObject> normalRoomPrefabs = new List<GameObject>();
     public List<GameObject> goalRoomPrefabs = new List<GameObject>();
     public List<GameObject> deadEndRoomPrefabs = new List<GameObject>();
-    public List<GameObject> runeRoomPrefabs = new List<GameObject>();
     public List<GameObject> rewardRoomPrefabs = new List<GameObject>();
     public List<GameObject> eliteRoomPrefabs = new List<GameObject>();
     public List<GameObject> storyRoomPrefabs = new List<GameObject>();
@@ -83,6 +108,7 @@ public class LevelBlueprint : ScriptableObject
     
     [Header("Generation Limits")]
     public List<EventTypeLimit> eventTypeLimits = new List<EventTypeLimit>();
+    public List<InjectionTypeLimit> injectionLimits = new List<InjectionTypeLimit>();
 
     [Header("Extraction Node Settings")]
     [Range(0f, 1f)] public float anchorSpawnChance = 0.3f;

@@ -12,6 +12,7 @@ public class RangedAttack : MonoBehaviour, IEnemyAttack
     [SerializeField] private Transform firePoint;
     [SerializeField] private float projectileSpeed = 10f;
     [SerializeField] private float attackDuration = 0.5f;
+    [SerializeField] private bool aimAtPlayer = false;
 
     public bool IsAttacking { get; private set; }
 
@@ -39,17 +40,34 @@ public class RangedAttack : MonoBehaviour, IEnemyAttack
 
     private void FireProjectile()
     {
-        bool isFacingRight = transform.localScale.x >= 0;
-        Vector2 direction = isFacingRight ? Vector2.right : Vector2.left;
+        Vector2 direction;
+        var sensor = GetComponentInParent<EnemySensor>();
+        if (aimAtPlayer && sensor != null && sensor.TargetPlayer != null)
+        {
+            // Aim at the player's center (assuming TargetPlayer has a collider, or just use its position)
+            direction = ((Vector2)sensor.TargetPlayer.position - (Vector2)firePoint.position).normalized;
+        }
+        else
+        {
+            bool isFacingRight = transform.localScale.x >= 0;
+            direction = isFacingRight ? Vector2.right : Vector2.left;
+        }
         
-        Quaternion spawnRotation = isFacingRight ? Quaternion.identity : Quaternion.Euler(0, 0, 180f);
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion spawnRotation = Quaternion.Euler(0, 0, angle);
 
         GameObject proj = ObjectPoolManager.SpawnObject(projectilePrefab, firePoint.position, spawnRotation, ObjectPoolManager.PoolType.Projectile);
 
         Projectile projectile = proj.GetComponent<Projectile>();
-        projectile.SetOwner(gameObject);
+        if (projectile != null)
+        {
+            projectile.SetOwner(gameObject);
+        }
 
         Rigidbody2D projRb = proj.GetComponent<Rigidbody2D>();
-        projRb.linearVelocity = direction * projectileSpeed;
+        if (projRb != null)
+        {
+            projRb.linearVelocity = direction * projectileSpeed;
+        }
     }
 }

@@ -41,7 +41,11 @@ public class InputConfig : ScriptableObject
     public KeyCode mapKey = KeyCode.M;
     public KeyCode cancelKey = KeyCode.Escape;
     public KeyCode healKey = KeyCode.H;
-    public KeyCode toolKey = KeyCode.T;
+    
+    [Header("Equipment/Tool Keys")]
+    public KeyCode tool1Key = KeyCode.U;
+    public KeyCode tool2Key = KeyCode.Y;
+    public KeyCode tool3Key = KeyCode.T;
 
     [Header("Playstyle Keys")]
     public KeyCode meleeKey = KeyCode.J;
@@ -128,5 +132,15 @@ public class InputConfig : ScriptableObject
     public bool GetMapDown() => Input.GetKeyDown(mapKey);
     public bool GetCancelDown() => Input.GetKeyDown(cancelKey);
     public bool GetHealDown() => Input.GetKeyDown(healKey);
-    public bool GetToolDown() => Input.GetKeyDown(toolKey);
+    
+    public bool GetToolDown(int index)
+    {
+        return index switch
+        {
+            0 => Input.GetKeyDown(tool1Key),
+            1 => Input.GetKeyDown(tool2Key),
+            2 => Input.GetKeyDown(tool3Key),
+            _ => false
+        };
+    }
 }

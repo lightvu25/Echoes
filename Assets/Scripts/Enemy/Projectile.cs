@@ -15,6 +15,10 @@ public class Projectile : MonoBehaviour
     [Tooltip("How much damage multiplier is added per 1 unit of speed. 0.05 = 5% extra damage per 1 speed.")]
     [SerializeField] private float speedDamageMultiplier = 0.05f;
 
+    [Header("Visuals")]
+    [Tooltip("Offset applied to the rotation. Use 180 if your sprite is drawn pointing left.")]
+    [SerializeField] private float spriteRotationOffset = 0f;
+
     private Rigidbody2D rb;
     private Collider2D col;
     private SpriteRenderer sr;
@@ -72,13 +76,15 @@ public class Projectile : MonoBehaviour
         
         if (rb.linearVelocity.sqrMagnitude > 0.01f)
         {
-            float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
+            float velocityAngle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
+            float finalAngle = velocityAngle + spriteRotationOffset;
+            
+            transform.rotation = Quaternion.Euler(0, 0, finalAngle);
             
             // Prevent the sprite from rendering upside-down when travelling left
             if (sr != null)
             {
-                if (Mathf.Abs(angle) > 90f)
+                if (Mathf.Abs(velocityAngle) > 90f)
                 {
                     sr.flipY = true;
                 }

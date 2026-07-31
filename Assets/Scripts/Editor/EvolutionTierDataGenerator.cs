@@ -5,6 +5,7 @@ using System.IO;
 public class EvolutionTierDataGenerator
 {
     private const string TARGET_DIRECTORY = "Assets/Data/Evolution/";
+    private const string SHARED_VISION_ICON_PATH = "Assets/Sprites/UI/Mind Garden/Icons/Fate's Vision.aseprite";
 
     [MenuItem("Tools/Echoes/Generate Evolution Tiers")]
     public static void GenerateEvolutionTiers()
@@ -16,7 +17,7 @@ public class EvolutionTierDataGenerator
         CreateOrUpdateTier("Tier0_Base", 0, 1.0f, 1.0f, 1.0f, false, false, false);
         CreateOrUpdateTier("Tier1_Alert", 8, 0.8f, 1.0f, 1.2f, false, false, true);
         CreateOrUpdateTier("Tier2_Aggressive", 20, 0.6f, 0.8f, 1.5f, true, false, true);
-        CreateOrUpdateTier("Tier3_Apex", 35, 0.5f, 0.7f, 999f, true, true, true);
+        CreateOrUpdateTier("Tier3_Apex", 30, 0.5f, 0.7f, 999f, true, true, true);
 
         // 3. Save, refresh, and notify
         AssetDatabase.SaveAssets();
@@ -66,6 +67,7 @@ public class EvolutionTierDataGenerator
         tierData.canBackstep = backstep;
         tierData.isGlobalAggro = globalAggro;
         tierData.canShareVision = shareVision;
+        tierData.sharedVisionIcon = globalAggro ? LoadFirstSprite(SHARED_VISION_ICON_PATH) : null;
 
         if (isNew)
         {
@@ -75,5 +77,20 @@ public class EvolutionTierDataGenerator
         {
             EditorUtility.SetDirty(tierData);
         }
+    }
+
+    private static Sprite LoadFirstSprite(string assetPath)
+    {
+        Object[] assets = AssetDatabase.LoadAllAssetsAtPath(assetPath);
+        foreach (Object asset in assets)
+        {
+            if (asset is Sprite sprite)
+            {
+                return sprite;
+            }
+        }
+
+        Debug.LogWarning($"No Sprite found at shared vision icon path: {assetPath}");
+        return null;
     }
 }

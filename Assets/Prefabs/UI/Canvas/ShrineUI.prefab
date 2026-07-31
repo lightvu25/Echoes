@@ -65,8 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The final hit of your basic attack combo slightly pulls nearby enemies
-    inward.
+  m_text: Moving continuously for 3 seconds buffs your next attack's damage by 20%.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -203,7 +202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hidden Tempest
+  m_text: Lumin Bloodline
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -374,6 +373,7 @@ MonoBehaviour:
   - {fileID: 3758786689524730736}
   - {fileID: 3962166291886965397}
   _panelAnimator: {fileID: 1296869549036358071}
+  selectBlessingSound: {fileID: 0}
   rerollButton: {fileID: 0}
 --- !u!114 &4154458745604367429
 MonoBehaviour:
@@ -454,8 +454,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The first attack immediately following a Dash gains 15% increased attack
-    speed.
+  m_text: 15% chance to drop a 10 HP healing orb upon defeating an enemy.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -731,7 +730,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Gravity Well
+  m_text: Zephyr's Sting
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -868,7 +867,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Void Resonance
+  m_text: Gravity Well
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -1144,7 +1143,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Losing 1 slot HP will reduce 10% damage received for 3 seconds.
+  m_text: The final hit of your basic attack combo slightly pulls nearby enemies
+    inward.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}

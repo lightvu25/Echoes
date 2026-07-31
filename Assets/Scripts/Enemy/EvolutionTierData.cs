@@ -28,4 +28,8 @@ public class EvolutionTierData : ScriptableObject
 
     [Tooltip("If true, when this enemy spots the player, it will alert nearby enemies.")]
     public bool canShareVision = false;
+
+    [Header("Visuals")]
+    [Tooltip("Persistent icon displayed above enemies while this tier's global shared vision is active.")]
+    public Sprite sharedVisionIcon;
 }

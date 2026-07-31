@@ -21,6 +21,7 @@ MonoBehaviour:
     childrenIndices: 01000000
     eventType: 0
     eventChance: 0
+    dynamicInjections: []
     position: {x: 0, y: 0}
   - nodeName: 1
     roomType: 1
@@ -30,6 +31,7 @@ MonoBehaviour:
     childrenIndices: 020000000300000004000000
     eventType: 0
     eventChance: 0
+    dynamicInjections: []
     position: {x: 0, y: 0}
   - nodeName: 2
     roomType: 2
@@ -37,8 +39,11 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 0
     childrenIndices: 
-    eventType: 9
+    eventType: 0
     eventChance: 0.2
+    dynamicInjections:
+    - injectionType: 4
+      spawnChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 3
     roomType: 2
@@ -48,6 +53,7 @@ MonoBehaviour:
     childrenIndices: 
     eventType: 0
     eventChance: 1
+    dynamicInjections: []
     position: {x: 0, y: 0}
   - nodeName: 4
     roomType: 1
@@ -55,8 +61,11 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 0500000006000000
-    eventType: 8
-    eventChance: 0.5
+    eventType: 0
+    eventChance: 0
+    dynamicInjections:
+    - injectionType: 1
+      spawnChance: 0.7
     position: {x: 0, y: 0}
   - nodeName: 5
     roomType: 2
@@ -64,8 +73,9 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 
-    eventType: 2
-    eventChance: 1
+    eventType: 5
+    eventChance: 0.5
+    dynamicInjections: []
     position: {x: 0, y: 0}
   - nodeName: 6
     roomType: 1
@@ -73,8 +83,15 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 1
     childrenIndices: 07000000
-    eventType: 8
+    eventType: 0
     eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 1
+      spawnChance: 0.5
+    - injectionType: 3
+      spawnChance: 0.5
+    - injectionType: 2
+      spawnChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 7
     roomType: 1
@@ -82,8 +99,13 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 1
     childrenIndices: 0800000009000000
-    eventType: 8
-    eventChance: 0.3
+    eventType: 0
+    eventChance: 0.8
+    dynamicInjections:
+    - injectionType: 2
+      spawnChance: 0.5
+    - injectionType: 4
+      spawnChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 8
     roomType: 2
@@ -93,6 +115,9 @@ MonoBehaviour:
     childrenIndices: 
     eventType: 5
     eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 4
+      spawnChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 9
     roomType: 1
@@ -102,6 +127,15 @@ MonoBehaviour:
     childrenIndices: 0a0000000b000000
     eventType: 0
     eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 1
+      spawnChance: 0.5
+    - injectionType: 2
+      spawnChance: 0.3
+    - injectionType: 3
+      spawnChance: 0.5
+    - injectionType: 4
+      spawnChance: 0.3
     position: {x: 0, y: 0}
   - nodeName: 10
     roomType: 2
@@ -110,7 +144,10 @@ MonoBehaviour:
     requiredDir: 2
     childrenIndices: 
     eventType: 2
-    eventChance: 0.5
+    eventChance: 0.7
+    dynamicInjections:
+    - injectionType: 4
+      spawnChance: 0.2
     position: {x: 0, y: 0}
   - nodeName: 11
     roomType: 1
@@ -119,7 +156,14 @@ MonoBehaviour:
     requiredDir: 3
     childrenIndices: 0c0000000d000000
     eventType: 0
-    eventChance: 0.4
+    eventChance: 0
+    dynamicInjections:
+    - injectionType: 1
+      spawnChance: 0.5
+    - injectionType: 3
+      spawnChance: 0.3
+    - injectionType: 2
+      spawnChance: 0.3
     position: {x: 0, y: 0}
   - nodeName: 12
     roomType: 2
@@ -129,6 +173,9 @@ MonoBehaviour:
     childrenIndices: 
     eventType: 2
     eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 4
+      spawnChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 13
     roomType: 1
@@ -136,8 +183,17 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 1
     childrenIndices: 0e000000
-    eventType: 4
-    eventChance: 0
+    eventType: 0
+    eventChance: 0.7
+    dynamicInjections:
+    - injectionType: 4
+      spawnChance: 0.5
+    - injectionType: 3
+      spawnChance: 0.4
+    - injectionType: 2
+      spawnChance: 0.4
+    - injectionType: 1
+      spawnChance: 0.4
     position: {x: 0, y: 0}
   - nodeName: 14
     roomType: 1
@@ -145,8 +201,15 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 0f000000
-    eventType: 8
+    eventType: 0
     eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 1
+      spawnChance: 0.7
+    - injectionType: 3
+      spawnChance: 0.5
+    - injectionType: 2
+      spawnChance: 0.4
     position: {x: 0, y: 0}
   - nodeName: 15
     roomType: 1
@@ -154,8 +217,11 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 100000001100000012000000
-    eventType: 9
+    eventType: 0
     eventChance: 0.4
+    dynamicInjections:
+    - injectionType: 4
+      spawnChance: 0
     position: {x: 0, y: 0}
   - nodeName: 16
     roomType: 2
@@ -163,8 +229,11 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 0
     childrenIndices: 
-    eventType: 0
+    eventType: 5
     eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 4
+      spawnChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 17
     roomType: 2
@@ -174,6 +243,9 @@ MonoBehaviour:
     childrenIndices: 
     eventType: 5
     eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 4
+      spawnChance: 0.2
     position: {x: 0, y: 0}
   - nodeName: 18
     roomType: 1
@@ -181,8 +253,11 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 3
     childrenIndices: 1300000014000000
-    eventType: 8
+    eventType: 0
     eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 1
+      spawnChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 19
     roomType: 2
@@ -190,8 +265,13 @@ MonoBehaviour:
     forceDirection: 0
     requiredDir: 3
     childrenIndices: 
-    eventType: 6
+    eventType: 5
     eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 2
+      spawnChance: 0.5
+    - injectionType: 3
+      spawnChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 20
     roomType: 1
@@ -199,8 +279,13 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 0
     childrenIndices: 15000000
-    eventType: 9
-    eventChance: 0.4
+    eventType: 0
+    eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 4
+      spawnChance: 0.5
+    - injectionType: 3
+      spawnChance: 0.2
     position: {x: 0, y: 0}
   - nodeName: 21
     roomType: 1
@@ -208,8 +293,13 @@ MonoBehaviour:
     forceDirection: 1
     requiredDir: 0
     childrenIndices: 1600000017000000
-    eventType: 8
+    eventType: 0
     eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 1
+      spawnChance: 0.7
+    - injectionType: 4
+      spawnChance: 0.3
     position: {x: 0, y: 0}
   - nodeName: 22
     roomType: 2
@@ -218,7 +308,10 @@ MonoBehaviour:
     requiredDir: 2
     childrenIndices: 
     eventType: 5
-    eventChance: 0.5
+    eventChance: 0.3
+    dynamicInjections:
+    - injectionType: 4
+      spawnChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 23
     roomType: 1
@@ -227,7 +320,10 @@ MonoBehaviour:
     requiredDir: 3
     childrenIndices: 18000000
     eventType: 0
-    eventChance: 0
+    eventChance: 0.5
+    dynamicInjections:
+    - injectionType: 1
+      spawnChance: 0.5
     position: {x: 0, y: 0}
   - nodeName: 24
     roomType: 3
@@ -237,10 +333,12 @@ MonoBehaviour:
     childrenIndices: 
     eventType: 0
     eventChance: 0
+    dynamicInjections: []
     position: {x: 0, y: 0}
   startRoomPrefabs:
   - {fileID: 4300262421782183009, guid: 8f50fd485e0a6cf41bb9c22cdddb06f8, type: 3}
   normalRoomPrefabs:
+  - {fileID: 3204592522672744526, guid: f861ae2628a681f46a4b660b60c8dc0a, type: 3}
   - {fileID: 8875035170029933033, guid: 3aa08c7287f243641b80c231601e9db6, type: 3}
   - {fileID: 4732715494245023263, guid: 8885add883876064bb54c3e213bfe484, type: 3}
   - {fileID: 6753720205058382146, guid: c589b944c7c58504b938eb7af356395f, type: 3}
@@ -260,6 +358,7 @@ MonoBehaviour:
   - {fileID: 5035022089927105487, guid: 9b0a5996ed4b17647ade512760d71ab5, type: 3}
   - {fileID: 5035022089927105487, guid: 55835b3283f3e7141896de72fcb2e99e, type: 3}
   - {fileID: 4732715494245023263, guid: 3af3e5c07ceb88542b0020541581e31e, type: 3}
+  - {fileID: 3204592522672744526, guid: 1c4f66ae723facd47a8e1daf25edbc31, type: 3}
   goalRoomPrefabs:
   - {fileID: 4300262421782183009, guid: 629557783e1fbaf4a905a6afff8194b5, type: 3}
   - {fileID: 4300262421782183009, guid: 4c91ee2c400873f4cbf40ccced009d32, type: 3}
@@ -271,14 +370,6 @@ MonoBehaviour:
   - {fileID: 3204592522672744526, guid: 1fad8cddc35674d4bbf3ebb39d7f78f6, type: 3}
   - {fileID: 3204592522672744526, guid: 2dbb5fa555edd204e85d31afc617535f, type: 3}
   - {fileID: 3204592522672744526, guid: 1799b5d1362ccc340b9040c0af0d48b1, type: 3}
-  runeRoomPrefabs:
-  - {fileID: 3204592522672744526, guid: cbc91db27c8deb243b35a37342361589, type: 3}
-  - {fileID: 3204592522672744526, guid: f861ae2628a681f46a4b660b60c8dc0a, type: 3}
-  - {fileID: 3204592522672744526, guid: 0ab8ffae19089344282b3a7f96b5a27b, type: 3}
-  - {fileID: 3204592522672744526, guid: f3515f870ba02c448898a6ff4df8a5a7, type: 3}
-  - {fileID: 3204592522672744526, guid: 17b76c1750f9c1642a0f21ad5c36b13a, type: 3}
-  - {fileID: 3204592522672744526, guid: 62858f4fa97ae2448833957f6af8947c, type: 3}
-  - {fileID: 3204592522672744526, guid: 1c4f66ae723facd47a8e1daf25edbc31, type: 3}
   rewardRoomPrefabs:
   - {fileID: 3204592522672744526, guid: 8406435077a98474b905cd546f21468b, type: 3}
   - {fileID: 3204592522672744526, guid: be95aacc9de6b8146a55e73f172ffb8d, type: 3}
@@ -307,19 +398,14 @@ MonoBehaviour:
     maxAllowed: 1
     currentCount: 0
     remainingCandidates: 0
-  - eventType: 4
-    minRequired: 3
-    maxAllowed: 4
-    currentCount: 1
-    remainingCandidates: 0
   - eventType: 5
     minRequired: 0
     maxAllowed: 1
     currentCount: 1
     remainingCandidates: 0
-  - eventType: 6
-    minRequired: 0
-    maxAllowed: 1
+  - eventType: 4
+    minRequired: 3
+    maxAllowed: 4
     currentCount: 0
     remainingCandidates: 0
   - eventType: 7
@@ -327,20 +413,36 @@ MonoBehaviour:
     maxAllowed: 2
     currentCount: 0
     remainingCandidates: 0
-  - eventType: 9
-    minRequired: 4
-    maxAllowed: 6
-    currentCount: 2
-    remainingCandidates: 0
-  - eventType: 9
-    minRequired: 4
-    maxAllowed: 6
-    currentCount: 0
-    remainingCandidates: 0
   - eventType: 2
     minRequired: 1
     maxAllowed: 2
-    currentCount: 2
+    currentCount: 0
+    remainingCandidates: 0
+  - eventType: 10
+    minRequired: 0
+    maxAllowed: 2
+    currentCount: 0
+    remainingCandidates: 0
+  injectionLimits:
+  - injectionType: 1
+    minRequired: 3
+    maxAllowed: 4
+    currentCount: 0
+    remainingCandidates: 0
+  - injectionType: 2
+    minRequired: 2
+    maxAllowed: 3
+    currentCount: 0
+    remainingCandidates: 0
+  - injectionType: 3
+    minRequired: 3
+    maxAllowed: 4
+    currentCount: 0
+    remainingCandidates: 0
+  - injectionType: 4
+    minRequired: 1
+    maxAllowed: 3
+    currentCount: 0
     remainingCandidates: 0
   anchorSpawnChance: 0.3
   echoNodePool:

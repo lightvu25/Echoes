@@ -150,7 +150,10 @@ public class PlayerMovement : MonoBehaviour
     {
         SetGravityScale(Data.gravityScale);
         isFacingRight = transform.localScale.x > 0;
-        PlayerInteract.Instance.OnDead += PlayerInteract_OnDead;
+        if (PlayerInteract.Instance != null)
+        {
+            PlayerInteract.Instance.OnDead += PlayerInteract_OnDead;
+        }
     }
 
     private void Update()
@@ -298,37 +301,9 @@ public class PlayerMovement : MonoBehaviour
 
             LastOnWallTime = Mathf.Max(LastOnWallRightTime, LastOnWallLeftTime);
 
-            if (!isLedgeGrabbing && _canLedgeGrab && !isGrounded)
+            if (!isLedgeGrabbing && _canLedgeGrab && !isGrounded && !isDashing)
             {
-                bool chestHitsWall = fromWall;
-                bool headClear     = _ledgeCheck != null && !Physics2D.OverlapBox(_ledgeCheck.position, _ledgeCheckSize, 0f, _wallLayer);
-                bool isFacingWall = (fromWall && isFacingRight) || (fromWall && !isFacingRight);
-
-                bool isRealLedge = false;
-                if (chestHitsWall && headClear && fromHit.collider != null)
-                {
-                    float directionX = isFacingRight ? 1f : -1f;
-                    // Raycast higher up and further in to accommodate colliders
-                    Vector2 rayOrigin = new Vector2(fromHit.point.x + (directionX * 0.15f), _ledgeCheck.position.y + 0.5f);
-
-                    RaycastHit2D ledgeTopHit = Physics2D.Raycast(rayOrigin, Vector2.down, 1.0f, _wallLayer);
-                    Debug.DrawRay(rayOrigin, Vector2.down * 1.0f, Color.cyan);
-
-                    if (ledgeTopHit.collider != null)
-                    {
-                        isRealLedge = true;
-                    }
-                }
-
-                if (chestHitsWall && headClear && isFacingWall && !_ledgeCoroutineRunning && isRealLedge)
-                {
-                    isClimbing = false;
-                    isSliding = false;
-                    isWallJumping = false;
-                    rb.linearVelocity = Vector2.zero; 
-                    
-                    StartCoroutine(LedgeClimbCoroutine());
-                }
+                CheckLedgeGrab(fromWall, fromHit);
             }
         }
 
@@ -872,43 +847,139 @@ public class PlayerMovement : MonoBehaviour
         _dashesLeft = Mathf.Min(Data.dashAmount, _dashesLeft + 1);
     }
 
-    private IEnumerator LedgeClimbCoroutine()
+    private void CheckLedgeGrab(bool fromWall, RaycastHit2D fromHit)
     {
-        _ledgeCoroutineRunning = true;
+        bool chestHitsWall = fromWall;
+        bool headClear     = _ledgeCheck != null && !Physics2D.OverlapBox(_ledgeCheck.position, _ledgeCheckSize, 0f, _wallLayer);
+        bool isFacingWall  = (fromWall && isFacingRight) || (fromWall && !isFacingRight);
+
+        if (chestHitsWall && headClear && isFacingWall && !_ledgeCoroutineRunning && fromHit.collider != null)
+        {
+            float directionX = isFacingRight ? 1f : -1f;
+            Vector2 rayOrigin = new Vector2(fromHit.point.x + (directionX * 0.15f), _ledgeCheck.position.y + 0.5f);
+
+            RaycastHit2D ledgeTopHit = Physics2D.Raycast(rayOrigin, Vector2.down, 1.0f, _wallLayer);
+
+            if (ledgeTopHit.collider != null)
+            {
+                Vector2 ledgeCorner = new Vector2(fromHit.point.x, ledgeTopHit.point.y);
+                float hangX = transform.position.x;
+                float hangY = ledgeCorner.y - 0.55f; 
+                Vector2 targetHangPos = new Vector2(hangX, hangY);
+
+                StartLedgeGrab(targetHangPos);
+            }
+        }
+    }
+
+    private void StartLedgeGrab(Vector2 targetHangPos)
+    {
+        isClimbing = false;
+        isSliding = false;
+        isWallJumping = false;
+        isPlunging = false;
+        
         isLedgeGrabbing = true;
         _canLedgeGrab = false;
+        _ledgeCoroutineRunning = true;
+        
         rb.linearVelocity = Vector2.zero;
         SetGravityScale(0);
-
+        
         OnGrab?.Invoke(this, EventArgs.Empty);
 
-        // Wait for horizontal input towards the ledge to trigger get up
-        float directionX = isFacingRight ? 1f : -1f;
-        while (Mathf.Sign(_moveInput.x) != Mathf.Sign(directionX) || Mathf.Abs(_moveInput.x) < 0.1f)
+        StartCoroutine(SmoothMoveToHang(targetHangPos));
+    }
+
+    private IEnumerator SmoothMoveToHang(Vector2 targetPos)
+    {
+        float duration = 0.08f; 
+        float timer = 0f;
+        Vector2 startPos = transform.position;
+
+        while (timer < duration)
         {
-            // if player presses down or away, we could cancel the ledge grab, but for now just wait.
-            // Alternatively, pressing down cancels it:
-            if (_moveInput.y < -0.1f || (Mathf.Sign(_moveInput.x) != Mathf.Sign(directionX) && Mathf.Abs(_moveInput.x) > 0.1f))
-            {
-                isLedgeGrabbing = false;
-                SetGravityScale(Data.gravityScale);
-                _ledgeCoroutineRunning = false;
-                yield return new WaitForSeconds(0.15f);
-                _canLedgeGrab = true;
-                yield break; // Exit coroutine
-            }
+            timer += Time.deltaTime;
+            float t = timer / duration;
+            transform.position = Vector2.Lerp(startPos, targetPos, t);
             yield return null;
         }
 
+        transform.position = targetPos;
+        StartCoroutine(WaitForLedgeInput());
+    }
+
+    private IEnumerator WaitForLedgeInput()
+    {
+        float directionX = isFacingRight ? 1f : -1f;
+        
+        while (isLedgeGrabbing)
+        {
+            rb.linearVelocity = Vector2.zero;
+            
+            if (Mathf.Sign(_moveInput.x) == Mathf.Sign(directionX) && Mathf.Abs(_moveInput.x) > 0.1f)
+            {
+                BeginClimb();
+                yield break;
+            }
+            
+            if (_moveInput.y < -0.1f || (Mathf.Sign(_moveInput.x) != Mathf.Sign(directionX) && Mathf.Abs(_moveInput.x) > 0.1f))
+            {
+                ExitLedgeGrab();
+                yield break;
+            }
+            
+            yield return null;
+        }
+    }
+
+    private void BeginClimb()
+    {
         OnGetup?.Invoke(this, EventArgs.Empty);
-        yield return new WaitForSeconds(ledgeGrabDuration);
-
+        
         float xDir = isFacingRight ? _ledgeClimbXOffset : -_ledgeClimbXOffset;
-        rb.MovePosition(rb.position + new Vector2(xDir, _ledgeClimbYOffset));
+        Vector2 targetClimbPos = transform.position + new Vector3(xDir, _ledgeClimbYOffset, 0f);
 
-        SetGravityScale(Data.gravityScale);
+        StartCoroutine(SmoothClimb(targetClimbPos));
+    }
+
+    private IEnumerator SmoothClimb(Vector2 targetPos)
+    {
+        float duration = ledgeGrabDuration; 
+        float timer = 0f;
+        Vector2 startPos = transform.position;
+
+        yield return new WaitForSeconds(0.1f); // Brief pause to sync with animation pulling up
+        duration -= 0.1f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / duration;
+            t = t * t * (3f - 2f * t); 
+            
+            transform.position = Vector2.Lerp(startPos, targetPos, t);
+            yield return null;
+        }
+
+        transform.position = targetPos;
+        FinishClimb();
+    }
+
+    private void FinishClimb()
+    {
+        ExitLedgeGrab();
+    }
+
+    private void ExitLedgeGrab()
+    {
         isLedgeGrabbing = false;
+        SetGravityScale(Data.gravityScale);
+        StartCoroutine(ResetLedgeGrabCooldown());
+    }
 
+    private IEnumerator ResetLedgeGrabCooldown()
+    {
         yield return new WaitForSeconds(0.15f);
         _canLedgeGrab = true;
         _ledgeCoroutineRunning = false;
@@ -951,7 +1022,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnDestroy()
     {
-        PlayerInteract.Instance.OnDead -= PlayerInteract_OnDead;
+        if (PlayerInteract.Instance != null)
+        {
+            PlayerInteract.Instance.OnDead -= PlayerInteract_OnDead;
+        }
     }
 
     private void OnDisable()

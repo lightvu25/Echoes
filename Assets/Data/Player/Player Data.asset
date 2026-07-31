@@ -14,29 +14,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
   gravityStrength: -37.5
   gravityScale: 1.875
-  fallGravityMult: 1.9
-  maxFallSpeed: 18
-  fastFallGravityMult: 2.5
-  maxFastFallSpeed: 25
-  runMaxSpeed: 11.5
-  runAcceleration: 9.5
-  runAccelAmount: 41.304348
-  runDecceleration: 10
-  runDeccelAmount: 43.47826
-  accelInAir: 0.65
-  deccelInAir: 0.65
-  doConserveMomentum: 0
+  fallGravityMult: 2.15
+  maxFallSpeed: 20
+  fastFallGravityMult: 2.9
+  maxFastFallSpeed: 26
+  runMaxSpeed: 7.5
+  runAcceleration: 7.5
+  runAccelAmount: 50
+  runDecceleration: 7.5
+  runDeccelAmount: 53.333332
+  accelInAir: 0.75
+  deccelInAir: 0.6
+  doConserveMomentum: 1
   jumpHeight: 3
   jumpTimeToApex: 0.4
   jumpForce: 15
-  jumpCutGravityMult: 2.5
-  jumpHangGravityMult: 0.5
-  jumpHangTimeThreshold: 1
-  jumpHangAccelerationMult: 1.1
-  jumpHangMaxSpeedMult: 1.2
-  wallJumpForce: {x: 13, y: 16}
+  jumpCutGravityMult: 2.4
+  jumpHangGravityMult: 0.6
+  jumpHangTimeThreshold: 0.9
+  jumpHangAccelerationMult: 1.2
+  jumpHangMaxSpeedMult: 1.15
+  wallJumpForce: {x: 12, y: 15}
   wallJumpRunLerp: 0.5
-  wallJumpTime: 0.15
+  wallJumpTime: 0.18
   doTurnOnWallJump: 0
   wallJumpDuration: 1
   runAccelInAirMultiplier: 0.5
@@ -45,14 +45,14 @@ MonoBehaviour:
   jumpHangMaxSpeedMultiplier: 1.2
   slideSpeed: 3
   slideAccel: 10
-  coyoteTime: 0.1
-  jumpInputBufferTime: 0.1
+  coyoteTime: 0.12
+  jumpInputBufferTime: 0.12
   dashAmount: 1
-  dashSpeed: 25
+  dashSpeed: 20
   dashSleepTime: 0.05
-  dashAttackTime: 0.15
-  dashEndTime: 0.15
+  dashAttackTime: 0.12
+  dashEndTime: 0.1
   dashEndSpeed: {x: 10, y: 10}
-  dashEndRunLerp: 0.5
+  dashEndRunLerp: 0.6
   dashRefillTime: 0.1
   dashInputBufferTime: 0.1

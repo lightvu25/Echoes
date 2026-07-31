@@ -9,35 +9,60 @@ public class EnemyEvolutionModifier : MonoBehaviour
 {
     private EnemyBrain brain;
     private EnemySensor sensor;
+    private EnemyVisual visual;
+    private EvolutionManager subscribedManager;
 
     private void Awake()
     {
         brain = GetComponent<EnemyBrain>();
         sensor = GetComponent<EnemySensor>();
+        visual = GetComponent<EnemyVisual>();
     }
 
     private void OnEnable()
     {
-        if (EvolutionManager.Instance != null)
-        {
-            EvolutionManager.Instance.OnTierChanged += HandleTierChanged;
-            EvolutionManager.Instance.OnGlobalAggroTriggered += HandleGlobalAggro;
+        TrySubscribeToEvolutionManager();
+    }
 
-            // Late-spawn support: immediately apply the current tier
-            EvolutionTierData currentTier = EvolutionManager.Instance.GetCurrentTierData();
-            if (currentTier != null)
-            {
-                brain.ApplyEvolutionTier(currentTier);
-            }
+    private void Update()
+    {
+        if (subscribedManager == null)
+        {
+            TrySubscribeToEvolutionManager();
         }
     }
 
     private void OnDisable()
     {
-        if (EvolutionManager.Instance != null)
+        if (subscribedManager != null)
         {
-            EvolutionManager.Instance.OnTierChanged -= HandleTierChanged;
-            EvolutionManager.Instance.OnGlobalAggroTriggered -= HandleGlobalAggro;
+            subscribedManager.OnTierChanged -= HandleTierChanged;
+            subscribedManager.OnGlobalAggroTriggered -= HandleGlobalAggro;
+            subscribedManager = null;
+        }
+
+        visual?.SetSharedVisionIcon(null);
+    }
+
+    private void TrySubscribeToEvolutionManager()
+    {
+        EvolutionManager manager = EvolutionManager.Instance;
+        if (manager == null || subscribedManager == manager) return;
+
+        if (subscribedManager != null)
+        {
+            subscribedManager.OnTierChanged -= HandleTierChanged;
+            subscribedManager.OnGlobalAggroTriggered -= HandleGlobalAggro;
+        }
+
+        subscribedManager = manager;
+        subscribedManager.OnTierChanged += HandleTierChanged;
+        subscribedManager.OnGlobalAggroTriggered += HandleGlobalAggro;
+
+        EvolutionTierData currentTier = subscribedManager.GetCurrentTierData();
+        if (currentTier != null)
+        {
+            ApplyTier(currentTier);
         }
     }
 
@@ -47,7 +72,15 @@ public class EnemyEvolutionModifier : MonoBehaviour
     /// </summary>
     private void HandleTierChanged(EvolutionTierData newTier)
     {
-        brain.ApplyEvolutionTier(newTier);
+        ApplyTier(newTier);
+    }
+
+    private void ApplyTier(EvolutionTierData tier)
+    {
+        if (tier == null) return;
+
+        brain.ApplyEvolutionTier(tier);
+        visual?.SetSharedVisionIcon(tier.isGlobalAggro ? tier.sharedVisionIcon : null);
     }
 
     /// <summary>
@@ -66,9 +99,9 @@ public class EnemyEvolutionModifier : MonoBehaviour
         }
 
         // Radius filtering: only aggro enemies within the configured radius
-        if (EvolutionManager.Instance != null)
+        if (subscribedManager != null)
         {
-            float radius = EvolutionManager.Instance.GlobalAggroRadius;
+            float radius = subscribedManager.GlobalAggroRadius;
             if (!float.IsPositiveInfinity(radius) && radius > 0f)
             {
                 if (Vector3.Distance(transform.position, spotterPosition) > radius)

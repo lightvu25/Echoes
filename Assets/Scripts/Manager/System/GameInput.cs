@@ -18,7 +18,7 @@ public class GameInput : MonoBehaviour
     public event Action OnExtractPressed;
     public event Action OnCancelPressed;
     public event Action OnHealPressed;
-    public event Action OnToolPressed;
+    public event Action<int> OnToolKeyPressed;
 
     [Header("Input Configuration")]
     [SerializeField] private InputConfig inputConfig;
@@ -74,7 +74,9 @@ public class GameInput : MonoBehaviour
         KeyCode extractKey = inputConfig != null ? inputConfig.extractKey : KeyCode.R;
         KeyCode cancelKey = inputConfig != null ? inputConfig.cancelKey : KeyCode.Escape;
         KeyCode healKey = inputConfig != null ? inputConfig.healKey : KeyCode.H;
-        KeyCode toolKey = inputConfig != null ? inputConfig.toolKey : KeyCode.T;
+        KeyCode tool1Key = inputConfig != null ? inputConfig.tool1Key : KeyCode.U;
+        KeyCode tool2Key = inputConfig != null ? inputConfig.tool2Key : KeyCode.Y;
+        KeyCode tool3Key = inputConfig != null ? inputConfig.tool3Key : KeyCode.T;
 
         if (Input.GetKeyDown(mapKey)) OnMapTogglePressed?.Invoke();
         if (Input.GetKeyDown(invKey)) OnInventoryPressed?.Invoke();
@@ -83,7 +85,9 @@ public class GameInput : MonoBehaviour
         if (Input.GetKeyDown(extractKey)) OnExtractPressed?.Invoke();
         if (Input.GetKeyDown(cancelKey)) OnCancelPressed?.Invoke();
         if (Input.GetKeyDown(healKey)) OnHealPressed?.Invoke();
-        if (Input.GetKeyDown(toolKey)) OnToolPressed?.Invoke();
+        if (Input.GetKeyDown(tool1Key)) OnToolKeyPressed?.Invoke(0);
+        if (Input.GetKeyDown(tool2Key)) OnToolKeyPressed?.Invoke(1);
+        if (Input.GetKeyDown(tool3Key)) OnToolKeyPressed?.Invoke(2);
     }
 
     private void ApplyBindings()

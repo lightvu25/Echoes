@@ -4,18 +4,38 @@ using UnityEngine;
 
 public class SpriteColorFlasher : MonoBehaviour
 {
+    private Coroutine flashRoutine;
+    private Color baseColor = Color.white;
+    private bool hasBaseColor = false;
+
     public void FlashColor(SpriteRenderer spriteRend, float duration, Color color) {
-        //TODO: Safety check that are sprite isn't already in use?
-        StartCoroutine(DoColorFlash(spriteRend, duration, color));
+        if (!hasBaseColor)
+        {
+            baseColor = spriteRend.color;
+            hasBaseColor = true;
+        }
+        
+        if (flashRoutine != null)
+        {
+            StopCoroutine(flashRoutine);
+        }
+        flashRoutine = StartCoroutine(DoColorFlash(spriteRend, duration, color));
     }
 
     private IEnumerator DoColorFlash(SpriteRenderer spriteRend, float duration, Color newColor) {
-        Color oldColor = spriteRend.color;
         spriteRend.color = newColor;
         yield return new WaitForSeconds(duration);
-        //Check to ensure the sprite's game object hasn't been destroyed
+        
         if(spriteRend != null) {
-            spriteRend.color = oldColor;
+            EchoStatusReceiver status = spriteRend.GetComponentInParent<EchoStatusReceiver>();
+            if (status != null)
+            {
+                spriteRend.color = status.CurrentTargetColor;
+            }
+            else
+            {
+                spriteRend.color = baseColor;
+            }
         }
     }
 }

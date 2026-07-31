@@ -169,50 +169,35 @@ public class PlayerInteract : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider2D)
     {
-        // if (collider2D.gameObject.TryGetComponent(out CoinPickup coinPickup))
-        // {
-        //     float coinPickupAmount = 10f;
-        //     coinPickups += coinPickupAmount;
-
-        // OnCoinPickup?.Invoke(this, new OnCoinPickupEventArgs
-        // {
-        //     coinPickup = coinPickup
-        // });
-        //     coinPickup.DestroySelf();
-        // }
-
-        if (collider2D.gameObject.TryGetComponent(out IInteractable interactable))
+        IInteractable interactable = collider2D.GetComponentInParent<IInteractable>();
+        if (interactable != null)
         {
             currentInteractable = interactable;
         }
 
-        if (collider2D.gameObject.TryGetComponent(out IExtractable extractable))
+        IExtractable extractable = collider2D.GetComponentInParent<IExtractable>();
+        if (extractable != null)
         {
             currentExtractable = extractable;
         }
-
     }
 
     private void OnTriggerExit2D(Collider2D collider2D)
     {
-        if (collider2D.gameObject.TryGetComponent(out IInteractable interactable))
+        IInteractable interactable = collider2D.GetComponentInParent<IInteractable>();
+        if (interactable != null && currentInteractable == interactable)
         {
-            if (currentInteractable == interactable)
-            {
-                currentInteractable = null;
-            }
+            currentInteractable = null;
         }
 
-        if (collider2D.gameObject.TryGetComponent(out IExtractable extractable))
+        IExtractable extractable = collider2D.GetComponentInParent<IExtractable>();
+        if (extractable != null && currentExtractable == extractable)
         {
-            if (currentExtractable == extractable)
+            currentExtractable = null;
+            if (extractionCoroutine != null)
             {
-                currentExtractable = null;
-                if (extractionCoroutine != null)
-                {
-                    StopCoroutine(extractionCoroutine);
-                    extractionCoroutine = null;
-                }
+                StopCoroutine(extractionCoroutine);
+                extractionCoroutine = null;
             }
         }
     }

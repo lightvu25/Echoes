@@ -22,8 +22,8 @@ public class DashAttack : MonoBehaviour, IEnemyAttack
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        sensor = GetComponent<EnemySensor>();
+        rb = GetComponentInParent<Rigidbody2D>();
+        sensor = GetComponentInParent<EnemySensor>();
     }
 
     public void ExecuteAttack()
@@ -50,6 +50,11 @@ public class DashAttack : MonoBehaviour, IEnemyAttack
         if (sensor != null && sensor.TargetPlayer != null)
         {
             dashDir = ((Vector2)sensor.TargetPlayer.position - (Vector2)transform.position).normalized;
+            if (GetComponentInParent<GroundMovement>() != null)
+            {
+                dashDir.y = 0;
+                dashDir.Normalize();
+            }
         }
 
         float timer = 0f;
@@ -78,6 +83,13 @@ public class DashAttack : MonoBehaviour, IEnemyAttack
             IDamageable target = hit.GetComponentInParent<IDamageable>();
             if (target == null || target.IsDead) continue;
             if (hitTargets.Contains(target)) continue;
+
+            bool isFriendlyFire = hit.GetComponentInParent<EnemyCombat>() != null;
+            if (isFriendlyFire && EvolutionManager.Instance != null && EvolutionManager.Instance.CurrentTierIndex >= 1)
+            {
+                continue; // Friendly fire disabled for tier 1, 2, 3
+            }
+
             hitTargets.Add(target);
 
             float dirX = target.Transform.position.x - transform.position.x;

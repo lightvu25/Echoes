@@ -66,7 +66,12 @@ public class DraggableEcho : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnDrag(PointerEventData eventData)
     {
         if (echoData == null) return;
-        transform.position = eventData.position;
+        
+        Canvas rootCanvas = GetComponentInParent<Canvas>().rootCanvas;
+        if (RectTransformUtility.ScreenPointToWorldPointInRectangle(rootCanvas.transform as RectTransform, eventData.position, eventData.pressEventCamera, out Vector3 worldPoint))
+        {
+            transform.position = worldPoint;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)

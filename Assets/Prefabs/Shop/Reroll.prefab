@@ -10,10 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1024122149274646982}
   - component: {fileID: 7086140709869426318}
+  - component: {fileID: 182533738620656206}
   - component: {fileID: 3519326556261117086}
   - component: {fileID: 3352869409940088422}
   - component: {fileID: -7229118635703635818}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Reroll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,6 +95,33 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!50 &182533738620656206
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1601520082815126743}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!61 &3519326556261117086
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -128,7 +156,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.015625, y: 0.5078125}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.48214287, y: -0.090909086}
@@ -138,7 +166,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.0001, y: 0.0001}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &3352869409940088422
 MonoBehaviour:
@@ -191,3 +219,5 @@ MonoBehaviour:
   targetSpriteRenderer: {fileID: 7086140709869426318}
   outlineThickness: 0.02
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  maxInteractions: 0
+  canInteractWithF: 1

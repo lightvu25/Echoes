@@ -50,6 +50,6 @@ public class CryoStasisModifier : IEchoModifier
         float currentProc = e.damageInfo.procCoefficient;
         bool procSuccessful = DamageCalculator.ShouldProc(baseChance, currentProc);
 
-        if (procSuccessful) status.ApplyFreeze(2f);
+        if (procSuccessful) status.ApplyFreeze(4f);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 
 public class RoomOutlineGenerator
 {
-    [MenuItem("Window/Tools/Generate Outline From Minimap Background")]
+    [MenuItem("Tools/Echoes/Generate Outline From Minimap Background")]
     public static void GenerateOutlineForAllRooms()
     {
         // Find all prefabs in the Rooms folder
@@ -113,6 +113,35 @@ public class RoomOutlineGenerator
 
         roomPolygon.isTrigger = true;
         roomPolygon.pathCount = pathCount;
+        
+        // --- NEW: Camera Bounds Object ---
+        Transform boundsTransform = room.transform.Find("CameraBounds");
+        GameObject cameraBoundsObj;
+        if (boundsTransform == null)
+        {
+            cameraBoundsObj = new GameObject("CameraBounds");
+            cameraBoundsObj.transform.SetParent(room.transform);
+            cameraBoundsObj.transform.localPosition = Vector3.zero;
+            cameraBoundsObj.transform.localRotation = Quaternion.identity;
+            cameraBoundsObj.transform.localScale = Vector3.one;
+            
+            // Set layer to something ignored by physics if needed, but isTrigger usually suffices.
+        }
+        else
+        {
+            cameraBoundsObj = boundsTransform.gameObject;
+        }
+
+        PolygonCollider2D boundsPolygon = cameraBoundsObj.GetComponent<PolygonCollider2D>();
+        if (boundsPolygon == null)
+        {
+            boundsPolygon = cameraBoundsObj.AddComponent<PolygonCollider2D>();
+        }
+        boundsPolygon.isTrigger = true;
+        boundsPolygon.pathCount = pathCount;
+        
+        room.CameraBoundsCollider = boundsPolygon; // Link it!
+
         for (int i = 0; i < pathCount; i++)
         {
             Vector2[] path = new Vector2[compositeCollider.GetPathPointCount(i)];
@@ -129,6 +158,7 @@ public class RoomOutlineGenerator
             }
 
             roomPolygon.SetPath(i, path);
+            boundsPolygon.SetPath(i, path);
         }
 
         // 5. Remove temporary components

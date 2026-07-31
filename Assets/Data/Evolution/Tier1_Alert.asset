@@ -19,4 +19,5 @@ MonoBehaviour:
   visionRangeMultiplier: 1.2
   canBackstep: 0
   isGlobalAggro: 0
-  canShareVision: 1
+  canShareVision: 0
+  sharedVisionIcon: {fileID: 0}

@@ -11,7 +11,7 @@ public class GlitchedZone : MonoBehaviour
     {
         if (collision.CompareTag("Enemy") || collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
-            EchoStatusReceiver status = collision.GetComponent<EchoStatusReceiver>();
+            EchoStatusReceiver status = collision.GetComponentInParent<EchoStatusReceiver>();
             if (status != null)
             {
                 status.ApplySilence(0.5f);

@@ -5,6 +5,11 @@ using DG.Tweening;
 
 public class EnemyVisual : MonoBehaviour, IFeedbackProvider
 {
+    private const float SharedVisionIconWorldScale = 0.65f;
+    private const float SharedVisionIconHeightPadding = 0.25f;
+    private const float SharedVisionPulseSpeed = 3f;
+    private const float SharedVisionPulseAmount = 0.08f;
+
     private GroundMovement groundMovement;
     private EnemyBrain brain;
     private EnemySensor sensor;
@@ -24,6 +29,9 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
     private bool hasShownNotice = false;
     private float lastNoticeTime = -10f;
     private Tween alertReturnTween;
+    private GameObject sharedVisionIndicator;
+    private SpriteRenderer sharedVisionRenderer;
+    private Vector3 sharedVisionBaseScale;
 
     private SpriteColorFlasher colorFlasher;
 
@@ -39,8 +47,22 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
+    private bool hasIsRunning;
+    private bool hasIsPatroling;
+    private bool hasIsAttacking;
+
     private void Start()
     {
+        if (animator != null && animator.runtimeAnimatorController != null)
+        {
+            foreach (var param in animator.parameters)
+            {
+                if (param.name == "isRunning") hasIsRunning = true;
+                if (param.name == "isPatroling") hasIsPatroling = true;
+                if (param.name == "isAttacking") hasIsAttacking = true;
+            }
+        }
+
         if (groundMovement != null)
         {
             groundMovement.OnPatrol += Movement_OnPatrol;
@@ -65,6 +87,76 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
     {
         if (hasShownNotice && sensor != null && sensor.IsPlayerOutsideVision())
             hasShownNotice = false;
+
+        if (sharedVisionIndicator != null && sharedVisionIndicator.activeSelf)
+        {
+            sharedVisionIndicator.transform.position = GetSharedVisionWorldPosition();
+            float pulse = 1f + Mathf.Sin(Time.time * SharedVisionPulseSpeed) * SharedVisionPulseAmount;
+            sharedVisionIndicator.transform.localScale = sharedVisionBaseScale * pulse;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (sharedVisionIndicator != null)
+        {
+            sharedVisionIndicator.SetActive(false);
+        }
+    }
+
+    public void SetSharedVisionIcon(Sprite icon)
+    {
+        if (icon == null)
+        {
+            if (sharedVisionIndicator != null)
+            {
+                sharedVisionIndicator.SetActive(false);
+            }
+            return;
+        }
+
+        if (sharedVisionIndicator == null)
+        {
+            sharedVisionIndicator = new GameObject("Shared Vision Eye");
+            sharedVisionIndicator.layer = gameObject.layer;
+            sharedVisionIndicator.transform.SetParent(transform, true);
+
+            sharedVisionRenderer = sharedVisionIndicator.AddComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                sharedVisionRenderer.sortingLayerID = spriteRenderer.sortingLayerID;
+                sharedVisionRenderer.sortingOrder = spriteRenderer.sortingOrder + 20;
+            }
+            else
+            {
+                sharedVisionRenderer.sortingOrder = 20;
+            }
+
+            Vector3 parentScale = transform.lossyScale;
+            sharedVisionBaseScale = new Vector3(
+                SharedVisionIconWorldScale / Mathf.Max(Mathf.Abs(parentScale.x), 0.001f),
+                SharedVisionIconWorldScale / Mathf.Max(Mathf.Abs(parentScale.y), 0.001f),
+                1f);
+        }
+
+        sharedVisionRenderer.sprite = icon;
+        sharedVisionIndicator.transform.position = GetSharedVisionWorldPosition();
+        sharedVisionIndicator.transform.localScale = sharedVisionBaseScale;
+        sharedVisionIndicator.SetActive(true);
+    }
+
+    private Vector3 GetSharedVisionWorldPosition()
+    {
+        if (spriteRenderer == null)
+        {
+            return transform.position + Vector3.up * 2f;
+        }
+
+        Bounds bodyBounds = spriteRenderer.bounds;
+        return new Vector3(
+            bodyBounds.center.x,
+            bodyBounds.max.y + SharedVisionIconHeightPadding,
+            spriteRenderer.transform.position.z);
     }
 
     private void OnDestroy()
@@ -89,21 +181,21 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
 
     private void Movement_OnPatrol(object sender, EventArgs e)
     {
-        animator.SetBool("isRunning", false);
-        animator.SetBool("isPatroling", true);
+        if (hasIsRunning) animator.SetBool("isRunning", false);
+        if (hasIsPatroling) animator.SetBool("isPatroling", true);
     }
 
     private void Movement_OnIdle(object sender, EventArgs e)
     {
-        animator.SetBool("isRunning", false);
-        animator.SetBool("isPatroling", false);
+        if (hasIsRunning) animator.SetBool("isRunning", false);
+        if (hasIsPatroling) animator.SetBool("isPatroling", false);
     }
 
     private void Brain_OnAttack(object sender, EventArgs e)
     {
-        animator.SetTrigger("isAttacking");
-        animator.SetBool("isPatroling", false);
-        animator.SetBool("isRunning", false);
+        if (hasIsAttacking) animator.SetTrigger("isAttacking");
+        if (hasIsPatroling) animator.SetBool("isPatroling", false);
+        if (hasIsRunning) animator.SetBool("isRunning", false);
     }
 
     private void Brain_OnStateChanged(object sender, EnemyBrain.OnStateArgs e)

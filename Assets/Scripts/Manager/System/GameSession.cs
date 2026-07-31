@@ -64,6 +64,8 @@ public class GameSession : MonoBehaviour
     }
     public void HandlePlayerDeath()
     {
+        int lostShards = currentRun.currentAstralShards;
+
         currentProfile.totalGold += currentRun.runGold;
         currentProfile.deaths++;
         if (PlayerStats.Instance != null)
@@ -75,13 +77,11 @@ public class GameSession : MonoBehaviour
             currentRun.runGold = 0;
         }
         SaveManager.saveProfile(currentProfile);
-        StartCoroutine(HandlePlayerDeathSequence());
+        StartCoroutine(HandlePlayerDeathSequence(lostShards));
     }
 
-    private IEnumerator HandlePlayerDeathSequence()
+    private IEnumerator HandlePlayerDeathSequence(int lostShards)
     {
-        int lostShards = currentRun.runGold;
-
         CutsceneManager cutsceneManager = FindFirstObjectByType<CutsceneManager>();
         if (cutsceneManager != null)
         {

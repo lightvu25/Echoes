@@ -9,8 +9,10 @@ public class EnemyAnimation : MonoBehaviour
 
     private void Awake()
     {
-        meleeAttack = GetComponentInParent<MeleeAttack>();
         enemyBrain = GetComponentInParent<EnemyBrain>();
+        meleeAttack = enemyBrain != null
+            ? enemyBrain.GetComponentInChildren<MeleeAttack>(true)
+            : GetComponentInParent<MeleeAttack>();
         animator = GetComponent<Animator>();
         audioManager = GetComponentInParent<EntityAudioManager>();
     }
@@ -93,7 +95,24 @@ public class EnemyAnimation : MonoBehaviour
 
     private void EnemyBrain_OnAttack(object sender, System.EventArgs e)
     {
-        if (HasParameter("Attack")) animator.SetTrigger("Attack");
+        var dualAttack = enemyBrain.GetComponent<MeleeDualAttack>();
+        if (dualAttack != null)
+        {
+            if (dualAttack.ActiveAttack == dualAttack.DashAttack)
+            {
+                if (HasParameter("DashAttack")) animator.SetTrigger("DashAttack");
+                else if (HasParameter("Attack")) animator.SetTrigger("Attack");
+            }
+            else
+            {
+                if (HasParameter("MeleeAttack")) animator.SetTrigger("MeleeAttack");
+                else if (HasParameter("Attack")) animator.SetTrigger("Attack");
+            }
+        }
+        else
+        {
+            if (HasParameter("Attack")) animator.SetTrigger("Attack");
+        }
     }
 
     private void Health_OnDamaged(object sender, HealthSystem.DamageEventArgs e)
@@ -115,11 +134,25 @@ public class EnemyAnimation : MonoBehaviour
 
     public void TriggerHitbox()
     {        
+        var dualAttack = enemyBrain != null ? enemyBrain.GetComponent<MeleeDualAttack>() : null;
+        if (dualAttack != null && dualAttack.ActiveAttack == dualAttack.DashAttack)
+        {
+            // Dash Attack handles its own damage loop, ignore the animation event to prevent double-hitting!
+            return;
+        }
+
         meleeAttack?.TriggerHitbox();
     }
 
     public void FinishAttack()
     { 
+        var dualAttack = enemyBrain != null ? enemyBrain.GetComponent<MeleeDualAttack>() : null;
+        if (dualAttack != null && dualAttack.ActiveAttack == dualAttack.DashAttack)
+        {
+            // Dash Attack finishes on its own timer, ignore the animation event!
+            return;
+        }
+
         meleeAttack?.FinishAttack();
     }
 

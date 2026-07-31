@@ -18,6 +18,9 @@ public class MemorySlot : MonoBehaviour
     [Tooltip("Foreground Image that displays the MemoryItemData icon.")]
     [SerializeField] private Image itemIcon;
 
+    [Tooltip("Background Image that displays the Playstyle symbol.")]
+    [SerializeField] private Image playstyleIcon;
+
     [Tooltip("Animator controlling 'Formed' and 'Shattered' trigger states.")]
     [SerializeField] private Animator animator;
 
@@ -52,6 +55,26 @@ public class MemorySlot : MonoBehaviour
         {
             itemIcon.sprite  = null;
             itemIcon.enabled = false;
+        }
+    }
+
+    /// <summary>
+    /// Sets the playstyle background icon.
+    /// </summary>
+    /// <param name="icon">The sprite to display for the playstyle. Pass null to clear.</param>
+    public void SetPlaystyleIcon(Sprite icon)
+    {
+        if (playstyleIcon == null) return;
+
+        if (icon != null)
+        {
+            playstyleIcon.sprite = icon;
+            playstyleIcon.enabled = true;
+        }
+        else
+        {
+            playstyleIcon.sprite = null;
+            playstyleIcon.enabled = false;
         }
     }
 

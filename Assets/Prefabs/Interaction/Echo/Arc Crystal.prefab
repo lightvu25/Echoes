@@ -85,8 +85,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 5291038549833210591, guid: af4e4ec62f479d345b2e1aa5964540de, type: 3}
-  m_Color: {r: 1, g: 0.9216272, b: 0, a: 1}
+  m_Sprite: {fileID: -5623523272635332308, guid: 86643bf6f0b9ac0438175fd813cbac68, type: 3}
+  m_Color: {r: 1, g: 0.85870224, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -156,17 +156,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.9921875}
+  m_Offset: {x: 0, y: 0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: -0.24705882}
-    oldSize: {x: 1.5625, y: 1.328125}
+    pivot: {x: 0.5, y: -0.05263158}
+    oldSize: {x: 0.75, y: 0.890625}
     newSize: {x: 0.3, y: 0.31}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.5625, y: 1.328125}
+  m_Size: {x: 2, y: 2}
   m_EdgeRadius: 0
 --- !u!114 &6250536976320528811
 MonoBehaviour:
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3019bd0351744ef46b2f58931c5de051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MemoryExtractorTarget
-  memoryToExtract: {fileID: 11400000, guid: 80f0cf2d3c1b8044caf755fff7f0d7a7, type: 2}
+  memoryToExtract: {fileID: 11400000, guid: eed53e84470abaf4b8fdf93f9c40d2a4, type: 2}
   extractionUses: 1
   extractVFXPrefab: {fileID: 8563723726064187730, guid: dc6c12712f03a614fa9d19291927f271, type: 3}
   destroyOnDepletion: 0

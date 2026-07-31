@@ -4,8 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(HealthSystem))]
 public class PlaystyleManager : MonoBehaviour
 {
-    public event Action<PlaystyleType> OnPlaystyleUnlocked;
-    public event Action<PlaystyleType> OnPlaystyleLocked;
+    // Events removed as unlocks are now permanently managed by PlayerInventoryCore
 
     [Header("Default Playstyles")]
     [SerializeField] private PlaystyleData meleePlaystyle;
@@ -22,39 +21,29 @@ public class PlaystyleManager : MonoBehaviour
 
     private void Start()
     {
-        if (healthSystem != null)
-        {
-            lastKnownSlots = healthSystem.UnlockedSlots;
-            healthSystem.OnSlotsChanged += HandleSlotsChanged;
-        }
+        // Unlocks are now managed by PlayerInventoryCore directly.
     }
 
     private void OnDestroy()
     {
-        if (healthSystem != null)
-        {
-            healthSystem.OnSlotsChanged -= HandleSlotsChanged;
-        }
     }
 
     public bool IsPlaystyleUnlocked(PlaystyleType type)
     {
-        if (healthSystem == null) return false;
+        if (PlayerInventoryCore.Instance == null) return false;
 
-        // Slot 0 (1 slot) = Melee
-        // Slot 1 (2 slots) = MidRange
-        // Slot 2 (3 slots) = LongRange
-        // Slot 3 (4 slots) = Magic
-        int unlockedSlots = healthSystem.UnlockedSlots;
-
-        return type switch
+        int index = type switch
         {
-            PlaystyleType.Melee => unlockedSlots >= 1,
-            PlaystyleType.MidRange => unlockedSlots >= 2,
-            PlaystyleType.LongRange => unlockedSlots >= 3,
-            PlaystyleType.Magic => unlockedSlots >= 4,
-            _ => false
+            PlaystyleType.Melee => 0,
+            PlaystyleType.MidRange => 1,
+            PlaystyleType.LongRange => 2,
+            PlaystyleType.Magic => 3,
+            _ => -1
         };
+
+        if (index == -1) return false;
+        
+        return PlayerInventoryCore.Instance.IsSlotUnlocked(ItemCategory.Echo, index);
     }
 
     public PlaystyleData GetPlaystyleData(PlaystyleType type)
@@ -77,22 +66,5 @@ public class PlaystyleManager : MonoBehaviour
         return PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.GetActiveEcho() != null;
     }
 
-    private int lastKnownSlots = 4;
-
-    private void HandleSlotsChanged(int newSlots)
-    {
-        // Check what got locked (lost health)
-        if (lastKnownSlots >= 4 && newSlots < 4) OnPlaystyleLocked?.Invoke(PlaystyleType.Magic);
-        if (lastKnownSlots >= 3 && newSlots < 3) OnPlaystyleLocked?.Invoke(PlaystyleType.LongRange);
-        if (lastKnownSlots >= 2 && newSlots < 2) OnPlaystyleLocked?.Invoke(PlaystyleType.MidRange);
-        if (lastKnownSlots >= 1 && newSlots < 1) OnPlaystyleLocked?.Invoke(PlaystyleType.Melee);
-
-        // Check what got unlocked (gained/healed health)
-        if (lastKnownSlots < 4 && newSlots >= 4) OnPlaystyleUnlocked?.Invoke(PlaystyleType.Magic);
-        if (lastKnownSlots < 3 && newSlots >= 3) OnPlaystyleUnlocked?.Invoke(PlaystyleType.LongRange);
-        if (lastKnownSlots < 2 && newSlots >= 2) OnPlaystyleUnlocked?.Invoke(PlaystyleType.MidRange);
-        if (lastKnownSlots < 1 && newSlots >= 1) OnPlaystyleUnlocked?.Invoke(PlaystyleType.Melee);
-
-        lastKnownSlots = newSlots;
-    }
+    // HandleSlotsChanged and lastKnownSlots removed because max HP drops no longer lock styles.
 }

@@ -37,7 +37,7 @@ public class VoidModifier : IEchoModifier
         HealthSystem hs = sender as HealthSystem;
         if (hs != null)
         {
-            IDamageable target = hs.GetComponent<IDamageable>();
+            IDamageable target = hs.GetComponentInParent<IDamageable>();
             if (target != null)
             {
                 RemoveMark(target);
