@@ -10,11 +10,16 @@ public class RunData
     public string currentSceneName;
     public string currentLevelName = "The Abyss";
     public int runGold;
+    public int peakRunGold = 0;
     public int currentLevel = 1;
     public int availableCuts = 1;
     public int currentExp;
     public int currentAstralShards;
     public List<string> currentRelics = new List<string>();
+    public List<string> equippedEchoIds = new List<string>();
+    public List<string> equippedRelicIds = new List<string>();
+    public List<string> equippedToolIds = new List<string>();
+    public int activeEchoIndex = 0;
     public int mapSeed;
     public int levelNumber = 1;
     public float currentLevelTime = 0f;
@@ -42,9 +47,9 @@ public class RunData
     public int vitalityShrinesTaken = 0;
     public int sorceryShrinesTaken = 0;
     public int resonanceShrinesTaken = 0;
-    public int unlockedEchoSlots = 1; // Legacy, keep for migration
-    public int unlockedRelicSlots = 1; // Legacy
-    public int unlockedEquipmentSlots = 1; // Legacy
+    public int unlockedEchoSlots = 1;
+    public int unlockedRelicSlots = 1;
+    public int unlockedEquipmentSlots = 1;
     public int availableUnlockPoints = 0;
     public List<int> unlockedEchoIndices = new List<int> { 0 };
     public List<int> unlockedRelicIndices = new List<int> { 0 };

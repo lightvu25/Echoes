@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
   m_Name: Plasma Fusion
   m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
-  recipeID: REC_PLASMA
-  elementA: {fileID: 11400000, guid: 3883cf7732150c74ba31ce91627cd776, type: 2}
-  elementB: {fileID: 11400000, guid: eed53e84470abaf4b8fdf93f9c40d2a4, type: 2}
-  resultElement: {fileID: 11400000, guid: ad25f0b543aeff743a2e4684cd30e4c8, type: 2}
+  recipeID: FUS_PLASMA
+  echoA: {fileID: 11400000, guid: 3883cf7732150c74ba31ce91627cd776, type: 2}
+  echoB: {fileID: 11400000, guid: eed53e84470abaf4b8fdf93f9c40d2a4, type: 2}
+  resultEcho: {fileID: 11400000, guid: ad25f0b543aeff743a2e4684cd30e4c8, type: 2}
   recipeTier: 1
   requiredConstellationNode: 

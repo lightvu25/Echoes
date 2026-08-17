@@ -45,7 +45,7 @@ public class RelicData : ItemBaseData
 
         // Update FactionBonus string to reflect actual stats
         string statsText = "";
-        if (bonusVitality > 0) statsText += $"+{bonusVitality} Vitality (+{bonusVitality * 10} HP)\n";
+        if (bonusVitality > 0) statsText += $"+{bonusVitality} Vitality\n";
         if (bonusSorcery > 0) statsText += $"+{bonusSorcery} Sorcery\n";
         if (bonusResonance > 0) statsText += $"+{bonusResonance} Resonance\n";
         if (!string.IsNullOrEmpty(statsText)) FactionBonus = statsText.Trim();

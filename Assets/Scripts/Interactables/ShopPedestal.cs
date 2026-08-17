@@ -80,7 +80,7 @@ public class ShopPedestal : ShopInteractableBase
 
         if (priceText != null) 
         {
-            priceText.text = currentPrice.ToString();
+            priceText.text = HasBloodContract() ? "100 MAX HP" : currentPrice.ToString();
             priceText.sortingLayerID = SortingLayer.NameToID("UI");
             priceText.sortingOrder = 10;
             priceText.gameObject.SetActive(false);
@@ -93,7 +93,29 @@ public class ShopPedestal : ShopInteractableBase
     {
         if (currentItem == null) return;
 
-        if (PlayerStats.Instance != null && PlayerStats.Instance.SpendGold(currentPrice))
+        PlayerRelicManager relicManager = PlayerEventBus.Instance != null
+            ? PlayerEventBus.Instance.GetComponent<PlayerRelicManager>()
+            : null;
+        bool bloodContract = relicManager != null && relicManager.HasRelic("BloodContract");
+        HealthSystem playerHealth = PlayerEventBus.Instance != null
+            ? PlayerEventBus.Instance.GetComponent<HealthSystem>()
+            : null;
+
+        bool paid = false;
+        if (bloodContract)
+        {
+            if (playerHealth != null && playerHealth.MaxHP > 100)
+            {
+                playerHealth.ModifyMaxHP(-100);
+                paid = true;
+            }
+        }
+        else if (PlayerStats.Instance != null)
+        {
+            paid = PlayerStats.Instance.SpendGold(currentPrice);
+        }
+
+        if (paid)
         {
             PlayerInventoryCore.Instance.TryEquip(currentItem);
             
@@ -112,6 +134,14 @@ public class ShopPedestal : ShopInteractableBase
             if (priceText != null) StartCoroutine(FlashTextColor(priceText, Color.red, 0.2f));
             if (itemSpriteRenderer != null) StartCoroutine(FlashSpriteColor(itemSpriteRenderer, Color.red, 0.2f));
         }
+    }
+
+    private static bool HasBloodContract()
+    {
+        PlayerRelicManager manager = PlayerEventBus.Instance != null
+            ? PlayerEventBus.Instance.GetComponent<PlayerRelicManager>()
+            : null;
+        return manager != null && manager.HasRelic("BloodContract");
     }
 
     private void SetAuraColor(int tier)

@@ -15,7 +15,7 @@ public class BurdenManager : MonoBehaviour
 
     [Header("Scaling Limits")]
     [SerializeField] private int maxBurdenLevel = 10;
-    [SerializeField] private int goldPerBurden = 500;
+    [SerializeField] private int goldBurdenBase = 500;
     [SerializeField] private int shardsPerBurden = 50;
 
     public float CurrentDamageMultiplier { get; private set; } = 1f;
@@ -64,8 +64,8 @@ public class BurdenManager : MonoBehaviour
     {
         if (PlayerStats.Instance == null) return;
 
-        // Calculate burden level from currency, protecting against divide-by-zero
-        int goldBurden = goldPerBurden > 0 ? PlayerStats.Instance.CurrentGold / goldPerBurden : 0;
+        // Calculate burden level from peak currency
+        int goldBurden = GetFibonacciBurdenLevel(PlayerStats.Instance.PeakGold);
         int shardBurden = shardsPerBurden > 0 ? PlayerStats.Instance.CurrentAstralShards / shardsPerBurden : 0;
         
         int totalBurden = Mathf.Min(maxBurdenLevel, goldBurden + shardBurden);
@@ -76,5 +76,24 @@ public class BurdenManager : MonoBehaviour
         CurrentDropRateMultiplier = 1f + (totalBurden * dropRateScalePerCore);
 
         OnBurdenChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private int GetFibonacciBurdenLevel(int peakGold)
+    {
+        int level = 0;
+        int a = 1;
+        int b = 1;
+        
+        while (level < maxBurdenLevel)
+        {
+            int threshold = b * goldBurdenBase;
+            if (peakGold < threshold) break;
+            
+            level++;
+            int temp = a;
+            a = b;
+            b = temp + b;
+        }
+        return level;
     }
 }

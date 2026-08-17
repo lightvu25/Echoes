@@ -31,14 +31,27 @@ public class GameSession : MonoBehaviour
     {
         currentProfile = SaveManager.loadProfile();
         RunData savedRun = SaveManager.loadRun();
-        if (savedRun != null)
+        if (savedRun != null && IsResumableRun(savedRun))
         {
             currentRun = savedRun;
         }
         else
         {
+            if (savedRun != null)
+            {
+                Debug.LogWarning(
+                    "[GameSession] Discarding a completed/dead run save so the player does not " +
+                    "spawn in a permanently dead state.");
+                SaveManager.deleteRun();
+            }
+
             StartNewRun();
         }
+    }
+
+    private static bool IsResumableRun(RunData run)
+    {
+        return run != null && (run.maxHealth <= 0 || run.currentHealth > 0);
     }
     public void StartNewRun()
     {
@@ -53,7 +66,7 @@ public class GameSession : MonoBehaviour
         if (MetaProgressionManager.Instance != null)
         {
             if (MetaProgressionManager.Instance.HasSkill("GOLD_RESERVE_1")) startingGold += 100;
-            if (MetaProgressionManager.Instance.HasSkill("GOLD_RESERVE_2")) startingGold += 150; // Total 250? Or maybe just add directly.
+            if (MetaProgressionManager.Instance.HasSkill("GOLD_RESERVE_2")) startingGold += 150;
             
             // Mind Garden Loot Bonuses
             if (MetaProgressionManager.Instance.HasSkill("LOOT_RELIC_1")) currentRun.bonusRelicChance += 0.05f;
@@ -89,7 +102,6 @@ public class GameSession : MonoBehaviour
         }
         else
         {
-            // Fallback if no CutsceneManager is in the scene
             yield return new WaitForSeconds(2f);
         }
 
@@ -122,7 +134,6 @@ public class GameSession : MonoBehaviour
         if (currentProfile != null && currentRun != null)
         {
             currentProfile.totalGold += currentRun.runGold;
-            // Additional completion rewards can be added here
             SaveManager.saveProfile(currentProfile);
         }
 

@@ -95,9 +95,16 @@ public class DashAttack : MonoBehaviour, IEnemyAttack
             float dirX = target.Transform.position.x - transform.position.x;
             Vector2 knockbackDir = new Vector2(dirX >= 0 ? 1f : -1f, 0.3f).normalized;
 
+            float damageMultiplier = BurdenManager.Instance != null
+                ? BurdenManager.Instance.CurrentDamageMultiplier
+                : 1f;
+            int scaledDamage = data != null
+                ? Mathf.RoundToInt(data.attackBase * damageMultiplier)
+                : 10;
+
             DamageInfo damageInfo = new DamageInfo
             {
-                baseDamage = data != null ? data.attackBase : 10,
+                baseDamage = scaledDamage,
                 flatBonus = 0,
                 linearModifierSum = 0f,
                 multiplicativeStack = 1f,

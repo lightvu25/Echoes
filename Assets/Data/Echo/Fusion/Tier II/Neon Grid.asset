@@ -15,20 +15,23 @@ MonoBehaviour:
   itemID: ECHO_NEON_GRID
   itemName: Neon Grid
   itemIcon: {fileID: -2822604965951861692, guid: d535e4d71834b654abb19003fab21ba0, type: 3}
-  description: Explosive chain-lightning leaves glitched zones that disable enemy
-    skills
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  description: Plasma impacts leave pulsing Glitch Nodes. Hitting a node links nearby
+    nodes and detonates each for heavy damage.
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+  itemTier: 2
+  basePrice: 125
   echoType: 8
-  echoTier: 2
   isFusionResult: 1
-  baseDamageMultiplier: 1.2
-  attacksPerSecond: 1.4
+  baseDamageMultiplier: 1.25
+  attacksPerSecond: 1
   rangeCategory: 2
   hasStatusEffect: 1
-  statusProcCoefficient: 0.5
+  statusProcCoefficient: 0.75
   uniqueModifierID: FUS_NEON_GRID
   trailColor: {r: 1, g: 1, b: 1, a: 1}
   stateVFXPrefab: {fileID: 0}
   hitImpactPrefab: {fileID: 0}
+  voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

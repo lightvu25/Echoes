@@ -12,37 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937470260c5f20049a9c20727a4ad0eb, type: 3}
   m_Name: Flying Enemy Data
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  maxHP: 10
+  archetype: 3
+  balanceTier: 1
+  maxHP: 28
   defense: 0
-  patrolMaxSpeed: 3.5
+  patrolMaxSpeed: 3
   patrolAcceleration: 3.5
-  patrolAccelAmount: 50
-  patrolDecceleration: 3.5
-  patrolDeccelAmount: 50
-  patrolRadius: 10
+  patrolAccelAmount: 58.333332
+  patrolDecceleration: 4
+  patrolDeccelAmount: 66.666664
+  patrolRadius: 8
   patrolWaitTimeMin: 0.5
   patrolWaitTimeMax: 1.5
   groundCheckDistance: 0
   wallCheckDistance: 0.8
-  chaseMaxSpeed: 8
-  chaseAcceleration: 8
-  chaseAccelAmount: 50
+  chaseMaxSpeed: 6.5
+  chaseAcceleration: 7
+  chaseAccelAmount: 53.846153
   chaseDecceleration: 8
-  chaseDeccelAmount: 50
+  chaseDeccelAmount: 61.53846
   doConserveMomentum: 1
-  attackBase: 15
-  attackRange: 1.2
-  attackSpeed: 1.5
-  attackCooldown: 1.2
-  telegraphDuration: 0.2
+  attackBase: 16
+  attackRange: 4.5
+  attackSpeed: 1.2
+  attackCooldown: 1.6
+  telegraphDuration: 0.45
+  canBackstep: 0
   attackHitboxSize: {x: 1.2, y: 1.2}
   attackHitboxOffset: {x: 0.6, y: 0}
-  knockbackForce: 1.5
+  knockbackForce: 3
   attackTargetLayers:
     serializedVersion: 2
     m_Bits: 384
   visionRange: 10
-  fovAngle: 160
+  fovAngle: 200
   closeDetectionRange: 2
   groundLayer:
     serializedVersion: 2
@@ -53,12 +56,12 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
-  noticeDuration: 0.5
-  expRewardMin: 5
-  expRewardMax: 10
-  goldDropChance: 30
+  noticeDuration: 0.35
+  expRewardMin: 8
+  expRewardMax: 12
+  goldDropChance: 40
   goldAmountMin: 1
-  goldAmountMax: 3
-  memoryFragmentDropChance: 10
-  memoryFragmentAmountMin: 1
-  memoryFragmentAmountMax: 1
+  goldAmountMax: 2
+  astralShardDropChance: 5
+  astralShardAmountMin: 1
+  astralShardAmountMax: 1

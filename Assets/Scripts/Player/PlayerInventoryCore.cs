@@ -45,6 +45,10 @@ public class PlayerInventoryCore : MonoBehaviour
     private readonly ItemBaseData[] equippedRelics = new ItemBaseData[RunData.MAX_SLOTS];
     private readonly ItemBaseData[] equippedTools  = new ItemBaseData[RunData.MAX_SLOTS];
 
+    [Header("Run Persistence")]
+    [Tooltip("Catalog used to restore saved item IDs without Resources lookups or runtime asset-path searches.")]
+    [SerializeField] private RunItemCatalog itemCatalog;
+
     // ------------------------------------------------------------------ //
     //  Drop physics settings                                               //
     // ------------------------------------------------------------------ //
@@ -62,6 +66,7 @@ public class PlayerInventoryCore : MonoBehaviour
 
     private HealthSystem healthSystem;
     private PlaystyleManager playstyleManager;
+    private bool hasRestoredRunInventory;
 
     /// <summary>Index of the currently active Echo slot (used by HotbarController).</summary>
     private int activeEchoIndex = 0;
@@ -139,27 +144,14 @@ public class PlayerInventoryCore : MonoBehaviour
         healthSystem = GetComponent<HealthSystem>();
         playstyleManager = GetComponent<PlaystyleManager>();
 
-        // Migration guard
-        if (Run != null)
-        {
-            // Migrate old int-based slot unlocks to the new list-based system
-            if (Run.unlockedEchoSlots > 1 && Run.unlockedEchoIndices.Count == 1)
-            {
-                for (int i = 1; i < Run.unlockedEchoSlots; i++) if (!Run.unlockedEchoIndices.Contains(i)) Run.unlockedEchoIndices.Add(i);
-            }
-            if (Run.unlockedRelicSlots > 1 && Run.unlockedRelicIndices.Count == 1)
-            {
-                for (int i = 1; i < Run.unlockedRelicSlots; i++) if (!Run.unlockedRelicIndices.Contains(i)) Run.unlockedRelicIndices.Add(i);
-            }
-            if (Run.unlockedEquipmentSlots > 1 && Run.unlockedToolIndices.Count == 1)
-            {
-                for (int i = 1; i < Run.unlockedEquipmentSlots; i++) if (!Run.unlockedToolIndices.Contains(i)) Run.unlockedToolIndices.Add(i);
-            }
-        }
+        TryRestoreRunInventory();
     }
 
     private void Start()
     {
+        if (!hasRestoredRunInventory)
+            TryRestoreRunInventory();
+
         if (healthSystem != null)
         {
             healthSystem.OnMaxHPGained       += HandleMaxHPGained;
@@ -172,6 +164,9 @@ public class PlayerInventoryCore : MonoBehaviour
         {
             healthSystem.OnMaxHPGained       -= HandleMaxHPGained;
         }
+
+        if (Instance == this)
+            Instance = null;
     }
 
     // ------------------------------------------------------------------ //
@@ -222,6 +217,7 @@ public class PlayerInventoryCore : MonoBehaviour
         {
             arr[emptyIndex] = item;
             if (item is RelicData r) AddRelicStats(r);
+            PersistInventoryState();
             OnInventoryChanged?.Invoke();
         }
         else
@@ -252,6 +248,7 @@ public class PlayerInventoryCore : MonoBehaviour
         if (equipped is RelicData rEquipped) RemoveRelicStats(rEquipped);
         if (incoming is RelicData rIncoming) AddRelicStats(rIncoming);
         SpawnDroppedItem(equipped);
+        PersistInventoryState();
         OnInventoryChanged?.Invoke();
     }
 
@@ -267,6 +264,7 @@ public class PlayerInventoryCore : MonoBehaviour
         {
             if (arr[index] is RelicData r) RemoveRelicStats(r);
             arr[index] = null;
+            PersistInventoryState();
             OnInventoryChanged?.Invoke();
         }
     }
@@ -293,6 +291,7 @@ public class PlayerInventoryCore : MonoBehaviour
             {
                 if (arr[i] is RelicData r) RemoveRelicStats(r);
                 arr[i] = null;
+                PersistInventoryState();
                 OnInventoryChanged?.Invoke();
                 return;
             }
@@ -312,7 +311,8 @@ public class PlayerInventoryCore : MonoBehaviour
         ItemBaseData temp = arr[fromIndex];
         arr[fromIndex] = arr[toIndex];
         arr[toIndex] = temp;
-        
+
+        PersistInventoryState();
         OnInventoryChanged?.Invoke();
     }
 
@@ -362,6 +362,7 @@ public class PlayerInventoryCore : MonoBehaviour
             if (activeEchoIndex != index)
             {
                 activeEchoIndex = index;
+                PersistInventoryState();
                 OnInventoryChanged?.Invoke();
             }
         }
@@ -416,6 +417,142 @@ public class PlayerInventoryCore : MonoBehaviour
         OnSlotUnlockRequired?.Invoke(); // Kept for any listeners that still want this (e.g., sound effects)
     }
 
+    private void RestoreEquippedItemsFromRun()
+    {
+        RunData run = Run;
+        EnsureSlotList(ref run.equippedEchoIds);
+        EnsureSlotList(ref run.equippedRelicIds);
+        EnsureSlotList(ref run.equippedToolIds);
+
+        if (itemCatalog == null)
+        {
+            if (HasSavedItems(run.equippedEchoIds) || HasSavedItems(run.equippedRelicIds) || HasSavedItems(run.equippedToolIds))
+                Debug.LogError("[PlayerInventoryCore] A saved loadout exists, but no RunItemCatalog is assigned.", this);
+            return;
+        }
+
+        RestoreCategory(equippedEchoes, run.equippedEchoIds, ItemCategory.Echo);
+        RestoreCategory(equippedRelics, run.equippedRelicIds, ItemCategory.Relic);
+        RestoreCategory(equippedTools, run.equippedToolIds, ItemCategory.Tool);
+        activeEchoIndex = Mathf.Clamp(run.activeEchoIndex, 0, RunData.MAX_SLOTS - 1);
+    }
+
+    private void TryRestoreRunInventory()
+    {
+        RunData run = Run;
+        if (hasRestoredRunInventory || run == null) return;
+
+        // Migrate old integer slot counts before restoring saved slot contents.
+        if (run.unlockedEchoSlots > 1 && run.unlockedEchoIndices.Count == 1)
+        {
+            for (int i = 1; i < run.unlockedEchoSlots; i++)
+                if (!run.unlockedEchoIndices.Contains(i)) run.unlockedEchoIndices.Add(i);
+        }
+
+        if (run.unlockedRelicSlots > 1 && run.unlockedRelicIndices.Count == 1)
+        {
+            for (int i = 1; i < run.unlockedRelicSlots; i++)
+                if (!run.unlockedRelicIndices.Contains(i)) run.unlockedRelicIndices.Add(i);
+        }
+
+        if (run.unlockedEquipmentSlots > 1 && run.unlockedToolIndices.Count == 1)
+        {
+            for (int i = 1; i < run.unlockedEquipmentSlots; i++)
+                if (!run.unlockedToolIndices.Contains(i)) run.unlockedToolIndices.Add(i);
+        }
+
+        RestoreEquippedItemsFromRun();
+        hasRestoredRunInventory = true;
+    }
+
+    private void RestoreCategory(ItemBaseData[] destination, List<string> savedIds, ItemCategory expectedCategory)
+    {
+        for (int i = 0; i < destination.Length; i++)
+        {
+            string itemId = savedIds[i];
+            if (string.IsNullOrWhiteSpace(itemId)) continue;
+
+            if (!itemCatalog.TryGetItem(itemId, out ItemBaseData source))
+            {
+                Debug.LogWarning($"[PlayerInventoryCore] Saved item '{itemId}' is missing from the run item catalog.", this);
+                continue;
+            }
+
+            if (source.Category != expectedCategory)
+            {
+                Debug.LogWarning($"[PlayerInventoryCore] Saved item '{itemId}' belongs to {source.Category}, not {expectedCategory}.", source);
+                continue;
+            }
+
+            destination[i] = CreateRuntimeItem(source);
+        }
+    }
+
+    private static ItemBaseData CreateRuntimeItem(ItemBaseData source)
+    {
+        if (source is EchoData echoData)
+        {
+            EchoData runtimeEcho = Instantiate(echoData);
+            runtimeEcho.InitRuntime();
+            return runtimeEcho;
+        }
+
+        if (source is RelicData relicData)
+        {
+            RelicData runtimeRelic = Instantiate(relicData);
+            runtimeRelic.InitRuntime();
+            return runtimeRelic;
+        }
+
+        return source;
+    }
+
+    private void PersistInventoryState()
+    {
+        RunData run = Run;
+        if (run == null) return;
+
+        WriteSlotIds(equippedEchoes, ref run.equippedEchoIds);
+        WriteSlotIds(equippedRelics, ref run.equippedRelicIds);
+        WriteSlotIds(equippedTools, ref run.equippedToolIds);
+        run.activeEchoIndex = activeEchoIndex;
+
+        run.currentRelics ??= new List<string>();
+        run.currentRelics.Clear();
+        for (int i = 0; i < equippedRelics.Length; i++)
+        {
+            if (equippedRelics[i] != null && !string.IsNullOrWhiteSpace(equippedRelics[i].itemID))
+                run.currentRelics.Add(equippedRelics[i].itemID);
+        }
+
+        GameSession.Instance?.SaveCurrentRun();
+    }
+
+    private static void WriteSlotIds(ItemBaseData[] source, ref List<string> destination)
+    {
+        EnsureSlotList(ref destination);
+        for (int i = 0; i < RunData.MAX_SLOTS; i++)
+            destination[i] = source[i] != null ? source[i].itemID : string.Empty;
+    }
+
+    private static void EnsureSlotList(ref List<string> slots)
+    {
+        slots ??= new List<string>(RunData.MAX_SLOTS);
+        while (slots.Count < RunData.MAX_SLOTS) slots.Add(string.Empty);
+        if (slots.Count > RunData.MAX_SLOTS)
+            slots.RemoveRange(RunData.MAX_SLOTS, slots.Count - RunData.MAX_SLOTS);
+    }
+
+    private static bool HasSavedItems(List<string> ids)
+    {
+        for (int i = 0; i < ids.Count; i++)
+        {
+            if (!string.IsNullOrWhiteSpace(ids[i])) return true;
+        }
+
+        return false;
+    }
+
     // HandlePlaystyleLocked removed because playstyles are permanently unlocked.
 
 
@@ -450,16 +587,13 @@ public class PlayerInventoryCore : MonoBehaviour
     {
         if (Run != null)
         {
-            Run.bonusVitality += relic.bonusVitality;
+            // Vitality is applied through StatBonusSystem so shrine and relic stacks
+            // share the same Harmonic Decay pool (run.bonusVitality is the counter).
+            if (relic.bonusVitality > 0)
+                StatBonusSystem.ApplyVitalityBonus(Run, healthSystem, relic.bonusVitality);
+
             Run.bonusSorcery += relic.bonusSorcery;
             Run.bonusResonance += relic.bonusResonance;
-
-            if (relic.bonusVitality > 0 && healthSystem != null)
-            {
-                int hpGain = relic.bonusVitality * 10;
-                healthSystem.SetMaxHP(healthSystem.MaxHP + hpGain, false);
-                healthSystem.Heal(hpGain);
-            }
         }
     }
 
@@ -467,15 +601,12 @@ public class PlayerInventoryCore : MonoBehaviour
     {
         if (Run != null)
         {
-            Run.bonusVitality -= relic.bonusVitality;
+            // Reverse the Vitality HP gain using the same Harmonic Decay curve.
+            if (relic.bonusVitality > 0)
+                StatBonusSystem.RemoveVitalityBonus(Run, healthSystem, relic.bonusVitality);
+
             Run.bonusSorcery -= relic.bonusSorcery;
             Run.bonusResonance -= relic.bonusResonance;
-
-            if (relic.bonusVitality > 0 && healthSystem != null)
-            {
-                int hpLoss = relic.bonusVitality * 10;
-                healthSystem.SetMaxHP(Mathf.Max(1, healthSystem.MaxHP - hpLoss), false);
-            }
         }
     }
 

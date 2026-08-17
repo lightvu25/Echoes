@@ -32,6 +32,8 @@ public class BombProjectile : MonoBehaviour
     private Coroutine fuseCoroutine;
     private Coroutine flightCoroutine;
     private GameObject owner;
+    private int runtimeExplosionDamage;
+    private float runtimeKnockbackForce;
 
     private void Awake()
     {
@@ -45,7 +47,14 @@ public class BombProjectile : MonoBehaviour
     /// </summary>
     public void SetOwner(GameObject newOwner)
     {
+        SetOwner(newOwner, explosionDamage, knockbackForce);
+    }
+
+    public void SetOwner(GameObject newOwner, int configuredDamage, float configuredKnockback)
+    {
         owner = newOwner;
+        runtimeExplosionDamage = Mathf.Max(1, configuredDamage);
+        runtimeKnockbackForce = Mathf.Max(0f, configuredKnockback);
         if (owner != null && col != null)
         {
             Collider2D[] ownerColliders = owner.GetComponentsInChildren<Collider2D>();
@@ -60,6 +69,9 @@ public class BombProjectile : MonoBehaviour
     {
         hasExploded = false; // CRITICAL: Reset state for pooled bombs!
         isFlying = false;
+        owner = null;
+        runtimeExplosionDamage = explosionDamage;
+        runtimeKnockbackForce = knockbackForce;
         col.enabled = true;
         col.isTrigger = false; // Make sure it can physically bounce/collide
         
@@ -228,6 +240,8 @@ public class BombProjectile : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
 
+        GameFeelManager.Instance?.ProcessExplosion(transform.position);
+
         Debug.Log($"[BombProjectile] Exploding at {transform.position}. Spawning VFX: {(explosionVFXPrefab != null ? explosionVFXPrefab.name : "NULL")}");
         if (explosionVFXPrefab != null)
         {
@@ -253,13 +267,14 @@ public class BombProjectile : MonoBehaviour
                 knockDir.Normalize();
 
                 DamageInfo info = DamageInfo.CreateWithKnockback(
-                    explosionDamage, 
+                    runtimeExplosionDamage,
                     owner != null ? owner : gameObject, 
                     knockDir, 
-                    knockbackForce
+                    runtimeKnockbackForce
                 );
+                info.damageSource = DamageSourceType.BombAttack;
                 
-                Debug.Log($"[BombProjectile] Dealing {explosionDamage} damage to {hit.gameObject.name}");
+                Debug.Log($"[BombProjectile] Dealing {runtimeExplosionDamage} damage to {hit.gameObject.name}");
                 damageable.TakeDamage(info);
             }
         }

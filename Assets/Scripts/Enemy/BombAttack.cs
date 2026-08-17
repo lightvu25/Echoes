@@ -42,6 +42,8 @@ public class BombAttack : MonoBehaviour, IEnemyAttack
 
     private void Explode()
     {
+        GameFeelManager.Instance?.ProcessExplosion(transform.position);
+
         if (explosionVFXPrefab != null)
             Instantiate(explosionVFXPrefab, transform.position, Quaternion.identity);
 
@@ -56,9 +58,16 @@ public class BombAttack : MonoBehaviour, IEnemyAttack
             Vector2 knockbackDir = new Vector2(dirX, 0.5f).normalized;
             bool isSelf = hit.transform.root.gameObject == transform.root.gameObject;
 
+            float damageMultiplier = BurdenManager.Instance != null
+                ? BurdenManager.Instance.CurrentDamageMultiplier
+                : 1f;
+            int scaledDamage = data != null
+                ? Mathf.RoundToInt(data.attackBase * damageMultiplier)
+                : 15;
+
             DamageInfo damageInfo = new DamageInfo
             {
-                baseDamage = data != null ? data.attackBase : 15,
+                baseDamage = scaledDamage,
                 flatBonus = 0,
                 linearModifierSum = 0f,
                 multiplicativeStack = isSelf ? selfDamageMultiplier : 1f,

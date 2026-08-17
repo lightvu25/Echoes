@@ -12,39 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937470260c5f20049a9c20727a4ad0eb, type: 3}
   m_Name: Bombing Enemy Data
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  maxHP: 100
-  defense: 0
-  patrolMaxSpeed: 2
-  patrolAcceleration: 1.5
-  patrolAccelAmount: 37.5
-  patrolDecceleration: 1.5
-  patrolDeccelAmount: 37.5
-  patrolRadius: 7
-  patrolWaitTimeMin: 2
-  patrolWaitTimeMax: 4
-  groundCheckDistance: 1.5
+  archetype: 4
+  balanceTier: 1
+  maxHP: 80
+  defense: 5
+  patrolMaxSpeed: 1.8
+  patrolAcceleration: 2.2
+  patrolAccelAmount: 61.11111
+  patrolDecceleration: 2.8
+  patrolDeccelAmount: 77.77778
+  patrolRadius: 5
+  patrolWaitTimeMin: 1.5
+  patrolWaitTimeMax: 3
+  groundCheckDistance: 1.2
   wallCheckDistance: 0.5
-  chaseMaxSpeed: 4
+  chaseMaxSpeed: 3.5
   chaseAcceleration: 4
-  chaseAccelAmount: 50
-  chaseDecceleration: 4
-  chaseDeccelAmount: 50
+  chaseAccelAmount: 57.142857
+  chaseDecceleration: 5
+  chaseDeccelAmount: 71.42857
   doConserveMomentum: 0
-  attackBase: 35
+  attackBase: 28
   attackRange: 8
   attackSpeed: 1
-  attackCooldown: 1
-  telegraphDuration: 1.2
+  attackCooldown: 2.4
+  telegraphDuration: 0.9
   canBackstep: 1
-  attackHitboxSize: {x: 7, y: 5}
-  attackHitboxOffset: {x: 5, y: 0}
-  knockbackForce: 6
+  attackHitboxSize: {x: 3, y: 3}
+  attackHitboxOffset: {x: 0, y: 0}
+  knockbackForce: 5
   attackTargetLayers:
     serializedVersion: 2
     m_Bits: 384
-  visionRange: 15
-  fovAngle: 120
-  closeDetectionRange: 1.5
+  visionRange: 12
+  fovAngle: 150
+  closeDetectionRange: 2
   groundLayer:
     serializedVersion: 2
     m_Bits: 8200
@@ -54,12 +56,12 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
-  noticeDuration: 0.8
-  expRewardMin: 25
-  expRewardMax: 40
-  goldDropChance: 80
-  goldAmountMin: 3
-  goldAmountMax: 12
-  astralShardDropChance: 10
+  noticeDuration: 0.75
+  expRewardMin: 28
+  expRewardMax: 38
+  goldDropChance: 90
+  goldAmountMin: 4
+  goldAmountMax: 8
+  astralShardDropChance: 18
   astralShardAmountMin: 1
   astralShardAmountMax: 2

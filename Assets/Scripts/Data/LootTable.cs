@@ -45,6 +45,24 @@ public class LootItem
 public class LootTable : ScriptableObject
 {
     public List<LootItem> lootItems = new();
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        for (int i = 0; i < lootItems.Count; i++)
+        {
+            LootItem item = lootItems[i];
+            if (item?.itemPrefab == null) continue;
+
+            if (item.itemPrefab.TryGetComponent(out ResourceDrop _) &&
+                item.type != LootItemType.Currency && item.type != LootItemType.Consumable)
+            {
+                Debug.LogError($"[LootTable] Entry {i} in '{name}' uses a ResourceDrop prefab as {item.type}. Assign the correct item prefab or category.", this);
+            }
+        }
+    }
+#endif
+
     public List<DropResult> GetDrops(float chanceMultiplier, int minTierAllowed, LootBonuses bonuses = default)
     {
         var drops = new List<DropResult>();

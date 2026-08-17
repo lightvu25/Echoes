@@ -127,7 +127,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Frame_0
+  - name: Mind Background
     originalName: 
     pivot: {x: 0.5, y: 0}
     alignment: 9
@@ -139,7 +139,7 @@ ScriptedImporter:
       y: 4
       width: 640
       height: 512
-    spriteID: 231ee3c225e0cab4d8fb461dc7e0d5cd
+    spriteID: 2756c231cfc052a4d9ca9a4d0e20809c
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -171,7 +171,7 @@ ScriptedImporter:
         y: 0
         width: 640
         height: 512
-      spriteId: 231ee3c225e0cab4d8fb461dc7e0d5cd
+      spriteId: 2756c231cfc052a4d9ca9a4d0e20809c
     linkedCells: []
     tileCells: []
     tileSetIndex: 0

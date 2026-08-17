@@ -129,7 +129,7 @@ ScriptedImporter:
   animatedSpriteImportData:
   - name: Frame_0
     originalName: 
-    pivot: {x: 0.50980395, y: -0.13461539}
+    pivot: {x: 0.5, y: -0.5}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -137,8 +137,8 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 51
-      height: 52
+      width: 32
+      height: 32
     spriteID: 3e056f9bb8e2bf04db2ea0549af63fcd
     spriteBone: []
     spriteOutline: []
@@ -147,28 +147,7 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: -2, y: -3}
-  - name: Frame_1
-    originalName: 
-    pivot: {x: 0.5, y: -0.5}
-    alignment: 9
-    border: {x: 0, y: 0, z: 0, w: 0}
-    customData: 
-    rect:
-      serializedVersion: 2
-      x: 4
-      y: 64
-      width: 32
-      height: 32
-    spriteID: 23e2e3001483dfe4d8db563ed9408f2f
-    spriteBone: []
-    spriteOutline: []
-    vertices: []
-    spritePhysicsOutline: []
-    indices: 
-    edges: []
-    tessellationDetail: 0
-    uvTransform: {x: 4, y: 64}
+    uvTransform: {x: 4, y: 4}
   spriteSheetImportData: []
   tileSetImportData: []
   asepriteLayers:
@@ -184,24 +163,15 @@ ScriptedImporter:
     layerType: 0
     blendMode: 0
     cells:
-    - name: Frame_0
+    - name: Bomb
       frameIndex: 0
-      additiveSortOrder: 0
-      cellRect:
-        x: 0
-        y: 0
-        width: 64
-        height: 64
-      spriteId: 3e056f9bb8e2bf04db2ea0549af63fcd
-    - name: Frame_1
-      frameIndex: 1
       additiveSortOrder: 0
       cellRect:
         x: 16
         y: 16
         width: 32
         height: 32
-      spriteId: 23e2e3001483dfe4d8db563ed9408f2f
+      spriteId: 3e056f9bb8e2bf04db2ea0549af63fcd
     linkedCells: []
     tileCells: []
     tileSetIndex: 0
@@ -236,4 +206,4 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 64, y: 64}
-  previousTextureSize: {x: 64, y: 128}
+  previousTextureSize: {x: 64, y: 64}

@@ -19,6 +19,11 @@ public class ItemDrop : MonoBehaviour, IInteractable
         rb = GetComponent<Rigidbody2D>();
     }
 
+    private void Start()
+    {
+        UpdateAura();
+    }
+
     private void OnEnable()
     {
         if (rb != null)
@@ -115,6 +120,7 @@ public class ItemDrop : MonoBehaviour, IInteractable
         if (itemData != null && PlayerInventoryCore.Instance != null)
         {
             PlayerInventoryCore.Instance.TryEquip(itemData);
+            PlayerEventBus.Instance?.FirePickupCollected();
         }
         ObjectPoolManager.ReturnObjectToPool(gameObject);
     }

@@ -64,6 +64,9 @@ public class MindGardenUI : MonoBehaviour, IUIPanel
             }
         }
 
+        // Ensure anchors and scaled UI parents have their final runtime layout
+        // before connector endpoints are measured.
+        Canvas.ForceUpdateCanvases();
         DrawConnections();
 
         if (GameManager.Instance != null)

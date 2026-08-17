@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
   m_Name: Overclock
   m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
-  recipeID: REC_OVERCLOCK
-  elementA: {fileID: 11400000, guid: 06f1a3b3210f953438d718fa766d4d87, type: 2}
-  elementB: {fileID: 11400000, guid: eed53e84470abaf4b8fdf93f9c40d2a4, type: 2}
-  resultElement: {fileID: 11400000, guid: a24a14679e11dd54c97325295ae0ede7, type: 2}
+  recipeID: FUS_OVERCLOCK
+  echoA: {fileID: 11400000, guid: 06f1a3b3210f953438d718fa766d4d87, type: 2}
+  echoB: {fileID: 11400000, guid: eed53e84470abaf4b8fdf93f9c40d2a4, type: 2}
+  resultEcho: {fileID: 11400000, guid: 36700ec2b5117054eb660a3d19145549, type: 2}
   recipeTier: 1
   requiredConstellationNode: 

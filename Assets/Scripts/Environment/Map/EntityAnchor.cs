@@ -14,7 +14,6 @@ public enum AnchorType
 public class EntityAnchor : MonoBehaviour
 {
     [Header("Anchor Configuration")]
-    [Tooltip("Defines what type of entity can be injected at this location.")]
     public AnchorType anchorType;
 
 #if UNITY_EDITOR
@@ -22,8 +21,6 @@ public class EntityAnchor : MonoBehaviour
     {
         Gizmos.color = GetGizmoColor();
         Gizmos.DrawWireSphere(transform.position, 0.5f);
-        
-        // Draw a small line indicating forward/down direction
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * 0.5f);
     }
 

@@ -15,14 +15,15 @@ MonoBehaviour:
   itemID: ECHO_EVENT_HORIZON
   itemName: Event Horizon
   itemIcon: {fileID: -3686940721284674238, guid: 6f2fc668cb190f547a3b75c97eba14bf, type: 3}
-  description: Creates a massive black hole that sucks enemies into a glitched lava
-    pit, dealing True DMG over time
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  description: Every fifth hit creates a singularity that pulls enemies, deals repeated
+    True Damage, then collapses and detonates active marks.
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+  itemTier: 3
+  basePrice: 200
   echoType: 8
-  echoTier: 3
   isFusionResult: 1
-  baseDamageMultiplier: 2.2
-  attacksPerSecond: 1.2
+  baseDamageMultiplier: 1.6
+  attacksPerSecond: 0.8
   rangeCategory: 2
   hasStatusEffect: 1
   statusProcCoefficient: 1
@@ -30,5 +31,7 @@ MonoBehaviour:
   trailColor: {r: 1, g: 1, b: 1, a: 1}
   stateVFXPrefab: {fileID: 0}
   hitImpactPrefab: {fileID: 0}
+  voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

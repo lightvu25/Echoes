@@ -59,7 +59,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 0e5e8fa1c16c9194980edf841591c0bd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,6 +125,7 @@ GameObject:
   - component: {fileID: 7041430341783121443}
   - component: {fileID: 6988939099206793691}
   - component: {fileID: 1145129144448362286}
+  - component: {fileID: 5173981949909521657}
   m_Layer: 0
   m_Name: ChainLightningVFX
   m_TagString: Untagged
@@ -176,7 +177,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1b44ef0c12b87674e91bc51d589774c7, type: 2}
+  - {fileID: 2100000, guid: 0e5e8fa1c16c9194980edf841591c0bd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -274,6 +275,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ChainLightningVFX
   startImpactVFX: {fileID: 5731534035679858421}
   endImpactVFX: {fileID: 5731534035679858421}
+--- !u!114 &5173981949909521657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4760034997992110397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2ba432a4179b140b93849327b68a04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReturnToPool
+  useFixedDelay: 0
+  time: 1
 --- !u!1 &6275417592629331529
 GameObject:
   m_ObjectHideFlags: 0

@@ -61,6 +61,7 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
     private TeleporterNode _selectedTargetNode = null;
     private RectTransform _lineInstance;
     private PlayerMovement _cachedPlayer;
+    private Image _mapInputSurface;
 
     private void Awake()
     {
@@ -69,6 +70,9 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
 
         _canvasGroup = GetComponent<CanvasGroup>();
         _canvas = GetComponentInParent<Canvas>();
+
+        EnsureMapInputSurface();
+        DisableDecorativeRaycasts();
 
         Room.OnRoomExplored += RevealRoom;
     }
@@ -83,6 +87,15 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
 
         _canvasGroup.blocksRaycasts = false;
         _canvasGroup.interactable = false;
+
+        if (lineUIPrefab != null && contentContainer != null)
+        {
+            GameObject lineObj = Instantiate(lineUIPrefab, contentContainer);
+            _lineInstance = lineObj.GetComponent<RectTransform>();
+            _lineInstance.gameObject.SetActive(false);
+            _lineInstance.pivot = new Vector2(0f, 0.5f); // FIX PIVOT
+            DisableRaycasts(lineObj);
+        }
 
         if (GameInput.Instance != null)
         {
@@ -135,13 +148,21 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
     public void Show()
     {
         IsOpen = true;
+
+        EnsureMapInputSurface();
+
+        // Map decoration must never consume clicks intended for teleporter buttons.
+        // Apply this every time the map opens because the fog and graph can be rebuilt.
+        DisableDecorativeRaycasts();
         
         _canvasGroup.alpha = 1f; 
         _canvasGroup.blocksRaycasts = true;
         _canvasGroup.interactable = true;
         
         if (blackScreenBackground != null) blackScreenBackground.SetActive(true);
-        if (dragHandler != null) dragHandler.enabled = true;
+        // MapUI is the single drag owner. Keeping the child UIDragHandler enabled
+        // made drag speed depend on which child happened to receive the pointer.
+        if (dragHandler != null) dragHandler.enabled = false;
 
         if (TeleportManager.Instance != null && TeleportManager.Instance.CurrentActiveNode != null)
         {
@@ -220,6 +241,7 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
 
                 if (roomGraphic != null)
                 {
+                    roomGraphic.raycastTarget = false;
                     roomGraphic.color = room.isExplored ? exploredRoomColor : hiddenRoomColor;
                     _roomUIDict[room] = roomGraphic;
                 }
@@ -232,6 +254,7 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
             _lineInstance = lineObj.GetComponent<RectTransform>();
             _lineInstance.gameObject.SetActive(false);
             _lineInstance.pivot = new Vector2(0f, 0.5f);
+            DisableRaycasts(lineObj);
         }
 
         if (playerIconRect == null && playerIconPrefab != null)
@@ -243,6 +266,7 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
             playerIconRect.anchorMax = new Vector2(0.5f, 0.5f);
             playerIconRect.pivot = new Vector2(0.5f, 0.5f);
             playerIconRect.gameObject.SetActive(true);
+            DisableRaycasts(playerIconRect.gameObject);
         }
 
         if (playerIconRect != null)
@@ -298,6 +322,9 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
             Button btn = iconObj.GetComponent<Button>();
             if (btn != null)
             {
+                btn.interactable = true;
+                if (btn.targetGraphic != null) btn.targetGraphic.raycastTarget = true;
+
                 TeleporterNode capturedNode = node; 
                 btn.onClick.AddListener(() => OnNodeClicked(capturedNode));
             }
@@ -420,6 +447,13 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
 
     private void GenerateFogTextureFromTilemap()
     {
+        // This must happen before any early return below. Otherwise a serialized
+        // Raycast Target value on the full-screen fog can block every map button.
+        if (fowRawImageRect != null)
+        {
+            DisableRaycasts(fowRawImageRect.gameObject);
+        }
+
         MinimapTileFog tileFog = FindFirstObjectByType<MinimapTileFog>();
         if (tileFog == null || tileFog.fogTilemap == null) return;
 
@@ -473,6 +507,65 @@ public class MapUI : MonoBehaviour, IUIPanel, IDragHandler
             fowRawImageRect.sizeDelta = new Vector2(fogWorldBounds.size.x * mapScale, fogWorldBounds.size.y * mapScale);
             fowRawImageRect.anchoredPosition = new Vector2(fogWorldBounds.center.x * mapScale, fogWorldBounds.center.y * mapScale);
             fowRawImageRect.SetAsLastSibling();
+        }
+    }
+
+    private void DisableDecorativeRaycasts()
+    {
+        DisableRaycasts(blackScreenBackground);
+
+        if (fowRawImageRect != null)
+        {
+            DisableRaycasts(fowRawImageRect.gameObject);
+        }
+
+        if (playerIconRect != null)
+        {
+            DisableRaycasts(playerIconRect.gameObject);
+        }
+
+        if (_lineInstance != null)
+        {
+            DisableRaycasts(_lineInstance.gameObject);
+        }
+
+        foreach (Graphic roomGraphic in _roomUIDict.Values)
+        {
+            if (roomGraphic != null) roomGraphic.raycastTarget = false;
+        }
+    }
+
+    private void EnsureMapInputSurface()
+    {
+        if (contentContainer == null) return;
+
+        RectTransform viewport = contentContainer.parent as RectTransform;
+        if (viewport == null) return;
+
+        if (_mapInputSurface == null)
+        {
+            _mapInputSurface = viewport.GetComponent<Image>();
+            if (_mapInputSurface == null)
+            {
+                _mapInputSurface = viewport.gameObject.AddComponent<Image>();
+            }
+        }
+
+        // A transparent Graphic gives the EventSystem a full-viewport target.
+        // Button graphics render above it, so clicks still reach teleport nodes;
+        // empty-space drag and mouse-wheel events bubble to MapUI/UIZoomable.
+        _mapInputSurface.color = Color.clear;
+        _mapInputSurface.raycastTarget = true;
+    }
+
+    private static void DisableRaycasts(GameObject root)
+    {
+        if (root == null) return;
+
+        Graphic[] graphics = root.GetComponentsInChildren<Graphic>(true);
+        foreach (Graphic graphic in graphics)
+        {
+            graphic.raycastTarget = false;
         }
     }
 }

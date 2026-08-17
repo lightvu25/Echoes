@@ -46,3 +46,5 @@ validate_rooms.ps1
 /Assets/AstarPathfindingProject/
 /Assets/DOTween/
 /BrainReport/
+/tmp/
+/ProfilerCaptures/

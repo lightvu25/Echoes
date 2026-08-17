@@ -70,6 +70,7 @@ public class GraphLevelGenerator : BaseLevelGenerator
         Queue<NodeTask> queue = new Queue<NodeTask>();
         queue.Enqueue(new NodeTask { room = startRoom, nodeIndex = 0, blueprint = _currentLevelData.nodes[0] });
 
+        // Core loop
         while (queue.Count > 0)
         {
             NodeTask currentTask = queue.Dequeue();
@@ -380,7 +381,7 @@ public class GraphLevelGenerator : BaseLevelGenerator
             }
         }
 
-        // Priority 3: Fallback to encapsulating all tilemaps
+        // Priority 2: Fallback to encapsulating all tilemaps
         bool foundBounds = false;
         Bounds combined = new Bounds(room.transform.position, Vector3.zero);
 

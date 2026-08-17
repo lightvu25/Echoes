@@ -15,20 +15,23 @@ MonoBehaviour:
   itemID: ECHO_DEATH_DRIVE
   itemName: Death-Drive
   itemIcon: {fileID: 40184357124876303, guid: 0884c0f7fc5cb9d48a8ab0ab52241ad3, type: 3}
-  description: 'Inverse HP scaling: The lower your HP, the stronger the knockback
-    and shatter DMG'
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  description: Damage increases as HP falls, up to 100%. Shattering a fractured or
+    frozen target at low HP releases a violent area crash.
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+  itemTier: 2
+  basePrice: 125
   echoType: 8
-  echoTier: 2
   isFusionResult: 1
-  baseDamageMultiplier: 2.5
-  attacksPerSecond: 1
+  baseDamageMultiplier: 1.35
+  attacksPerSecond: 0.95
   rangeCategory: 0
   hasStatusEffect: 1
-  statusProcCoefficient: 0.5
+  statusProcCoefficient: 0.75
   uniqueModifierID: FUS_DEATH_DRIVE
   trailColor: {r: 1, g: 1, b: 1, a: 1}
   stateVFXPrefab: {fileID: 0}
   hitImpactPrefab: {fileID: 0}
+  voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

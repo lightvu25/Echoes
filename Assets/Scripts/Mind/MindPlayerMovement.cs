@@ -92,7 +92,7 @@ public class MindPlayerMovement : MonoBehaviour
         rightPressedLastFrame = rightPressed;
         
         // Handle Interactions (Mind Garden Altar, Exit, etc.)
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Space))
+        if (GameInput.Instance != null && GameInput.Instance.IsInteractActionPressed())
         {
             // Do NOT interact if a blocking UI is currently open
             if (UIManager.Instance != null && 

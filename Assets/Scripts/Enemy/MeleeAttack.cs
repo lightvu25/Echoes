@@ -108,9 +108,14 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
             return; // Friendly fire disabled for tier 1, 2, 3
         }
 
+        float damageMultiplier = BurdenManager.Instance != null
+            ? BurdenManager.Instance.CurrentDamageMultiplier
+            : 1f;
+        int scaledDamage = Mathf.RoundToInt(data.attackBase * damageMultiplier);
+
         DamageInfo damageInfo = new DamageInfo
         {
-            baseDamage = data.attackBase,
+            baseDamage = scaledDamage,
             flatBonus = 0,
             linearModifierSum = 0f,
             multiplicativeStack = isFriendlyFire ? FRIENDLY_FIRE_MULTIPLIER : 1f,

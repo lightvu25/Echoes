@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5903302653993809182}
   - component: {fileID: 4932056425382170116}
   - component: {fileID: 5839544318619216673}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Flask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -179,3 +179,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af1929f7f6a3be8449ca2cd4ae291e1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToxicFlask
+  lifetime: 5

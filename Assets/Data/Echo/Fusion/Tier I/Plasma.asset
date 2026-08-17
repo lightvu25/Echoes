@@ -15,14 +15,15 @@ MonoBehaviour:
   itemID: ECHO_PLASMA
   itemName: Plasma
   itemIcon: {fileID: -4540313247164254345, guid: a8f99cdd9dd9eff45934e161a1845fbb, type: 3}
-  description: Chain-lightning carries heat, triggering AoE explosions each time
-    it bounces.
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  description: Hits launch heated lightning to nearby enemies. Every arc impact explodes
+    for 45% attack damage and applies Burn.
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+  itemTier: 1
+  basePrice: 75
   echoType: 8
-  echoTier: 1
   isFusionResult: 1
-  baseDamageMultiplier: 1
-  attacksPerSecond: 1.3
+  baseDamageMultiplier: 1.1
+  attacksPerSecond: 1.2
   rangeCategory: 2
   hasStatusEffect: 1
   statusProcCoefficient: 0.5
@@ -30,5 +31,7 @@ MonoBehaviour:
   trailColor: {r: 1, g: 1, b: 1, a: 1}
   stateVFXPrefab: {fileID: 0}
   hitImpactPrefab: {fileID: 0}
+  voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 4760034997992110397, guid: 0111d3558f25e914cb7c29ed15392f0a, type: 3}
   level: 1
   currentStatusProc: 0

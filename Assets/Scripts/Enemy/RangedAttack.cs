@@ -61,7 +61,24 @@ public class RangedAttack : MonoBehaviour, IEnemyAttack
         Projectile projectile = proj.GetComponent<Projectile>();
         if (projectile != null)
         {
-            projectile.SetOwner(gameObject);
+            if (data != null)
+            {
+                float damageMultiplier = BurdenManager.Instance != null
+                    ? BurdenManager.Instance.CurrentDamageMultiplier
+                    : 1f;
+                int scaledDamage = Mathf.RoundToInt(data.attackBase * damageMultiplier);
+                DamageInfo damageInfo = DamageInfo.CreateWithKnockback(
+                    scaledDamage,
+                    gameObject,
+                    direction,
+                    data.knockbackForce);
+                damageInfo.damageSource = DamageSourceType.Projectile;
+                projectile.SetupEnemyProjectile(damageInfo);
+            }
+            else
+            {
+                projectile.SetOwner(gameObject);
+            }
         }
 
         Rigidbody2D projRb = proj.GetComponent<Rigidbody2D>();

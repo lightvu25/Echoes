@@ -12,12 +12,11 @@ EditorBuildSettings:
     path: Assets/Scenes/GameScene/GameScene.unity
     guid: 44645c7e348d42c41a84a00bebb67c9b
   - enabled: 1
-    path: Assets/Scenes/GameScene/GameOverScene.unity
-    guid: 0b1cba94880043f4eb5a0e5c68b1768c
-  - enabled: 1
     path: Assets/Scenes/GameScene/MindScene.unity
     guid: eac049e9ce5bc474793e0c63159918d7
+  - enabled: 0
+    path: Assets/Scenes/GameScene/GameOverScene.unity
+    guid: 0b1cba94880043f4eb5a0e5c68b1768c
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: cbf2ffd2360b914439be7452f0695c5e, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 3590b91b4603b465dbb4216d601bff33, type: 3}
-  m_UseUCBPForAssetBundles: 0

@@ -12,39 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937470260c5f20049a9c20727a4ad0eb, type: 3}
   m_Name: Mid Ranged Enemy Data
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  maxHP: 50
-  defense: 0
-  patrolMaxSpeed: 3
-  patrolAcceleration: 3
-  patrolAccelAmount: 50
-  patrolDecceleration: 3
-  patrolDeccelAmount: 50
-  patrolRadius: 14
+  archetype: 1
+  balanceTier: 1
+  maxHP: 58
+  defense: 5
+  patrolMaxSpeed: 2.2
+  patrolAcceleration: 2.8
+  patrolAccelAmount: 63.63636
+  patrolDecceleration: 3.2
+  patrolDeccelAmount: 72.72727
+  patrolRadius: 7
   patrolWaitTimeMin: 1
-  patrolWaitTimeMax: 3
+  patrolWaitTimeMax: 2.5
   groundCheckDistance: 1
   wallCheckDistance: 0.5
-  chaseMaxSpeed: 7
-  chaseAcceleration: 7
-  chaseAccelAmount: 50
-  chaseDecceleration: 7
-  chaseDeccelAmount: 50
+  chaseMaxSpeed: 5
+  chaseAcceleration: 5.5
+  chaseAccelAmount: 55
+  chaseDecceleration: 6.5
+  chaseDeccelAmount: 65
   doConserveMomentum: 1
-  attackBase: 30
-  attackRange: 1.3
+  attackBase: 22
+  attackRange: 3
   attackSpeed: 1
-  attackCooldown: 1
-  telegraphDuration: 0.4
+  attackCooldown: 1.4
+  telegraphDuration: 0.55
   canBackstep: 0
-  attackHitboxSize: {x: 3.6, y: 1.5}
-  attackHitboxOffset: {x: 2, y: 0}
-  knockbackForce: 5
+  attackHitboxSize: {x: 3.2, y: 1.3}
+  attackHitboxOffset: {x: 1.8, y: 0}
+  knockbackForce: 3.5
   attackTargetLayers:
     serializedVersion: 2
     m_Bits: 384
-  visionRange: 5
-  fovAngle: 120
-  closeDetectionRange: 1.2
+  visionRange: 8
+  fovAngle: 140
+  closeDetectionRange: 1.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 8200
@@ -54,12 +56,12 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
-  noticeDuration: 0.5
-  expRewardMin: 10
-  expRewardMax: 20
-  goldDropChance: 100
+  noticeDuration: 0.55
+  expRewardMin: 16
+  expRewardMax: 24
+  goldDropChance: 75
   goldAmountMin: 2
   goldAmountMax: 5
-  astralShardDropChance: 40
+  astralShardDropChance: 10
   astralShardAmountMin: 1
   astralShardAmountMax: 2

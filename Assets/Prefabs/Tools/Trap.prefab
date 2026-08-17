@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5903302653993809182}
   - component: {fileID: 4932056425382170116}
   - component: {fileID: 4376851431263755290}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Trap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -183,3 +183,4 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
+  lifetime: 15

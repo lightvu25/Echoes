@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
   m_Name: Zero Point Fusion
   m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
-  recipeID: REC_ZERO_POINT
-  elementA: {fileID: 11400000, guid: a24a14679e11dd54c97325295ae0ede7, type: 2}
-  elementB: {fileID: 11400000, guid: fb0ea2a9f909b6c408c3a62257d405b9, type: 2}
-  resultElement: {fileID: 11400000, guid: cb3b9968fc23d70438d749ab9f0c85e4, type: 2}
+  recipeID: FUS_ZERO_POINT
+  echoA: {fileID: 11400000, guid: a24a14679e11dd54c97325295ae0ede7, type: 2}
+  echoB: {fileID: 11400000, guid: fb0ea2a9f909b6c408c3a62257d405b9, type: 2}
+  resultEcho: {fileID: 11400000, guid: cb3b9968fc23d70438d749ab9f0c85e4, type: 2}
   recipeTier: 3
-  requiredConstellationNode: FUSION_FORGE_UP
+  requiredConstellationNode: FUSION_TIER_3

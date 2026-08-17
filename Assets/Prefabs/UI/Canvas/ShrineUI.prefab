@@ -65,7 +65,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Moving continuously for 3 seconds buffs your next attack's damage by 20%.
+  m_text: Basic attacks have a 10% chance to trigger an Echo AoE explosion with 50%
+    its damage.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -202,7 +203,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Lumin Bloodline
+  m_text: Starlight Carapace
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -454,7 +455,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 15% chance to drop a 10 HP healing orb upon defeating an enemy.
+  m_text: Gain a temporary shield equal to 10% of Max HP when entering a new combat
+    room.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -730,7 +732,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Zephyr's Sting
+  m_text: Echo of Ruin
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -867,7 +869,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Gravity Well
+  m_text: Shattered Star
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
@@ -1143,8 +1145,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The final hit of your basic attack combo slightly pulls nearby enemies
-    inward.
+  m_text: Critical hit damage is increased by 20%.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}
   m_sharedMaterial: {fileID: 8111225685226033560, guid: 8253de1eff0ab3a41849f4c1143157f2, type: 2}

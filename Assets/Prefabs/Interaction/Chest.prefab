@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 4651936376559543941}
   - component: {fileID: 3292319335770998151}
   - component: {fileID: 1112306496273982016}
-  m_Layer: 3
+  - component: {fileID: 104424422621944529}
+  m_Layer: 0
   m_Name: Chest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 7883561012257174218}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.28707, y: 5.8348, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -181,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bb011e5600310b43827a11f3c8a73b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chest
-  persistenceID: 001
+  persistenceID: 
   lootTable: {fileID: 11400000, guid: 7ce156a97f5aaca43a80eb2c3d8ef906, type: 2}
   chestTier: 1
   popForceMin: 4
@@ -218,11 +219,26 @@ MonoBehaviour:
         m_CallState: 2
   iconPrefab: {fileID: 8270603724649358730, guid: 563f43968a07b104a9fb7b5918ec3976, type: 3}
   iconOffset: {x: 0, y: 1.5, z: 0}
-  targetSpriteRenderer: {fileID: 0}
+  targetSpriteRenderer: {fileID: 1680099213363489715}
   outlineThickness: 0.02
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  maxInteractions: 0
+  maxInteractions: 1
   canInteractWithF: 1
+--- !u!114 &104424422621944529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883561012257174218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 103e42d8269774c4c91a5e81ba1df862, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Echoes.Audio.EventAudioPlayer
+  soundClip: {fileID: 8300000, guid: d3349ea57154ac04b8b99a6d746f901f, type: 3}
+  volume: 1
+  useRandomPitch: 1
 --- !u!1 &8834382048062452985
 GameObject:
   m_ObjectHideFlags: 0

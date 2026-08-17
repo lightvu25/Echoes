@@ -17,6 +17,23 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
 
     private MindNode _currentNode;
     private bool _canClaimCurrentNode = false;
+    private int _lastHandledInputFrame = -1;
+
+    private void OnEnable()
+    {
+        if (GameInput.Instance == null) return;
+        GameInput.Instance.OnConfirmPressed += HandlePrimaryAction;
+        GameInput.Instance.OnInteractPressed += HandlePrimaryAction;
+        GameInput.Instance.OnCancelPressed += HandleCancelAction;
+    }
+
+    private void OnDisable()
+    {
+        if (GameInput.Instance == null) return;
+        GameInput.Instance.OnConfirmPressed -= HandlePrimaryAction;
+        GameInput.Instance.OnInteractPressed -= HandlePrimaryAction;
+        GameInput.Instance.OnCancelPressed -= HandleCancelAction;
+    }
 
     private void Start()
     {
@@ -43,6 +60,7 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
         lockIcon.gameObject.SetActive(false);
         if (unlockText != null) unlockText.text = "";
         _canClaimCurrentNode = false;
+        string confirmLabel = GameInput.Instance != null ? GameInput.Instance.ConfirmKey.ToString() : "Confirm";
 
         if (nodeIcon != null)
         {
@@ -53,7 +71,8 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
         if (node.nodeType == NodeType.MapExit)
         {
             titleText.text = "Goal Reached!";
-            descriptionText.text = "Press Space or [Interact] to enter the next level.";
+            string interactLabel = GameInput.Instance != null ? GameInput.Instance.InteractKey.ToString() : "Interact";
+            descriptionText.text = $"Press {confirmLabel} or {interactLabel} to enter the next level.";
             return;
         }
 
@@ -74,7 +93,7 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
             if (run == null)
             {
                 requirementsText.text = $"{node.requiredSpeedrunTime}s Limit";
-                statusString = "<color=green>Press Space to claim</color>";
+                statusString = $"<color=green>Press {confirmLabel} to claim</color>";
                 descriptionText.text = "Reward: 30 Shards";
                 isLocked = false;
             }
@@ -88,7 +107,7 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
             else
             {
                 requirementsText.text = $"Time: {run.currentLevelTime:F1}s / {node.requiredSpeedrunTime}s Limit";
-                statusString = "<color=green>Press Space to claim</color>";
+                statusString = $"<color=green>Press {confirmLabel} to claim</color>";
                 descriptionText.text = "Reward: 30 Shards";
                 isLocked = false;
             }
@@ -104,7 +123,7 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
             if (run == null)
             {
                 requirementsText.text = $"{node.requiredNoHitKills} Kills";
-                statusString = "<color=green>Press Space to claim</color>";
+                statusString = $"<color=green>Press {confirmLabel} to claim</color>";
                 descriptionText.text = "Reward: 30 Shards";
                 isLocked = false;
             }
@@ -118,7 +137,7 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
             else
             {
                 requirementsText.text = $"{run.currentLevelNoHitKills} / {node.requiredNoHitKills} Kills";
-                statusString = "<color=green>Press Space to claim</color>";
+                statusString = $"<color=green>Press {confirmLabel} to claim</color>";
                 descriptionText.text = "Reward: 30 Shards";
                 isLocked = false;
             }
@@ -145,7 +164,7 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
             {
                 requirementsText.text += $"\n{statusString}";
             }
-            
+
             if (isLocked)
             {
                 lockIcon.gameObject.SetActive(true);
@@ -184,51 +203,51 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
         }
     }
 
-    private void Update()
+    private void HandlePrimaryAction()
     {
-        if (!gameObject.activeSelf) return;
+        if (!gameObject.activeSelf || _lastHandledInputFrame == Time.frameCount) return;
+        _lastHandledInputFrame = Time.frameCount;
 
-        bool interactPressed = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F);
-
-        if (interactPressed)
+        if (_currentNode != null && _currentNode.nodeType == NodeType.MapExit)
         {
-            if (_canClaimCurrentNode && _currentNode != null && Input.GetKeyDown(KeyCode.Space))
-            {
-                _currentNode.isChallengeClaimed = true;
-                _canClaimCurrentNode = false;
-                
-                if (PlayerStats.Instance != null)
-                {
-                    PlayerStats.Instance.AddAstralShards(30);
-                    Debug.Log("[MindNodeUI] Claimed 30 Astral Shards from Challenge Node! (Via PlayerStats)");
-                }
-                else if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
-                {
-                    GameSession.Instance.currentRun.currentAstralShards += 30;
-                    GameSession.Instance.SaveCurrentRun();
-                    Debug.Log("[MindNodeUI] Claimed 30 Astral Shards from Challenge Node! (Via GameSession)");
-                }
+            if (_currentNode.TryGetComponent<MindExitNode>(out var exitNode))
+                exitNode.Interact();
+            return;
+        }
 
-                // Close UI on claim
-                if (UIManager.Instance != null && UIManager.Instance.CurrentActivePanel == UIPanelType.MindNode)
-                {
-                    UIManager.Instance.CloseCurrentPanel();
-                }
-                else
-                {
-                    Hide();
-                }
-                return;
-            }
+        if (_canClaimCurrentNode && _currentNode != null)
+        {
+            _currentNode.isChallengeClaimed = true;
+            _canClaimCurrentNode = false;
 
-            if (UIManager.Instance != null && UIManager.Instance.CurrentActivePanel == UIPanelType.MindNode)
+            if (PlayerStats.Instance != null)
             {
-                UIManager.Instance.CloseCurrentPanel();
+                PlayerStats.Instance.AddAstralShards(30);
+                Debug.Log("[MindNodeUI] Claimed 30 Astral Shards from Challenge Node! (Via PlayerStats)");
             }
-            else
+            else if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
             {
-                Hide();
+                GameSession.Instance.currentRun.currentAstralShards += 30;
+                GameSession.Instance.SaveCurrentRun();
+                Debug.Log("[MindNodeUI] Claimed 30 Astral Shards from Challenge Node! (Via GameSession)");
             }
         }
+
+        ClosePanel();
+    }
+
+    private void HandleCancelAction()
+    {
+        if (!gameObject.activeSelf || _lastHandledInputFrame == Time.frameCount) return;
+        _lastHandledInputFrame = Time.frameCount;
+        ClosePanel();
+    }
+
+    private void ClosePanel()
+    {
+        if (UIManager.Instance != null && UIManager.Instance.CurrentActivePanel == UIPanelType.MindNode)
+            UIManager.Instance.CloseCurrentPanel();
+        else
+            Hide();
     }
 }

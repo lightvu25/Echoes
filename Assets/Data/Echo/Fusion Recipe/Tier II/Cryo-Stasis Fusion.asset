@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
   m_Name: Cryo-Stasis Fusion
   m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
-  recipeID: REC_CRYO_STASIS
-  elementA: {fileID: 11400000, guid: 80f0cf2d3c1b8044caf755fff7f0d7a7, type: 2}
-  elementB: {fileID: 11400000, guid: 8345ac929fab136449452f87b45e6fa4, type: 2}
-  resultElement: {fileID: 11400000, guid: eee33a29634bd514ab4b5370609394c7, type: 2}
+  recipeID: FUS_CRYO_STASIS
+  echoA: {fileID: 11400000, guid: 80f0cf2d3c1b8044caf755fff7f0d7a7, type: 2}
+  echoB: {fileID: 11400000, guid: 8345ac929fab136449452f87b45e6fa4, type: 2}
+  resultEcho: {fileID: 11400000, guid: fb0ea2a9f909b6c408c3a62257d405b9, type: 2}
   recipeTier: 2
-  requiredConstellationNode: FUSION_FORGE_UP
+  requiredConstellationNode: FUSION_TIER_2

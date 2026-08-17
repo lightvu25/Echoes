@@ -47,14 +47,23 @@ public class CutsceneManager : MonoBehaviour
 
     private void CachePlayerComponents()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player == null) return;
+        _playerMovement = FindAnyObjectByType<PlayerMovement>(FindObjectsInactive.Exclude);
+        _mindPlayerMovement = FindAnyObjectByType<MindPlayerMovement>(FindObjectsInactive.Exclude);
 
-        _playerMovement = player.GetComponent<PlayerMovement>();
+        GameObject player = _playerMovement != null
+            ? _playerMovement.gameObject
+            : _mindPlayerMovement != null
+                ? _mindPlayerMovement.gameObject
+                : null;
+
+        if (player == null)
+        {
+            return;
+        }
+
         _playerAttack = player.GetComponent<PlayerAttack>();
         _playerRb = player.GetComponent<Rigidbody2D>();
         _playerCollider = player.GetComponent<Collider2D>();
-        _mindPlayerMovement = player.GetComponent<MindPlayerMovement>();
     }
 
     private void LockPlayer(bool locked)
@@ -90,6 +99,12 @@ public class CutsceneManager : MonoBehaviour
 
     public IEnumerator PlayDeathSequence(int lostShards)
     {
+        if (deathDirector == null)
+        {
+            Debug.LogError("[CutsceneManager] Cannot play the death sequence because no death director is assigned.", this);
+            yield break;
+        }
+
         if (shardSubTitleText != null)
         {
             shardSubTitleText.text = $"You lost {lostShards} Shards";
@@ -102,23 +117,27 @@ public class CutsceneManager : MonoBehaviour
             _playerRb.linearVelocity = new Vector2(0, _playerRb.linearVelocity.y);
         }
 
-        // Freeze the world completely so enemies and physics stop
-        // Time.timeScale = 0f;
-
-        if (deathDirector != null)
+        try
         {
             deathDirector.gameObject.SetActive(true);
+            deathDirector.Stop();
+            deathDirector.time = 0d;
+            deathDirector.Evaluate();
             deathDirector.Play();
             yield return StartCoroutine(WaitForDirectorOrSkip(deathDirector));
+
+            yield return new WaitUntil(() => Input.anyKeyDown);
         }
+        finally
+        {
+            deathDirector.Stop();
+            deathDirector.time = 0d;
+            deathDirector.gameObject.SetActive(false);
 
-        yield return new WaitUntil(() => Input.anyKeyDown);
-
-        if (TimeManager.Instance != null) TimeManager.Instance.ClearAllPauses();
-        else Time.timeScale = 1f;
-        LockPlayer(false);
-
-        deathDirector.gameObject.SetActive(false);
+            if (TimeManager.Instance != null) TimeManager.Instance.ClearAllPauses();
+            else Time.timeScale = 1f;
+            LockPlayer(false);
+        }
     }
 
     public IEnumerator PlayGoalSequence(Vector3 goalPosition)

@@ -13,31 +13,31 @@ MonoBehaviour:
   m_Name: CursedMobLoot
   m_EditorClassIdentifier: Assembly-CSharp::LootTable
   lootItems:
-  - itemPrefab: {fileID: 0}
+  - itemPrefab: {fileID: 1252801066187718037, guid: b871f7afb053c6b4d9fa400a4335bff1, type: 3}
     dropChance: 100
     itemTier: 1
     minAmount: 8
     maxAmount: 15
     type: 3
-  - itemPrefab: {fileID: 0}
+  - itemPrefab: {fileID: 5906014342740351065, guid: 73ad028fa1075a94e99851b0c28da90c, type: 3}
     dropChance: 40
     itemTier: 2
     minAmount: 3
     maxAmount: 8
     type: 3
-  - itemPrefab: {fileID: 0}
+  - itemPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
     dropChance: 15
     itemTier: 1
     minAmount: 1
     maxAmount: 1
-    type: 2
-  - itemPrefab: {fileID: 0}
+    type: 4
+  - itemPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
     dropChance: 10
     itemTier: 1
     minAmount: 1
     maxAmount: 1
     type: 0
-  - itemPrefab: {fileID: 0}
+  - itemPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
     dropChance: 5
     itemTier: 1
     minAmount: 1

@@ -614,7 +614,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 195113763
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7631889286582480796, guid: fa5ab1ee79322864f847ddcec6c923ab, type: 3}
@@ -937,7 +937,6 @@ MonoBehaviour:
   combatStatsAsset: {fileID: 0}
   maxHP: 50
   currentHP: 50
-  maxSlots: 4
   defense: 0
   iFrameDuration: 0.5
   hasIFrames: 1
@@ -955,6 +954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
   data: {fileID: 11400000, guid: 7e66a5915c830924bb57a9ca3b344d62, type: 2}
+  rank: 0
   knockbackDuration: 0.2
 --- !u!114 &4917297075672921874
 MonoBehaviour:
@@ -1225,3 +1225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a876e82144ac8bc4485890a3060dafe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpriteColorFlasher
+  whiteFlashMaterial: {fileID: 2100000, guid: b8ac6bdf010e3da4b8edde5897cc08f8, type: 2}
+  flashRenderers:
+  - {fileID: 4510934248767904007}
+  excludedRenderers: []

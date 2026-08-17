@@ -65,7 +65,7 @@ MonoBehaviour:
     eventChance: 0
     dynamicInjections:
     - injectionType: 1
-      spawnChance: 0.7
+      spawnChance: 1
     position: {x: 0, y: 0}
   - nodeName: 5
     roomType: 2
@@ -416,7 +416,7 @@ MonoBehaviour:
   - eventType: 2
     minRequired: 1
     maxAllowed: 2
-    currentCount: 0
+    currentCount: 1
     remainingCandidates: 0
   - eventType: 10
     minRequired: 0
@@ -427,23 +427,23 @@ MonoBehaviour:
   - injectionType: 1
     minRequired: 3
     maxAllowed: 4
-    currentCount: 0
-    remainingCandidates: 0
+    currentCount: 2
+    remainingCandidates: 9
   - injectionType: 2
     minRequired: 2
     maxAllowed: 3
-    currentCount: 0
-    remainingCandidates: 0
+    currentCount: 2
+    remainingCandidates: 6
   - injectionType: 3
     minRequired: 3
     maxAllowed: 4
-    currentCount: 0
-    remainingCandidates: 0
+    currentCount: 2
+    remainingCandidates: 6
   - injectionType: 4
     minRequired: 1
     maxAllowed: 3
-    currentCount: 0
-    remainingCandidates: 0
+    currentCount: 2
+    remainingCandidates: 11
   anchorSpawnChance: 0.3
   echoNodePool:
   - nodePrefab: {fileID: 7639742590146618916, guid: ea5483971fd5bc04db90d37d9916a1e3, type: 3}

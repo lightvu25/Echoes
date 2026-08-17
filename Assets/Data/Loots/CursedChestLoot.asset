@@ -13,21 +13,21 @@ MonoBehaviour:
   m_Name: CursedChestLoot
   m_EditorClassIdentifier: Assembly-CSharp::LootTable
   lootItems:
-  - itemPrefab: {fileID: 0}
-    dropChance: 100
-    itemTier: 1
-    minAmount: 80
-    maxAmount: 120
-    type: 3
-  - itemPrefab: {fileID: 0}
-    dropChance: 100
-    itemTier: 3
+  - itemPrefab: {fileID: 1252801066187718037, guid: b871f7afb053c6b4d9fa400a4335bff1, type: 3}
+    dropChance: 30
+    itemTier: 2
+    minAmount: 1
+    maxAmount: 1
+    type: 4
+  - itemPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+    dropChance: 30
+    itemTier: 2
     minAmount: 1
     maxAmount: 1
     type: 0
-  - itemPrefab: {fileID: 0}
+  - itemPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
     dropChance: 30
-    itemTier: 3
+    itemTier: 2
     minAmount: 1
     maxAmount: 1
     type: 1

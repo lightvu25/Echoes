@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
   m_Name: Ragnarok Fusion
   m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
-  recipeID: REC_RAGNAROK
-  elementA: {fileID: 11400000, guid: 36700ec2b5117054eb660a3d19145549, type: 2}
-  elementB: {fileID: 11400000, guid: 351b2aae15faef84d9c2073fa83434c1, type: 2}
-  resultElement: {fileID: 11400000, guid: a3422edfff26deb49a4ee146a6b5cfca, type: 2}
+  recipeID: FUS_RAGNAROK
+  echoA: {fileID: 11400000, guid: 36700ec2b5117054eb660a3d19145549, type: 2}
+  echoB: {fileID: 11400000, guid: 351b2aae15faef84d9c2073fa83434c1, type: 2}
+  resultEcho: {fileID: 11400000, guid: a3422edfff26deb49a4ee146a6b5cfca, type: 2}
   recipeTier: 3
-  requiredConstellationNode: FUSION_FORGE_UP
+  requiredConstellationNode: FUSION_TIER_3

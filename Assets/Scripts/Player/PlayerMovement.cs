@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     public event EventHandler OnLand;
     public event EventHandler OnRun;
     public event EventHandler OnDash;
+    public event EventHandler OnWallJump;
+    public event Action<int> OnJumpPerformed;
     public event EventHandler OnStopRun;
     public event EventHandler OnCling;
     public event EventHandler OnGrab;
@@ -60,6 +62,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float _wallJumpStartTime;
     private int   _lastWallJumpDir;
+    private readonly System.Collections.Generic.HashSet<object> tripleJumpSources = new System.Collections.Generic.HashSet<object>();
     private float _lastDownInputTime;
     private bool  _wasDownInput;
     private float _plungeStartY;
@@ -98,6 +101,9 @@ public class PlayerMovement : MonoBehaviour
 
     public bool isGrounded => LastOnGroundTime > 0;
     public bool isRunning => Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded;
+    public Vector2 LastDashDirection => _lastDashDir;
+    public bool IsJumpHeld => inputConfig != null ? inputConfig.GetJumpHeld() : Input.GetKey(KeyCode.Space);
+    public int CurrentMaxJumps => (GameDataManager.Instance != null && GameDataManager.Instance.isTripleJumpUnlocked) || tripleJumpSources.Count > 0 ? 3 : 2;
 
     private bool _isDroppingThroughPlatform;
 
@@ -354,7 +360,7 @@ public class PlayerMovement : MonoBehaviour
             // A better way is to track if we already sent OnFall.
         }
 
-        int currentMaxJumps = (GameDataManager.Instance != null && GameDataManager.Instance.isTripleJumpUnlocked) ? 3 : 2;
+        int currentMaxJumps = CurrentMaxJumps;
         if (LastOnGroundTime > 0 || isWallJumping || isLedgeGrabbing || isClimbing || LastOnWallTime > 0)
         {
             _jumpsLeft = currentMaxJumps;
@@ -599,6 +605,24 @@ public class PlayerMovement : MonoBehaviour
         _buffSpeedMultiplier = multiplier;
     }
 
+    public void SetTripleJump(object source, bool enabled)
+    {
+        if (source == null) return;
+        if (enabled) tripleJumpSources.Add(source);
+        else tripleJumpSources.Remove(source);
+    }
+
+    public void ApplyRelicBounce(float upwardVelocity)
+    {
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Max(rb.linearVelocity.y, upwardVelocity));
+    }
+
+    public void PullToward(Vector3 targetPosition, float speed)
+    {
+        Vector2 direction = ((Vector2)targetPosition - rb.position).normalized;
+        rb.linearVelocity = direction * Mathf.Max(0f, speed);
+    }
+
     public void SetLinearDrag(float drag)
     {
         rb.linearDamping = drag;
@@ -665,6 +689,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
+        int jumpOrdinal = Mathf.Clamp(CurrentMaxJumps - _jumpsLeft + 1, 1, CurrentMaxJumps);
         _lastJumpExecTime   = Time.time;
         LastPressedJumpTime = 0;
         LastOnGroundTime    = 0;
@@ -679,6 +704,7 @@ public class PlayerMovement : MonoBehaviour
                 _phantomShadowAnchor = null;
                 _jumpsLeft = 0;
                 OnJump?.Invoke(this, EventArgs.Empty);
+                OnJumpPerformed?.Invoke(jumpOrdinal);
                 return;
             }
             else if (_jumpsLeft == 1) 
@@ -697,6 +723,7 @@ public class PlayerMovement : MonoBehaviour
 
         rb.AddForce(Vector2.up * Data.jumpForce, ForceMode2D.Impulse);
         OnJump?.Invoke(this, EventArgs.Empty);
+        OnJumpPerformed?.Invoke(jumpOrdinal);
     }
 
     private void WallJump(int dir)
@@ -719,6 +746,7 @@ public class PlayerMovement : MonoBehaviour
             force.y -= rb.linearVelocity.y;
 
         rb.AddForce(force, ForceMode2D.Impulse);
+        OnWallJump?.Invoke(this, EventArgs.Empty);
 
         CheckDirectionToFace(dir != 1); 
     }

@@ -28,6 +28,20 @@ public class ReturnToPool : MonoBehaviour
             // Fallback for particles if we just want to rely on ParticleSystem duration
             routine = StartCoroutine(Routine(particleSys.main.duration));
         }
+        else if (animator == null)
+        {
+            // Sprite-only VFX still need a deterministic lifetime.
+            routine = StartCoroutine(Routine(time));
+        }
+    }
+
+    public void ConfigureDelay(float delay)
+    {
+        useFixedDelay = true;
+        time = Mathf.Max(0.05f, delay);
+        if (!isActiveAndEnabled) return;
+        if (routine != null) StopCoroutine(routine);
+        routine = StartCoroutine(Routine(time));
     }
 
     private void Update()

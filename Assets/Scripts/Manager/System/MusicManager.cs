@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using DG.Tweening;
 
 [System.Serializable]
@@ -9,6 +10,26 @@ public struct MusicTrack
 {
     public string trackName;
     public AudioClip clip;
+}
+
+/// <summary>
+/// Links a scene name to music and ambient tracks that should play automatically.
+/// Configure these in the MusicManager Inspector — no hardcoded strings needed!
+/// </summary>
+[System.Serializable]
+public struct SceneMusicEntry
+{
+    [Tooltip("The exact name of the scene (as it appears in Build Settings).")]
+    public string sceneName;
+
+    [Tooltip("The music track to play when this scene loads. Leave empty to stop music.")]
+    public AudioClip musicClip;
+
+    [Tooltip("The ambient track to play when this scene loads. Leave empty to stop ambient.")]
+    public AudioClip ambientClip;
+
+    [Tooltip("Crossfade duration in seconds.")]
+    public float fadeDuration;
 }
 
 public class MusicManager : MonoBehaviour
@@ -35,12 +56,22 @@ public class MusicManager : MonoBehaviour
     [Header("Tracks")]
     [SerializeField] private MusicTrack[] tracks;
 
+    [Header("Scene Music (assign clips per scene — no code needed!)")]
+    [SerializeField] private SceneMusicEntry[] sceneMusicEntries;
+
     private Coroutine musicCrossfadeCoroutine;
     private Coroutine ambientCrossfadeCoroutine;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+            return;
+        }
+
         Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         // Load volume from PlayerPrefs
         musicVolume = PlayerPrefs.GetInt(PREF_KEY, 4);
@@ -52,6 +83,38 @@ public class MusicManager : MonoBehaviour
         }
 
         if (musicSource != null) musicSource.time = musicTime;
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        if (Instance == this)
+            Instance = null;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        foreach (var entry in sceneMusicEntries)
+        {
+            if (entry.sceneName != scene.name) continue;
+
+            float fade = entry.fadeDuration > 0f ? entry.fadeDuration : 0.5f;
+
+            if (entry.musicClip != null)
+                PlayMusicClip(entry.musicClip, fade);
+            else
+                StopMusic(fade);
+
+            if (entry.ambientClip != null)
+                PlayAmbientClip(entry.ambientClip, fade);
+            else
+                StopAmbient(fade);
+
+            return;
+        }
     }
 
     private void Start()
@@ -63,6 +126,9 @@ public class MusicManager : MonoBehaviour
             
         if (ambientCrossfadeCoroutine == null && ambientSource != null)
             ambientSource.volume = 1f;
+
+        // Trigger for the first scene since Awake is too early for sceneLoaded
+        OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
     }
 
     private void Update()
@@ -70,6 +136,10 @@ public class MusicManager : MonoBehaviour
         if (musicSource != null && musicSource.isPlaying)
             musicTime = musicSource.time;
     }
+
+    // ------------------------------------------------------------------ //
+    //  Public API — name-based (legacy / manual control)                  //
+    // ------------------------------------------------------------------ //
 
     public AudioClip GetClipFromName(string trackName)
     {
@@ -89,13 +159,7 @@ public class MusicManager : MonoBehaviour
             Debug.LogWarning($"MusicManager: Track '{trackName}' not found.");
             return;
         }
-
-        if (musicSource.clip == clip) return;
-
-        if (musicCrossfadeCoroutine != null)
-            StopCoroutine(musicCrossfadeCoroutine);
-
-        musicCrossfadeCoroutine = StartCoroutine(AnimateCrossfade(musicSource, clip, fadeDuration, isMusic: true));
+        PlayMusicClip(clip, fadeDuration);
     }
 
     public void PlayAmbient(string trackName, float fadeDuration = 0.5f)
@@ -106,14 +170,50 @@ public class MusicManager : MonoBehaviour
             Debug.LogWarning($"MusicManager: Ambient Track '{trackName}' not found.");
             return;
         }
+        PlayAmbientClip(clip, fadeDuration);
+    }
 
-        if (ambientSource.clip == clip) return;
+    // ------------------------------------------------------------------ //
+    //  Public API — clip-based (used by scene auto-play and external code) //
+    // ------------------------------------------------------------------ //
+
+    public void PlayMusicClip(AudioClip clip, float fadeDuration = 0.5f)
+    {
+        // Only skip if the SAME clip is already actively playing — not just assigned.
+        if (clip == null || (musicSource.clip == clip && musicSource.isPlaying)) return;
+
+        if (musicCrossfadeCoroutine != null)
+            StopCoroutine(musicCrossfadeCoroutine);
+
+        musicCrossfadeCoroutine = StartCoroutine(AnimateCrossfade(musicSource, clip, fadeDuration, isMusic: true));
+    }
+
+    public void PlayAmbientClip(AudioClip clip, float fadeDuration = 0.5f)
+    {
+        // Only skip if the SAME clip is already actively playing — not just assigned.
+        if (clip == null || (ambientSource.clip == clip && ambientSource.isPlaying)) return;
 
         if (ambientCrossfadeCoroutine != null)
             StopCoroutine(ambientCrossfadeCoroutine);
 
         ambientCrossfadeCoroutine = StartCoroutine(AnimateCrossfade(ambientSource, clip, fadeDuration, isMusic: false));
     }
+
+    public void StopMusic(float fadeDuration = 0.5f)
+    {
+        if (musicCrossfadeCoroutine != null) StopCoroutine(musicCrossfadeCoroutine);
+        musicCrossfadeCoroutine = StartCoroutine(FadeOutAndStop(musicSource, fadeDuration));
+    }
+
+    public void StopAmbient(float fadeDuration = 0.5f)
+    {
+        if (ambientCrossfadeCoroutine != null) StopCoroutine(ambientCrossfadeCoroutine);
+        ambientCrossfadeCoroutine = StartCoroutine(FadeOutAndStop(ambientSource, fadeDuration));
+    }
+
+    // ------------------------------------------------------------------ //
+    //  Coroutines                                                         //
+    // ------------------------------------------------------------------ //
 
     private IEnumerator AnimateCrossfade(AudioSource source, AudioClip nextTrack, float fadeDuration, bool isMusic)
     {
@@ -130,7 +230,7 @@ public class MusicManager : MonoBehaviour
         }
         source.volume = 0f;
 
-        // Đổi nhạc
+        // Switch track
         source.clip = nextTrack;
         if (isMusic) musicTime = 0f;
         source.Play();
@@ -148,6 +248,25 @@ public class MusicManager : MonoBehaviour
         if (isMusic) musicCrossfadeCoroutine = null;
         else ambientCrossfadeCoroutine = null;
     }
+
+    private IEnumerator FadeOutAndStop(AudioSource source, float fadeDuration)
+    {
+        float startVolume = source.volume;
+        float elapsed = 0f;
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            source.volume = Mathf.Lerp(startVolume, 0f, elapsed / fadeDuration);
+            yield return null;
+        }
+        source.volume = 0f;
+        source.Stop();
+        source.clip = null;
+    }
+
+    // ------------------------------------------------------------------ //
+    //  Volume control                                                      //
+    // ------------------------------------------------------------------ //
 
     public void ChangeMusicVolume() { SetMusicVolume((musicVolume + 1) % MUSIC_VOLUME_MAX); }
     public void SetMusicVolume(int newVolume)

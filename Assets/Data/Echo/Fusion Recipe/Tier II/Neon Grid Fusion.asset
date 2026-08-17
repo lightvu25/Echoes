@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
   m_Name: Neon Grid Fusion
   m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
-  recipeID: REC_PLASMA
-  elementA: {fileID: 11400000, guid: 3ec18f11c8e531742b8da89ec45d2a5f, type: 2}
-  elementB: {fileID: 11400000, guid: ad25f0b543aeff743a2e4684cd30e4c8, type: 2}
-  resultElement: {fileID: 11400000, guid: eee33a29634bd514ab4b5370609394c7, type: 2}
+  recipeID: FUS_NEON_GRID
+  echoA: {fileID: 11400000, guid: 3ec18f11c8e531742b8da89ec45d2a5f, type: 2}
+  echoB: {fileID: 11400000, guid: ad25f0b543aeff743a2e4684cd30e4c8, type: 2}
+  resultEcho: {fileID: 11400000, guid: eee33a29634bd514ab4b5370609394c7, type: 2}
   recipeTier: 2
-  requiredConstellationNode: FUSION_FORGE_UP
+  requiredConstellationNode: FUSION_TIER_2

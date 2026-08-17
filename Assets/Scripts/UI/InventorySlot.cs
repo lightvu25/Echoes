@@ -22,6 +22,10 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [SerializeField] private PlaystyleData playstyleData;
     [SerializeField] private Image playstyleIconImage;
 
+    [Header("Cooldown (Tools Only)")]
+    [SerializeField] private Image cooldownOverlay;
+    [SerializeField] private TMPro.TextMeshProUGUI usesText;
+
     [Header("Glow")]
     [SerializeField] private float glowPulseAlpha = 0.8f;
     [SerializeField] private float glowPulseDuration = 0.5f;
@@ -58,6 +62,51 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             PlayerInventoryCore.Instance.OnInventoryChanged -= Refresh;
     }
     
+    private void Update()
+    {
+        if (category != ItemCategory.Tool || PlayerInventoryCore.Instance == null) return;
+        
+        var tool = GetTooltipData() as ToolData;
+        if (tool != null && cooldownOverlay != null)
+        {
+            var playerTool = PlayerInventoryCore.Instance.GetComponent<PlayerTool>();
+            if (playerTool != null)
+            {
+                float remaining = playerTool.GetRemainingCooldown(tool.itemID);
+                float total = playerTool.GetTotalCooldown(tool.itemID);
+                int uses = playerTool.GetCurrentUses(tool.itemID);
+                
+                if (remaining > 0f)
+                {
+                    if (!cooldownOverlay.gameObject.activeSelf) cooldownOverlay.gameObject.SetActive(true);
+                    cooldownOverlay.fillAmount = remaining / total;
+                }
+                else
+                {
+                    if (cooldownOverlay.gameObject.activeSelf) cooldownOverlay.gameObject.SetActive(false);
+                }
+                
+                if (usesText != null)
+                {
+                    if (tool.maxUses > 1)
+                    {
+                        if (!usesText.gameObject.activeSelf) usesText.gameObject.SetActive(true);
+                        usesText.text = uses.ToString();
+                    }
+                    else
+                    {
+                        if (usesText.gameObject.activeSelf) usesText.gameObject.SetActive(false);
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (cooldownOverlay != null && cooldownOverlay.gameObject.activeSelf) cooldownOverlay.gameObject.SetActive(false);
+            if (usesText != null && usesText.gameObject.activeSelf) usesText.gameObject.SetActive(false);
+        }
+    }
+
     public void SetGlowing(bool glow)
     {
         if (glowImage == null) return;

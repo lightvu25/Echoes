@@ -1,8 +1,17 @@
 using System;
 using UnityEngine;
+
+public enum EnemyRank
+{
+    Normal,
+    Elite,
+    Boss
+}
+
 [RequireComponent(typeof(HealthSystem))]
 public class EnemyCombat : MonoBehaviour, IDamageable
 {
+    public static event Action<EnemyCombat, DamageInfo> OnAnyEnemyDied;
     public event EventHandler<DamageReceivedArgs> OnDamageReceived;
     public event EventHandler OnEnemyDied;
     public class DamageReceivedArgs : EventArgs
@@ -12,6 +21,7 @@ public class EnemyCombat : MonoBehaviour, IDamageable
     }
     [Header("References")]
     [SerializeField] private EnemyData data;
+    [SerializeField] private EnemyRank rank = EnemyRank.Normal;
     [Header("Knockback")]
     [SerializeField] private float knockbackDuration = 0.2f;
     private HealthSystem healthSystem;
@@ -19,9 +29,13 @@ public class EnemyCombat : MonoBehaviour, IDamageable
     private EnemyBrain brain;
     private Rigidbody2D rb;
     private bool isKnockedBack = false;
+    private DamageInfo lastDamageInfo;
     public bool IsDead => healthSystem != null && healthSystem.IsDead;
     public Transform Transform => transform;
     public float Defense => healthSystem != null ? healthSystem.Defense : 0f;
+    public EnemyData Data => data;
+    public EnemyRank Rank => rank;
+    public bool IsEliteOrBoss => rank == EnemyRank.Elite || rank == EnemyRank.Boss;
 
     private void Awake()
     {
@@ -66,9 +80,11 @@ public class EnemyCombat : MonoBehaviour, IDamageable
     public void TakeDamage(DamageInfo damageInfo)
     {
         if (healthSystem == null || healthSystem.IsDead) return;
-        if (healthSystem.IsInvincible) return;
+        if (healthSystem.IsInvincible && !damageInfo.BypassesInvincibilityFrames) return;
 
-        healthSystem.TakeDamage(damageInfo);
+        lastDamageInfo = damageInfo;
+        int appliedDamage = healthSystem.TakeDamage(damageInfo);
+        if (appliedDamage <= 0) return;
 
         var attack = GetComponent<IEnemyAttack>();
         bool isCommittedToAttack = attack != null && attack.IsAttacking;
@@ -94,10 +110,9 @@ public class EnemyCombat : MonoBehaviour, IDamageable
             FaceAttacker(damageInfo.attacker);
         }
 
-        int finalDamage = DamageCalculator.CalculateFinalDamage(damageInfo, Defense);
         OnDamageReceived?.Invoke(this, new DamageReceivedArgs
         {
-            damage = finalDamage,
+            damage = appliedDamage,
             knockbackDir = damageInfo.knockbackDirection
         });
     }
@@ -122,6 +137,11 @@ public class EnemyCombat : MonoBehaviour, IDamageable
         if (isKnockedBack) return;
         StartCoroutine(KnockbackRoutine(direction, force));
     }
+
+    public void ApplyExternalKnockback(Vector2 direction, float force)
+    {
+        ApplyKnockback(direction.normalized, force);
+    }
     private System.Collections.IEnumerator KnockbackRoutine(Vector2 direction, float force)
     {
         isKnockedBack = true;
@@ -144,6 +164,7 @@ public class EnemyCombat : MonoBehaviour, IDamageable
             GameSession.Instance.currentRun.currentLevelNoHitKills++;
         }
         OnEnemyDied?.Invoke(this, EventArgs.Empty);
+        OnAnyEnemyDied?.Invoke(this, lastDamageInfo);
     }
     public int CurrentHP => healthSystem != null ? healthSystem.CurrentHP : 0;
     public int MaxHP => healthSystem != null ? healthSystem.MaxHP : 0;

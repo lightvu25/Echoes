@@ -12,38 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937470260c5f20049a9c20727a4ad0eb, type: 3}
   m_Name: Ranged Enemy Data
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  maxHP: 30
+  archetype: 2
+  balanceTier: 1
+  maxHP: 42
   defense: 0
-  patrolMaxSpeed: 3
-  patrolAcceleration: 3
-  patrolAccelAmount: 50
+  patrolMaxSpeed: 1.8
+  patrolAcceleration: 2.4
+  patrolAccelAmount: 66.666664
   patrolDecceleration: 3
-  patrolDeccelAmount: 50
-  patrolRadius: 14
-  patrolWaitTimeMin: 1
+  patrolDeccelAmount: 83.333336
+  patrolRadius: 5
+  patrolWaitTimeMin: 1.5
   patrolWaitTimeMax: 3
   groundCheckDistance: 1
   wallCheckDistance: 0.5
-  chaseMaxSpeed: 6
-  chaseAcceleration: 6
-  chaseAccelAmount: 50
-  chaseDecceleration: 6
-  chaseDeccelAmount: 50
+  chaseMaxSpeed: 3.8
+  chaseAcceleration: 4.5
+  chaseAccelAmount: 59.210526
+  chaseDecceleration: 5.5
+  chaseDeccelAmount: 72.36842
   doConserveMomentum: 1
-  attackBase: 30
-  attackRange: 3
+  attackBase: 18
+  attackRange: 7
   attackSpeed: 1
-  attackCooldown: 1
-  telegraphDuration: 0.4
-  attackHitboxSize: {x: 7, y: 3}
-  attackHitboxOffset: {x: 5, y: 0}
-  knockbackForce: 5
+  attackCooldown: 1.8
+  telegraphDuration: 0.75
+  canBackstep: 1
+  attackHitboxSize: {x: 1, y: 1}
+  attackHitboxOffset: {x: 0.5, y: 0}
+  knockbackForce: 2.5
   attackTargetLayers:
     serializedVersion: 2
     m_Bits: 384
-  visionRange: 5
-  fovAngle: 120
-  closeDetectionRange: 1.2
+  visionRange: 11
+  fovAngle: 150
+  closeDetectionRange: 2
   groundLayer:
     serializedVersion: 2
     m_Bits: 8200
@@ -53,12 +56,12 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 128
-  noticeDuration: 0.5
-  expRewardMin: 10
+  noticeDuration: 0.65
+  expRewardMin: 14
   expRewardMax: 20
-  goldDropChance: 100
-  goldAmountMin: 1
-  goldAmountMax: 5
-  astralShardDropChance: 10
+  goldDropChance: 65
+  goldAmountMin: 2
+  goldAmountMax: 4
+  astralShardDropChance: 8
   astralShardAmountMin: 1
-  astralShardAmountMax: 2
+  astralShardAmountMax: 1

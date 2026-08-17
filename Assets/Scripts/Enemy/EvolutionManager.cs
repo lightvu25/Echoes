@@ -20,6 +20,10 @@ public class EvolutionManager : MonoBehaviour
     [Tooltip("Ordered list of evolution tiers. Index 0 is the base tier (no evolution).")]
     [SerializeField] private EvolutionTierData[] tiers;
 
+    [Header("Fibonacci Scaling")]
+    [Tooltip("Multiplier for the Fibonacci sequence (e.g., Fib(n) * 5)")]
+    [SerializeField] private int killMultiplier = 5;
+
     [Header("Global Aggro")]
     [Tooltip("Radius within which enemies receive the shared aggro signal. Use Infinity for all enemies.")]
     [SerializeField] private float globalAggroRadius = Mathf.Infinity;
@@ -107,7 +111,8 @@ public class EvolutionManager : MonoBehaviour
         int nextTierIndex = currentTierIndex + 1;
         if (nextTierIndex < tiers.Length)
         {
-            if (currentKills >= tiers[nextTierIndex].requiredKills)
+            int requiredKillsForNextTier = GetFibonacciKills(nextTierIndex);
+            if (currentKills >= requiredKillsForNextTier)
             {
                 currentTierIndex = nextTierIndex;
                 EvolutionTierData newTier = tiers[currentTierIndex];
@@ -131,5 +136,26 @@ public class EvolutionManager : MonoBehaviour
     public void ReportPlayerSpotted(Vector3 spotterPosition)
     {
         OnGlobalAggroTriggered?.Invoke(spotterPosition);
+    }
+
+    /// <summary>
+    /// Calculates the required kills for a given tier using a Fibonacci sequence.
+    /// Tier 0 is always 0.
+    /// Tier 1 = Fib(1) * mult
+    /// Tier 2 = Fib(2) * mult, etc.
+    /// </summary>
+    private int GetFibonacciKills(int tierIndex)
+    {
+        if (tierIndex <= 0) return 0;
+        
+        int a = 0;
+        int b = 1;
+        for (int i = 0; i < tierIndex; i++)
+        {
+            int temp = a;
+            a = b;
+            b = temp + b;
+        }
+        return b * killMultiplier;
     }
 }

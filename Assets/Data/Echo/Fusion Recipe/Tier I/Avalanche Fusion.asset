@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
   m_Name: Avalanche Fusion
   m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
-  recipeID: REC_AVALANCHE
-  elementA: {fileID: 11400000, guid: 81d6d26376cef114d9ec24c34cab87f0, type: 2}
-  elementB: {fileID: 11400000, guid: 3cbf89ddb717ab64d8545a21c77a5bcf, type: 2}
-  resultElement: {fileID: 11400000, guid: 8345ac929fab136449452f87b45e6fa4, type: 2}
+  recipeID: FUS_AVALANCHE
+  echoA: {fileID: 11400000, guid: 81d6d26376cef114d9ec24c34cab87f0, type: 2}
+  echoB: {fileID: 11400000, guid: 3cbf89ddb717ab64d8545a21c77a5bcf, type: 2}
+  resultEcho: {fileID: 11400000, guid: 8345ac929fab136449452f87b45e6fa4, type: 2}
   recipeTier: 1
   requiredConstellationNode: 

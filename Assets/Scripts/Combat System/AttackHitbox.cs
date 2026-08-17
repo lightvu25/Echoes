@@ -51,7 +51,7 @@ public class AttackHitbox : MonoBehaviour
 
     public void Activate()
     {
-        if (isActive) return;
+        if (isActive) Deactivate();
         StartCoroutine(HitboxRoutine());
     }
 
@@ -60,6 +60,23 @@ public class AttackHitbox : MonoBehaviour
         baseDamage = damage;
         procCoefficient = procCoef;
         Activate();
+    }
+
+    private int attackSequenceId;
+    private bool hasPlayerAttackMetadata;
+    private PlayerAttack.AttackType originatingAttackType;
+    private PlaystyleType originatingPlaystyle;
+    private int originatingComboStep;
+    private bool originatedInAir;
+
+    public void ConfigureAttackMetadata(int sequenceId, PlayerAttack.AttackType attackType, PlaystyleType style, int comboStep, bool inAir)
+    {
+        attackSequenceId = sequenceId;
+        originatingAttackType = attackType;
+        originatingPlaystyle = style;
+        originatingComboStep = comboStep;
+        originatedInAir = inAir;
+        hasPlayerAttackMetadata = true;
     }
 
     public void Configure(Vector2 size, Vector2 offset)
@@ -152,7 +169,13 @@ public class AttackHitbox : MonoBehaviour
             hitFreezeTime = hitFreezeTime,
             attacker = owner,
             damageSource = DamageSourceType.Attack,
-            isCritical = false
+            isCritical = false,
+            attackSequenceId = this.attackSequenceId,
+            hasPlayerAttackMetadata = this.hasPlayerAttackMetadata,
+            originatingAttackType = this.originatingAttackType,
+            originatingPlaystyle = this.originatingPlaystyle,
+            originatingComboStep = this.originatingComboStep,
+            originatedInAir = this.originatedInAir
         };
 
         // Populate echo and level data if the attacker is the player
@@ -184,11 +207,23 @@ public class AttackHitbox : MonoBehaviour
                       $"Final: {finalDamage}");
         }
 
+        HealthSystem targetHealth = target.Transform != null
+            ? target.Transform.GetComponentInParent<HealthSystem>()
+            : null;
+        int hpBeforeHit = targetHealth != null ? targetHealth.CurrentHP : -1;
+
         target.TakeDamage(damageInfo);
 
-        // Pass both attacker (owner) and victim so GameFeelManager can suppress
-        // camera shake when two enemies hit each other.
-        GameFeelManager.Instance?.ProcessHit(owner, target.Transform.gameObject, finalDamage, damageInfo.isCritical);
+        // Only play impact feedback for an accepted hit.  This prevents attacks
+        // rejected by i-frames from shaking the camera as though they connected.
+        int appliedDamage = targetHealth != null
+            ? Mathf.Max(0, hpBeforeHit - targetHealth.CurrentHP)
+            : finalDamage;
+        GameFeelManager.Instance?.ProcessHit(
+            owner,
+            target.Transform != null ? target.Transform.gameObject : null,
+            damageInfo,
+            appliedDamage);
 
         InvokeOnHitTarget(target, damageInfo, finalDamage);
     }

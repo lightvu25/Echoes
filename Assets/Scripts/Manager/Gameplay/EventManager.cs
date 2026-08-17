@@ -49,7 +49,7 @@ public class EventManager : MonoBehaviour
                         // Actually, taking damage triggers animation so we create a mock DamageInfo.
                         // Wait, defense reduces amount. We should bypass if needed, but TakeDamage works.
                         // For event rooms, we'll let TakeDamage process it normally.
-                        healthSys.SetMaxHP(healthSys.MaxHP + 25, false);
+                        healthSys.ModifyMaxHP(25);
                     }
                 }
             },

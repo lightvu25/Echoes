@@ -10,9 +10,11 @@ public class EchoEffectManager : MonoBehaviour
     [SerializeField] private GameObject eventHorizonPrefab;
     [SerializeField] private GameObject fireTrailPrefab;
     [SerializeField] private GameObject glitchedZonePrefab;
+    [SerializeField] private GameObject echoExplosionPrefab;
 
     private AttackHitbox playerAttackHitbox;
     private HealthSystem playerHealth;
+    private FusionRuntimeHost fusionRuntimeHost;
 
     private EchoModifierContext context;
     private List<IEchoModifier> activeModifiers = new List<IEchoModifier>();
@@ -22,6 +24,8 @@ public class EchoEffectManager : MonoBehaviour
     {
         playerAttackHitbox = GetComponentInChildren<AttackHitbox>(true);
         playerHealth = GetComponent<HealthSystem>();
+        fusionRuntimeHost = GetComponent<FusionRuntimeHost>();
+        if (fusionRuntimeHost == null) fusionRuntimeHost = gameObject.AddComponent<FusionRuntimeHost>();
 
         context = new EchoModifierContext
         {
@@ -30,7 +34,8 @@ public class EchoEffectManager : MonoBehaviour
             PlayerGameObject = gameObject,
             EventHorizonPrefab = eventHorizonPrefab,
             FireTrailPrefab = fireTrailPrefab,
-            GlitchedZonePrefab = glitchedZonePrefab
+            GlitchedZonePrefab = glitchedZonePrefab,
+            EchoExplosionPrefab = echoExplosionPrefab
         };
 
         // Register modifiers
@@ -48,6 +53,12 @@ public class EchoEffectManager : MonoBehaviour
         modifierFactory["FUS_NEON_GRID"] = () => new NeonGridModifier();
         modifierFactory["FUS_AFTERBURNER"] = () => new AfterburnerModifier();
         modifierFactory["FUS_RAGNAROK"] = () => new RagnarokModifier();
+        modifierFactory["FUS_PLASMA"] = () => new PlasmaModifier();
+        modifierFactory["FUS_AVALANCHE"] = () => new AvalancheModifier();
+        modifierFactory["FUS_OVERCLOCK"] = () => new OverclockModifier();
+        modifierFactory["FUS_SUPERNOVA"] = () => new SupernovaModifier();
+        modifierFactory["FUS_DEATH_DRIVE"] = () => new DeathDriveModifier();
+        modifierFactory["FUS_ZERO_POINT"] = () => new ZeroPointModifier();
     }
 
     private void OnEnable()

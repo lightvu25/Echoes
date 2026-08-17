@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine.Tilemaps;
 
 public class RoomOutlineGenerator
@@ -7,6 +8,16 @@ public class RoomOutlineGenerator
     [MenuItem("Tools/Echoes/Generate Outline From Minimap Background")]
     public static void GenerateOutlineForAllRooms()
     {
+        if (PrefabStageUtility.GetCurrentPrefabStage() != null)
+        {
+            EditorUtility.DisplayDialog(
+                "Close Prefab Mode First",
+                "Close the currently opened room prefab before regenerating CameraBounds. " +
+                "An open Prefab Stage can keep stale polygon data and overwrite the generated asset through Auto Save.",
+                "OK");
+            return;
+        }
+
         // Find all prefabs in the Rooms folder
         string[] guids = AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/Prefabs/Rooms" });
         int processedCount = 0;
@@ -70,108 +81,128 @@ public class RoomOutlineGenerator
             return false;
         }
 
-        // Keep track of existing Rigidbody2D to avoid deleting it if it was already there
-        Rigidbody2D existingRb = minimapBgTransform.GetComponent<Rigidbody2D>();
-
-        // 2. Temporarily attach TilemapCollider2D and CompositeCollider2D
-        TilemapCollider2D tilemapCollider = minimapBgTransform.gameObject.AddComponent<TilemapCollider2D>();
-        
-        // Use compositeOperation for newer Unity versions
-#if UNITY_2023_1_OR_NEWER
-        tilemapCollider.compositeOperation = Collider2D.CompositeOperation.Merge;
-#else
-        tilemapCollider.usedByComposite = true;
-#endif
-        
-        CompositeCollider2D compositeCollider = minimapBgTransform.gameObject.AddComponent<CompositeCollider2D>();
-        compositeCollider.geometryType = CompositeCollider2D.GeometryType.Polygons;
-
-        Rigidbody2D currentRb = minimapBgTransform.GetComponent<Rigidbody2D>();
-        if (currentRb != null)
-        {
-            currentRb.bodyType = RigidbodyType2D.Static;
-        }
-
-        // Force generate geometry in Editor
-        compositeCollider.GenerateGeometry();
-
-        // 3. Copy all the coordinates of that outline
-        int pathCount = compositeCollider.pathCount;
-        if (pathCount == 0)
-        {
-            Debug.LogWarning($"CompositeCollider2D generated 0 paths for {room.name}. Ensure the tilemap is not empty.");
-            Cleanup(compositeCollider, tilemapCollider, existingRb == null ? currentRb : null);
-            return false;
-        }
-
-        // 4. Paste the outline data into the PolygonCollider2D on the original Room object
+        // Reset both destination polygons before calculating fresh geometry. This
+        // prevents old paths, offsets, and moved CameraBounds transforms from being
+        // mixed with the newly generated outline.
         PolygonCollider2D roomPolygon = room.GetComponent<PolygonCollider2D>();
         if (roomPolygon == null)
-        {
             roomPolygon = room.gameObject.AddComponent<PolygonCollider2D>();
-        }
-
         roomPolygon.isTrigger = true;
-        roomPolygon.pathCount = pathCount;
-        
-        // --- NEW: Camera Bounds Object ---
+        ResetPolygon(roomPolygon);
+
         Transform boundsTransform = room.transform.Find("CameraBounds");
         GameObject cameraBoundsObj;
         if (boundsTransform == null)
         {
             cameraBoundsObj = new GameObject("CameraBounds");
-            cameraBoundsObj.transform.SetParent(room.transform);
-            cameraBoundsObj.transform.localPosition = Vector3.zero;
-            cameraBoundsObj.transform.localRotation = Quaternion.identity;
-            cameraBoundsObj.transform.localScale = Vector3.one;
-            
-            // Set layer to something ignored by physics if needed, but isTrigger usually suffices.
         }
         else
         {
             cameraBoundsObj = boundsTransform.gameObject;
         }
 
+        Transform cameraBoundsTransform = cameraBoundsObj.transform;
+        cameraBoundsTransform.SetParent(room.transform, false);
+        cameraBoundsTransform.localPosition = Vector3.zero;
+        cameraBoundsTransform.localRotation = Quaternion.identity;
+        cameraBoundsTransform.localScale = Vector3.one;
+
         PolygonCollider2D boundsPolygon = cameraBoundsObj.GetComponent<PolygonCollider2D>();
         if (boundsPolygon == null)
-        {
             boundsPolygon = cameraBoundsObj.AddComponent<PolygonCollider2D>();
-        }
         boundsPolygon.isTrigger = true;
-        boundsPolygon.pathCount = pathCount;
-        
-        room.CameraBoundsCollider = boundsPolygon; // Link it!
+        ResetPolygon(boundsPolygon);
+        room.CameraBoundsCollider = boundsPolygon;
 
-        for (int i = 0; i < pathCount; i++)
+        // Compress first so unused Tilemap cell bounds cannot inflate or displace
+        // the temporary collider geometry.
+        tilemap.CompressBounds();
+        tilemap.RefreshAllTiles();
+
+        Rigidbody2D existingBody = minimapBgTransform.GetComponent<Rigidbody2D>();
+        Rigidbody2D body = existingBody != null
+            ? existingBody
+            : minimapBgTransform.gameObject.AddComponent<Rigidbody2D>();
+        RigidbodyType2D originalBodyType = body.bodyType;
+
+        TilemapCollider2D existingTilemapCollider = minimapBgTransform.GetComponent<TilemapCollider2D>();
+        TilemapCollider2D tilemapCollider = existingTilemapCollider != null
+            ? existingTilemapCollider
+            : minimapBgTransform.gameObject.AddComponent<TilemapCollider2D>();
+        Collider2D.CompositeOperation originalCompositeOperation = tilemapCollider.compositeOperation;
+
+        CompositeCollider2D existingComposite = minimapBgTransform.GetComponent<CompositeCollider2D>();
+        CompositeCollider2D compositeCollider = existingComposite != null
+            ? existingComposite
+            : minimapBgTransform.gameObject.AddComponent<CompositeCollider2D>();
+        CompositeCollider2D.GeometryType originalGeometryType = compositeCollider.geometryType;
+        float originalVertexDistance = compositeCollider.vertexDistance;
+
+        try
         {
-            Vector2[] path = new Vector2[compositeCollider.GetPathPointCount(i)];
-            compositeCollider.GetPath(i, path);
+            body.bodyType = RigidbodyType2D.Static;
+            tilemapCollider.compositeOperation = Collider2D.CompositeOperation.Merge;
+            compositeCollider.geometryType = CompositeCollider2D.GeometryType.Polygons;
+            compositeCollider.vertexDistance = 0.05f;
+            tilemapCollider.ProcessTilemapChanges();
+            compositeCollider.GenerateGeometry();
 
-            // The path vertices are in the local space of the minimapBgTransform.
-            // We need to convert them to the local space of the room object.
-            for (int j = 0; j < path.Length; j++)
+            int pathCount = compositeCollider.pathCount;
+            if (pathCount == 0)
             {
-                // Local (minimapBgTransform) -> World -> Local (room)
-                Vector3 worldPt = minimapBgTransform.TransformPoint(path[j]);
-                Vector3 localPt = room.transform.InverseTransformPoint(worldPt);
-                path[j] = localPt;
+                Debug.LogWarning($"CompositeCollider2D generated 0 paths for {room.name}. Ensure the tilemap is not empty.");
+                return false;
             }
 
-            roomPolygon.SetPath(i, path);
-            boundsPolygon.SetPath(i, path);
+            roomPolygon.pathCount = pathCount;
+            boundsPolygon.pathCount = pathCount;
+
+            for (int i = 0; i < pathCount; i++)
+            {
+                Vector2[] sourcePath = new Vector2[compositeCollider.GetPathPointCount(i)];
+                Vector2[] roomPath = new Vector2[sourcePath.Length];
+                Vector2[] boundsPath = new Vector2[sourcePath.Length];
+                compositeCollider.GetPath(i, sourcePath);
+
+                for (int j = 0; j < sourcePath.Length; j++)
+                {
+                    Vector3 worldPoint = minimapBgTransform.TransformPoint(sourcePath[j]);
+                    roomPath[j] = room.transform.InverseTransformPoint(worldPoint);
+                    boundsPath[j] = cameraBoundsTransform.InverseTransformPoint(worldPoint);
+                }
+
+                roomPolygon.SetPath(i, roomPath);
+                boundsPolygon.SetPath(i, boundsPath);
+            }
+
+            return true;
         }
+        finally
+        {
+            if (existingComposite == null)
+                Object.DestroyImmediate(compositeCollider);
+            else
+            {
+                compositeCollider.geometryType = originalGeometryType;
+                compositeCollider.vertexDistance = originalVertexDistance;
+            }
 
-        // 5. Remove temporary components
-        Cleanup(compositeCollider, tilemapCollider, existingRb == null ? currentRb : null);
+            if (existingTilemapCollider == null)
+                Object.DestroyImmediate(tilemapCollider);
+            else
+                tilemapCollider.compositeOperation = originalCompositeOperation;
 
-        return true; // We successfully modified the prefab
+            if (existingBody == null)
+                Object.DestroyImmediate(body);
+            else
+                body.bodyType = originalBodyType;
+        }
     }
 
-    private static void Cleanup(CompositeCollider2D compositeCollider, TilemapCollider2D tilemapCollider, Rigidbody2D rbToRemove)
+    private static void ResetPolygon(PolygonCollider2D polygon)
     {
-        if (compositeCollider != null) Object.DestroyImmediate(compositeCollider);
-        if (tilemapCollider != null) Object.DestroyImmediate(tilemapCollider);
-        if (rbToRemove != null) Object.DestroyImmediate(rbToRemove);
+        polygon.offset = Vector2.zero;
+        polygon.pathCount = 0;
     }
 
     private static Transform FindChildByLayer(Transform parent, int layerIndex)

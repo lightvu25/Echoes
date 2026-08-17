@@ -8,6 +8,7 @@ public class PlayerAttack : MonoBehaviour
     public event EventHandler<AttackEventArgs> OnAttackStarted;
     public event EventHandler<AttackEventArgs> OnAttackEnded;
     public event EventHandler<AttackEventArgs> OnAttackCancelled;
+    public event Action<PlungeImpactEventArgs> OnPlungeImpact;
 
     public class AttackEventArgs : EventArgs
     {
@@ -15,13 +16,29 @@ public class PlayerAttack : MonoBehaviour
         public PlaystyleType playstyleType;
         public int comboStep;
         public string animationName;
+        public int attackSequenceId;
+    }
+
+    public readonly struct PlungeImpactEventArgs
+    {
+        public PlungeImpactEventArgs(Vector2 center, int damage, float dropDistance)
+        {
+            Center = center;
+            Damage = damage;
+            DropDistance = dropDistance;
+        }
+
+        public Vector2 Center { get; }
+        public int Damage { get; }
+        public float DropDistance { get; }
     }
 
     public enum AttackType
     {
         Basic,
         Dash,
-        Air
+        Air,
+        Plunge
     }
 
     [Header("References")]
@@ -69,8 +86,18 @@ public class PlayerAttack : MonoBehaviour
     private int currentComboStep;
     private float lastAttackTime;
     private bool comboQueued;
+    private float attackSpeedMultiplier = 1f;
+    private readonly System.Collections.Generic.Dictionary<object, float> plungeAreaModifiers = new System.Collections.Generic.Dictionary<object, float>();
+    private readonly System.Collections.Generic.Dictionary<object, float> plungeDamageModifiers = new System.Collections.Generic.Dictionary<object, float>();
     private PlaystyleType queuedPlaystyle;
     private int pendingDirection;
+    private int attackSequenceCounter;
+    private int currentAttackSequence;
+    private int pendingAttackSequence;
+    private AttackType pendingOriginAttackType;
+    private int pendingOriginComboStep;
+    private bool pendingOriginWasAerial;
+    private int activePlungeAttackSequence;
 
     private AttackType currentAttackType;
     private PlaystyleType currentPlaystyle;
@@ -104,9 +131,10 @@ public class PlayerAttack : MonoBehaviour
             {
                 HandlePlungeFallingDamage();
             }
-            else if (hitDuringPlunge.Count > 0)
+            else
             {
-                hitDuringPlunge.Clear();
+                if (activePlungeAttackSequence != 0) EndPlungeAttack();
+                if (hitDuringPlunge.Count > 0) hitDuringPlunge.Clear();
             }
         }
     }
@@ -217,6 +245,7 @@ public class PlayerAttack : MonoBehaviour
     private IEnumerator AttackRoutine(AttackType attType, PlaystyleType styleType)
     {
         isAttacking = true;
+        ApplyAttackAnimationSpeed();
         comboQueued = false;
         pendingDirection = 0;
         IsDirectionLocked = true;
@@ -227,6 +256,8 @@ public class PlayerAttack : MonoBehaviour
             CleanupAttack();
             yield break;
         }
+
+        currentAttackSequence = ++attackSequenceCounter;
 
         // Strict combo cycle: always wrap around
         if (currentComboStep >= pData.comboSteps) currentComboStep = 0;
@@ -252,7 +283,8 @@ public class PlayerAttack : MonoBehaviour
             attackType = attType,
             playstyleType = styleType,
             comboStep = currentComboStep,
-            animationName = animName
+            animationName = animName,
+            attackSequenceId = currentAttackSequence
         };
 
         OnAttackStarted?.Invoke(this, args);
@@ -304,6 +336,10 @@ public class PlayerAttack : MonoBehaviour
             pendingProcCoef = procCoef;
             pendingStyleType = styleType;
             pendingProjectilePrefab = pData.projectilePrefab;
+            pendingAttackSequence = currentAttackSequence;
+            pendingOriginAttackType = attType;
+            pendingOriginComboStep = currentComboStep;
+            pendingOriginWasAerial = attType == AttackType.Air;
 
             // Dash and Air attacks still trigger instantly (unless you add animation events for them too)
             if (attType != AttackType.Basic)
@@ -324,7 +360,13 @@ public class PlayerAttack : MonoBehaviour
         }
         else
         {
-            yield return new WaitForSeconds(attType == AttackType.Dash ? dashAttackDuration : airAttackDuration);
+            float duration = attType == AttackType.Dash ? dashAttackDuration : airAttackDuration;
+            float scaledElapsed = 0f;
+            while (scaledElapsed < duration)
+            {
+                scaledElapsed += Time.deltaTime * attackSpeedMultiplier;
+                yield return null;
+            }
         }
 
         if (attType == AttackType.Basic)
@@ -380,11 +422,13 @@ public class PlayerAttack : MonoBehaviour
 
         if (stateInfo.IsName(stateName))
         {
-            // Wait until the animation has played through at least once
-            float clipLength = stateInfo.length;
-            float elapsed = stateInfo.normalizedTime * clipLength;
-            float remaining = clipLength - elapsed;
-            if (remaining > 0f) yield return new WaitForSeconds(remaining);
+            // Track normalized progress so a speed modifier starting or expiring
+            // mid-attack cannot desynchronize the animation and attack lockout.
+            while (animator.GetCurrentAnimatorStateInfo(0).IsName(stateName) &&
+                   animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+            {
+                yield return null;
+            }
         }
     }
 
@@ -392,6 +436,18 @@ public class PlayerAttack : MonoBehaviour
     {
         isAttacking = false;
         IsDirectionLocked = false;
+        if (animator != null) animator.speed = 1f;
+    }
+
+    public void SetAttackSpeedMultiplier(float multiplier)
+    {
+        attackSpeedMultiplier = Mathf.Max(0.01f, multiplier);
+        if (isAttacking) ApplyAttackAnimationSpeed();
+    }
+
+    private void ApplyAttackAnimationSpeed()
+    {
+        if (animator != null) animator.speed = attackSpeedMultiplier;
     }
 
     public void CancelAttackForMovement()
@@ -449,6 +505,22 @@ public class PlayerAttack : MonoBehaviour
     public PlaystyleType CurrentPlaystyle => currentPlaystyle;
     public AttackHitbox CurrentAttackHitbox => attackHitbox;
 
+    public void SetPlungeModifiers(object source, float areaMultiplier, float damageMultiplier)
+    {
+        if (source == null) return;
+        if (Mathf.Approximately(areaMultiplier, 1f)) plungeAreaModifiers.Remove(source);
+        else plungeAreaModifiers[source] = Mathf.Max(0.1f, areaMultiplier);
+        if (Mathf.Approximately(damageMultiplier, 1f)) plungeDamageModifiers.Remove(source);
+        else plungeDamageModifiers[source] = Mathf.Max(0f, damageMultiplier);
+    }
+
+    public void RemovePlungeModifiers(object source)
+    {
+        if (source == null) return;
+        plungeAreaModifiers.Remove(source);
+        plungeDamageModifiers.Remove(source);
+    }
+
     public void EnableAttackHitbox()
     {
         if (attackHitbox != null) attackHitbox.gameObject.SetActive(true);
@@ -469,6 +541,8 @@ public class PlayerAttack : MonoBehaviour
                 if (pendingHitboxSize != Vector2.zero)
                     attackHitbox.Configure(pendingHitboxSize, pendingHitboxOffset);
 
+                attackHitbox.ConfigureAttackMetadata(pendingAttackSequence, pendingOriginAttackType,
+                    pendingStyleType, pendingOriginComboStep, pendingOriginWasAerial);
                 attackHitbox.Activate(pendingDamage, pendingProcCoef);
                 SpawnComboVFX();
                 PlayEchoSoundIfNeeded();
@@ -491,6 +565,12 @@ public class PlayerAttack : MonoBehaviour
                     procCoefficient = pendingProcCoef,
                     attacker = gameObject,
                     damageSource = DamageSourceType.PlayerProjectile,
+                    attackSequenceId = pendingAttackSequence,
+                    hasPlayerAttackMetadata = true,
+                    originatingAttackType = pendingOriginAttackType,
+                    originatingPlaystyle = pendingStyleType,
+                    originatingComboStep = pendingOriginComboStep,
+                    originatedInAir = pendingOriginWasAerial,
                     isCritical = false
                 };
                 
@@ -583,6 +663,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void StartPlungeFallHitbox()
     {
+        BeginPlungeAttack();
         if (attackHitbox != null && healthSystem != null && healthSystem.CombatStats != null)
         {
             attackHitbox.Configure(plungeFallHitboxSize, plungeFallHitboxOffset); 
@@ -601,6 +682,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void ExecutePlungeAOE(float dropDistance)
     {
+        BeginPlungeAttack();
         int baseDamage = healthSystem != null && healthSystem.CombatStats != null ? healthSystem.CombatStats.baseAttack : 10;
 
         float echoDamageMult = 1f;
@@ -609,20 +691,26 @@ public class PlayerAttack : MonoBehaviour
             echoDamageMult = PlayerInventoryCore.Instance.ActiveEcho.baseDamageMultiplier;
         }
 
-        int finalDamage = Mathf.RoundToInt(baseDamage * plungeDamageMultiplier * echoDamageMult);
+        float relicDamageMultiplier = 1f;
+        foreach (float multiplier in plungeDamageModifiers.Values) relicDamageMultiplier *= multiplier;
+        int finalDamage = Mathf.RoundToInt(baseDamage * plungeDamageMultiplier * echoDamageMult * relicDamageMultiplier);
 
         LayerMask targetMask = attackHitbox != null ? attackHitbox.TargetLayers : LayerMask.GetMask("Enemy");
         Vector2 direction = transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
         Vector2 originPos = attackHitbox != null ? (Vector2)attackHitbox.transform.position : (Vector2)transform.position;
         Vector2 center = originPos + new Vector2(plungeFallHitboxOffset.x * direction.x, plungeFallHitboxOffset.y);
-        Collider2D[] hits = Physics2D.OverlapBoxAll(center, plungeFallHitboxSize, 0f, targetMask);
+        float relicAreaMultiplier = 1f;
+        foreach (float multiplier in plungeAreaModifiers.Values) relicAreaMultiplier *= multiplier;
+        Vector2 impactSize = plungeFallHitboxSize * relicAreaMultiplier;
+        Collider2D[] hits = Physics2D.OverlapBoxAll(center, impactSize, 0f, targetMask);
+        System.Collections.Generic.HashSet<IDamageable> damagedTargets = new System.Collections.Generic.HashSet<IDamageable>();
 
         foreach (Collider2D col in hits)
         {
             IDamageable damageable = col.GetComponentInParent<IDamageable>();
-            if (damageable != null)
+            if (damageable != null && damagedTargets.Add(damageable))
             {
-                damageable.TakeDamage(new DamageInfo
+                DamageInfo damageInfo = new DamageInfo
                 {
                     baseDamage       = finalDamage,
                     multiplicativeStack = 1f,
@@ -631,18 +719,35 @@ public class PlayerAttack : MonoBehaviour
                     knockbackForce   = 0f,
                     knockbackDirection = Vector2.zero,
                     damageSource     = DamageSourceType.PlungeAttack,
-                });
-                
-                EchoStatusReceiver status = col.GetComponentInParent<EchoStatusReceiver>();
-                if (status != null)
+                    attackSequenceId = activePlungeAttackSequence,
+                    hasPlayerAttackMetadata = true,
+                    originatingAttackType = AttackType.Plunge,
+                    originatingPlaystyle = PlaystyleType.Melee,
+                    originatingComboStep = -1,
+                    originatedInAir = true,
+                };
+                PlayerEventBus.Instance?.ApplyOutgoingModifiers(damageable, ref damageInfo);
+                int appliedDamage = DamageCalculator.CalculateFinalDamage(damageInfo, damageable.Defense);
+                HealthSystem targetHealth = damageable.Transform != null
+                    ? damageable.Transform.GetComponent<HealthSystem>()
+                    : null;
+                int hpBeforeHit = targetHealth != null ? targetHealth.CurrentHP : -1;
+                damageable.TakeDamage(damageInfo);
+                bool accepted = targetHealth == null || targetHealth.CurrentHP < hpBeforeHit || targetHealth.IsDead;
+                if (accepted)
                 {
-                    status.ApplyStun(1f);
+                    PlayerEventBus.Instance?.FireSuccessfulHit(damageable, damageInfo, appliedDamage);
+                    EchoStatusReceiver status = col.GetComponentInParent<EchoStatusReceiver>();
+                    if (status != null) status.ApplyStun(1f);
                 }
             }
         }
 
         if (plungeImpactVFX != null)
             Instantiate(plungeImpactVFX, transform.position, Quaternion.identity);
+
+        OnPlungeImpact?.Invoke(new PlungeImpactEventArgs(center, finalDamage, dropDistance));
+        GameFeelManager.Instance?.ProcessPlungeImpact(center, dropDistance);
 
         if (dropDistance > safePlungeDistance && healthSystem != null)
         {
@@ -664,6 +769,7 @@ public class PlayerAttack : MonoBehaviour
                 });
             }
         }
+        EndPlungeAttack();
     }
 
     private void HandlePlungeFallingDamage()
@@ -691,7 +797,7 @@ public class PlayerAttack : MonoBehaviour
 
                     int finalDamage = Mathf.RoundToInt(baseDamage * plungeDamageMultiplier * echoDamageMult);
 
-                    damageable.TakeDamage(new DamageInfo
+                    DamageInfo damageInfo = new DamageInfo
                     {
                         baseDamage = finalDamage,
                         multiplicativeStack = 1f,
@@ -699,11 +805,55 @@ public class PlayerAttack : MonoBehaviour
                         attacker = gameObject,
                         knockbackForce = 0f,
                         knockbackDirection = Vector2.zero,
-                        damageSource = DamageSourceType.PlungeFall
-                    });
+                        damageSource = DamageSourceType.PlungeFall,
+                        attackSequenceId = activePlungeAttackSequence,
+                        hasPlayerAttackMetadata = true,
+                        originatingAttackType = AttackType.Plunge,
+                        originatingPlaystyle = PlaystyleType.Melee,
+                        originatingComboStep = -1,
+                        originatedInAir = true
+                    };
+                    PlayerEventBus.Instance?.ApplyOutgoingModifiers(damageable, ref damageInfo);
+                    int appliedDamage = DamageCalculator.CalculateFinalDamage(damageInfo, damageable.Defense);
+                    HealthSystem targetHealth = damageable.Transform != null
+                        ? damageable.Transform.GetComponent<HealthSystem>()
+                        : null;
+                    int hpBeforeHit = targetHealth != null ? targetHealth.CurrentHP : -1;
+                    damageable.TakeDamage(damageInfo);
+                    if (targetHealth == null || targetHealth.CurrentHP < hpBeforeHit || targetHealth.IsDead)
+                        PlayerEventBus.Instance?.FireSuccessfulHit(damageable, damageInfo, appliedDamage);
                 }
             }
         }
+    }
+
+    private void BeginPlungeAttack()
+    {
+        if (activePlungeAttackSequence != 0) return;
+        activePlungeAttackSequence = ++attackSequenceCounter;
+        OnAttackStarted?.Invoke(this, new AttackEventArgs
+        {
+            attackType = AttackType.Plunge,
+            playstyleType = PlaystyleType.Melee,
+            comboStep = -1,
+            animationName = "Plunge",
+            attackSequenceId = activePlungeAttackSequence
+        });
+    }
+
+    private void EndPlungeAttack()
+    {
+        if (activePlungeAttackSequence == 0) return;
+        int sequence = activePlungeAttackSequence;
+        activePlungeAttackSequence = 0;
+        OnAttackEnded?.Invoke(this, new AttackEventArgs
+        {
+            attackType = AttackType.Plunge,
+            playstyleType = PlaystyleType.Melee,
+            comboStep = -1,
+            animationName = "Plunge",
+            attackSequenceId = sequence
+        });
     }
 
     private void OnDrawGizmosSelected()

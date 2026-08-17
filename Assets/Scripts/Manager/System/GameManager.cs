@@ -25,7 +25,12 @@ public class GameManager : MonoBehaviour
         
         Debug.Log("[GameManager] Awake called. Setting Instance.");
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     private void OnEnable()
@@ -68,14 +73,11 @@ public class GameManager : MonoBehaviour
     {
         yield return null;
 
-        CutsceneManager cutsceneManager = FindFirstObjectByType<CutsceneManager>();
-        if (cutsceneManager != null)
-        {
-            // Ensure player inputs are unlocked when a new scene starts, 
-            // even if initialization aborts early (e.g. in MindScene)
-            if (GameInput.Instance != null)
-                GameInput.Instance.SetInputsEnabled(true);
-        }
+        // GameInput persists between scenes. A scene transition that interrupts
+        // a cutscene can otherwise leave its action map disabled permanently,
+        // including in scenes that do not contain a CutsceneManager.
+        if (GameInput.Instance != null)
+            GameInput.Instance.SetInputsEnabled(true);
 
         if (PlayerInteract.Instance == null) 
         {

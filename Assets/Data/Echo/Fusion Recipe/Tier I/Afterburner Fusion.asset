@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
   m_Name: Afterburner Fusion
   m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
-  recipeID: REC_AFTERBURNER
+  recipeID: FUS_AFTERBURNER
   echoA: {fileID: 11400000, guid: 3cbf89ddb717ab64d8545a21c77a5bcf, type: 2}
   echoB: {fileID: 11400000, guid: 3883cf7732150c74ba31ce91627cd776, type: 2}
   resultEcho: {fileID: 11400000, guid: 7497e8bd949c2ff47b5b37ea68e40a8b, type: 2}

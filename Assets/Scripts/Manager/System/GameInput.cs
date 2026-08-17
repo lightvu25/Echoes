@@ -15,6 +15,7 @@ public class GameInput : MonoBehaviour
     public event Action OnMapTogglePressed;
     public event Action OnInventoryPressed;
     public event Action OnInteractPressed;
+    public event Action OnConfirmPressed;
     public event Action OnExtractPressed;
     public event Action OnCancelPressed;
     public event Action OnHealPressed;
@@ -26,11 +27,14 @@ public class GameInput : MonoBehaviour
     private InputActions inputActions;
     private InputConfig.ControlScheme lastScheme;
 
+    public KeyCode InteractKey => inputConfig != null ? inputConfig.interactKey : KeyCode.F;
+    public KeyCode ConfirmKey => inputConfig != null ? inputConfig.confirmKey : KeyCode.Space;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this);
             return;
         }
         
@@ -70,18 +74,20 @@ public class GameInput : MonoBehaviour
         
         KeyCode mapKey = inputConfig != null ? inputConfig.mapKey : KeyCode.M;
         KeyCode invKey = inputConfig != null ? inputConfig.inventoryKey : KeyCode.E;
-        KeyCode interactKey = inputConfig != null ? inputConfig.interactKey : KeyCode.F;
+        KeyCode interactKey = InteractKey;
+        KeyCode confirmKey = ConfirmKey;
         KeyCode extractKey = inputConfig != null ? inputConfig.extractKey : KeyCode.R;
         KeyCode cancelKey = inputConfig != null ? inputConfig.cancelKey : KeyCode.Escape;
         KeyCode healKey = inputConfig != null ? inputConfig.healKey : KeyCode.H;
-        KeyCode tool1Key = inputConfig != null ? inputConfig.tool1Key : KeyCode.U;
+        KeyCode tool1Key = inputConfig != null ? inputConfig.tool1Key : KeyCode.T;
         KeyCode tool2Key = inputConfig != null ? inputConfig.tool2Key : KeyCode.Y;
-        KeyCode tool3Key = inputConfig != null ? inputConfig.tool3Key : KeyCode.T;
+        KeyCode tool3Key = inputConfig != null ? inputConfig.tool3Key : KeyCode.G;
 
         if (Input.GetKeyDown(mapKey)) OnMapTogglePressed?.Invoke();
         if (Input.GetKeyDown(invKey)) OnInventoryPressed?.Invoke();
 
         if (Input.GetKeyDown(interactKey)) OnInteractPressed?.Invoke();
+        if (Input.GetKeyDown(confirmKey)) OnConfirmPressed?.Invoke();
         if (Input.GetKeyDown(extractKey)) OnExtractPressed?.Invoke();
         if (Input.GetKeyDown(cancelKey)) OnCancelPressed?.Invoke();
         if (Input.GetKeyDown(healKey)) OnHealPressed?.Invoke();
@@ -150,6 +156,9 @@ public class GameInput : MonoBehaviour
             inputActions.Player.Menu.performed -= Menu_performed;
             inputActions.Disable();
         }
+
+        if (Instance == this)
+            Instance = null;
     }
 
     public void SetInputsEnabled(bool isEnabled)
@@ -176,6 +185,8 @@ public class GameInput : MonoBehaviour
     public bool IsAttackActionPressed() => inputActions.Player.Attack.WasPressedThisFrame();
     public bool IsSkillActionPressed() => inputActions.Player.Skill.WasPressedThisFrame();
     public bool IsSpecialActionPressed() => inputActions.Player.Special.WasPressedThisFrame();
+    public bool IsInteractActionPressed() => Input.GetKeyDown(InteractKey);
+    public bool IsConfirmActionPressed() => Input.GetKeyDown(ConfirmKey);
     
     public bool IsJumpActionHeld() => inputActions.Player.PlayerJump.IsPressed();
     public bool IsJumpActionReleased() => inputActions.Player.PlayerJump.WasReleasedThisFrame();

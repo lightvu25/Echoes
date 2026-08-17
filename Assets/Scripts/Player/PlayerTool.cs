@@ -1,58 +1,109 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(HealthSystem), typeof(PlayerBuffManager))]
+[RequireComponent(typeof(HealthSystem), typeof(PlayerBuffManager), typeof(EquipmentRuntimeRegistry))]
 public class PlayerTool : MonoBehaviour
 {
-    [Header("Tool Prefabs")]
-    [SerializeField] private GameObject bloodOreBombPrefab;
-    [SerializeField] private GameObject crimsonDartPrefab;
-    [SerializeField] private GameObject arachneTrapPrefab;
-    [SerializeField] private GameObject toxicFlaskPrefab;
-    [SerializeField] private GameObject toxicCloudPrefab;
-    [SerializeField] private GameObject kineticRootPrefab;
+    public class ToolState
+    {
+        public int CurrentUses;
+        public float NextRechargeTime;
+        public float CooldownDuration;
+        public int MaxUses;
+    }
 
-    private float[] cooldowns = new float[3];
+    private readonly Dictionary<string, ToolState> toolStates = new Dictionary<string, ToolState>();
     private PlayerBuffManager buffManager;
+    private EquipmentRuntimeRegistry runtimeRegistry;
+    private bool inputSubscribed;
 
     public event System.Action OnConsume;
 
     private void Awake()
     {
         buffManager = GetComponent<PlayerBuffManager>();
+        runtimeRegistry = GetComponent<EquipmentRuntimeRegistry>();
+    }
+
+    private void OnEnable()
+    {
+        SubscribeToInput();
     }
 
     private void Start()
     {
-        if (GameInput.Instance != null)
-        {
-            GameInput.Instance.OnToolKeyPressed += HandleToolInput;
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (GameInput.Instance != null)
-        {
-            GameInput.Instance.OnToolKeyPressed -= HandleToolInput;
-        }
+        // GameInput may initialize after this component's OnEnable.
+        SubscribeToInput();
     }
 
     private void Update()
     {
-        for (int i = 0; i < cooldowns.Length; i++)
+        if (PlayerInventoryCore.Instance == null) return;
+        
+        // Recharge equipped tools over time
+        foreach (var item in PlayerInventoryCore.Instance.EquippedTools)
         {
-            if (cooldowns[i] > 0)
+            if (item is ToolData tool && !string.IsNullOrWhiteSpace(tool.itemID))
             {
-                cooldowns[i] -= Time.deltaTime;
+                ToolState state = GetOrCreateState(tool);
+                if (state.CurrentUses < state.MaxUses)
+                {
+                    if (Time.time >= state.NextRechargeTime)
+                    {
+                        state.CurrentUses++;
+                        if (state.CurrentUses < state.MaxUses)
+                        {
+                            state.NextRechargeTime = Time.time + state.CooldownDuration;
+                        }
+                    }
+                }
             }
         }
     }
 
+    private void OnDisable()
+    {
+        UnsubscribeFromInput();
+    }
+
+    private void SubscribeToInput()
+    {
+        if (inputSubscribed || GameInput.Instance == null) return;
+        GameInput.Instance.OnToolKeyPressed += HandleToolInput;
+        inputSubscribed = true;
+    }
+
+    private void UnsubscribeFromInput()
+    {
+        if (!inputSubscribed) return;
+        if (GameInput.Instance != null) GameInput.Instance.OnToolKeyPressed -= HandleToolInput;
+        inputSubscribed = false;
+    }
+
+    private ToolState GetOrCreateState(ToolData tool)
+    {
+        if (!toolStates.TryGetValue(tool.itemID, out ToolState state))
+        {
+            state = new ToolState 
+            { 
+                CurrentUses = Mathf.Max(1, tool.maxUses), 
+                MaxUses = Mathf.Max(1, tool.maxUses),
+                CooldownDuration = tool.cooldown
+            };
+            toolStates[tool.itemID] = state;
+        }
+        else
+        {
+            // Sync properties in case they were updated externally
+            state.MaxUses = Mathf.Max(1, tool.maxUses);
+            state.CooldownDuration = tool.cooldown;
+        }
+        return state;
+    }
+
     private void HandleToolInput(int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= cooldowns.Length) return;
-        if (cooldowns[slotIndex] > 0) return;
+        if (slotIndex < 0) return;
         if (PlayerInventoryCore.Instance == null) return;
 
         IReadOnlyList<ItemBaseData> equippedTools = PlayerInventoryCore.Instance.EquippedTools;
@@ -60,72 +111,41 @@ public class PlayerTool : MonoBehaviour
 
         ToolData activeTool = equippedTools[slotIndex] as ToolData;
         if (activeTool == null) return;
+        
+        string toolId = activeTool.itemID;
+        if (string.IsNullOrWhiteSpace(toolId)) return;
+        
+        ToolState state = GetOrCreateState(activeTool);
+        if (state.CurrentUses <= 0) return; // Out of charges, waiting for cooldown
 
-        ExecuteToolLogic(activeTool);
-        cooldowns[slotIndex] = activeTool.cooldown;
+        EquipmentUseContext context = new EquipmentUseContext(gameObject, buffManager, () => OnConsume?.Invoke());
+        if (runtimeRegistry != null && runtimeRegistry.TryExecute(activeTool, context))
+        {
+            if (state.CurrentUses == state.MaxUses) 
+            {
+                // Start the cooldown timer for the first consumed charge
+                state.NextRechargeTime = Time.time + state.CooldownDuration;
+            }
+            state.CurrentUses--;
+        }
     }
 
-    private void ExecuteToolLogic(ToolData tool)
+    public float GetRemainingCooldown(string toolId)
     {
-        Vector3 spawnPos = transform.position + (transform.right * (transform.localScale.x > 0 ? 0.5f : -0.5f));
-        float faceDir = Mathf.Sign(transform.localScale.x);
+        if (string.IsNullOrWhiteSpace(toolId) || !toolStates.TryGetValue(toolId, out ToolState state)) return 0f;
+        if (state.CurrentUses >= state.MaxUses) return 0f;
+        return Mathf.Max(0f, state.NextRechargeTime - Time.time);
+    }
 
-        switch (tool.itemName)
-        {
-            case "Blood-Ore Bomb":
-                if (bloodOreBombPrefab != null)
-                {
-                    GameObject bomb = ObjectPoolManager.SpawnObject(bloodOreBombPrefab, spawnPos, Quaternion.identity, ObjectPoolManager.PoolType.Projectile);
-                    var bombRb = bomb.GetComponent<Rigidbody2D>();
-                    if (bombRb != null) bombRb.AddForce(new Vector2(faceDir * 5f, 5f), ForceMode2D.Impulse);
-                    bomb.GetComponent<BloodOreBomb>()?.Initialize(gameObject);
-                }
-                break;
-
-            case "Crimson Dart":
-                if (crimsonDartPrefab != null)
-                {
-                    GameObject dart = ObjectPoolManager.SpawnObject(crimsonDartPrefab, spawnPos, Quaternion.identity, ObjectPoolManager.PoolType.Projectile);
-                    var dartRb = dart.GetComponent<Rigidbody2D>();
-                    if (dartRb != null) dartRb.linearVelocity = new Vector2(faceDir * 15f, 0f);
-                    dart.GetComponent<CrimsonDart>()?.Initialize(gameObject);
-                }
-                break;
-
-            case "Adrenaline Vial":
-                if (buffManager != null) buffManager.ActivateAdrenaline(5f, 1.5f);
-                OnConsume?.Invoke();
-                break;
-
-            case "Arachne Trap":
-                if (arachneTrapPrefab != null)
-                {
-                    ObjectPoolManager.SpawnObject(arachneTrapPrefab, transform.position - new Vector3(0, 0.5f, 0), Quaternion.identity, ObjectPoolManager.PoolType.Projectile);
-                }
-                break;
-
-            case "Toxic Flask":
-                if (toxicFlaskPrefab != null)
-                {
-                    GameObject flask = ObjectPoolManager.SpawnObject(toxicFlaskPrefab, spawnPos, Quaternion.identity, ObjectPoolManager.PoolType.Projectile);
-                    var flaskRb = flask.GetComponent<Rigidbody2D>();
-                    if (flaskRb != null) flaskRb.AddForce(new Vector2(faceDir * 4f, 2f), ForceMode2D.Impulse);
-                    flask.GetComponent<ToxicFlask>()?.Initialize(gameObject, toxicCloudPrefab);
-                }
-                break;
-
-            case "Void Aegis":
-                if (buffManager != null) buffManager.ActivateVoidAegis(3f);
-                OnConsume?.Invoke();
-                break;
-
-            case "Kinetic Root":
-                if (kineticRootPrefab != null)
-                {
-                    GameObject root = ObjectPoolManager.SpawnObject(kineticRootPrefab, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.Projectile);
-                    root.GetComponent<KineticRoot>()?.Initialize(gameObject);
-                }
-                break;
-        }
+    public float GetTotalCooldown(string toolId)
+    {
+        if (string.IsNullOrWhiteSpace(toolId) || !toolStates.TryGetValue(toolId, out ToolState state)) return 1f;
+        return Mathf.Max(0.1f, state.CooldownDuration);
+    }
+    
+    public int GetCurrentUses(string toolId)
+    {
+        if (string.IsNullOrWhiteSpace(toolId) || !toolStates.TryGetValue(toolId, out ToolState state)) return 0;
+        return state.CurrentUses;
     }
 }

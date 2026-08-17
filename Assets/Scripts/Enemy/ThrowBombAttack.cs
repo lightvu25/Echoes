@@ -128,7 +128,20 @@ public class ThrowBombAttack : MonoBehaviour, IEnemyAttack
             BombProjectile bomb = bombObj.GetComponent<BombProjectile>();
             if (bomb != null)
             {
-                bomb.SetOwner(gameObject);
+                EnemyBrain brain = GetComponentInParent<EnemyBrain>();
+                EnemyData data = brain != null ? brain.Data : null;
+                if (data != null)
+                {
+                    float damageMultiplier = BurdenManager.Instance != null
+                        ? BurdenManager.Instance.CurrentDamageMultiplier
+                        : 1f;
+                    int scaledDamage = Mathf.RoundToInt(data.attackBase * damageMultiplier);
+                    bomb.SetOwner(gameObject, scaledDamage, data.knockbackForce * 2f);
+                }
+                else
+                {
+                    bomb.SetOwner(gameObject);
+                }
                 
                 // Ignore physical collision between the bomb and the thrower
                 Collider2D bombCol = bombObj.GetComponent<Collider2D>();

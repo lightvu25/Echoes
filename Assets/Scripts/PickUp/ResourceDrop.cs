@@ -166,7 +166,7 @@ public class ResourceDrop : MonoBehaviour
                 break;
         }
 
-        
+        PlayerEventBus.Instance?.FirePickupCollected();
         ObjectPoolManager.ReturnObjectToPool(gameObject);
     }
 }

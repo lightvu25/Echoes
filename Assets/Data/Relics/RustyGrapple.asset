@@ -15,7 +15,7 @@ MonoBehaviour:
   itemID: RustyGrapple
   itemName: Rusty Grapple
   itemIcon: {fileID: -3373105326765705498, guid: 35ea78a33a7619341b030739313bce65, type: 3}
-  description: Grappling an enemy pulls you to them and briefly stuns them for 0.5s.
+  description: Long-range hits hook distant enemies, pulling you toward them and stunning them for 0.5s.
   dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1
   basePrice: 50

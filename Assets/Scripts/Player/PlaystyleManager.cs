@@ -43,7 +43,12 @@ public class PlaystyleManager : MonoBehaviour
 
         if (index == -1) return false;
         
-        return PlayerInventoryCore.Instance.IsSlotUnlocked(ItemCategory.Echo, index);
+        bool isSlotUnlocked = PlayerInventoryCore.Instance.IsSlotUnlocked(ItemCategory.Echo, index);
+        if (!isSlotUnlocked) return false;
+
+        // The slot is unlocked in the inventory.
+        // We do not require an Echo to be equipped to allow the attack.
+        return true;
     }
 
     public PlaystyleData GetPlaystyleData(PlaystyleType type)

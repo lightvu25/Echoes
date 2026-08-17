@@ -22,7 +22,14 @@ public enum DamageSourceType
     PlayerProjectile,
     PlungeAttack,
     PlungeSelfDamage,
-    PlungeFall
+    PlungeFall,
+    FusionSecondary,
+    FusionRecoil,
+    FusionField,
+    Poison,
+    Equipment,
+    RelicSecondary,
+    RelicArea
 }
 
 /// <summary>
@@ -32,6 +39,15 @@ public enum DamageSourceType
 [System.Serializable]
 public struct DamageInfo
 {
+    public bool BypassesInvincibilityFrames =>
+        damageSource == DamageSourceType.FusionSecondary ||
+        damageSource == DamageSourceType.FusionField ||
+        damageSource == DamageSourceType.FusionRecoil ||
+        damageSource == DamageSourceType.Burn ||
+        damageSource == DamageSourceType.Poison ||
+        damageSource == DamageSourceType.RelicSecondary ||
+        damageSource == DamageSourceType.RelicArea;
+
     // ===== Stage 1: Base Damage Values =====
     
     /// <summary>
@@ -90,6 +106,20 @@ public struct DamageInfo
     /// Source identifier for item triggers (e.g., "BasicAttack", "Skill1").
     /// </summary>
     public DamageSourceType damageSource;
+
+    /// <summary>
+    /// Identifies the exact PlayerAttack execution that produced this hit.
+    /// Zero is reserved for damage not created by a player attack.
+    /// </summary>
+    public int attackSequenceId;
+    public bool hasPlayerAttackMetadata;
+    public PlayerAttack.AttackType originatingAttackType;
+    public PlaystyleType originatingPlaystyle;
+    public int originatingComboStep;
+    public bool originatedInAir;
+
+    /// <summary>Damage still applies, but PlayerCombat skips stagger, stun, and velocity changes.</summary>
+    public bool suppressHitReaction;
 
     /// <summary>
     /// Is this a critical hit?

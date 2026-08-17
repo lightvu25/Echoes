@@ -15,7 +15,6 @@ public struct SoundEntry
 public class EntityAudioManager : MonoBehaviour
 {
     [Header("Mixer Routing (Optional)")]
-    [Tooltip("If left null, it will automatically attempt to use SoundManager's SFX Mixer Group on Start.")]
     public AudioMixerGroup sfxMixerGroup;
 
     [Header("Entity Sounds")]
@@ -74,7 +73,7 @@ public class EntityAudioManager : MonoBehaviour
             if (entry.clip == null) return;
             
             // Add slight random pitch to prevent ear fatigue
-            oneShotAudioSource.pitch = UnityEngine.Random.Range(0.9f, 1.1f);
+            oneShotAudioSource.pitch = AudioPitchUtility.GetRandomPitch();
             
             // Use PlayOneShot so sounds can overlap (e.g., footstep while attacking)
             oneShotAudioSource.PlayOneShot(entry.clip, entry.volume > 0 ? entry.volume : 1f);

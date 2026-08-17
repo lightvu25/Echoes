@@ -40,7 +40,9 @@ public class Projectile : MonoBehaviour
     private void OnEnable()
     {
         hasHit = false;
-        col.enabled = true;
+        owner = null;
+        overrideDamageInfo = null;
+        col.enabled = false;
         rb.gravityScale = defaultGravityScale;
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
@@ -59,6 +61,13 @@ public class Projectile : MonoBehaviour
 
     public void SetOwner(GameObject attacker) => owner = attacker;
 
+    public void SetupEnemyProjectile(DamageInfo info)
+    {
+        overrideDamageInfo = info;
+        owner = info.attacker;
+        col.enabled = true;
+    }
+
     public void SetupPlayerProjectile(DamageInfo info, Vector2 velocity)
     {
         overrideDamageInfo = info;
@@ -68,6 +77,7 @@ public class Projectile : MonoBehaviour
         {
             rb.linearVelocity = velocity;
         }
+        col.enabled = true;
     }
 
     private void Update()

@@ -42,7 +42,7 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 193327872709070491}
   m_Enabled: 1
-  serializedVersion: 12
+  serializedVersion: 13
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
@@ -94,7 +94,7 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0
-  m_ShadowRadius: 0
+  m_ShapeRadius: 0
   m_ShadowAngle: 0
   m_LightUnit: 1
   m_LuxAtDistance: 1
@@ -500,6 +500,148 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7498288892048211967}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2959216318161959495
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4879227737477029644}
+  - component: {fileID: 450458859706715263}
+  m_Layer: 7
+  m_Name: Dash Trail
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4879227737477029644
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2959216318161959495}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.245, y: 0.669, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7498288892048211967}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!96 &450458859706715263
+TrailRenderer:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2959216318161959495}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: -876546973899608171, guid: 1cf947eb532556b498502ee792abf082, type: 3}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: -1957991345
+  m_SortingLayer: 1
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Time: 0.1
+  m_PreviewTimeScale: 1
+  m_Parameters:
+    serializedVersion: 3
+    widthMultiplier: 1
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.24486
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 0.27735847, b: 0.27735847, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 1, g: 1, b: 1, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 1}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 65535
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 39321
+      atime2: 65535
+      atime3: 65535
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_ColorSpace: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 3
+    numCornerVertices: 0
+    numCapVertices: 2
+    alignment: 1
+    textureMode: 0
+    textureScale: {x: 1, y: 1}
+    shadowBias: 0.5
+    generateLightingData: 0
+  m_MinVertexDistance: 0.035
+  m_Autodestruct: 0
+  m_Emitting: 0
+  m_ApplyActiveColorSpace: 1
 --- !u!1 &3821984061442356866
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,6 +778,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a876e82144ac8bc4485890a3060dafe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpriteColorFlasher
+  whiteFlashMaterial: {fileID: 2100000, guid: b8ac6bdf010e3da4b8edde5897cc08f8, type: 2}
+  flashRenderers: []
+  excludedRenderers: []
 --- !u!1 &3968628959932428048
 GameObject:
   m_ObjectHideFlags: 0
@@ -756,6 +901,9 @@ GameObject:
   - component: {fileID: 3741012527990879826}
   - component: {fileID: 1642755017194849351}
   - component: {fileID: 7673850039553648408}
+  - component: {fileID: 6829858916948974174}
+  - component: {fileID: 6829858916948974175}
+  - component: {fileID: 6829858916948974176}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -793,6 +941,7 @@ Transform:
   - {fileID: 276468792314969661}
   - {fileID: 1461033513103038922}
   - {fileID: 813186762606994151}
+  - {fileID: 4879227737477029644}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &6356277896264258503
@@ -860,8 +1009,8 @@ MonoBehaviour:
   _wallCheckSize: {x: 0.1, y: 0.55}
   _ledgeCheck: {fileID: 276468792314969661}
   _ledgeCheckSize: {x: 0.2, y: 0.1}
-  _ledgeClimbXOffset: 0.4
-  _ledgeClimbYOffset: 0.5
+  _ledgeClimbXOffset: 1
+  _ledgeClimbYOffset: 1
   ledgeGrabDuration: 0.5
   climbSpeed: 5
   wallSlideSpeed: 2
@@ -889,6 +1038,16 @@ MonoBehaviour:
   particleJumpPrefab: {fileID: 920153263544687143, guid: 06ac2e473e76a4948ac38f3fcfbf1134, type: 3}
   particleLandPrefab: {fileID: 920153263544687143, guid: 22075f2095d441643af30442172b829f, type: 3}
   particleDiePrefab: {fileID: 2736737965010593590, guid: c1affd26b8bfb5e419fd833b2598c34c, type: 3}
+  createDashVFXAtRuntime: 1
+  dashTrail: {fileID: 450458859706715263}
+  dashParticlePrefab: {fileID: 920153263544687143, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+  dashParticleLocalOffset: {x: 0, y: 0.55, z: 0}
+  dashColor: {r: 0.2, g: 0.85, b: 1, a: 1}
+  dashGlowIntensity: 2.5
+  dashTrailTime: 0.16
+  dashTrailWidth: 0.24
+  dashParticleSpacing: 0.28
+  dashParticleLifetime: 0.22
   _animator: {fileID: 3062941063228376607}
 --- !u!114 &2109381415123505367
 MonoBehaviour:
@@ -918,7 +1077,6 @@ MonoBehaviour:
   combatStatsAsset: {fileID: 11400000, guid: ea46f8ac601e8f54cb679ab0ee4c0779, type: 2}
   maxHP: 100
   currentHP: 100
-  maxSlots: 3
   defense: 0
   iFrameDuration: 0.5
   hasIFrames: 1
@@ -1025,6 +1183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 516322266e237354dbf32b699b46e4c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MemoryInventorySystem
+  itemCatalog: {fileID: 11400000, guid: 3ad0ac9a2c3d47e597885a3af89af1c7, type: 2}
   popForceMin: 5
   popForceMax: 10
   sidewaysForceMod: 1.5
@@ -1124,8 +1283,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EchoEffectManager
   eventHorizonPrefab: {fileID: 3112956029507099662, guid: 6de6be45bc585254e9bce3df8a64fdfa, type: 3}
-  fireTrailPrefab: {fileID: 3112956029507099662, guid: af13277a734b11a4bb5dbfe9e8fd3320, type: 3}
+  fireTrailPrefab: {fileID: 8563723726064187730, guid: b08b2912953b57a4da0b0a1e8e76dfb8, type: 3}
   glitchedZonePrefab: {fileID: 3112956029507099662, guid: e8d7fccf54ce16f41bdaf0c17e0ff8d0, type: 3}
+  echoExplosionPrefab: {fileID: 7632582610512150109, guid: b11e6a118328e0e4da5efc45cc1e3cbc, type: 3}
 --- !u!114 &3741012527990879826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1151,12 +1311,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72b8d3d042dc42243a147fa2863e56ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerToolController
-  bloodOreBombPrefab: {fileID: 4175809344245045011, guid: 96db369be94f7e94390e49d2e6fd2a60, type: 3}
-  crimsonDartPrefab: {fileID: 4175809344245045011, guid: 480583be83d27f640a66e1cf847f96f7, type: 3}
-  arachneTrapPrefab: {fileID: 4175809344245045011, guid: bfe0026fe9bd73442b3e439136fa56e5, type: 3}
-  toxicFlaskPrefab: {fileID: 4175809344245045011, guid: ca232c08a4990614a978531dda2f354f, type: 3}
-  toxicCloudPrefab: {fileID: 0}
-  kineticRootPrefab: {fileID: 4175809344245045011, guid: e89aff4b5f28ec54b9d70b454fe2bd14, type: 3}
 --- !u!114 &7673850039553648408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1169,6 +1323,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 421384aa12e1bb044981069616755c56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerBuffManager
+--- !u!114 &6829858916948974174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4340821387030656132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a7503ff72684a119c5943e0c29c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentRuntimeRegistry
+  bloodOreBombPrefab: {fileID: 4175809344245045011, guid: 96db369be94f7e94390e49d2e6fd2a60, type: 3}
+  crimsonDartPrefab: {fileID: 4175809344245045011, guid: 480583be83d27f640a66e1cf847f96f7, type: 3}
+  arachneTrapPrefab: {fileID: 4175809344245045011, guid: bfe0026fe9bd73442b3e439136fa56e5, type: 3}
+  toxicFlaskPrefab: {fileID: 4175809344245045011, guid: ca232c08a4990614a978531dda2f354f, type: 3}
+  toxicCloudPrefab: {fileID: 4175809344245045011, guid: a94f5b0c18c62754dbe2d9efa2d18a41, type: 3}
+  kineticRootPrefab: {fileID: 4175809344245045011, guid: e89aff4b5f28ec54b9d70b454fe2bd14, type: 3}
+--- !u!114 &6829858916948974175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4340821387030656132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b74b6e1d1d513f7478a9d0b84bc1a980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerEventBus
+--- !u!114 &6829858916948974176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4340821387030656132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a3e044b1fb45f44f96cc040f9adb068, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRelicManager
 --- !u!1 &5180206691482731569
 GameObject:
   m_ObjectHideFlags: 0
@@ -1313,7 +1509,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1087827499
-  m_SortingLayer: 7
+  m_SortingLayer: 8
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -1210717893359769783, guid: 25ec1cbac94498f438b3ef310815cff7, type: 3}
@@ -1360,6 +1556,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a876e82144ac8bc4485890a3060dafe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpriteColorFlasher
+  whiteFlashMaterial: {fileID: 2100000, guid: b8ac6bdf010e3da4b8edde5897cc08f8, type: 2}
+  flashRenderers: []
+  excludedRenderers: []
 --- !u!114 &5467673889716649138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1494,7 +1693,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 195113763
-  m_SortingLayer: 10
+  m_SortingLayer: 11
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7631889286582480796, guid: fa5ab1ee79322864f847ddcec6c923ab, type: 3}
@@ -1678,6 +1877,7 @@ GameObject:
   - component: {fileID: 4533969721371311023}
   - component: {fileID: 9089098139610277799}
   - component: {fileID: 8431794268889511674}
+  - component: {fileID: 6773869059708221082}
   m_Layer: 7
   m_Name: Player Audio
   m_TagString: Untagged
@@ -1853,6 +2053,24 @@ MonoBehaviour:
   - id: Echo Attack
     clip: {fileID: 8300000, guid: 0ed9b2a64683525498c7229ca9a34ca4, type: 3}
     volume: 1
+--- !u!114 &6773869059708221082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6976874193841986573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39df2b8608924a0986ebc47c7977db5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RandomPitchAudio
+  audioSource: {fileID: 9089098139610277799}
+  randomClips:
+  - {fileID: 0}
+  playOnEnable: 0
+  minimumPitch: 0.9
+  maximumPitch: 1.1
 --- !u!1 &8845038012849776771
 GameObject:
   m_ObjectHideFlags: 0

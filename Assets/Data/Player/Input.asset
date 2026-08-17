@@ -23,3 +23,17 @@ MonoBehaviour:
   arrow_Special: 99
   arrow_Dash: 304
   arrow_Jump: 273
+  confirmKey: 32
+  interactKey: 102
+  extractKey: 114
+  inventoryKey: 101
+  mapKey: 109
+  cancelKey: 27
+  healKey: 104
+  tool1Key: 116
+  tool2Key: 121
+  tool3Key: 117
+  meleeKey: 106
+  midRangeKey: 107
+  longRangeKey: 108
+  magicKey: 59

@@ -67,7 +67,7 @@ public class AnomalousShrine : MonoBehaviour, IInteractable, IDamageable
         {
             HealthSystem hs = PlayerStats.Instance.GetComponent<HealthSystem>();
             if (hs != null)
-                hs.SetMaxHP(hs.MaxHP + 20, false);
+                hs.ModifyMaxHP(20);
         }
 
         // Curse

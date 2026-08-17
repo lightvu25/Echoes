@@ -35,6 +35,8 @@ public class InputConfig : ScriptableObject
     public KeyCode JumpKey => activeScheme == ControlScheme.WASD_JUK ? wasd_Jump : arrow_Jump;
 
     [Header("General Input")]
+    [Tooltip("UI confirmation key used by Mind World nodes and other confirmation prompts.")]
+    public KeyCode confirmKey = KeyCode.Space;
     public KeyCode interactKey = KeyCode.F;
     public KeyCode extractKey = KeyCode.R;
     public KeyCode inventoryKey = KeyCode.E;
@@ -43,9 +45,9 @@ public class InputConfig : ScriptableObject
     public KeyCode healKey = KeyCode.H;
     
     [Header("Equipment/Tool Keys")]
-    public KeyCode tool1Key = KeyCode.U;
+    public KeyCode tool1Key = KeyCode.T;
     public KeyCode tool2Key = KeyCode.Y;
-    public KeyCode tool3Key = KeyCode.T;
+    public KeyCode tool3Key = KeyCode.G;
 
     [Header("Playstyle Keys")]
     public KeyCode meleeKey = KeyCode.J;
@@ -126,6 +128,7 @@ public class InputConfig : ScriptableObject
     }
 
     public bool GetInteractDown() => Input.GetKeyDown(interactKey);
+    public bool GetConfirmDown() => Input.GetKeyDown(confirmKey);
 
     public bool GetExtractDown() => Input.GetKeyDown(extractKey);
     public bool GetInventoryDown() => Input.GetKeyDown(inventoryKey);

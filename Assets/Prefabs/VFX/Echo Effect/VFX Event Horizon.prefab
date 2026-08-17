@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5641924450972830243}
   - component: {fileID: 1595843422238939419}
+  - component: {fileID: 8409494522936804583}
+  - component: {fileID: 4398448338963911683}
   m_Layer: 18
   m_Name: VFX Event Horizon
   m_TagString: Untagged
@@ -58,7 +60,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: 2424ace97b007404e98cef91edacec44, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -78,7 +80,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -966740601
-  m_SortingLayer: 8
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 5651226074518068989, guid: 0dbc474527597b3479d598af6aeca9ef, type: 3}
@@ -91,3 +93,34 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &8409494522936804583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3112956029507099662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff2b70dbac5844a4abd97cf1688748e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BlackHoleEffect
+  duration: 4
+  pullRadius: 5
+  pullForce: 15
+  damagePerTick: 10
+  tickRate: 0.5
+--- !u!114 &4398448338963911683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3112956029507099662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2ba432a4179b140b93849327b68a04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReturnToPool
+  useFixedDelay: 0
+  time: 1

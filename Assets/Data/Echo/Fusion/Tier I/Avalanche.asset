@@ -15,20 +15,23 @@ MonoBehaviour:
   itemID: ECHO_AVALANCHE
   itemName: Avalanche
   itemIcon: {fileID: -5130572855385523440, guid: 1a26a87d58ef12b4a9aa7cebe6a2f911, type: 3}
-  description: Slowed enemies shatter for massive bonus DMG if knocked into walls
-    or other units
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  description: Hits add Fracture to slowed or frozen enemies. At 3 stacks they shatter
+    for 180% area damage; frozen targets shatter immediately.
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+  itemTier: 1
+  basePrice: 75
   echoType: 8
-  echoTier: 1
   isFusionResult: 1
-  baseDamageMultiplier: 1.4
-  attacksPerSecond: 0.7
+  baseDamageMultiplier: 1.35
+  attacksPerSecond: 0.85
   rangeCategory: 0
   hasStatusEffect: 1
-  statusProcCoefficient: 0.5
+  statusProcCoefficient: 0.65
   uniqueModifierID: FUS_AVALANCHE
   trailColor: {r: 1, g: 1, b: 1, a: 1}
   stateVFXPrefab: {fileID: 0}
   hitImpactPrefab: {fileID: 0}
+  voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

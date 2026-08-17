@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b9c201ab05c5a345889c9e4b9610612, type: 3}
   m_Name: Event Horizon Fusion
   m_EditorClassIdentifier: Assembly-CSharp::FusionRecipeData
-  recipeID: REC_EVENT_HORIZON
-  elementA: {fileID: 11400000, guid: b38a01a2bacd1af47b06394f1f659f72, type: 2}
-  elementB: {fileID: 11400000, guid: eee33a29634bd514ab4b5370609394c7, type: 2}
-  resultElement: {fileID: 11400000, guid: 4fb3884fb6558cb4bb5e80e88eb16b11, type: 2}
+  recipeID: FUS_EVENT_HORIZON
+  echoA: {fileID: 11400000, guid: b38a01a2bacd1af47b06394f1f659f72, type: 2}
+  echoB: {fileID: 11400000, guid: eee33a29634bd514ab4b5370609394c7, type: 2}
+  resultEcho: {fileID: 11400000, guid: 4fb3884fb6558cb4bb5e80e88eb16b11, type: 2}
   recipeTier: 3
-  requiredConstellationNode: FUSION_FORGE_UP
+  requiredConstellationNode: FUSION_TIER_3

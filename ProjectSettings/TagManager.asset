@@ -71,6 +71,9 @@ TagManager:
   - name: Player
     uniqueID: 3207139797
     locked: 0
+  - name: Foreground
+    uniqueID: 1512411875
+    locked: 0
   - name: VFX
     uniqueID: 3328226695
     locked: 0
@@ -87,3 +90,4 @@ TagManager:
   - Default
   - Ground
   - Wall
+  m_MigratedRenderPipelines: []

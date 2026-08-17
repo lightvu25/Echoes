@@ -15,14 +15,15 @@ MonoBehaviour:
   itemID: ECHO_ZERO_POINT
   itemName: Zero Point
   itemIcon: {fileID: 7331889997356814805, guid: 7dccbbe343c59d342aa7a31435ee495b, type: 3}
-  description: Glitches the entire screen. Frozen enemies take True DMG and their
-    freeze timers never run out until shattered
-  dropPrefab: {fileID: 3676958883682361493, guid: 554fc7c35e7eaf2418d5a62c6b9572dd, type: 3}
+  description: Every fourth hit creates a Zero Field. Frozen-target damage becomes
+    True Damage and echoes to every other frozen enemy before collapse.
+  dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
+  itemTier: 3
+  basePrice: 200
   echoType: 8
-  echoTier: 3
   isFusionResult: 1
-  baseDamageMultiplier: 2
-  attacksPerSecond: 1.5
+  baseDamageMultiplier: 1.5
+  attacksPerSecond: 1
   rangeCategory: 2
   hasStatusEffect: 1
   statusProcCoefficient: 1
@@ -30,5 +31,7 @@ MonoBehaviour:
   trailColor: {r: 1, g: 1, b: 1, a: 1}
   stateVFXPrefab: {fileID: 0}
   hitImpactPrefab: {fileID: 0}
+  voidMarkVFXPrefab: {fileID: 0}
+  chainLightningVFXPrefab: {fileID: 0}
   level: 1
   currentStatusProc: 0

@@ -28,6 +28,7 @@ public class PlayerStats : MonoBehaviour
     public int CurrentLevel => GameSession.Instance != null && GameSession.Instance.currentRun != null ? GameSession.Instance.currentRun.currentLevel : testLevel;
     public int CurrentExp => GameSession.Instance != null && GameSession.Instance.currentRun != null ? GameSession.Instance.currentRun.currentExp : testExp;
     public int CurrentGold => GameSession.Instance != null && GameSession.Instance.currentRun != null ? GameSession.Instance.currentRun.runGold : testGold;
+    public int PeakGold => GameSession.Instance != null && GameSession.Instance.currentRun != null ? GameSession.Instance.currentRun.peakRunGold : testGold;
     public int CurrentAstralShards => GameSession.Instance != null && GameSession.Instance.currentRun != null ? GameSession.Instance.currentRun.currentAstralShards : testAstralShards;
 
     private void Awake()
@@ -54,6 +55,10 @@ public class PlayerStats : MonoBehaviour
         if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
         {
             GameSession.Instance.currentRun.runGold += amount;
+            if (GameSession.Instance.currentRun.runGold > GameSession.Instance.currentRun.peakRunGold)
+            {
+                GameSession.Instance.currentRun.peakRunGold = GameSession.Instance.currentRun.runGold;
+            }
             GameSession.Instance.SaveCurrentRun();
         }
         else

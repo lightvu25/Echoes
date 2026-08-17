@@ -59,9 +59,24 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         int finalDamage = healthSystem.TakeDamage(damageInfo);
 
-        if (finalDamage > 0 && GameSession.Instance != null && GameSession.Instance.currentRun != null)
+        // Invulnerability and fully-negated hits must not stagger, knock back,
+        // cancel attacks, or produce player-hit feedback.
+        if (finalDamage <= 0) return;
+
+        if (GameSession.Instance != null && GameSession.Instance.currentRun != null)
         {
             GameSession.Instance.currentRun.currentLevelNoHitKills = 0;
+        }
+
+        if (damageInfo.suppressHitReaction || healthSystem.LastHitReactionSuppressed)
+        {
+            GameFeelManager.Instance?.ProcessPlayerHit(transform.position, damageInfo.knockbackDirection);
+            OnDamageReceived?.Invoke(this, new DamageReceivedArgs
+            {
+                damage = finalDamage,
+                knockbackDir = Vector2.zero
+            });
+            return;
         }
 
         // Always apply knockback/stagger to cancel attacks and briefly stop movement, 
@@ -76,7 +91,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             playerMovement.ApplyStun(0.3f);
         }
 
-        GameFeelManager.Instance?.ProcessPlayerHit();
+        GameFeelManager.Instance?.ProcessPlayerHit(transform.position, damageInfo.knockbackDirection);
 
         OnDamageReceived?.Invoke(this, new DamageReceivedArgs
         {

@@ -7,10 +7,13 @@ using UnityEngine;
 /// Listens to PlayerInventoryCore and dynamically adds/removes IRelicEffect MonoBehaviours.
 /// </summary>
 [RequireComponent(typeof(PlayerEventBus))]
+[DisallowMultipleComponent]
 public class PlayerRelicManager : MonoBehaviour
 {
     private PlayerEventBus eventBus;
-    private Dictionary<string, IRelicEffect> activeRelics = new Dictionary<string, IRelicEffect>();
+    private PlayerInventoryCore inventory;
+    private readonly Dictionary<string, IRelicEffect> activeRelics = new Dictionary<string, IRelicEffect>();
+    private Coroutine inventoryBindingRoutine;
 
     // --- Static Registry ---
     // Maps RelicData.itemID to the concrete MonoBehaviour Type that implements the logic.
@@ -29,31 +32,51 @@ public class PlayerRelicManager : MonoBehaviour
 
     private void Awake()
     {
+        PlayerRelicManager[] managers = GetComponents<PlayerRelicManager>();
+        if (managers.Length > 1 && managers[0] != this)
+        {
+            enabled = false;
+            Destroy(this);
+            return;
+        }
         eventBus = GetComponent<PlayerEventBus>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        if (PlayerInventoryCore.Instance != null)
-        {
-            PlayerInventoryCore.Instance.OnInventoryChanged += SyncRelics;
-            SyncRelics(); // Initial sync
-        }
+        if (eventBus != null && inventoryBindingRoutine == null)
+            inventoryBindingRoutine = StartCoroutine(BindInventoryWhenReady());
     }
 
-    private void OnDestroy()
+    private System.Collections.IEnumerator BindInventoryWhenReady()
     {
-        if (PlayerInventoryCore.Instance != null)
+        while (PlayerInventoryCore.Instance == null) yield return null;
+        inventory = PlayerInventoryCore.Instance;
+        inventory.OnInventoryChanged += SyncRelics;
+        inventoryBindingRoutine = null;
+        SyncRelics();
+    }
+
+    private void OnDisable()
+    {
+        if (inventoryBindingRoutine != null)
         {
-            PlayerInventoryCore.Instance.OnInventoryChanged -= SyncRelics;
+            StopCoroutine(inventoryBindingRoutine);
+            inventoryBindingRoutine = null;
+        }
+        if (inventory != null)
+        {
+            inventory.OnInventoryChanged -= SyncRelics;
+            inventory = null;
         }
 
-        // Cleanup all active relics
-        foreach (var relic in activeRelics.Values)
+        List<IRelicEffect> relicsToRemove = new List<IRelicEffect>(activeRelics.Values);
+        activeRelics.Clear();
+        foreach (IRelicEffect relic in relicsToRemove)
         {
             relic.OnUnequip(eventBus);
+            if (relic is MonoBehaviour behaviour && behaviour != null) Destroy(behaviour);
         }
-        activeRelics.Clear();
     }
 
     /// <summary>
@@ -61,9 +84,9 @@ public class PlayerRelicManager : MonoBehaviour
     /// </summary>
     private void SyncRelics()
     {
-        if (PlayerInventoryCore.Instance == null) return;
+        if (inventory == null) return;
 
-        var equippedRelicsData = PlayerInventoryCore.Instance.EquippedRelics;
+        var equippedRelicsData = inventory.EquippedRelics;
         HashSet<string> currentlyEquippedIDs = new HashSet<string>();
 
         // 1. Identify equipped relic IDs
@@ -99,7 +122,11 @@ public class PlayerRelicManager : MonoBehaviour
 
     private void EquipRelic(string itemID)
     {
-        if (RelicTypeRegistry.TryGetValue(itemID, out Type relicType))
+        Type relicType = null;
+        if (!RelicTypeRegistry.TryGetValue(itemID, out relicType) && UniversalRelicEffect.Supports(itemID))
+            relicType = typeof(UniversalRelicEffect);
+
+        if (relicType != null)
         {
             // Add the component
             Component comp = gameObject.AddComponent(relicType);
@@ -120,6 +147,10 @@ public class PlayerRelicManager : MonoBehaviour
             Debug.LogWarning($"[PlayerRelicManager] No logic script registered for relic ID: {itemID}");
         }
     }
+
+    public bool HasRelic(string itemID) => !string.IsNullOrEmpty(itemID) && activeRelics.ContainsKey(itemID);
+    public static bool SupportsRelic(string itemID) => !string.IsNullOrEmpty(itemID) &&
+        (RelicTypeRegistry.ContainsKey(itemID) || UniversalRelicEffect.Supports(itemID));
 
     private void UnequipRelic(string itemID)
     {

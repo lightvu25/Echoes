@@ -11,8 +11,13 @@ public class GoalExit : MonoBehaviour, IInteractable
         // Spawn visual effects if assigned
         if (interactVfxPrefab != null)
         {
-            Transform vfx = Instantiate(interactVfxPrefab, transform.position, Quaternion.identity);
-            Destroy(vfx.gameObject, 2f); // Clean up after a few seconds
+            GameObject vfxObj = ObjectPoolManager.SpawnObject(interactVfxPrefab.gameObject, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.ParticleSystem);
+            ReturnToPool returnToPool = vfxObj.GetComponent<ReturnToPool>();
+            if (returnToPool == null)
+            {
+                returnToPool = vfxObj.AddComponent<ReturnToPool>();
+                returnToPool.ConfigureDelay(2f);
+            }
         }
 
         // Transition to the next level

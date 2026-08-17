@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
@@ -32,6 +33,9 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
     private GameObject sharedVisionIndicator;
     private SpriteRenderer sharedVisionRenderer;
     private Vector3 sharedVisionBaseScale;
+    private readonly HashSet<object> weakPointSources = new HashSet<object>();
+    private GameObject weakPointIndicator;
+    private SpriteRenderer weakPointRenderer;
 
     private SpriteColorFlasher colorFlasher;
 
@@ -94,6 +98,13 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
             float pulse = 1f + Mathf.Sin(Time.time * SharedVisionPulseSpeed) * SharedVisionPulseAmount;
             sharedVisionIndicator.transform.localScale = sharedVisionBaseScale * pulse;
         }
+
+        if (weakPointRenderer != null && weakPointIndicator.activeSelf && spriteRenderer != null)
+        {
+            weakPointRenderer.sprite = spriteRenderer.sprite;
+            weakPointRenderer.flipX = spriteRenderer.flipX;
+            weakPointRenderer.flipY = spriteRenderer.flipY;
+        }
     }
 
     private void OnDisable()
@@ -102,6 +113,8 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
         {
             sharedVisionIndicator.SetActive(false);
         }
+        weakPointSources.Clear();
+        RefreshWeakPointVisual();
     }
 
     public void SetSharedVisionIcon(Sprite icon)
@@ -143,6 +156,38 @@ public class EnemyVisual : MonoBehaviour, IFeedbackProvider
         sharedVisionIndicator.transform.position = GetSharedVisionWorldPosition();
         sharedVisionIndicator.transform.localScale = sharedVisionBaseScale;
         sharedVisionIndicator.SetActive(true);
+    }
+
+    public void SetWeakPointHighlighted(object source, bool highlighted)
+    {
+        if (source == null) return;
+        if (highlighted) weakPointSources.Add(source);
+        else weakPointSources.Remove(source);
+        RefreshWeakPointVisual();
+    }
+
+    private void RefreshWeakPointVisual()
+    {
+        if (weakPointSources.Count == 0)
+        {
+            if (weakPointIndicator != null) weakPointIndicator.SetActive(false);
+            return;
+        }
+        if (spriteRenderer == null) return;
+        if (weakPointIndicator == null)
+        {
+            weakPointIndicator = new GameObject("Weak Point Highlight");
+            weakPointIndicator.layer = gameObject.layer;
+            weakPointIndicator.transform.SetParent(spriteRenderer.transform, false);
+            weakPointIndicator.transform.localScale = Vector3.one * 1.08f;
+            weakPointRenderer = weakPointIndicator.AddComponent<SpriteRenderer>();
+            weakPointRenderer.material = spriteRenderer.material;
+            weakPointRenderer.sortingLayerID = spriteRenderer.sortingLayerID;
+            weakPointRenderer.sortingOrder = spriteRenderer.sortingOrder + 1;
+            weakPointRenderer.color = new Color(1f, 0.08f, 0.02f, 0.55f);
+        }
+        weakPointRenderer.sprite = spriteRenderer.sprite;
+        weakPointIndicator.SetActive(true);
     }
 
     private Vector3 GetSharedVisionWorldPosition()

@@ -29,12 +29,25 @@ public class SoundManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+            return;
+        }
+
         Instance = this;
+        DontDestroyOnLoad(gameObject);
         
         // Load volume from PlayerPrefs
         soundVolume = PlayerPrefs.GetInt(PREF_KEY, 6);
         
         InitializePool();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     private void Start()
@@ -107,7 +120,7 @@ public class SoundManager : MonoBehaviour
         source.volume = volume;
 
         if (randomPitch)
-            source.pitch = UnityEngine.Random.Range(0.9f, 1.1f);
+            source.pitch = AudioPitchUtility.GetRandomPitch();
         else
             source.pitch = 1f;
 

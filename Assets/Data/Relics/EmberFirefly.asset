@@ -15,7 +15,7 @@ MonoBehaviour:
   itemID: EmberFirefly
   itemName: Ember Firefly
   itemIcon: {fileID: -4108039252454196310, guid: 9ef9e3ebe28c7d04d838c25262f67812, type: 3}
-  description: Plunge Attacks leave a burning trail on the ground for 3 seconds.
+  description: Plunge impacts leave a burning zone on the ground for 3 seconds.
   dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 2
   basePrice: 50

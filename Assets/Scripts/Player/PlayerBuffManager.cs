@@ -7,15 +7,20 @@ public class PlayerBuffManager : MonoBehaviour
     private HealthSystem healthSystem;
     private PlayerMovement playerMovement;
     private SpriteRenderer spriteRenderer;
+    private PlayerRuntimeModifiers runtimeModifiers;
 
     private Coroutine adrenalineCoroutine;
     private Coroutine voidAegisCoroutine;
+    private Color spriteBaseColor = Color.white;
 
     private void Awake()
     {
         healthSystem = GetComponent<HealthSystem>();
         playerMovement = GetComponent<PlayerMovement>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>(); // Assumes SpriteRenderer is on player or child
+        if (spriteRenderer != null) spriteBaseColor = spriteRenderer.color;
+        runtimeModifiers = GetComponent<PlayerRuntimeModifiers>();
+        if (runtimeModifiers == null) runtimeModifiers = gameObject.AddComponent<PlayerRuntimeModifiers>();
     }
 
     public void ActivateAdrenaline(float duration, float speedMultiplier)
@@ -29,13 +34,12 @@ public class PlayerBuffManager : MonoBehaviour
 
     private IEnumerator AdrenalineRoutine(float duration, float speedMultiplier)
     {
-        if (playerMovement != null) playerMovement.SetBuffSpeedMultiplier(speedMultiplier);
-
-        // Optionally hook into PlayerAttack to boost attack speed if supported
+        runtimeModifiers?.SetMovementSpeed(this, speedMultiplier);
+        runtimeModifiers?.SetAttackSpeed(this, speedMultiplier);
 
         yield return new WaitForSeconds(duration);
 
-        if (playerMovement != null) playerMovement.SetBuffSpeedMultiplier(1f);
+        runtimeModifiers?.RemoveSource(this);
         adrenalineCoroutine = null;
     }
 
@@ -51,23 +55,29 @@ public class PlayerBuffManager : MonoBehaviour
 
     private IEnumerator VoidAegisRoutine(float duration)
     {
-        if (healthSystem != null) healthSystem.SetInvincible(true);
+        if (healthSystem != null) healthSystem.SetInvincible(this, true);
 
-        Color originalColor = Color.white;
         if (spriteRenderer != null)
         {
-            originalColor = spriteRenderer.color;
-            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0.5f);
+            spriteRenderer.color = new Color(spriteBaseColor.r, spriteBaseColor.g, spriteBaseColor.b, 0.5f);
         }
 
         yield return new WaitForSeconds(duration);
 
         if (spriteRenderer != null)
         {
-            spriteRenderer.color = originalColor;
+            spriteRenderer.color = spriteBaseColor;
         }
 
-        if (healthSystem != null) healthSystem.SetInvincible(false);
+        if (healthSystem != null) healthSystem.SetInvincible(this, false);
         voidAegisCoroutine = null;
+    }
+
+    private void OnDisable()
+    {
+        runtimeModifiers?.RemoveSource(this);
+        if (healthSystem != null) healthSystem.SetInvincible(this, false);
+        if (spriteRenderer != null)
+            spriteRenderer.color = spriteBaseColor;
     }
 }

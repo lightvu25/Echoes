@@ -51,6 +51,7 @@ MonoBehaviour:
   modifierData: {fileID: 11400000, guid: 79138a9b0ad93044280b7e6c8ecefc4b, type: 2}
   requiredNoHitKills: 0
   requiredSpeedrunTime: 0
+  isChallengeClaimed: 0
   upConnection:
     targetNode: {fileID: 0}
     isCut: 0
@@ -126,7 +127,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: a7ec14c8e208e5d46b9752f93083b1e9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class HealthSystem : MonoBehaviour
@@ -47,6 +48,14 @@ public class HealthSystem : MonoBehaviour
     private bool isInvincible = false;
     private float iFrameTimer = 0f;
     private bool isDead = false;
+    private int rawMaxHP;
+    private readonly HashSet<object> healingBlockers = new HashSet<object>();
+    private readonly HashSet<object> iFrameDisablers = new HashSet<object>();
+    private readonly HashSet<object> invincibilitySources = new HashSet<object>();
+    private readonly Dictionary<object, float> iFrameDurationBonuses = new Dictionary<object, float>();
+    private readonly Dictionary<object, int> maxHpAdditives = new Dictionary<object, int>();
+    private readonly Dictionary<object, int> maxHpCaps = new Dictionary<object, int>();
+    private bool hasRestoredRunHealth;
 
     // ===== References =====
     [Header("UI")]
@@ -71,8 +80,10 @@ public class HealthSystem : MonoBehaviour
     }
     public float Defense => defense;
     public bool IsDead => isDead;
-    public bool IsInvincible => isInvincible;
+    public bool IsInvincible => invincibilitySources.Count > 0 ||
+                                (isInvincible && iFrameDisablers.Count == 0);
     public float HPPercent => maxHP > 0 ? (float)currentHP / maxHP : 0f;
+    public bool LastHitReactionSuppressed { get; private set; }
     public delegate void PreDamageHandler(ref int damageAmount, ref DamageInfo info);
     public event PreDamageHandler OnBeforeTakeDamage;
 
@@ -86,12 +97,28 @@ public class HealthSystem : MonoBehaviour
         }
 
         currentHP = maxHP;
+        rawMaxHP = maxHP;
         colorFlasher = GetComponent<SpriteColorFlasher>();
         timeFreezer = GetComponent<TimeFreezer>();
+        RestorePlayerRunHealth();
+    }
+
+    private void Start()
+    {
+        if (!hasRestoredRunHealth)
+            RestorePlayerRunHealth();
     }
 
     private void Update()
     {
+        PruneDestroyedSources(healingBlockers);
+        PruneDestroyedSources(iFrameDisablers);
+        PruneDestroyedSources(invincibilitySources);
+        PruneDestroyedSources(iFrameDurationBonuses);
+        bool maxHpSourcesChanged = PruneDestroyedSources(maxHpAdditives);
+        maxHpSourcesChanged |= PruneDestroyedSources(maxHpCaps);
+        if (maxHpSourcesChanged) RecalculateMaxHP(false, false);
+
         // Handle i-frame timer
         if (isInvincible && hasIFrames)
         {
@@ -105,7 +132,9 @@ public class HealthSystem : MonoBehaviour
 
     public int TakeDamage(DamageInfo damageInfo)
     {
-        if (isDead || isInvincible) return 0;
+        LastHitReactionSuppressed = false;
+        if (isDead || invincibilitySources.Count > 0 ||
+            (isInvincible && iFrameDisablers.Count == 0 && !damageInfo.BypassesInvincibilityFrames)) return 0;
 
         // Play Impact Audio from Attacker
         if (damageInfo.attacker != null)
@@ -123,6 +152,11 @@ public class HealthSystem : MonoBehaviour
         int previousSlots = UnlockedSlots;
 
         OnBeforeTakeDamage?.Invoke(ref finalDamage, ref damageInfo);
+        LastHitReactionSuppressed = damageInfo.suppressHitReaction;
+
+        // A fully-negated hit must not consume i-frames or emit visual/combat
+        // feedback as though damage was accepted.
+        if (finalDamage <= 0) return 0;
 
         currentHP -= finalDamage;
 
@@ -146,20 +180,18 @@ public class HealthSystem : MonoBehaviour
         }
 
         // Trigger i-frames
-        if (hasIFrames)
+        if (hasIFrames && iFrameDisablers.Count == 0)
         {
             isInvincible = true;
-            iFrameTimer = iFrameDuration;
+            float bonusDuration = 0f;
+            foreach (float bonus in iFrameDurationBonuses.Values) bonusDuration += bonus;
+            iFrameTimer = iFrameDuration + bonusDuration;
         }
 
         // Visual feedback
         if (colorFlasher != null)
         {
-            var spriteRenderer = GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                colorFlasher.FlashColor(spriteRenderer, 0.1f, Color.white);
-            }
+            colorFlasher.FlashColor(0.1f, Color.white);
         }
 
         // Hit freeze
@@ -178,18 +210,21 @@ public class HealthSystem : MonoBehaviour
         });
 
         // Check death
-        if (currentHP <= 0)
+        bool died = currentHP <= 0;
+        if (died)
         {
             currentHP = 0;
-            Die();
         }
+
+        CapturePlayerRunHealth();
+        if (died) Die();
 
         return finalDamage;
     }
 
     public void Heal(int amount)
     {
-        if (isDead) return;
+        if (isDead || healingBlockers.Count > 0) return;
 
         int previousHP = currentHP;
         int previousSlots = UnlockedSlots;
@@ -209,22 +244,82 @@ public class HealthSystem : MonoBehaviour
                 currentHP = currentHP,
                 maxHP = maxHP
             });
+            CapturePlayerRunHealth();
         }
+    }
+
+    public void SetHealingBlocked(object source, bool blocked)
+    {
+        if (source == null) return;
+        if (blocked) healingBlockers.Add(source);
+        else healingBlockers.Remove(source);
+    }
+
+    public void SetIFramesDisabled(object source, bool disabled)
+    {
+        if (source == null) return;
+        if (disabled) iFrameDisablers.Add(source);
+        else iFrameDisablers.Remove(source);
+        if (iFrameDisablers.Count > 0) isInvincible = false;
+    }
+
+    public void SetIFrameDurationBonus(object source, float seconds)
+    {
+        if (source == null) return;
+        if (seconds <= 0f) iFrameDurationBonuses.Remove(source);
+        else iFrameDurationBonuses[source] = seconds;
     }
 
     public void SetMaxHP(int newMaxHP, bool healToFull = false)
     {
-        int previousSlots = UnlockedSlots;
-        int previousMaxHP = maxHP; // Thêm dòng này
+        int requested = Mathf.Max(1, newMaxHP);
+        int additiveTotal = 0;
+        foreach (int additive in maxHpAdditives.Values) additiveTotal += additive;
+        rawMaxHP = Mathf.Max(1, requested - additiveTotal);
+        RecalculateMaxHP(healToFull, false);
+    }
 
-        maxHP = newMaxHP;
+    public void ModifyMaxHP(int delta, bool healAddedAmount = false, bool notifyProgressionGain = true)
+    {
+        if (delta == 0) return;
+        rawMaxHP = Mathf.Max(1, rawMaxHP + delta);
+        RecalculateMaxHP(false, notifyProgressionGain && delta > 0);
+        if (healAddedAmount && delta > 0) Heal(delta);
+    }
+
+    public void SetMaxHPModifier(object source, int additiveHP, bool healAddedAmount = false)
+    {
+        if (source == null) return;
+        int previousAdditive = maxHpAdditives.TryGetValue(source, out int value) ? value : 0;
+        if (additiveHP == 0) maxHpAdditives.Remove(source);
+        else maxHpAdditives[source] = additiveHP;
+        RecalculateMaxHP(false, false);
+        if (healAddedAmount && additiveHP > previousAdditive) Heal(additiveHP - previousAdditive);
+    }
+
+    public void SetMaxHPCap(object source, int cap)
+    {
+        if (source == null) return;
+        if (cap <= 0) maxHpCaps.Remove(source);
+        else maxHpCaps[source] = Mathf.Max(1, cap);
+        RecalculateMaxHP(false, false);
+    }
+
+    private void RecalculateMaxHP(bool healToFull, bool notifyProgressionGain)
+    {
+        int previousSlots = UnlockedSlots;
+        int previousMaxHP = maxHP;
+        int calculated = rawMaxHP;
+        foreach (int additive in maxHpAdditives.Values) calculated += additive;
+        foreach (int cap in maxHpCaps.Values) calculated = Mathf.Min(calculated, cap);
+        maxHP = Mathf.Max(1, calculated);
+
         if (healToFull) currentHP = maxHP;
         else currentHP = Mathf.Min(currentHP, maxHP);
 
-        // Gọi event nếu Max HP tăng lên
-        if (maxHP > previousMaxHP) OnMaxHPGained?.Invoke();
-
+        if (notifyProgressionGain && maxHP > previousMaxHP) OnMaxHPGained?.Invoke();
         if (UnlockedSlots != previousSlots) OnSlotsChanged?.Invoke(UnlockedSlots);
+        CapturePlayerRunHealth();
     }
 
     public void SetDefense(float newDefense)
@@ -241,6 +336,13 @@ public class HealthSystem : MonoBehaviour
         }
     }
 
+    public void SetInvincible(object source, bool invincible)
+    {
+        if (source == null) return;
+        if (invincible) invincibilitySources.Add(source);
+        else invincibilitySources.Remove(source);
+    }
+
     private void Die()
     {
         if (isDead) return;
@@ -253,5 +355,79 @@ public class HealthSystem : MonoBehaviour
         isDead = false;
         isInvincible = false;
         currentHP = hp > 0 ? Mathf.Min(hp, maxHP) : maxHP;
+        CapturePlayerRunHealth();
+    }
+
+    private void RestorePlayerRunHealth()
+    {
+        if (!IsPlayerHealthSystem()) return;
+
+        RunData run = GameSession.Instance?.currentRun;
+        if (run == null) return;
+
+        if (run.maxHealth <= 0)
+        {
+            CapturePlayerRunHealth();
+            hasRestoredRunHealth = true;
+            return;
+        }
+
+        rawMaxHP = Mathf.Max(1, run.maxHealth);
+        maxHP = rawMaxHP;
+        currentHP = Mathf.Clamp(run.currentHealth, 0, maxHP);
+
+        // Restoring zero HP here used to create a half-dead player: combat and
+        // enemy AI considered the player dead, but no OnDeath event was emitted
+        // to drive the death sequence. A death is resolved in the scene where it
+        // occurs; a newly-created player must always enter the scene alive.
+        if (currentHP <= 0)
+        {
+            currentHP = maxHP;
+            CapturePlayerRunHealth();
+            Debug.LogWarning(
+                "[HealthSystem] A player scene instance was given zero saved HP. " +
+                "Restored it to full health instead of creating a silent dead state.",
+                this);
+        }
+
+        isDead = false;
+        hasRestoredRunHealth = true;
+    }
+
+    private void CapturePlayerRunHealth()
+    {
+        if (!IsPlayerHealthSystem()) return;
+
+        RunData run = GameSession.Instance?.currentRun;
+        if (run == null) return;
+
+        run.maxHealth = maxHP;
+        run.currentHealth = Mathf.Clamp(currentHP, 0, maxHP);
+    }
+
+    private bool IsPlayerHealthSystem()
+    {
+        return CompareTag("Player") || GetComponent<PlayerStats>() != null;
+    }
+
+    private static void PruneDestroyedSources(HashSet<object> sources)
+    {
+        sources.RemoveWhere(source => source is UnityEngine.Object unityObject && unityObject == null);
+    }
+
+    private static bool PruneDestroyedSources<TValue>(Dictionary<object, TValue> sources)
+    {
+        List<object> stale = null;
+        foreach (object source in sources.Keys)
+        {
+            if (source is UnityEngine.Object unityObject && unityObject == null)
+            {
+                stale ??= new List<object>();
+                stale.Add(source);
+            }
+        }
+        if (stale == null) return false;
+        foreach (object source in stale) sources.Remove(source);
+        return true;
     }
 }

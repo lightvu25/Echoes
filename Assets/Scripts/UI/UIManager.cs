@@ -77,6 +77,15 @@ public class UIManager : MonoBehaviour
 
         Debug.Log($"[DEBUG] Found {type} in panelsDict. Calling Show().");
 
+        // Opening the panel that is already active must be idempotent. Some
+        // interactables can be wired through both a UnityEvent and an attached
+        // IInteractable component; a duplicate signal must not hide the panel
+        // and clear its interaction context before showing it again.
+        if (currentActivePanel == type)
+        {
+            return;
+        }
+
         if (currentActivePanel != UIPanelType.None && panelsDict.ContainsKey(currentActivePanel))
         {
             panelsDict[currentActivePanel].Hide();

@@ -122,6 +122,28 @@ public class EnemyDrop : MonoBehaviour
                 for (int i = 0; i < result.totalAmount; i++)
                 {
                     GameObject obj = Instantiate(result.prefab, origin, Quaternion.identity);
+
+                    // --- Resolve Random Equipment/Relics ---
+                    if (obj.TryGetComponent(out ItemDrop itemDrop) && ShopManager.Instance != null)
+                    {
+                        ItemCategory? category = null;
+                        if (result.type == LootItemType.Equipment) category = ItemCategory.Tool;
+                        else if (result.type == LootItemType.Relic) category = ItemCategory.Relic;
+                        else if (result.type == LootItemType.Echo) category = ItemCategory.Echo;
+
+                        if (category.HasValue)
+                        {
+                            ItemBaseData randomData = ShopManager.Instance.GetRandomItem(category.Value, minTierAllowed);
+                            if (randomData != null)
+                            {
+                                float randomX = Random.Range(-1f, 1f) * sidewaysForceMod;
+                                float randomY = Random.Range(popForceMin, popForceMax);
+                                itemDrop.Initialize(new Vector2(randomX, randomY), randomData);
+                                continue;
+                            }
+                        }
+                    }
+
                     if (obj.TryGetComponent<Rigidbody2D>(out var rb))
                     {
                         float randomX = Random.Range(-1f, 1f) * sidewaysForceMod;

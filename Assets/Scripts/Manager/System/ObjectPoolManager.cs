@@ -67,11 +67,16 @@ public class ObjectPoolManager : MonoBehaviour
 
     public static GameObject SpawnObject(GameObject objectToSpawn, Vector3 spawnPosition, Quaternion spawnRotation, PoolType poolType = PoolType.None)
     {
-        PooledObjectInfo pool = ObjectPools.Find(x => x.lookupString == objectToSpawn.name);
+        int prefabInstanceId = objectToSpawn.GetInstanceID();
+        PooledObjectInfo pool = ObjectPools.Find(x => x.prefabInstanceId == prefabInstanceId);
         
         if (pool == null)
         {
-            pool = new PooledObjectInfo() { lookupString = objectToSpawn.name };
+            pool = new PooledObjectInfo
+            {
+                lookupString = objectToSpawn.name,
+                prefabInstanceId = prefabInstanceId
+            };
             ObjectPools.Add(pool);
         }
 
@@ -111,9 +116,9 @@ public class ObjectPoolManager : MonoBehaviour
     {
         if (objectToReturn == null) return;
 
-        string lookupName = objectToReturn.name.Replace("(Clone)", "").Trim();
-
-        PooledObjectInfo pool = ObjectPools.Find(x => x.lookupString == lookupName);
+        // Names are not unique (for example, both enemy and Equipment bombs are
+        // named "Bomb"). Membership preserves the exact source-prefab pool.
+        PooledObjectInfo pool = ObjectPools.Find(x => x.pooledObjects.Contains(objectToReturn));
 
         if (pool == null)
         {
@@ -145,5 +150,6 @@ public class ObjectPoolManager : MonoBehaviour
 public class PooledObjectInfo
 {
     public string lookupString;
+    public int prefabInstanceId;
     public List<GameObject> pooledObjects = new List<GameObject>();
 }

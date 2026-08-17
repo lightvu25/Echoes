@@ -10,4 +10,5 @@ public class EchoModifierContext
     public GameObject FireTrailPrefab;
     public GameObject GlitchedZonePrefab;
     public GameObject VoidMarkVFXPrefab;
+    public GameObject EchoExplosionPrefab;
 }
