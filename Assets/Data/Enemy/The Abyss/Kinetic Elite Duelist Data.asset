@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 937470260c5f20049a9c20727a4ad0eb, type: 3}
+  m_Name: Kinetic Elite Duelist Data
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  archetype: 5
+  balanceTier: 2
+  maxHP: 180
+  defense: 18
+  patrolMaxSpeed: 2.2
+  patrolAcceleration: 3
+  patrolAccelAmount: 68.181816
+  patrolDecceleration: 3.5
+  patrolDeccelAmount: 79.545456
+  patrolRadius: 5
+  patrolWaitTimeMin: 0.8
+  patrolWaitTimeMax: 1.8
+  groundCheckDistance: 1
+  wallCheckDistance: 0.5
+  chaseMaxSpeed: 6.2
+  chaseAcceleration: 7
+  chaseAccelAmount: 56.451614
+  chaseDecceleration: 8
+  chaseDeccelAmount: 64.51613
+  doConserveMomentum: 1
+  attackBase: 30
+  attackRange: 1.55
+  attackSpeed: 1.05
+  attackCooldown: 1.1
+  telegraphDuration: 0.55
+  canBackstep: 1
+  attackHitboxSize: {x: 1.8, y: 1.5}
+  attackHitboxOffset: {x: 1, y: 0}
+  knockbackForce: 5.5
+  attackTargetLayers:
+    serializedVersion: 2
+    m_Bits: 128
+  visionRange: 9
+  fovAngle: 150
+  closeDetectionRange: 1.75
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8200
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 72
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  noticeDuration: 0.35
+  expRewardMin: 55
+  expRewardMax: 70
+  goldDropChance: 100
+  goldAmountMin: 8
+  goldAmountMax: 12
+  astralShardDropChance: 35
+  astralShardAmountMin: 2
+  astralShardAmountMax: 4

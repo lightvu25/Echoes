@@ -2,6 +2,32 @@ using UnityEngine;
 
 public enum EchoRange { Melee, Mid, Ranged, Hybrid }
 
+public enum EchoAudioMoment
+{
+    Activation,
+    Attack,
+    Hit
+}
+
+[System.Serializable]
+public struct EchoAudioCue
+{
+    public AudioClip clip;
+    [Range(0f, 1f)] public float volume;
+    [Tooltip("Adds a small pitch variation so repeated Echo sounds feel less mechanical.")]
+    public bool randomizePitch;
+
+    public EchoAudioCue(AudioClip clip, float volume, bool randomizePitch)
+    {
+        this.clip = clip;
+        this.volume = Mathf.Clamp01(volume);
+        this.randomizePitch = randomizePitch;
+    }
+
+    public bool IsConfigured => clip != null;
+    public float SafeVolume => Mathf.Clamp01(volume);
+}
+
 [CreateAssetMenu(fileName = "New Echo", menuName = "Data/Echo Data")]
 public class EchoData : ItemBaseData
 {
@@ -31,6 +57,14 @@ public class EchoData : ItemBaseData
     public GameObject voidMarkVFXPrefab;
     public GameObject chainLightningVFXPrefab;
 
+    [Header("Audio Effects")]
+    [Tooltip("Played once when this Echo becomes the active equipped Echo.")]
+    public EchoAudioCue activationAudio = new EchoAudioCue(null, 0.8f, false);
+    [Tooltip("Played when an attack using this Echo is committed, even if the attack misses.")]
+    public EchoAudioCue attackAudio = new EchoAudioCue(null, 0.8f, true);
+    [Tooltip("Played only when an Echo attack successfully damages a target.")]
+    public EchoAudioCue hitAudio = new EchoAudioCue(null, 0.8f, true);
+
     [HideInInspector] public int level = 1;
     [HideInInspector] public float currentStatusProc;
 
@@ -44,5 +78,16 @@ public class EchoData : ItemBaseData
     {
         level++;
         currentStatusProc = Mathf.Clamp01(currentStatusProc + other.statusProcCoefficient * 0.5f);
+    }
+
+    public EchoAudioCue GetAudioCue(EchoAudioMoment moment)
+    {
+        return moment switch
+        {
+            EchoAudioMoment.Activation => activationAudio,
+            EchoAudioMoment.Attack => attackAudio,
+            EchoAudioMoment.Hit => hitAudio,
+            _ => default
+        };
     }
 }

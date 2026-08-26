@@ -66,9 +66,13 @@ public class PlaystyleManager : MonoBehaviour
     public bool CanUseMagic()
     {
         if (!IsPlaystyleUnlocked(PlaystyleType.Magic)) return false;
-        
-        // Check if an Echo is equipped
-        return PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.GetActiveEcho() != null;
+
+        PlayerInventoryCore inventory = PlayerInventoryCore.Instance;
+        const int magicEchoSlot = 3;
+        return inventory != null &&
+               inventory.EquippedEchoes != null &&
+               inventory.EquippedEchoes.Count > magicEchoSlot &&
+               inventory.EquippedEchoes[magicEchoSlot] is EchoData;
     }
 
     // HandleSlotsChanged and lastKnownSlots removed because max HP drops no longer lock styles.

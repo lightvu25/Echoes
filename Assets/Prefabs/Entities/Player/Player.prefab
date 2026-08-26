@@ -526,7 +526,7 @@ Transform:
   m_GameObject: {fileID: 2959216318161959495}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.245, y: 0.669, z: 0}
+  m_LocalPosition: {x: 0, y: 0.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -941,6 +941,7 @@ Transform:
   - {fileID: 276468792314969661}
   - {fileID: 1461033513103038922}
   - {fileID: 813186762606994151}
+  - {fileID: 6735295688415118933}
   - {fileID: 4879227737477029644}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1007,11 +1008,100 @@ MonoBehaviour:
   _fromWallCheckPoint: {fileID: 714831941252237669}
   _backWallCheckPoint: {fileID: 9025940126129848484}
   _wallCheckSize: {x: 0.1, y: 0.55}
+  wallContactSkin: 0.01
+  wallContactProbeDistance: 0.04
+  wallStickSpeed: 1
   _ledgeCheck: {fileID: 276468792314969661}
   _ledgeCheckSize: {x: 0.2, y: 0.1}
-  _ledgeClimbXOffset: 1
-  _ledgeClimbYOffset: 1
-  ledgeGrabDuration: 0.5
+  _ledgeClimbXOffset: 0.5
+  _ledgeClimbYOffset: 0.8
+  ledgeWallProbeDistance: 0.25
+  ledgeHangTopOverlap: 0.15
+  ledgeClimbDuration: 0.35
+  ledgeClimbVerticalCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.15
+      value: 0.02
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.72
+      value: 0.9
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  ledgeClimbHorizontalCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.5
+      value: 0.04
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.82
+      value: 0.75
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   climbSpeed: 5
   wallSlideSpeed: 2
   plungeSpeed: 30
@@ -1041,7 +1131,7 @@ MonoBehaviour:
   createDashVFXAtRuntime: 1
   dashTrail: {fileID: 450458859706715263}
   dashParticlePrefab: {fileID: 920153263544687143, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
-  dashParticleLocalOffset: {x: 0, y: 0.55, z: 0}
+  dashParticleLocalOffset: {x: 0, y: 0, z: 0}
   dashColor: {r: 0.2, g: 0.85, b: 1, a: 1}
   dashGlowIntensity: 2.5
   dashTrailTime: 0.16
@@ -1049,6 +1139,7 @@ MonoBehaviour:
   dashParticleSpacing: 0.28
   dashParticleLifetime: 0.22
   _animator: {fileID: 3062941063228376607}
+  ledgeAnimationBlendDuration: 0.04
 --- !u!114 &2109381415123505367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1693,7 +1784,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 195113763
-  m_SortingLayer: 11
+  m_SortingLayer: 12
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7631889286582480796, guid: fa5ab1ee79322864f847ddcec6c923ab, type: 3}
@@ -2200,6 +2291,68 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1001 &1034844444909005370
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7498288892048211967}
+    m_Modifications:
+    - target: {fileID: 1508631362116025152, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_Name
+      value: Particle Dash
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+--- !u!4 &6735295688415118933 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5990933420562345071, guid: 4c94cb5bffa4954409b9085c25d0fbe4, type: 3}
+  m_PrefabInstance: {fileID: 1034844444909005370}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4778874864487365688
 PrefabInstance:
   m_ObjectHideFlags: 0

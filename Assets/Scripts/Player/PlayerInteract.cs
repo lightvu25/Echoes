@@ -140,6 +140,14 @@ public class PlayerInteract : MonoBehaviour
 
     private void HandleInteract()
     {
+        // Dialogue owns the interaction button while it is open: first press
+        // completes the typewriter, then advances pages and lines.
+        if (DialogueController.Instance != null && DialogueController.Instance.IsDialogueActive)
+        {
+            DialogueController.Instance.Advance();
+            return;
+        }
+
         if (UIManager.Instance != null && UIManager.Instance.IsAnyPanelOpen)
         {
             UIManager.Instance.CloseCurrentPanel();

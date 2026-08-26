@@ -5,8 +5,11 @@ using UnityEngine;
 
 public class MeleeAttack : MonoBehaviour, IEnemyAttack
 {
+    public delegate void BeforeDamageAppliedHandler(IDamageable target, ref DamageInfo damageInfo);
+
     public event EventHandler OnAttackStarted;
     public event EventHandler OnAttackFinished;
+    public event BeforeDamageAppliedHandler OnBeforeDamageApplied;
 
     [SerializeField] private EnemyData data;
     [SerializeField] private float activeTime = 0.1f;
@@ -128,6 +131,7 @@ public class MeleeAttack : MonoBehaviour, IEnemyAttack
             isCritical = false
         };
 
+        OnBeforeDamageApplied?.Invoke(target, ref damageInfo);
         target.TakeDamage(damageInfo);
     }
 

@@ -225,7 +225,8 @@ public class AttackHitbox : MonoBehaviour
             damageInfo,
             appliedDamage);
 
-        InvokeOnHitTarget(target, damageInfo, finalDamage);
+        if (appliedDamage > 0)
+            InvokeOnHitTarget(target, damageInfo, appliedDamage);
     }
 
     public void InvokeBeforeDamageApplied(IDamageable target, ref DamageInfo info)
@@ -235,9 +236,16 @@ public class AttackHitbox : MonoBehaviour
 
     public void InvokeOnHitTarget(IDamageable target, DamageInfo info, int finalDamage)
     {
-        if (info.activeEcho != null && info.activeEcho.hitImpactPrefab != null && target != null)
+        if (info.activeEcho != null && target != null)
         {
-            ObjectPoolManager.SpawnObject(info.activeEcho.hitImpactPrefab, target.Transform.position, Quaternion.identity, ObjectPoolManager.PoolType.ParticleSystem);
+            if (info.activeEcho.hitImpactPrefab != null)
+            {
+                ObjectPoolManager.SpawnObject(info.activeEcho.hitImpactPrefab, target.Transform.position, Quaternion.identity, ObjectPoolManager.PoolType.ParticleSystem);
+            }
+
+            // This method is reached only after accepted damage, keeping the
+            // Echo hit sound synchronized with its impact VFX.
+            EchoAudioFeedback.Play(info.activeEcho, EchoAudioMoment.Hit);
         }
 
         OnHitTarget?.Invoke(this, new HitEventArgs { target = target, damageInfo = info, finalDamage = finalDamage });

@@ -87,6 +87,7 @@
     <Compile Include="Assets\Scripts\Manager\System\CutsceneLockPlayer.cs" />
     <Compile Include="Assets\Scripts\Manager\System\SceneLoader.cs" />
     <Compile Include="Assets\Scripts\UI\MapIntroUI.cs" />
+    <Compile Include="Assets\Scripts\Dialogue\DialogueBubbleSizing.cs" />
     <Compile Include="Assets\Scripts\Manager\System\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Animation\AwareIconAnimation.cs" />
     <Compile Include="Assets\Scripts\Player\FallDamageHandler.cs" />
@@ -172,7 +173,9 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerVisual.cs" />
+    <Compile Include="Assets\Scripts\Dialogue\DialogueBubbleView.cs" />
     <Compile Include="Assets\Scripts\Core\Mechanics\Relics\ShatteredMemoryRelic.cs" />
+    <Compile Include="Assets\Scripts\Audio\EchoAudioFeedback.cs" />
     <Compile Include="Assets\Scripts\UI\UIDragHandler.cs" />
     <Compile Include="Assets\Scripts\Core Gameplay\TimeRewind.cs" />
     <Compile Include="Assets\Scripts\Manager\System\MinimapTileFog.cs" />
@@ -180,6 +183,7 @@
     <Compile Include="Assets\Scripts\Core\Mechanics\Other\TeleportManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Interactables\ShopRoomManager.cs" />
+    <Compile Include="Assets\Scripts\Dialogue\DialogueSequenceCursor.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyEvolutionModifier.cs" />
     <Compile Include="Assets\Scripts\Combat System\SpriteColorFlasher.cs" />
     <Compile Include="Assets\Scripts\Data\RelicRecipe.cs" />
@@ -200,6 +204,7 @@
     <Compile Include="Assets\Scripts\Core\Mechanics\EchoModifiers\FusionCombatUtility.cs" />
     <Compile Include="Assets\Scripts\Core\Mechanics\Relics\RareRelicStrategies.cs" />
     <Compile Include="Assets\Scripts\Player\InventoryManager.cs" />
+    <Compile Include="Assets\Scripts\Dialogue\DialogueConversation.cs" />
     <Compile Include="Assets\Scripts\Data\MindNodeModifierData.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
@@ -234,6 +239,7 @@
     <Compile Include="Assets\Scripts\Manager\Gameplay\BuffSelectionManager.cs" />
     <Compile Include="Assets\Scripts\UI\UIAudioHandler.cs" />
     <Compile Include="Assets\Scripts\Audio\EntityAudioManager.cs" />
+    <Compile Include="Assets\Scripts\Dialogue\DialogueInteractable.cs" />
     <Compile Include="Assets\Scripts\Manager\System\GameInput.cs" />
     <Compile Include="Assets\Scripts\Visual\ItemAura.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInventoryCore.cs" />
@@ -259,6 +265,7 @@
     <Compile Include="Assets\Scripts\Enemy\EvolutionTierData.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleEPOOutline.cs" />
     <Compile Include="Assets\Scripts\Core\Mechanics\Relics\UniversalRelicEffect.cs" />
+    <Compile Include="Assets\Scripts\Dialogue\DialogueController.cs" />
     <Compile Include="Assets\Scripts\Core\Mechanics\Relics\IRelicEffect.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyDrop.cs" />
     <Compile Include="Assets\Scripts\VFX\BackgroundCometRain.cs" />
@@ -304,6 +311,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
     <Compile Include="Assets\Scripts\Enemy\Projectile.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
+    <Compile Include="Assets\Scripts\Enemy\KineticEliteDuelist.cs" />
     <Compile Include="Assets\Scripts\UI\MemorySlot.cs" />
     <Compile Include="Assets\Scripts\Animation\InteractiveIconAnimation.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyVisual.cs" />
@@ -311,6 +319,7 @@
     <Compile Include="Assets\Scripts\Enemy\TrainingDummy.cs" />
     <Compile Include="Assets\Scripts\Interactables\Runestone.cs" />
     <Compile Include="Assets\Scripts\UI\Tooltip\UITooltipTrigger.cs" />
+    <Compile Include="Assets\Scripts\Mind\MindPlayerLineTrail.cs" />
     <Compile Include="Assets\Scripts\Data\RunData.cs" />
     <Compile Include="Assets\Scripts\Enemy\LootSpawner.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemySensor.cs" />
@@ -335,6 +344,7 @@
     <Compile Include="Assets\Scripts\Debug\DebugAddCurrency.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleUtils.cs" />
     <Compile Include="Assets\Scripts\Data\InputConfig.cs" />
+    <Compile Include="Assets\Scripts\Dialogue\DialogueSpeaker.cs" />
     <Compile Include="Assets\Scripts\Manager\System\MinimapPixelSnapper.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerEventBus.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyBrain.cs" />

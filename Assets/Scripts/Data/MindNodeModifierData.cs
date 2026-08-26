@@ -15,6 +15,21 @@ public class MindNodeModifierData : ScriptableObject
     public float bonusEchoChance = 0f;
 
 
+    [Header("Featured Items")]
+    [Tooltip("When enabled, this node boosts a small set of named items instead of the whole reward category.")]
+    public bool useFeaturedItemBoost = false;
+
+    [Tooltip("Catalog used to roll the named items shown by this node.")]
+    [SerializeField] private RunItemCatalog featuredItemCatalog;
+
+    [Min(1)] public int minFeaturedItems = 2;
+    [Min(1)] public int maxFeaturedItems = 3;
+
+    [Min(1f)]
+    [Tooltip("Selection weight applied to each featured item. 3 means it is three times as likely as a normal item in the same pool.")]
+    public float featuredItemWeightMultiplier = 3f;
+
+    public RunItemCatalog FeaturedItemCatalog => featuredItemCatalog;
 
     [Header("Risks")]
     [Tooltip("Flat amount of Magic Toxicity added immediately upon accepting this node.")]
@@ -25,4 +40,31 @@ public class MindNodeModifierData : ScriptableObject
 
     [Tooltip("List of special Elite enemies injected into the spawn pool for the next level.")]
     public List<string> addedEliteEnemyTypes = new List<string>();
+
+    public List<ItemBaseData> RollFeaturedItems(ItemCategory category)
+    {
+        var candidates = new List<ItemBaseData>();
+        if (!useFeaturedItemBoost || featuredItemCatalog == null) return candidates;
+
+        foreach (ItemBaseData item in featuredItemCatalog.Items)
+        {
+            if (item == null || item.Category != category || string.IsNullOrWhiteSpace(item.itemID)) continue;
+            candidates.Add(item);
+        }
+
+        int minimum = Mathf.Max(1, minFeaturedItems);
+        int maximum = Mathf.Max(minimum, maxFeaturedItems);
+        int count = Mathf.Min(candidates.Count, Random.Range(minimum, maximum + 1));
+
+        for (int i = 0; i < count; i++)
+        {
+            int swapIndex = Random.Range(i, candidates.Count);
+            (candidates[i], candidates[swapIndex]) = (candidates[swapIndex], candidates[i]);
+        }
+
+        if (candidates.Count > count)
+            candidates.RemoveRange(count, candidates.Count - count);
+
+        return candidates;
+    }
 }

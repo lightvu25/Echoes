@@ -28,6 +28,9 @@ public class MindPathManager : MonoBehaviour
     {
         if (_instance != null && _instance != this) { Destroy(gameObject); return; }
         _instance = this;
+
+        // Featured choices affect only the level selected during this Mind World visit.
+        GameSession.Instance?.currentRun?.ClearFeaturedLoot();
     }
 
     /// <summary>
@@ -47,6 +50,12 @@ public class MindPathManager : MonoBehaviour
 
         RunData run = GameSession.Instance.currentRun;
 
+        if (data.useFeaturedItemBoost && node.TryGetRewardCategory(out ItemCategory featuredCategory))
+        {
+            node.EnsureFeaturedItems();
+            run.SetFeaturedLoot(featuredCategory, node.FeaturedItems, data.featuredItemWeightMultiplier);
+        }
+
         if (node.nodeType == NodeType.Relic)
         {
             run.minGuaranteedRelics += Random.Range(1, 3);
@@ -61,9 +70,12 @@ public class MindPathManager : MonoBehaviour
         }
 
         // Apply Rewards
-        run.bonusRelicChance += data.bonusRelicChance;
-        run.bonusEquipmentChance += data.bonusEquipmentChance;
-        run.bonusEchoChance += data.bonusEchoChance;
+        if (!data.useFeaturedItemBoost)
+        {
+            run.bonusRelicChance += data.bonusRelicChance;
+            run.bonusEquipmentChance += data.bonusEquipmentChance;
+            run.bonusEchoChance += data.bonusEchoChance;
+        }
 
         // Apply Risks
         run.magicToxicity += data.magicToxicityIncrease;

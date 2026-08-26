@@ -1,9 +1,12 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Serialization;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private static readonly WaitForFixedUpdate WaitForPhysicsStep = new WaitForFixedUpdate();
+
     public event EventHandler OnIdle;
     public event EventHandler OnJump;
     public event EventHandler OnLand;
@@ -98,6 +101,13 @@ public class PlayerMovement : MonoBehaviour
 
     private bool _canLedgeGrab = true;
     private bool _ledgeCoroutineRunning = false;
+    private bool _ledgeTransitioning;
+    private int _activeWallDirection;
+    private int _ledgeWallDirection;
+    private float _ledgeWallSurfaceX;
+    private float _ledgeTopY;
+    private readonly RaycastHit2D[] _wallCastHits = new RaycastHit2D[4];
+    private ContactFilter2D _wallContactFilter;
 
     public bool isGrounded => LastOnGroundTime > 0;
     public bool isRunning => Mathf.Abs(rb.linearVelocity.x) > 0.1f && isGrounded;
@@ -115,12 +125,37 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform _backWallCheckPoint;
     [SerializeField] private Vector2   _wallCheckSize = new Vector2(0.5f, 1f);
 
+    [Header("Wall Contact")]
+    [Tooltip("Small separation retained between the player collider and wall to keep Physics2D contacts stable.")]
+    [SerializeField, Min(0.001f)] private float wallContactSkin = 0.01f;
+    [Tooltip("Maximum collider-to-wall distance at which wall slide may begin.")]
+    [SerializeField, Min(0.01f)] private float wallContactProbeDistance = 0.04f;
+    [Tooltip("Gentle inward speed that keeps the player attached while sliding.")]
+    [SerializeField, Min(0f)] private float wallStickSpeed = 1f;
+
     [Header("Ledge Climb")]
     [SerializeField] private Transform _ledgeCheck;
     [SerializeField] private Vector2   _ledgeCheckSize = new Vector2(0.5f, 0.1f);
     [SerializeField] private float     _ledgeClimbXOffset = 0.5f;
     [SerializeField] private float     _ledgeClimbYOffset = 1f;
-    [SerializeField] private float     ledgeGrabDuration = 0.5f;
+    [Tooltip("How far the player collider may search for the wall when beginning a ledge grab.")]
+    [SerializeField, Min(0.05f)] private float ledgeWallProbeDistance = 0.25f;
+    [Tooltip("How far the collider top overlaps above the ledge while hanging.")]
+    [SerializeField, Min(0f)] private float ledgeHangTopOverlap = 0.15f;
+    [FormerlySerializedAs("ledgeGrabDuration")]
+    [SerializeField, Min(0.05f)] private float ledgeClimbDuration = 0.35f;
+    [Tooltip("Moves the body upward first so its collider clears the ledge before moving onto it.")]
+    [SerializeField] private AnimationCurve ledgeClimbVerticalCurve = new AnimationCurve(
+        new Keyframe(0f, 0f),
+        new Keyframe(0.15f, 0.02f),
+        new Keyframe(0.72f, 0.9f),
+        new Keyframe(1f, 1f));
+    [Tooltip("Delays most horizontal movement until the body is above the ledge.")]
+    [SerializeField] private AnimationCurve ledgeClimbHorizontalCurve = new AnimationCurve(
+        new Keyframe(0f, 0f),
+        new Keyframe(0.5f, 0.04f),
+        new Keyframe(0.82f, 0.75f),
+        new Keyframe(1f, 1f));
 
     [Header("Climbing")]
     [SerializeField] private float climbSpeed = 5f;
@@ -150,6 +185,10 @@ public class PlayerMovement : MonoBehaviour
         _fallDamageHandler = GetComponent<FallDamageHandler>();
         audioManager = GetComponentInChildren<EntityAudioManager>();
         _defaultLinearDrag = rb.linearDamping;
+
+        _wallContactFilter = new ContactFilter2D();
+        _wallContactFilter.SetLayerMask(_wallLayer);
+        _wallContactFilter.useTriggers = false;
     }
 
     private void Start()
@@ -424,10 +463,14 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(nameof(StartDash), _lastDashDir);
         }
 
-        if (CanSlide() && ((LastOnWallLeftTime > 0 && _moveInput.x < 0) || (LastOnWallRightTime > 0 && _moveInput.x > 0)))
-            isSliding = true;
-        else
-            isSliding = false;
+        int requestedWallDirection = _moveInput.x > 0.1f ? 1 : _moveInput.x < -0.1f ? -1 : 0;
+        bool hasWallContact = requestedWallDirection != 0
+            && TryGetWallHit(requestedWallDirection, wallContactProbeDistance, out _);
+        bool inputTargetsDetectedWall = (requestedWallDirection < 0 && LastOnWallLeftTime > 0)
+            || (requestedWallDirection > 0 && LastOnWallRightTime > 0);
+
+        isSliding = CanSlide() && hasWallContact && inputTargetsDetectedWall;
+        _activeWallDirection = isSliding ? requestedWallDirection : 0;
 
         if (!_isDashAttacking)
         {
@@ -528,6 +571,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (isLedgeGrabbing)
         {
+            if (!_ledgeTransitioning)
+            {
+                MaintainLedgeHangPosition();
+            }
+
             rb.linearVelocity = Vector2.zero;
             return;
         }
@@ -540,7 +588,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (isSliding)
         {
-            rb.linearVelocity = new Vector2(0f, -wallSlideSpeed);
+            MaintainWallSlideContact();
             return;
         }
 
@@ -879,21 +927,32 @@ public class PlayerMovement : MonoBehaviour
     {
         bool chestHitsWall = fromWall;
         bool headClear     = _ledgeCheck != null && !Physics2D.OverlapBox(_ledgeCheck.position, _ledgeCheckSize, 0f, _wallLayer);
-        bool isFacingWall  = (fromWall && isFacingRight) || (fromWall && !isFacingRight);
+        int directionX = isFacingRight ? 1 : -1;
+        bool hasColliderWall = TryGetWallHit(directionX, ledgeWallProbeDistance, out RaycastHit2D colliderWallHit);
 
-        if (chestHitsWall && headClear && isFacingWall && !_ledgeCoroutineRunning && fromHit.collider != null)
+        if (chestHitsWall && headClear && hasColliderWall && !_ledgeCoroutineRunning && fromHit.collider != null)
         {
-            float directionX = isFacingRight ? 1f : -1f;
-            Vector2 rayOrigin = new Vector2(fromHit.point.x + (directionX * 0.15f), _ledgeCheck.position.y + 0.5f);
+            float wallSurfaceX = colliderWallHit.point.x;
+            Vector2 rayOrigin = new Vector2(wallSurfaceX + (directionX * 0.15f), _ledgeCheck.position.y + 0.5f);
 
             RaycastHit2D ledgeTopHit = Physics2D.Raycast(rayOrigin, Vector2.down, 1.0f, _wallLayer);
 
             if (ledgeTopHit.collider != null)
             {
-                Vector2 ledgeCorner = new Vector2(fromHit.point.x, ledgeTopHit.point.y);
-                float hangX = transform.position.x;
-                float hangY = ledgeCorner.y - 0.55f; 
-                Vector2 targetHangPos = new Vector2(hangX, hangY);
+                _ledgeWallDirection = directionX;
+                _ledgeWallSurfaceX = wallSurfaceX;
+                _ledgeTopY = ledgeTopHit.point.y;
+
+                Vector2 targetHangPos = playerCollider != null
+                    ? PlayerWallGeometry.CalculateHangPosition(
+                        rb.position,
+                        playerCollider.bounds,
+                        _ledgeWallSurfaceX,
+                        _ledgeTopY,
+                        _ledgeWallDirection,
+                        wallContactSkin,
+                        ledgeHangTopOverlap)
+                    : new Vector2(transform.position.x, _ledgeTopY - 0.55f);
 
                 StartLedgeGrab(targetHangPos);
             }
@@ -910,6 +969,7 @@ public class PlayerMovement : MonoBehaviour
         isLedgeGrabbing = true;
         _canLedgeGrab = false;
         _ledgeCoroutineRunning = true;
+        _ledgeTransitioning = true;
         
         rb.linearVelocity = Vector2.zero;
         SetGravityScale(0);
@@ -921,25 +981,31 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator SmoothMoveToHang(Vector2 targetPos)
     {
-        float duration = 0.08f; 
+        const float duration = 0.08f;
         float timer = 0f;
-        Vector2 startPos = transform.position;
+        Vector2 startPos = rb.position;
 
         while (timer < duration)
         {
-            timer += Time.deltaTime;
-            float t = timer / duration;
-            transform.position = Vector2.Lerp(startPos, targetPos, t);
-            yield return null;
+            yield return WaitForPhysicsStep;
+
+            timer = Mathf.Min(timer + Time.fixedDeltaTime, duration);
+            float t = Mathf.SmoothStep(0f, 1f, timer / duration);
+            rb.MovePosition(Vector2.LerpUnclamped(startPos, targetPos, t));
         }
 
-        transform.position = targetPos;
+        yield return WaitForPhysicsStep;
+        rb.position = targetPos;
+        rb.linearVelocity = Vector2.zero;
+        _ledgeTransitioning = false;
         StartCoroutine(WaitForLedgeInput());
     }
 
     private IEnumerator WaitForLedgeInput()
     {
-        float directionX = isFacingRight ? 1f : -1f;
+        float directionX = _ledgeWallDirection != 0
+            ? _ledgeWallDirection
+            : (isFacingRight ? 1f : -1f);
         
         while (isLedgeGrabbing)
         {
@@ -964,34 +1030,60 @@ public class PlayerMovement : MonoBehaviour
     private void BeginClimb()
     {
         OnGetup?.Invoke(this, EventArgs.Empty);
-        
-        float xDir = isFacingRight ? _ledgeClimbXOffset : -_ledgeClimbXOffset;
-        Vector2 targetClimbPos = transform.position + new Vector3(xDir, _ledgeClimbYOffset, 0f);
+
+        _ledgeTransitioning = true;
+        int directionX = _ledgeWallDirection != 0
+            ? _ledgeWallDirection
+            : (isFacingRight ? 1 : -1);
+        Vector2 targetClimbPos = playerCollider != null && _ledgeWallDirection != 0
+            ? PlayerWallGeometry.CalculateClimbPosition(
+                rb.position,
+                playerCollider.bounds,
+                _ledgeWallSurfaceX,
+                _ledgeTopY,
+                directionX,
+                wallContactSkin)
+            : rb.position + new Vector2(directionX * _ledgeClimbXOffset, _ledgeClimbYOffset);
 
         StartCoroutine(SmoothClimb(targetClimbPos));
     }
 
     private IEnumerator SmoothClimb(Vector2 targetPos)
     {
-        float duration = ledgeGrabDuration; 
+        float duration = Mathf.Max(0.05f, ledgeClimbDuration);
         float timer = 0f;
-        Vector2 startPos = transform.position;
-
-        yield return new WaitForSeconds(0.1f); // Brief pause to sync with animation pulling up
-        duration -= 0.1f;
+        Vector2 startPos = rb.position;
 
         while (timer < duration)
         {
-            timer += Time.deltaTime;
-            float t = timer / duration;
-            t = t * t * (3f - 2f * t); 
-            
-            transform.position = Vector2.Lerp(startPos, targetPos, t);
-            yield return null;
+            yield return WaitForPhysicsStep;
+
+            timer = Mathf.Min(timer + Time.fixedDeltaTime, duration);
+            float normalizedTime = timer / duration;
+            float horizontalProgress = EvaluateLedgeCurve(ledgeClimbHorizontalCurve, normalizedTime);
+            float verticalProgress = EvaluateLedgeCurve(ledgeClimbVerticalCurve, normalizedTime);
+
+            Vector2 nextPosition = new Vector2(
+                Mathf.LerpUnclamped(startPos.x, targetPos.x, horizontalProgress),
+                Mathf.LerpUnclamped(startPos.y, targetPos.y, verticalProgress));
+
+            rb.MovePosition(nextPosition);
         }
 
-        transform.position = targetPos;
+        yield return WaitForPhysicsStep;
+        rb.position = targetPos;
+        rb.linearVelocity = Vector2.zero;
         FinishClimb();
+    }
+
+    private static float EvaluateLedgeCurve(AnimationCurve curve, float normalizedTime)
+    {
+        if (curve == null || curve.length == 0)
+        {
+            return Mathf.SmoothStep(0f, 1f, normalizedTime);
+        }
+
+        return Mathf.Clamp01(curve.Evaluate(normalizedTime));
     }
 
     private void FinishClimb()
@@ -1002,8 +1094,84 @@ public class PlayerMovement : MonoBehaviour
     private void ExitLedgeGrab()
     {
         isLedgeGrabbing = false;
+        _ledgeTransitioning = false;
+        _ledgeWallDirection = 0;
         SetGravityScale(Data.gravityScale);
         StartCoroutine(ResetLedgeGrabCooldown());
+    }
+
+    private bool TryGetWallHit(int direction, float maxDistance, out RaycastHit2D closestHit)
+    {
+        closestHit = default;
+        if (playerCollider == null || direction == 0)
+        {
+            return false;
+        }
+
+        Vector2 castDirection = Vector2.right * direction;
+        int hitCount = playerCollider.Cast(
+            castDirection,
+            _wallContactFilter,
+            _wallCastHits,
+            Mathf.Max(0.001f, maxDistance));
+        float closestDistance = float.PositiveInfinity;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit2D hit = _wallCastHits[i];
+            if (hit.collider == null || Vector2.Dot(hit.normal, castDirection) > -0.5f)
+            {
+                continue;
+            }
+
+            if (hit.distance < closestDistance)
+            {
+                closestDistance = hit.distance;
+                closestHit = hit;
+            }
+        }
+
+        return closestHit.collider != null;
+    }
+
+    private void MaintainWallSlideContact()
+    {
+        int direction = _activeWallDirection != 0
+            ? _activeWallDirection
+            : (_moveInput.x >= 0f ? 1 : -1);
+
+        if (TryGetWallHit(direction, wallContactProbeDistance, out RaycastHit2D wallHit))
+        {
+            float correction = Mathf.Max(0f, wallHit.distance - wallContactSkin);
+            if (correction > 0f)
+            {
+                rb.position += Vector2.right * (direction * correction);
+            }
+
+            rb.linearVelocity = new Vector2(direction * wallStickSpeed, -wallSlideSpeed);
+            return;
+        }
+
+        isSliding = false;
+        _activeWallDirection = 0;
+    }
+
+    private void MaintainLedgeHangPosition()
+    {
+        if (playerCollider == null || _ledgeWallDirection == 0)
+        {
+            return;
+        }
+
+        Vector2 alignedPosition = PlayerWallGeometry.CalculateHangPosition(
+            rb.position,
+            playerCollider.bounds,
+            _ledgeWallSurfaceX,
+            _ledgeTopY,
+            _ledgeWallDirection,
+            wallContactSkin,
+            ledgeHangTopOverlap);
+        rb.position = alignedPosition;
     }
 
     private IEnumerator ResetLedgeGrabCooldown()
@@ -1074,5 +1242,50 @@ public class PlayerMovement : MonoBehaviour
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireCube(_ledgeCheck.position, _ledgeCheckSize);
         }
+    }
+}
+
+public static class PlayerWallGeometry
+{
+    public static Vector2 CalculateHangPosition(
+        Vector2 bodyPosition,
+        Bounds colliderBounds,
+        float wallSurfaceX,
+        float ledgeTopY,
+        int wallDirection,
+        float contactSkin,
+        float topOverlap)
+    {
+        int direction = wallDirection >= 0 ? 1 : -1;
+        float skin = Mathf.Max(0f, contactSkin);
+        float overlap = Mathf.Max(0f, topOverlap);
+        float facingExtent = direction > 0
+            ? colliderBounds.max.x - bodyPosition.x
+            : bodyPosition.x - colliderBounds.min.x;
+        float topExtent = colliderBounds.max.y - bodyPosition.y;
+
+        return new Vector2(
+            wallSurfaceX - direction * (facingExtent + skin),
+            ledgeTopY - topExtent + overlap);
+    }
+
+    public static Vector2 CalculateClimbPosition(
+        Vector2 bodyPosition,
+        Bounds colliderBounds,
+        float wallSurfaceX,
+        float ledgeTopY,
+        int wallDirection,
+        float contactSkin)
+    {
+        int direction = wallDirection >= 0 ? 1 : -1;
+        float skin = Mathf.Max(0f, contactSkin);
+        float trailingExtent = direction > 0
+            ? bodyPosition.x - colliderBounds.min.x
+            : colliderBounds.max.x - bodyPosition.x;
+        float bottomExtent = bodyPosition.y - colliderBounds.min.y;
+
+        return new Vector2(
+            wallSurfaceX + direction * (trailingExtent + skin),
+            ledgeTopY + bottomExtent + skin);
     }
 }

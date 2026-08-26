@@ -19,6 +19,8 @@ public class RunTransitionPersistenceTests
             equippedRelicIds = new List<string> { "StalactiteHeart" },
             equippedToolIds = new List<string> { "ADRENALINE_VIAL" }
         };
+        run.featuredRelicIds.Add("relic-featured");
+        run.featuredItemWeightMultiplier = 3f;
 
         RunData restored = JsonUtility.FromJson<RunData>(JsonUtility.ToJson(run));
 
@@ -29,6 +31,8 @@ public class RunTransitionPersistenceTests
         CollectionAssert.AreEqual(run.equippedEchoIds, restored.equippedEchoIds);
         CollectionAssert.AreEqual(run.equippedRelicIds, restored.equippedRelicIds);
         CollectionAssert.AreEqual(run.equippedToolIds, restored.equippedToolIds);
+        CollectionAssert.AreEqual(run.featuredRelicIds, restored.featuredRelicIds);
+        Assert.AreEqual(3f, restored.featuredItemWeightMultiplier);
     }
 
     [Test]

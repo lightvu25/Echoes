@@ -28,6 +28,9 @@ public class PlayerVisual : MonoBehaviour
     [Header("Components")]
     [SerializeField] private Animator _animator;
 
+    [Header("Ledge Animation")]
+    [SerializeField, Min(0f)] private float ledgeAnimationBlendDuration = 0.04f;
+
     private PlayerMovement playerMovement;
     private PlayerInteract playerInteract;
     private PlayerAttack playerAttack;
@@ -430,12 +433,12 @@ public class PlayerVisual : MonoBehaviour
 
     private void HandleLedgeGrab(object sender, EventArgs e)
     {
-        _animator.Play("Ledge grab"); 
+        _animator.CrossFadeInFixedTime("Ledge grab", ledgeAnimationBlendDuration, 0, 0f);
     }
 
     private void HandleLedgeClimb(object sender, EventArgs e)
     {
-        _animator.Play("Ledge Climb");
+        _animator.CrossFadeInFixedTime("Ledge Climb", ledgeAnimationBlendDuration, 0, 0f);
     }
 
     private void HandleAttack(object sender, EventArgs e)

@@ -11,5 +11,6 @@ public enum UIPanelType
     Pause,
     Map,
     MindNode,
-    MindNodeSelection
+    MindNodeSelection,
+    Dialogue
 }

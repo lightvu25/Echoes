@@ -16,6 +16,11 @@ MonoBehaviour:
   bonusEquipmentChance: 0
   bonusEchoChance: 0.5
   bonusToolChance: 0
+  useFeaturedItemBoost: 1
+  featuredItemCatalog: {fileID: 11400000, guid: 3ad0ac9a2c3d47e597885a3af89af1c7, type: 2}
+  minFeaturedItems: 2
+  maxFeaturedItems: 3
+  featuredItemWeightMultiplier: 3
   magicToxicityIncrease: 10
   enemyDensityMultiplier: 1.2
   addedEliteEnemyTypes: []

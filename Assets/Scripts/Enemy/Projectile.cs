@@ -162,8 +162,16 @@ public class Projectile : MonoBehaviour
                         handledByPlayer = true;
                         pa.CurrentAttackHitbox.InvokeBeforeDamageApplied(target, ref info);
                         int finalDamage = DamageCalculator.CalculateFinalDamage(info, target.Defense);
+                        HealthSystem targetHealth = target.Transform != null
+                            ? target.Transform.GetComponentInParent<HealthSystem>()
+                            : null;
+                        int hpBeforeHit = targetHealth != null ? targetHealth.CurrentHP : -1;
                         target.TakeDamage(info);
-                        pa.CurrentAttackHitbox.InvokeOnHitTarget(target, info, finalDamage);
+                        int appliedDamage = targetHealth != null
+                            ? Mathf.Max(0, hpBeforeHit - targetHealth.CurrentHP)
+                            : finalDamage;
+                        if (appliedDamage > 0)
+                            pa.CurrentAttackHitbox.InvokeOnHitTarget(target, info, appliedDamage);
                     }
                 }
                 

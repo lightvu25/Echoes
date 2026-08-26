@@ -109,6 +109,13 @@ public class PlayerAttack : MonoBehaviour
     private Vector2 pendingHitboxOffset;
     private PlaystyleType pendingStyleType;
     private GameObject pendingProjectilePrefab;
+    private float pendingMagicAoERadius;
+    private float pendingMagicCastDistance;
+    private GameObject pendingMagicAoEPrefab;
+    private EchoData pendingMagicEcho;
+
+    private readonly Collider2D[] magicHitResults = new Collider2D[64];
+    private readonly System.Collections.Generic.HashSet<IDamageable> magicHitTargets = new System.Collections.Generic.HashSet<IDamageable>();
     
     private System.Collections.Generic.HashSet<IDamageable> hitDuringPlunge = new System.Collections.Generic.HashSet<IDamageable>();
 
@@ -347,10 +354,27 @@ public class PlayerAttack : MonoBehaviour
                 TriggerHitbox();
             }
         }
-        else if (styleType == PlaystyleType.Magic && pData.magicAoEPrefab != null)
+        else if (styleType == PlaystyleType.Magic)
         {
-            Instantiate(pData.magicAoEPrefab, transform.position, Quaternion.identity);
-            SpawnComboVFX();
+            pendingHitboxConfigured = false;
+            pendingDamage = damageToPass;
+            pendingProcCoef = procCoef;
+            pendingStyleType = styleType;
+            pendingMagicAoERadius = pData.magicAoERadius;
+            pendingMagicCastDistance = pData.magicCastDistance;
+            pendingMagicAoEPrefab = pData.magicAoEPrefab;
+            pendingMagicEcho = PlayerInventoryCore.Instance != null
+                ? PlayerInventoryCore.Instance.ActiveEcho
+                : null;
+            pendingAttackSequence = currentAttackSequence;
+            pendingOriginAttackType = attType;
+            pendingOriginComboStep = currentComboStep;
+            pendingOriginWasAerial = attType == AttackType.Air;
+
+            // Ground casts release from the Magic animation event. Dash and air
+            // variants use their existing animations, so release immediately.
+            if (attType != AttackType.Basic)
+                TriggerHitbox();
         }
 
         // Wait for the animation to finish instead of a fixed duration
@@ -593,14 +617,151 @@ public class PlayerAttack : MonoBehaviour
             SpawnComboVFX();
             PlayEchoSoundIfNeeded();
         }
+        else if (pendingStyleType == PlaystyleType.Magic)
+        {
+            ExecuteMagicAoE();
+        }
     }
 
-    private void PlayEchoSoundIfNeeded()
+    private void ExecuteMagicAoE()
     {
-        if (audioManager != null && PlayerInventoryCore.Instance != null && PlayerInventoryCore.Instance.ActiveEcho != null)
+        EchoData activeEcho = pendingMagicEcho;
+        if (activeEcho == null) return;
+
+        Vector2 facingDirection = playerMovement != null && playerMovement.isFacingRight
+            ? Vector2.right
+            : Vector2.left;
+        Vector2 origin = firePoint != null
+            ? firePoint.position
+            : (Vector2)transform.position + Vector2.up;
+
+        float castDistance = Mathf.Max(0f, pendingMagicCastDistance);
+        Vector2 burstCenter = origin + facingDirection * castDistance;
+        int blockingLayers = LayerMask.GetMask("Ground", "Wall");
+        if (blockingLayers != 0 && castDistance > 0f)
         {
-            audioManager.PlaySound("Echo Attack");
+            RaycastHit2D wallHit = Physics2D.Raycast(origin, facingDirection, castDistance, blockingLayers);
+            if (wallHit.collider != null)
+                burstCenter = wallHit.point - facingDirection * 0.1f;
         }
+
+        SpawnMagicVFX(burstCenter, facingDirection);
+        PlayEchoSoundIfNeeded(activeEcho);
+
+        LayerMask targetLayers = attackHitbox != null
+            ? attackHitbox.TargetLayers
+            : LayerMask.GetMask("Enemy");
+        float radius = Mathf.Max(0.1f, pendingMagicAoERadius);
+        int hitCount = Physics2D.OverlapCircleNonAlloc(burstCenter, radius, magicHitResults, targetLayers);
+        magicHitTargets.Clear();
+
+        DamageInfo baseDamageInfo = new DamageInfo
+        {
+            baseDamage = pendingDamage,
+            multiplicativeStack = 1f,
+            procCoefficient = pendingProcCoef,
+            attacker = gameObject,
+            damageSource = DamageSourceType.Attack,
+            attackSequenceId = pendingAttackSequence,
+            hasPlayerAttackMetadata = true,
+            originatingAttackType = pendingOriginAttackType,
+            originatingPlaystyle = PlaystyleType.Magic,
+            originatingComboStep = pendingOriginComboStep,
+            originatedInAir = pendingOriginWasAerial,
+            hitFreezeTime = 0.05f,
+            activeEcho = activeEcho,
+            playerLevel = PlayerStats.Instance != null ? PlayerStats.Instance.CurrentLevel : 0,
+            isCritical = false
+        };
+
+        if (healthSystem != null && healthSystem.CombatStats != null &&
+            UnityEngine.Random.value < healthSystem.CombatStats.critChance)
+        {
+            baseDamageInfo.isCritical = true;
+            baseDamageInfo.multiplicativeStack *= healthSystem.CombatStats.critMultiplier;
+        }
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hit = magicHitResults[i];
+            if (hit == null) continue;
+
+            IDamageable target = hit.GetComponentInParent<IDamageable>();
+            if (target == null || target.IsDead || !magicHitTargets.Add(target)) continue;
+
+            DamageInfo damageInfo = baseDamageInfo;
+            Vector2 knockbackDirection = ((Vector2)target.Transform.position - burstCenter).normalized;
+            damageInfo.knockbackDirection = knockbackDirection == Vector2.zero ? facingDirection : knockbackDirection;
+            damageInfo.knockbackForce = 4f;
+
+            if (attackHitbox != null)
+                attackHitbox.InvokeBeforeDamageApplied(target, ref damageInfo);
+            else
+                PlayerEventBus.Instance?.ApplyOutgoingModifiers(target, ref damageInfo);
+
+            int calculatedDamage = DamageCalculator.CalculateFinalDamage(damageInfo, target.Defense);
+            HealthSystem targetHealth = target.Transform != null
+                ? target.Transform.GetComponentInParent<HealthSystem>()
+                : null;
+            int hpBeforeHit = targetHealth != null ? targetHealth.CurrentHP : -1;
+
+            target.TakeDamage(damageInfo);
+
+            int appliedDamage = targetHealth != null
+                ? Mathf.Max(0, hpBeforeHit - targetHealth.CurrentHP)
+                : calculatedDamage;
+            if (appliedDamage <= 0) continue;
+
+            GameFeelManager.Instance?.ProcessHit(
+                gameObject,
+                target.Transform != null ? target.Transform.gameObject : null,
+                damageInfo,
+                appliedDamage);
+
+            if (attackHitbox != null)
+                attackHitbox.InvokeOnHitTarget(target, damageInfo, appliedDamage);
+            else
+                PlayerEventBus.Instance?.FireSuccessfulHit(target, damageInfo, appliedDamage);
+        }
+
+        magicHitTargets.Clear();
+    }
+
+    private void SpawnMagicVFX(Vector2 position, Vector2 facingDirection)
+    {
+        GameObject vfxPrefab = pendingMagicAoEPrefab;
+        if (vfxPrefab == null)
+        {
+            PlaystyleData pData = playstyleManager.GetPlaystyleData(PlaystyleType.Magic);
+            if (pData != null && pData.comboVFXPrefabs != null && pData.comboVFXPrefabs.Length > 0)
+                vfxPrefab = pData.comboVFXPrefabs[0];
+        }
+
+        if (vfxPrefab == null) return;
+
+        GameObject vfx = ObjectPoolManager.SpawnObject(
+            vfxPrefab,
+            position,
+            vfxPrefab.transform.rotation,
+            ObjectPoolManager.PoolType.ParticleSystem);
+        Vector3 scale = vfx.transform.localScale;
+        scale.x = facingDirection.x >= 0f ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+        vfx.transform.localScale = scale;
+    }
+
+    private void PlayEchoSoundIfNeeded(EchoData echoOverride = null)
+    {
+        if (PlayerInventoryCore.Instance == null) return;
+
+        EchoData activeEcho = echoOverride != null
+            ? echoOverride
+            : PlayerInventoryCore.Instance.ActiveEcho;
+        if (activeEcho == null) return;
+
+        // Preserve the existing shared sound while assets are being authored.
+        // Once an Echo has its own attack cue, that cue replaces the fallback.
+        if (!EchoAudioFeedback.Play(activeEcho, EchoAudioMoment.Attack) && audioManager != null)
+            audioManager.PlaySound("Echo Attack");
     }
 
     private void SpawnComboVFX()

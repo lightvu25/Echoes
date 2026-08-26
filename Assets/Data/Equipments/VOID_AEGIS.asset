@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ToolData
   itemID: VOID_AEGIS
   itemName: Void Aegis
-  itemIcon: {fileID: 7519848021948844078, guid: 1b1eb53d9166f1a488e859e22d986614, type: 3}
+  itemIcon: {fileID: 6118153098450713320, guid: 244fbfb58ac7ef0469c94c397b6a3620, type: 3}
   description: Grants complete damage immunity for 3s.
   dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1

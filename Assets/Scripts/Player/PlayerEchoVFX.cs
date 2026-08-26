@@ -12,6 +12,7 @@ public class PlayerEchoVFX : MonoBehaviour
 
     private Dictionary<EchoType, ParticleSystem> instantiatedVFX = new Dictionary<EchoType, ParticleSystem>();
     private EchoType currentActiveType = EchoType.None;
+    private string currentActiveEchoId;
 
     private void Start()
     {
@@ -54,17 +55,26 @@ public class PlayerEchoVFX : MonoBehaviour
     private void UpdateActiveVFX()
     {
         EchoType newType = EchoType.None;
+        EchoData activeEcho = null;
         
         if (PlayerInventoryCore.Instance != null)
         {
-            EchoData activeEcho = PlayerInventoryCore.Instance.GetActiveEcho();
+            activeEcho = PlayerInventoryCore.Instance.GetActiveEcho();
             if (activeEcho != null)
             {
                 newType = activeEcho.echoType;
             }
         }
 
-        if (newType != currentActiveType)
+        string newEchoId = null;
+        if (activeEcho != null)
+        {
+            newEchoId = !string.IsNullOrEmpty(activeEcho.itemID)
+                ? activeEcho.itemID
+                : activeEcho.GetInstanceID().ToString();
+        }
+        bool activeEchoChanged = newEchoId != currentActiveEchoId || newType != currentActiveType;
+        if (activeEchoChanged)
         {
             // Stop and deactivate old
             if (currentActiveType != EchoType.None && instantiatedVFX.ContainsKey(currentActiveType))
@@ -74,6 +84,7 @@ public class PlayerEchoVFX : MonoBehaviour
             }
 
             currentActiveType = newType;
+            currentActiveEchoId = newEchoId;
 
             // Start and activate new
             if (currentActiveType != EchoType.None && instantiatedVFX.ContainsKey(currentActiveType))
@@ -85,6 +96,10 @@ public class PlayerEchoVFX : MonoBehaviour
                     activeVFX.Play();
                 }
             }
+
+            // Audio is data-driven by the exact Echo asset, so Composite
+            // Fusions can sound different even though they share an EchoType.
+            EchoAudioFeedback.Play(activeEcho, EchoAudioMoment.Activation);
         }
     }
 }

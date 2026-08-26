@@ -13,6 +13,9 @@ public class EvolutionManager : MonoBehaviour
     /// <summary>Fired when the evolution tier advances. Carries the new tier data.</summary>
     public event Action<EvolutionTierData> OnTierChanged;
 
+    /// <summary>Fired whenever the current run's defeated-enemy count changes.</summary>
+    public event Action<int> OnKillCountChanged;
+
     /// <summary>Fired when any enemy spots the player (shared vision propagation). Carries spotter position.</summary>
     public event Action<Vector3> OnGlobalAggroTriggered;
 
@@ -77,6 +80,7 @@ public class EvolutionManager : MonoBehaviour
         currentKills = 0;
         currentTierIndex = 0;
         isLocked = false;
+        OnKillCountChanged?.Invoke(currentKills);
 
         // Check if the player has the Forgotten_Hourglass relic — locks evolution at tier 0
         GameObject player = GameObject.FindWithTag("Player");
@@ -102,6 +106,7 @@ public class EvolutionManager : MonoBehaviour
     public void RegisterKill()
     {
         currentKills++;
+        OnKillCountChanged?.Invoke(currentKills);
 
         if (isLocked) return; // Forgotten_Hourglass prevents tier advancement
 

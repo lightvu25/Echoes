@@ -70,17 +70,17 @@ public class ShopManager : MonoBehaviour
         switch (category)
         {
             case ItemCategory.Tool: // Tools
-                return GetAndRemoveRandom(availableTools.Cast<ItemBaseData>().ToList(), minTier, false, null);
+                return GetAndRemoveRandom(availableTools.Cast<ItemBaseData>().ToList(), ItemCategory.Tool, minTier, false, null);
             case ItemCategory.Relic:
-                return GetAndRemoveRandom(availableRelics.Cast<ItemBaseData>().ToList(), minTier, true, relicTierChances);
+                return GetAndRemoveRandom(availableRelics.Cast<ItemBaseData>().ToList(), ItemCategory.Relic, minTier, true, relicTierChances);
             case ItemCategory.Echo:
-                return GetAndRemoveRandom(availableEchoes.Cast<ItemBaseData>().ToList(), minTier, true, echoTierChances);
+                return GetAndRemoveRandom(availableEchoes.Cast<ItemBaseData>().ToList(), ItemCategory.Echo, minTier, true, echoTierChances);
             default:
                 return null;
         }
     }
 
-    private ItemBaseData GetAndRemoveRandom(List<ItemBaseData> pool, int minTier, bool removeFromPool, List<TierChance> tierChances)
+    private ItemBaseData GetAndRemoveRandom(List<ItemBaseData> pool, ItemCategory category, int minTier, bool removeFromPool, List<TierChance> tierChances)
     {
         // First, filter by minTier
         var validItems = pool.Where(item => 
@@ -112,7 +112,7 @@ public class ShopManager : MonoBehaviour
                 
                 if (tierSpecificItems.Count > 0)
                 {
-                    selected = tierSpecificItems[Random.Range(0, tierSpecificItems.Count)];
+                    selected = SelectWithFeaturedWeight(tierSpecificItems, category);
                 }
             }
         }
@@ -120,7 +120,7 @@ public class ShopManager : MonoBehaviour
         // Fallback to random if no tier chances were provided, or if the target tier had no valid items left
         if (selected == null)
         {
-            selected = validItems[Random.Range(0, validItems.Count)];
+            selected = SelectWithFeaturedWeight(validItems, category);
         }
         
         if (removeFromPool)
@@ -130,6 +130,36 @@ public class ShopManager : MonoBehaviour
         }
 
         return selected;
+    }
+
+    public static ItemBaseData SelectWithFeaturedWeight(IReadOnlyList<ItemBaseData> items, ItemCategory category, float normalizedRoll = -1f)
+    {
+        if (items == null || items.Count == 0) return null;
+
+        RunData run = GameSession.Instance?.currentRun;
+        float totalWeight = 0f;
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i] != null)
+                totalWeight += run?.GetFeaturedLootWeight(category, items[i].itemID) ?? 1f;
+        }
+
+        if (totalWeight <= 0f) return null;
+
+        float roll01 = normalizedRoll < 0f ? Random.value : Mathf.Clamp01(normalizedRoll);
+        float roll = roll01 * totalWeight;
+        float cumulative = 0f;
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            ItemBaseData item = items[i];
+            if (item == null) continue;
+
+            cumulative += run?.GetFeaturedLootWeight(category, item.itemID) ?? 1f;
+            if (roll <= cumulative) return item;
+        }
+
+        return items[items.Count - 1];
     }
 
     private int GetItemTier(ItemBaseData item)

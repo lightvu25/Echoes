@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -15,9 +16,70 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
     public Sprite killSprite; // Sprite for No-Hit kills
     public Sprite timeSprite; // Sprite for Speedrun time
 
+    [System.Serializable]
+    private sealed class FeaturedItemSlot
+    {
+        [Tooltip("The complete UI object for this featured-item slot.")]
+        [SerializeField] private GameObject slotRoot;
+        [Tooltip("The Image that displays the relic, Echo, or equipment icon.")]
+        [SerializeField] private Image itemIcon;
+        [Tooltip("Optional item-name text. Leave empty for an icon-only design.")]
+        [SerializeField] private TextMeshProUGUI itemNameText;
+        [Tooltip("Optional appearance-multiplier text, such as 3x.")]
+        [SerializeField] private TextMeshProUGUI appearanceWeightText;
+
+        public void SetVisible(bool visible)
+        {
+            if (slotRoot != null && slotRoot.activeSelf != visible)
+                slotRoot.SetActive(visible);
+        }
+
+        public void Display(ItemBaseData item, float weightMultiplier, Sprite fallbackIcon)
+        {
+            if (item == null) return;
+
+            if (itemIcon != null)
+            {
+                itemIcon.sprite = item.itemIcon != null ? item.itemIcon : fallbackIcon;
+                itemIcon.color = itemIcon.sprite != null
+                    ? Color.white
+                    : new Color(1f, 1f, 1f, 0.15f);
+                itemIcon.preserveAspect = true;
+            }
+
+            if (itemNameText != null)
+            {
+                itemNameText.text = string.IsNullOrWhiteSpace(item.itemName)
+                    ? item.itemID
+                    : item.itemName;
+            }
+
+            if (appearanceWeightText != null)
+                appearanceWeightText.text = $"{weightMultiplier:0.#}×";
+        }
+    }
+
+    [Header("Featured Item Preview")]
+    [Tooltip("Container for the 2-3 featured item slots. The script shows it only for configured Relic, Echo, and Equipment nodes.")]
+    [SerializeField] private GameObject featuredItemPreviewRoot;
+    [Tooltip("Optional legacy featured label. It is hidden at runtime because the node title already identifies the item category.")]
+    [SerializeField] private TextMeshProUGUI featuredItemPreviewHeader;
+    [Tooltip("Assign three manually created UI slots. Unused slots are hidden when only two items are rolled.")]
+    [SerializeField] private FeaturedItemSlot[] featuredItemSlots =
+    {
+        new FeaturedItemSlot(),
+        new FeaturedItemSlot(),
+        new FeaturedItemSlot()
+    };
+
     private MindNode _currentNode;
     private bool _canClaimCurrentNode = false;
     private int _lastHandledInputFrame = -1;
+
+    private void Awake()
+    {
+        HideFeaturedItemPreview();
+    }
 
     private void OnEnable()
     {
@@ -54,6 +116,7 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
     {
         _currentNode = node;
         gameObject.SetActive(true);
+        HideFeaturedItemPreview();
         titleText.text = node.nodeType.ToString();
         requirementsText.text = "";
         requirementsText.color = Color.white;
@@ -180,10 +243,23 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
         {
             var data = node.ModifierData;
             string desc = "";
-            
-            if (data.bonusRelicChance > 0) desc += $"<color=#00FF00>+ {data.bonusRelicChance * 100}% Relic Chance</color>\n";
-            if (data.bonusEquipmentChance > 0) desc += $"<color=#00FF00>+ {data.bonusEquipmentChance * 100}% Equipment Chance</color>\n";
-            if (data.bonusEchoChance > 0) desc += $"<color=#00FF00>+ {data.bonusEchoChance * 100}% Echo Chance</color>\n";
+
+            if (data.useFeaturedItemBoost && node.TryGetRewardCategory(out _))
+            {
+                var featuredItems = node.FeaturedItems;
+                ShowFeaturedItemPreview(featuredItems, data.featuredItemWeightMultiplier, node.nodeIcon);
+
+                if (featuredItems.Count == 0)
+                    desc += "<color=#FFCC66>No eligible featured items configured.</color>\n";
+                else
+                    desc += $"<color=#00FF00>{data.featuredItemWeightMultiplier:0.#}× Appearance Chance</color>\n";
+            }
+            else
+            {
+                if (data.bonusRelicChance > 0) desc += $"<color=#00FF00>+ {data.bonusRelicChance * 100}% Relic Chance</color>\n";
+                if (data.bonusEquipmentChance > 0) desc += $"<color=#00FF00>+ {data.bonusEquipmentChance * 100}% Equipment Chance</color>\n";
+                if (data.bonusEchoChance > 0) desc += $"<color=#00FF00>+ {data.bonusEchoChance * 100}% Echo Chance</color>\n";
+            }
             
             if (data.magicToxicityIncrease > 0) desc += $"<color=#FF0000>+ {data.magicToxicityIncrease} Magic Toxicity</color>\n";
             if (data.enemyDensityMultiplier > 1.0f) desc += $"<color=#FF0000>x {data.enemyDensityMultiplier} Enemy Density</color>\n";
@@ -201,6 +277,41 @@ public class MindNodeUI : MonoBehaviour, IUIPanel
         {
             descriptionText.text = "A safe path with no modifiers.";
         }
+    }
+
+    private void ShowFeaturedItemPreview(IReadOnlyList<ItemBaseData> items, float weightMultiplier, Sprite fallbackIcon)
+    {
+        if (featuredItemPreviewRoot == null)
+        {
+            Debug.LogWarning("[MindNodeUI] Featured Item Preview Root is not assigned.", this);
+            return;
+        }
+
+        if (featuredItemPreviewHeader != null)
+            featuredItemPreviewHeader.gameObject.SetActive(false);
+
+        int slotCount = featuredItemSlots != null ? featuredItemSlots.Length : 0;
+        for (int i = 0; i < slotCount; i++)
+        {
+            FeaturedItemSlot slot = featuredItemSlots[i];
+            bool hasItem = items != null && i < items.Count && items[i] != null;
+            if (slot == null) continue;
+
+            slot.SetVisible(hasItem);
+            if (hasItem)
+                slot.Display(items[i], weightMultiplier, fallbackIcon);
+        }
+
+        featuredItemPreviewRoot.SetActive(items != null && items.Count > 0);
+    }
+
+    private void HideFeaturedItemPreview()
+    {
+        if (featuredItemPreviewHeader != null)
+            featuredItemPreviewHeader.gameObject.SetActive(false);
+
+        if (featuredItemPreviewRoot != null)
+            featuredItemPreviewRoot.SetActive(false);
     }
 
     private void HandlePrimaryAction()

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 /// <summary>
@@ -45,6 +46,26 @@ public class StatsUI : MonoBehaviour, IUIPanel
     [SerializeField] private float lowHealthThreshold = 0.35f;
     [SerializeField] private float pulseSpeed = 2f;
 
+    [Header("Run Progress")]
+    [Tooltip("Text that displays the total number of defeated enemies.")]
+    [SerializeField] private TextMeshProUGUI deadEnemyCountText;
+    [Tooltip("Text that displays the player's current evolution tier.")]
+    [SerializeField] private TextMeshProUGUI evolutionTierText;
+
+    [Header("Boss / Elite Health Bar")]
+    [Tooltip("The complete boss/elite health-bar object. It is shown only while an elite or boss is active.")]
+    [SerializeField] private GameObject bossEliteHealthBarRoot;
+    [SerializeField] private TextMeshProUGUI bossEliteNameText;
+    [SerializeField] private TextMeshProUGUI bossEliteRankText;
+    [SerializeField] private TextMeshProUGUI bossEliteHealthText;
+    [Tooltip("The foreground Image whose Fill Amount represents the enemy's remaining health.")]
+    [SerializeField] private Image bossEliteHealthFill;
+    [Tooltip("Optional decorative Image that receives the elite or boss accent colour.")]
+    [SerializeField] private Image bossEliteAccent;
+    [SerializeField, Min(0.1f)] private float bossEliteHealthFillSpeed = 2.5f;
+    [SerializeField] private Color eliteHealthColor = new Color(0.19f, 0.88f, 1f, 1f);
+    [SerializeField] private Color bossHealthColor = new Color(1f, 0.24f, 0.22f, 1f);
+
     // -----------------------------------------------------------------------
     // State Tracking
     // Tracks how many items were active on the PREVIOUS event fire so we can
@@ -55,6 +76,11 @@ public class StatsUI : MonoBehaviour, IUIPanel
     private ItemBaseData[] previousEchoes = new ItemBaseData[10];
 
     private CanvasGroup canvasGroup;
+    private readonly List<EnemyCombat> activeBossEliteEncounters = new List<EnemyCombat>();
+    private EvolutionManager evolutionManager;
+    private EnemyCombat displayedBossEliteEncounter;
+    private float targetBossEliteHealthFill;
+    private bool combatHudSubscribed;
 
     // -----------------------------------------------------------------------
     // IUIPanel Implementation
@@ -66,6 +92,26 @@ public class StatsUI : MonoBehaviour, IUIPanel
     // -----------------------------------------------------------------------
     // Lifecycle
     // -----------------------------------------------------------------------
+
+    private void Awake()
+    {
+        if (deadEnemyCountText != null)
+            deadEnemyCountText.text = CombatHUDText.FormatDefeatedEnemies(0);
+        if (evolutionTierText != null)
+            evolutionTierText.text = CombatHUDText.FormatEvolutionTier(null, 0);
+
+        SetBossEliteHealthBarVisible(false);
+    }
+
+    private void OnEnable()
+    {
+        SubscribeCombatHUD();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeCombatHUD();
+    }
 
     private void Start()
     {
@@ -137,6 +183,20 @@ public class StatsUI : MonoBehaviour, IUIPanel
 
     private void Update()
     {
+        if (evolutionManager == null)
+            TryBindEvolutionManager();
+
+        if (displayedBossEliteEncounter == null && activeBossEliteEncounters.Count > 0)
+            SelectDisplayedBossEliteEncounter();
+
+        if (displayedBossEliteEncounter != null && bossEliteHealthFill != null)
+        {
+            bossEliteHealthFill.fillAmount = Mathf.MoveTowards(
+                bossEliteHealthFill.fillAmount,
+                targetBossEliteHealthFill,
+                bossEliteHealthFillSpeed * Time.unscaledDeltaTime);
+        }
+
         if (PlayerInventoryCore.Instance != null && lowHealthOverlay != null)
         {
             HealthSystem hs = PlayerInventoryCore.Instance.GetComponent<HealthSystem>();
@@ -164,6 +224,8 @@ public class StatsUI : MonoBehaviour, IUIPanel
 
     private void OnDestroy()
     {
+        UnsubscribeCombatHUD();
+
         InventoryUI.OnInventoryToggled -= HandleInventoryToggled;
 
         if (PlayerStats.Instance != null)
@@ -330,5 +392,197 @@ public class StatsUI : MonoBehaviour, IUIPanel
         {
             crimsonAmberUI.UpdateVisuals(currentAmbers, maxAmbers, currentOrbs);
         }
+    }
+
+    private void SubscribeCombatHUD()
+    {
+        if (combatHudSubscribed) return;
+
+        combatHudSubscribed = true;
+        EnemyCombat.OnEncounterActivated += HandleBossEliteActivated;
+        EnemyCombat.OnEncounterDeactivated += HandleBossEliteDeactivated;
+
+        IReadOnlyList<EnemyCombat> registeredEncounters = EnemyCombat.ActiveEncounters;
+        for (int i = 0; i < registeredEncounters.Count; i++)
+            AddBossEliteEncounter(registeredEncounters[i]);
+
+        TryBindEvolutionManager();
+        SelectDisplayedBossEliteEncounter();
+    }
+
+    private void UnsubscribeCombatHUD()
+    {
+        if (!combatHudSubscribed) return;
+
+        combatHudSubscribed = false;
+        EnemyCombat.OnEncounterActivated -= HandleBossEliteActivated;
+        EnemyCombat.OnEncounterDeactivated -= HandleBossEliteDeactivated;
+        UnbindEvolutionManager();
+        BindDisplayedBossEliteEncounter(null);
+        activeBossEliteEncounters.Clear();
+    }
+
+    private void TryBindEvolutionManager()
+    {
+        EvolutionManager manager = EvolutionManager.Instance;
+        if (manager == null || manager == evolutionManager) return;
+
+        UnbindEvolutionManager();
+        evolutionManager = manager;
+        evolutionManager.OnKillCountChanged += HandleKillCountChanged;
+        evolutionManager.OnTierChanged += HandleEvolutionTierChanged;
+        RefreshRunProgress();
+    }
+
+    private void UnbindEvolutionManager()
+    {
+        if (evolutionManager == null) return;
+
+        evolutionManager.OnKillCountChanged -= HandleKillCountChanged;
+        evolutionManager.OnTierChanged -= HandleEvolutionTierChanged;
+        evolutionManager = null;
+    }
+
+    private void HandleKillCountChanged(int _)
+    {
+        RefreshRunProgress();
+    }
+
+    private void HandleEvolutionTierChanged(EvolutionTierData _)
+    {
+        RefreshRunProgress();
+    }
+
+    private void RefreshRunProgress()
+    {
+        if (evolutionManager == null) return;
+
+        if (deadEnemyCountText != null)
+            deadEnemyCountText.text = CombatHUDText.FormatDefeatedEnemies(evolutionManager.CurrentKills);
+
+        if (evolutionTierText != null)
+        {
+            EvolutionTierData tier = evolutionManager.GetCurrentTierData();
+            evolutionTierText.text = CombatHUDText.FormatEvolutionTier(
+                tier != null ? tier.tierName : null,
+                evolutionManager.CurrentTierIndex);
+        }
+    }
+
+    private void HandleBossEliteActivated(EnemyCombat encounter)
+    {
+        AddBossEliteEncounter(encounter);
+        SelectDisplayedBossEliteEncounter();
+    }
+
+    private void HandleBossEliteDeactivated(EnemyCombat encounter)
+    {
+        activeBossEliteEncounters.Remove(encounter);
+        if (displayedBossEliteEncounter == encounter)
+            SelectDisplayedBossEliteEncounter();
+    }
+
+    private void AddBossEliteEncounter(EnemyCombat encounter)
+    {
+        if (encounter == null || !encounter.IsEliteOrBoss || activeBossEliteEncounters.Contains(encounter)) return;
+        activeBossEliteEncounters.Add(encounter);
+    }
+
+    private void SelectDisplayedBossEliteEncounter()
+    {
+        for (int i = activeBossEliteEncounters.Count - 1; i >= 0; i--)
+        {
+            if (activeBossEliteEncounters[i] == null || activeBossEliteEncounters[i].IsDead)
+                activeBossEliteEncounters.RemoveAt(i);
+        }
+
+        EnemyCombat selected = null;
+        for (int i = activeBossEliteEncounters.Count - 1; i >= 0; i--)
+        {
+            EnemyCombat candidate = activeBossEliteEncounters[i];
+            if (selected == null || candidate.Rank > selected.Rank)
+                selected = candidate;
+        }
+
+        BindDisplayedBossEliteEncounter(selected);
+    }
+
+    private void BindDisplayedBossEliteEncounter(EnemyCombat encounter)
+    {
+        if (displayedBossEliteEncounter != null)
+            displayedBossEliteEncounter.OnDamageReceived -= HandleBossEliteDamaged;
+
+        displayedBossEliteEncounter = encounter;
+
+        if (displayedBossEliteEncounter == null)
+        {
+            SetBossEliteHealthBarVisible(false);
+            return;
+        }
+
+        displayedBossEliteEncounter.OnDamageReceived += HandleBossEliteDamaged;
+        Color accent = displayedBossEliteEncounter.Rank == EnemyRank.Boss
+            ? bossHealthColor
+            : eliteHealthColor;
+
+        if (bossEliteNameText != null)
+            bossEliteNameText.text = CombatHUDText.FormatEncounterName(displayedBossEliteEncounter.gameObject.name);
+        if (bossEliteRankText != null)
+        {
+            bossEliteRankText.text = displayedBossEliteEncounter.Rank == EnemyRank.Boss ? "BOSS" : "ELITE";
+            bossEliteRankText.color = accent;
+        }
+        if (bossEliteAccent != null)
+            bossEliteAccent.color = accent;
+        if (bossEliteHealthFill != null)
+        {
+            bossEliteHealthFill.color = accent;
+            bossEliteHealthFill.fillAmount = displayedBossEliteEncounter.HPPercent;
+        }
+
+        SetBossEliteHealthBarVisible(true);
+        RefreshBossEliteHealth();
+    }
+
+    private void HandleBossEliteDamaged(object sender, EnemyCombat.DamageReceivedArgs args)
+    {
+        RefreshBossEliteHealth();
+    }
+
+    private void RefreshBossEliteHealth()
+    {
+        if (displayedBossEliteEncounter == null) return;
+
+        targetBossEliteHealthFill = displayedBossEliteEncounter.HPPercent;
+        if (bossEliteHealthText != null)
+        {
+            bossEliteHealthText.text =
+                $"{displayedBossEliteEncounter.CurrentHP:N0} / {displayedBossEliteEncounter.MaxHP:N0}";
+        }
+    }
+
+    private void SetBossEliteHealthBarVisible(bool visible)
+    {
+        if (bossEliteHealthBarRoot != null && bossEliteHealthBarRoot.activeSelf != visible)
+            bossEliteHealthBarRoot.SetActive(visible);
+    }
+}
+
+public static class CombatHUDText
+{
+    public static string FormatDefeatedEnemies(int count)
+    {
+        return Mathf.Max(0, count).ToString("N0");
+    }
+
+    public static string FormatEvolutionTier(string tierName, int tierIndex)
+    {
+        return Mathf.Max(0, tierIndex).ToString("N0");
+    }
+
+    public static string FormatEncounterName(string objectName)
+    {
+        if (string.IsNullOrWhiteSpace(objectName)) return "UNKNOWN ENCOUNTER";
+        return objectName.Replace("(Clone)", string.Empty).Trim().ToUpperInvariant();
     }
 }

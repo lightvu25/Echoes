@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using TMPro;
@@ -15,11 +16,40 @@ public class CutsceneManager : MonoBehaviour
     [Header("Goal Cutscene")]
     public PlayableDirector goalDirector;
 
+    private readonly HashSet<PlayableDirector> subscribedDirectors = new HashSet<PlayableDirector>();
+    private readonly HashSet<PlayableDirector> activeDirectors = new HashSet<PlayableDirector>();
+    private Camera cutsceneCamera;
+    private int cameraCullingMaskBeforeCutscene;
+    private bool cutsceneCullingMaskApplied;
+
+    private void OnEnable()
+    {
+        SubscribeDirector(openingDirector);
+        SubscribeDirector(deathDirector);
+        SubscribeDirector(goalDirector);
+    }
+
+    private void OnDisable()
+    {
+        foreach (PlayableDirector director in subscribedDirectors)
+        {
+            if (director == null) continue;
+            director.played -= HandleDirectorPlayed;
+            director.stopped -= HandleDirectorStopped;
+        }
+
+        subscribedDirectors.Clear();
+        activeDirectors.Clear();
+        RestoreCameraCullingMask();
+    }
+
     private void Start()
     {
         if (openingDirector != null)
         {
             openingDirector.timeUpdateMode = DirectorUpdateMode.UnscaledGameTime;
+            if (openingDirector.state == PlayState.Playing)
+                HandleDirectorPlayed(openingDirector);
             if (openingDirector.state != PlayState.Playing && !openingDirector.playOnAwake)
                 openingDirector.gameObject.SetActive(false);
         }
@@ -27,6 +57,8 @@ public class CutsceneManager : MonoBehaviour
         if (deathDirector != null)
         {
             deathDirector.timeUpdateMode = DirectorUpdateMode.UnscaledGameTime;
+            if (deathDirector.state == PlayState.Playing)
+                HandleDirectorPlayed(deathDirector);
             if (deathDirector.state != PlayState.Playing && !deathDirector.playOnAwake)
                 deathDirector.gameObject.SetActive(false);
         }
@@ -34,9 +66,69 @@ public class CutsceneManager : MonoBehaviour
         if (goalDirector != null)
         {
             goalDirector.timeUpdateMode = DirectorUpdateMode.UnscaledGameTime;
+            if (goalDirector.state == PlayState.Playing)
+                HandleDirectorPlayed(goalDirector);
             if (goalDirector.state != PlayState.Playing && !goalDirector.playOnAwake)
                 goalDirector.gameObject.SetActive(false);
         }
+    }
+
+    private void SubscribeDirector(PlayableDirector director)
+    {
+        if (director == null || !subscribedDirectors.Add(director)) return;
+
+        director.played += HandleDirectorPlayed;
+        director.stopped += HandleDirectorStopped;
+    }
+
+    private void HandleDirectorPlayed(PlayableDirector director)
+    {
+        if (director == null || !activeDirectors.Add(director)) return;
+        if (activeDirectors.Count == 1)
+            ApplyCutsceneCullingMask();
+    }
+
+    private void HandleDirectorStopped(PlayableDirector director)
+    {
+        if (director != null)
+            activeDirectors.Remove(director);
+
+        if (activeDirectors.Count == 0)
+            RestoreCameraCullingMask();
+    }
+
+    private void ApplyCutsceneCullingMask()
+    {
+        if (cutsceneCullingMaskApplied) return;
+
+        cutsceneCamera = Camera.main;
+        if (cutsceneCamera == null)
+        {
+            Debug.LogWarning("[CutsceneManager] No Main Camera was found, so cutscene layer isolation could not be applied.", this);
+            return;
+        }
+
+        int visibleLayers = LayerMask.GetMask("UI", "Player");
+        if (visibleLayers == 0)
+        {
+            Debug.LogWarning("[CutsceneManager] The UI and Player layers could not be resolved.", this);
+            return;
+        }
+
+        cameraCullingMaskBeforeCutscene = cutsceneCamera.cullingMask;
+        cutsceneCamera.cullingMask = visibleLayers;
+        cutsceneCullingMaskApplied = true;
+    }
+
+    private void RestoreCameraCullingMask()
+    {
+        if (!cutsceneCullingMaskApplied) return;
+
+        if (cutsceneCamera != null)
+            cutsceneCamera.cullingMask = cameraCullingMaskBeforeCutscene;
+
+        cutsceneCamera = null;
+        cutsceneCullingMaskApplied = false;
     }
 
     private PlayerMovement _playerMovement;
@@ -93,6 +185,7 @@ public class CutsceneManager : MonoBehaviour
         openingDirector.Play();
         yield return StartCoroutine(WaitForDirectorOrSkip(openingDirector));
         openingDirector.gameObject.SetActive(false);
+        HandleDirectorStopped(openingDirector);
 
         LockPlayer(false);
     }
@@ -133,6 +226,7 @@ public class CutsceneManager : MonoBehaviour
             deathDirector.Stop();
             deathDirector.time = 0d;
             deathDirector.gameObject.SetActive(false);
+            HandleDirectorStopped(deathDirector);
 
             if (TimeManager.Instance != null) TimeManager.Instance.ClearAllPauses();
             else Time.timeScale = 1f;
@@ -173,6 +267,7 @@ public class CutsceneManager : MonoBehaviour
             goalDirector.Play();
             yield return StartCoroutine(WaitForDirectorOrSkip(goalDirector));
             goalDirector.gameObject.SetActive(false);
+            HandleDirectorStopped(goalDirector);
         }
         else
         {

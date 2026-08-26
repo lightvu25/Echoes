@@ -51,6 +51,8 @@ public class MindWorldModifierTests
         MindNode equipment = LoadNode("Assets/Prefabs/Mind World/EquipmentNode.prefab", NodeType.Equipment);
 
         Assert.AreEqual(0.5f, relic.ModifierData.bonusRelicChance);
+        Assert.IsTrue(relic.ModifierData.useFeaturedItemBoost);
+        Assert.NotNull(relic.ModifierData.FeaturedItemCatalog);
         Assert.AreEqual(1.5f, relic.ModifierData.enemyDensityMultiplier);
         CollectionAssert.Contains(relic.ModifierData.addedEliteEnemyTypes, "Elite");
 
@@ -63,26 +65,81 @@ public class MindWorldModifierTests
     }
 
     [Test]
+    public void EquipmentCatalog_FeaturedItemsHaveIndividualIcons()
+    {
+        RunItemCatalog catalog = AssetDatabase.LoadAssetAtPath<RunItemCatalog>(
+            "Assets/Data/Player/Run Item Catalog.asset");
+        Assert.NotNull(catalog);
+
+        var iconOwners = new Dictionary<Sprite, string>();
+        foreach (ItemBaseData item in catalog.Items)
+        {
+            if (!(item is ToolData)) continue;
+
+            Assert.NotNull(item.itemIcon, $"Equipment '{item.itemID}' has no icon assigned.");
+            Assert.IsFalse(
+                iconOwners.TryGetValue(item.itemIcon, out string existingOwner),
+                $"Equipment '{item.itemID}' shares its icon with '{existingOwner}'.");
+            iconOwners.Add(item.itemIcon, item.itemID);
+        }
+
+        Assert.GreaterOrEqual(iconOwners.Count, 3, "The featured equipment pool needs at least three individual icons.");
+    }
+
+    [Test]
     public void AcceptingAllModifierNodes_AppliesRewardsAndRisksToTheRun()
     {
         RunData run = session.currentRun;
 
         manager.AcceptNodePath(LoadNode("Assets/Prefabs/Mind World/RelicNode.prefab", NodeType.Relic));
         Assert.That(run.minGuaranteedRelics, Is.InRange(1, 2));
-        Assert.AreEqual(0.5f, run.bonusRelicChance);
+        Assert.AreEqual(0f, run.bonusRelicChance, "Featured nodes must not boost their whole category.");
+        Assert.That(run.featuredRelicIds.Count, Is.InRange(2, 3));
         Assert.AreEqual(1.5f, run.enemyDensityMultiplier);
         CollectionAssert.AreEqual(new[] { "Elite" }, run.addedEliteEnemyTypes);
 
         manager.AcceptNodePath(LoadNode("Assets/Prefabs/Mind World/EchoNode.prefab", NodeType.Echo));
         Assert.That(run.minGuaranteedEchoes, Is.InRange(1, 2));
-        Assert.AreEqual(0.5f, run.bonusEchoChance);
+        Assert.AreEqual(0f, run.bonusEchoChance);
+        Assert.That(run.featuredEchoIds.Count, Is.InRange(2, 3));
         Assert.AreEqual(10, run.magicToxicity);
         Assert.AreEqual(1.8f, run.enemyDensityMultiplier, 0.0001f);
 
         manager.AcceptNodePath(LoadNode("Assets/Prefabs/Mind World/EquipmentNode.prefab", NodeType.Equipment));
         Assert.That(run.minGuaranteedEquipment, Is.InRange(1, 2));
-        Assert.AreEqual(0.5f, run.bonusEquipmentChance);
+        Assert.AreEqual(0f, run.bonusEquipmentChance);
+        Assert.That(run.featuredEquipmentIds.Count, Is.InRange(2, 3));
         Assert.AreEqual(3.6f, run.enemyDensityMultiplier, 0.0001f);
+        Assert.AreEqual(3f, run.featuredItemWeightMultiplier);
+    }
+
+    [Test]
+    public void FeaturedLootWeight_ChangesOnlyNamedItemSelection()
+    {
+        RelicData featured = ScriptableObject.CreateInstance<RelicData>();
+        RelicData normalA = ScriptableObject.CreateInstance<RelicData>();
+        RelicData normalB = ScriptableObject.CreateInstance<RelicData>();
+
+        try
+        {
+            featured.itemID = "featured";
+            normalA.itemID = "normal-a";
+            normalB.itemID = "normal-b";
+            session.currentRun.featuredRelicIds.Add(featured.itemID);
+            session.currentRun.featuredItemWeightMultiplier = 3f;
+
+            var pool = new List<ItemBaseData> { featured, normalA, normalB };
+
+            Assert.AreSame(featured, ShopManager.SelectWithFeaturedWeight(pool, ItemCategory.Relic, 0.2f));
+            Assert.AreSame(normalA, ShopManager.SelectWithFeaturedWeight(pool, ItemCategory.Relic, 0.7f));
+            Assert.AreEqual(1f, session.currentRun.GetFeaturedLootWeight(ItemCategory.Echo, featured.itemID));
+        }
+        finally
+        {
+            Object.DestroyImmediate(featured);
+            Object.DestroyImmediate(normalA);
+            Object.DestroyImmediate(normalB);
+        }
     }
 
     [Test]

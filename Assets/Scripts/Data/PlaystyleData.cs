@@ -29,12 +29,18 @@ public class PlaystyleData : ScriptableObject
     public Vector2[] vfxOffsets;
     
     [Header("Combat Stats")]
+    [Min(0f)]
+    [Tooltip("Multiplier applied to the active Echo's proc chance. Values above 1 make this playstyle more likely to proc.")]
     public float procCoefficient = 1f;
 
     [Header("Long Range Specific")]
     public GameObject projectilePrefab;
     
     [Header("Magic Specific")]
+    [Min(0f)]
     public float magicAoERadius = 3f;
+    [Min(0f)]
+    [Tooltip("How far in front of the player the Magic burst is placed before wall blocking is applied.")]
+    public float magicCastDistance = 6f;
     public GameObject magicAoEPrefab;
 }

@@ -19,18 +19,19 @@ MonoBehaviour:
   comboSteps: 1
   comboWindow: 0.4
   comboDamageMultipliers:
-  - 1
+  - 1.5
   hitboxSizes:
   - {x: 1, y: 1}
   hitboxOffsets:
   - {x: 0.5, y: 0}
   attackAnimationNames:
-  - Magic_Burst
+  - Magic
   comboVFXPrefabs:
   - {fileID: 7632582610512150109, guid: 8209c8c9f1046f541a703e2004906054, type: 3}
   vfxOffsets:
   - {x: 0, y: 0}
-  procCoefficient: 1
+  procCoefficient: 1.25
   projectilePrefab: {fileID: 0}
   magicAoERadius: 3
-  magicAoEPrefab: {fileID: 0}
+  magicCastDistance: 6
+  magicAoEPrefab: {fileID: 7632582610512150109, guid: 8209c8c9f1046f541a703e2004906054, type: 3}

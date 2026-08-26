@@ -40,7 +40,6 @@ public class EnemyDrop : MonoBehaviour
 
     private void HandleDeath(object sender, EventArgs e)
     {
-        EvolutionManager.Instance?.RegisterKill();
         GrantExp();
         DropLoot();
     }

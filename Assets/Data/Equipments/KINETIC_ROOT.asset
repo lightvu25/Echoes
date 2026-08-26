@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ToolData
   itemID: KINETIC_ROOT
   itemName: Kinetic Root
-  itemIcon: {fileID: 7519848021948844078, guid: 1b1eb53d9166f1a488e859e22d986614, type: 3}
+  itemIcon: {fileID: -3660819306280331734, guid: 6bb0a8fd15809cb4ea9de48c1c45c340, type: 3}
   description: Emits a non-damaging shockwave that knocks back enemies.
   dropPrefab: {fileID: 5906014342740351065, guid: 5dbe38ae942d229418b971df04614254, type: 3}
   itemTier: 1

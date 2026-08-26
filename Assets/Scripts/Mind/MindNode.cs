@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum NodeType
@@ -32,6 +33,17 @@ public class MindNode : MonoBehaviour, IInteractable, IFeedbackProvider
     [Tooltip("The modifiers applied to the run if this path is accepted. Leave null for a safe path.")]
     [SerializeField] private MindNodeModifierData modifierData;
     public MindNodeModifierData ModifierData => modifierData;
+
+    private readonly List<ItemBaseData> _featuredItems = new List<ItemBaseData>();
+    private bool _featuredItemsRolled;
+    public IReadOnlyList<ItemBaseData> FeaturedItems
+    {
+        get
+        {
+            EnsureFeaturedItems();
+            return _featuredItems;
+        }
+    }
 
     [Header("Challenge Requirements")]
     [Tooltip("Enemies killed without taking damage (for No-hit doors)")]
@@ -69,6 +81,36 @@ public class MindNode : MonoBehaviour, IInteractable, IFeedbackProvider
             {
                 Debug.LogWarning("[MindNode] Could not find MindNodeUI via UIManager!");
             }
+        }
+    }
+
+    public void EnsureFeaturedItems()
+    {
+        if (_featuredItemsRolled) return;
+        _featuredItemsRolled = true;
+
+        if (modifierData == null || !modifierData.useFeaturedItemBoost || !TryGetRewardCategory(out ItemCategory category))
+            return;
+
+        _featuredItems.AddRange(modifierData.RollFeaturedItems(category));
+    }
+
+    public bool TryGetRewardCategory(out ItemCategory category)
+    {
+        switch (nodeType)
+        {
+            case NodeType.Relic:
+                category = ItemCategory.Relic;
+                return true;
+            case NodeType.Echo:
+                category = ItemCategory.Echo;
+                return true;
+            case NodeType.Equipment:
+                category = ItemCategory.Tool;
+                return true;
+            default:
+                category = default;
+                return false;
         }
     }
 
